@@ -30,7 +30,7 @@ module.exports = {
             var installed = [];
             var found = fs.readdirSync(server.getPath('node_modules'));
             for (var i in found) {
-                if (_.str.startsWith(found[i], 'jsnbt-')) {
+                if (_.str.startsWith(found[i], 'jsnbt')) {
                     installed.push(found[i]);
                 }
             }
@@ -55,16 +55,13 @@ module.exports = {
         },
 
         pack: function (name, force) {
-            console.log('p1');
             if (!fs.existsSync(server.getPath('node_modules/' + name)) && name !== 'jsnbt')
                 throw new Error('npm module not installed in node_modules: ' + name);
-            console.log('p2');
+
             var sourcePath = server.getPath('node_modules/' + name + '/src');
-            console.log('p3', sourcePath);
             var targetPath = server.getPath('src/pck/' + name);
-            console.log('p4', targetPath);
+
             if (fs.existsSync(sourcePath)) {
-                console.log('p5 exists');
                 if (fs.existsSync(targetPath)) {
                     if (force) {
                         fs.delete(targetPath, true);
@@ -72,7 +69,6 @@ module.exports = {
                     }
                 }
                 else {
-                    console.log('p5 copy');
                     fs.copy(sourcePath, targetPath);
                 }
             }
