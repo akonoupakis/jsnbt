@@ -88,16 +88,19 @@ module.exports = {
                     fs.create(server.getPath(folder));
                 }
 
-                if (!fs.existsSync(server.getPath(folder + '/public'))) {
-                    fs.create(server.getPath(folder + '/public'));
+                if (!fs.existsSync(server.getPath('src/pck/' + name + '/web/public'))) {
+                    if (!fs.existsSync(server.getPath(folder + '/public'))) {
+                        fs.create(server.getPath(folder + '/public'));
+                    }
+                    deployFiles(server.getPath('src/pck/' + name + '/web/public'), server.getPath(folder + '/public'));
                 }
 
-                if (!fs.existsSync(server.getPath(folder + '/public/admin'))) {
-                    fs.create(server.getPath(folder + '/public/admin'));
+                if (!fs.existsSync(server.getPath('src/pck/' + name + '/web/admin'))) {
+                    if (!fs.existsSync(server.getPath(folder + '/public/admin'))) {
+                        fs.create(server.getPath(folder + '/public/admin'));
+                    }
+                    deployFiles(server.getPath('src/pck/' + name + '/web/admin'), server.getPath(folder + '/public/admin'));
                 }
-
-                deployFiles(server.getPath('src/pck/' + name + '/web/public'), server.getPath(folder + '/public'));
-                deployFiles(server.getPath('src/pck/' + name + '/web/admin'), server.getPath(folder + '/public/admin'));
 
                 var resourcesFolder = server.getPath('src/pck/' + name + '/dpd/resources');
                 if (fs.existsSync(resourcesFolder)) {
