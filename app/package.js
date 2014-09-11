@@ -83,11 +83,29 @@ module.exports = {
 
         deploy: function (name, folder) {
             if (fs.existsSync(server.getPath('src/pck/' + name))) {
+
+                if (!fs.existsSync(server.getPath(folder))) {
+                    fs.create(server.getPath(folder));
+                }
+
+                if (!fs.existsSync(server.getPath(folder + '/public'))) {
+                    fs.create(server.getPath(folder + '/public'));
+                }
+
+                if (!fs.existsSync(server.getPath(folder + '/public/admin'))) {
+                    fs.create(server.getPath(folder + '/public/admin'));
+                }
+
                 deployFiles(server.getPath('src/pck/' + name + '/web/public'), server.getPath(folder + '/public'));
                 deployFiles(server.getPath('src/pck/' + name + '/web/admin'), server.getPath(folder + '/public/admin'));
 
                 var resourcesFolder = server.getPath('src/pck/' + name + '/dpd/resources');
                 if (fs.existsSync(resourcesFolder)) {
+
+                    if (!fs.existsSync(server.getPath(folder + '/resources'))) {
+                        fs.create(server.getPath(folder + '/resources'));
+                    }
+
                     var resources = fs.readdirSync(resourcesFolder);
                     for (var ii in resources) {
                         var resourceName = resources[ii];
