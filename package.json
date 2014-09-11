@@ -25,7 +25,8 @@
   "files": [
     "app/**",
     "src/**",
-    "scripts/**"
+    "scripts/**"m
+	"bower.json"
   ],
   "scripts": {
     "install": "node scripts/install.js",
