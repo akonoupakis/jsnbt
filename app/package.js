@@ -55,7 +55,7 @@ module.exports = {
         },
 
         pack: function (name, force) {
-            if (!fs.existsSync(server.getPath('node_modules/' + name)))
+            if (!fs.existsSync(server.getPath('node_modules/' + name)) && name !== 'jsnbt')
                 throw new Error('npm module not installed in node_modules: ' + name);
 
             var sourcePath = server.getPath('node_modules/' + name + '/src');
@@ -76,7 +76,9 @@ module.exports = {
 
         unpack: function (name) {
             var targetPath = server.getPath('src/pck/' + name);
-            fs.delete(targetPath, true);
+            if (fs.existsSync(targetPath)) {
+                fs.delete(targetPath, true);
+            }
         },
 
         deploy: function (name, folder) {
