@@ -1,6 +1,6 @@
 {
   "name": "jsnbt",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "The Jsonbot engine",
   "keywords": [
     "jsnbt",
@@ -30,8 +30,8 @@
   "dependencies": {
     "deployd": "git://github.com/akonoupakis/deployd",
     "formidable": "~1.0.15",
-	"dpd-sync": "*",
-	"server-root": "*"
+    "dpd-sync": "*",
+    "server-root": "*"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
