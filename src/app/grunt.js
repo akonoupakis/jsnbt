@@ -9,7 +9,7 @@ var _ = require('underscore');
 _.str = require('underscore.string');
 
 module.exports = function (grunt) {
-    
+
     var getFilesToCopy = function (folder) {
 
         var files = [{
@@ -39,8 +39,8 @@ module.exports = function (grunt) {
         var files = [];
 
         if (site === undefined || site === 'admin') {
-            if (fs.existsSync('./src/web/admin/tmpl/error')) {
-                var adminErrorFiles = fs.readdirSync('./src/web/admin/tmpl/error');
+            if (fs.existsSync(server.getPath('src/web/admin/tmpl/error'))) {
+                var adminErrorFiles = fs.readdirSync(server.getPath('src/web/admin/tmpl/error'));
                 for (var i in adminErrorFiles) {
                     files.push({
                         src: './src/web/admin/tmpl/error/' + adminErrorFiles[i],
@@ -48,8 +48,8 @@ module.exports = function (grunt) {
                     });
                 }
             }
-            if (fs.existsSync('./src/web/admin/tmpl/view')) {
-                var adminViewFiles = fs.readdirSync('./src/web/admin/tmpl/view');
+            if (fs.existsSync(server.getPath('src/web/admin/tmpl/view'))) {
+                var adminViewFiles = fs.readdirSync(server.getPath('src/web/admin/tmpl/view'));
                 for (var i in adminViewFiles) {
                     files.push({
                         src: './src/web/admin/tmpl/view/' + adminViewFiles[i],
@@ -59,8 +59,8 @@ module.exports = function (grunt) {
             }
         }
         if (site === undefined || site === 'public') {
-            if (fs.existsSync('./src/web/public/tmpl/error')) {
-                var publicErrorFiles = fs.readdirSync('./src/web/public/tmpl/error');
+            if (fs.existsSync(server.getPath('src/web/public/tmpl/error'))) {
+                var publicErrorFiles = fs.readdirSync(server.getPath('src/web/public/tmpl/error'));
                 for (var i in publicErrorFiles) {
                     files.push({
                         src: './src/web/public/tmpl/error/' + publicErrorFiles[i],
@@ -68,8 +68,8 @@ module.exports = function (grunt) {
                     });
                 }
             }
-            if (fs.existsSync('./src/web/public/tmpl/view')) {
-                var publicViewFiles = fs.readdirSync('./src/web/public/tmpl/view');
+            if (fs.existsSync(server.getPath('src/web/public/tmpl/view'))) {
+                var publicViewFiles = fs.readdirSync(server.getPath('src/web/public/tmpl/view'));
                 for (var i in publicViewFiles) {
                     files.push({
                         src: './src/web/public/tmpl/view/' + publicViewFiles[i],
@@ -134,16 +134,16 @@ module.exports = function (grunt) {
 
     grunt.registerMultiTask('mod', 'Install & pack modules', function () {
         if (this.target == 'npm') {
-            if (fs.existsSync('./npm')) {
-                var found = fs.readdirSync('./npm');
+            if (fs.existsSync(server.getPath('npm'))) {
+                var found = fs.readdirSync(server.getPath('npm'));
                 for (var i in found) {
                     pack.npm.install(found[i], this.data.force);
                 }
             }
         }
         else if (this.target == 'bower') {
-            if (fs.existsSync('./bower')) {
-                var found = fs.readdirSync('./bower');
+            if (fs.existsSync(server.getPath('bower'))) {
+                var found = fs.readdirSync(server.getPath('bower'));
                 for (var i in found) {
                     pack.bower.install(found[i], this.data.force);
                 }
@@ -155,16 +155,16 @@ module.exports = function (grunt) {
 
         var folder = this.target == 'prod' ? 'dist' : 'dev';
 
-        if (!fs.existsSync('./src'))
-            fs.create('./src');
+        if (!fs.existsSync(server.getPath('src')))
+            fs.create(server.getPath('src'));
 
-        if (!fs.existsSync('./src/pck'))
-            fs.create('./src/pck');
+        if (!fs.existsSync(server.getPath('src/pck')))
+            fs.create(server.getPath('src/pck'));
 
-        if (!fs.existsSync('./src/web'))
-            fs.create('./src/web');
+        if (!fs.existsSync(server.getPath('src/web')))
+            fs.create(server.getPath('src/web'));
 
-        var found = fs.readdirSync('./src/pck');
+        var found = fs.readdirSync(server.getPath('src/pck'));
         for (var i in found) {
             pack.npm.deploy(found[i], folder);
         }
@@ -205,13 +205,13 @@ module.exports = function (grunt) {
         var bowerPackages = [];
 
         var bowerConfigs = [];
-        
+
         bowerConfigs.push(require(server.getPath('./bower.json')));
 
         var installedPackages = pack.npm.getInstalled();
         for (var i = 0; i < installedPackages.length; i++) {
-            if (fs.existsSync('./node_modules/' + installedPackages[i] + '/bower.json')) {
-                bowerConfigs.push(require('./node_modules/' + installedPackages[i] + '/bower.json'));
+            if (fs.existsSync(server.getPath('node_modules/' + installedPackages[i] + '/bower.json'))) {
+                bowerConfigs.push(require(server.getPath('node_modules/' + installedPackages[i] + '/bower.json')));
             }
         }
 
@@ -220,7 +220,7 @@ module.exports = function (grunt) {
 
             if (bowerConfig.dependencies) {
                 for (var dep in bowerConfig.dependencies) {
-                    if (!fs.existsSync('./bower_components/' + dep)) {
+                    if (!fs.existsSync(server.getPath('bower_components/' + dep))) {
                         if (bowerPackageNames.indexOf(dep) === -1) {
                             bowerPackages.push(dep + '#' + bowerConfig.dependencies[dep]);
                             bowerPackageNames.push(dep);
@@ -246,8 +246,8 @@ module.exports = function (grunt) {
 
         var installedPackages = pack.npm.getInstalled();
         for (var i = 0; i < installedPackages.length; i++) {
-            if (fs.existsSync('./node_modules/' + installedPackages[i] + '/bower.json')) {
-                bowerConfigs.push(require('./node_modules/' + installedPackages[i] + '/bower.json'));
+            if (fs.existsSync(server.getPath('node_modules/' + installedPackages[i] + '/bower.json'))) {
+                bowerConfigs.push(require(server.getPath('node_modules/' + installedPackages[i] + '/bower.json')));
             }
         }
 
@@ -272,8 +272,8 @@ module.exports = function (grunt) {
 
                                         for (var ii = 0; ii < folderSpecs.src.length; ii++) {
                                             for (var iii = 0; iii < folderSpecs.dest.length; iii++) {
-                                                var sourceDir = './' + bowerComponents + '/' + folderSpecs.src[ii];
-                                                var targetDir = './' + folder + '/public/' + folderSpecs.dest[iii];
+                                                var sourceDir = server.getPath(bowerComponents + '/' + folderSpecs.src[ii]);
+                                                var targetDir = server.getPath(folder + '/public/' + folderSpecs.dest[iii]);
 
                                                 if (fs.existsSync(sourceDir)) {
                                                     if (!fs.existsSync(targetDir))
@@ -298,8 +298,8 @@ module.exports = function (grunt) {
 
                                         for (var ii = 0; ii < fileSpecs.src.length; ii++) {
                                             for (var iii = 0; iii < fileSpecs.dest.length; iii++) {
-                                                var sourceFile = './' + bowerComponents + '/' + fileSpecs.src[ii];
-                                                var targetFile = './' + folder + '/public/' + fileSpecs.dest[iii];
+                                                var sourceFile = server.getPath(bowerComponents + '/' + fileSpecs.src[ii]);
+                                                var targetFile = server.getPath(folder + '/public/' + fileSpecs.dest[iii]);
 
                                                 if (fs.existsSync(sourceFile)) {
                                                     var sourceFileName = path.basename(sourceFile);
