@@ -24,7 +24,8 @@
   "main": "app/app.js",
   "files": [
     "app/**",
-    "src/**",
+    "src/dpd/**",
+	"src/web/admin",
     "scripts/**",
     "bower.json"
   ],

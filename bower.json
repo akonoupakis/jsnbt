@@ -13,25 +13,25 @@
     "bower_components"
   ],
   "dependencies": {
-    "angular": "1.3.0",
-    "angular-route": "1.3.0",
-    "angular-animate": "1.3.0",
-    "jquery": "2.0.3",
-    "underscore": "1.5.2",
-    "underscore.string": "2.3.3",
-    "bootstrap": "3.2.0",
-    "bootstrap-switch": "3.0.2",
-    "fuelux": "2.6.2",
-    "angular-bootstrap": "0.11.0",
-    "angular-bootstrap-switch": "0.3.0",
-    "angular-motion": "0.3.3",
-    "angular-strap": "2.0.5",
-    "jquery.scrollTo": "1.4.13",
-    "bootstrap-ui": "0.11.0",
-    "angular-ui-sortable": "0.12.10",
-    "jquery-ui": "1.11.1",
-    "ngInfiniteScroll": "1.1.2",
-    "ng-flow": "2"
+    "angular": "*",
+    "angular-route": "*",
+    "angular-animate": "*",
+	"jquery": "*",
+    "underscore": "*",
+    "underscore.string": "*",
+	"bootstrap": "*",
+    "bootstrap-switch": "*",
+    "fuelux": "*",
+    "angular-bootstrap": "*",
+    "angular-bootstrap-switch": "*",
+    "angular-motion": "*",
+    "angular-strap": "*",
+    "jquery.scrollTo": "*",
+    "bootstrap-ui": "*",
+    "angular-ui-sortable": "*",
+    "jquery-ui": "*",
+    "ngInfiniteScroll": "*",
+    "ng-flow": "*"    
   },
   "deploy": {
     "angular": {
@@ -88,7 +88,7 @@
     "jquery": {
       "files": [
         {
-          "src": "jquery/jquery.js",
+          "src": "jquery/dist/jquery.js",
           "dest": [
             "js/lib/jquery.js",
             "admin/js/lib/jquery.js"

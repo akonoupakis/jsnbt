@@ -2,7 +2,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('NodeSelectorController', function ($scope, $data, TreeNodeService, Function) {
+        .controller('NodeSelectorController', function ($scope, $data, TreeNodeService) {
      
             $scope.nodes = [];
 
