@@ -20,14 +20,16 @@ _.str = require('underscore.string');
 
 exports.render = function (ctx, view) {
     var tmplFilePath = '../' + app.root + '/public' + view;
+    if (fs.existsSync(tmplFilePath)) {
+        var tmplContent = fs.readFileSync(tmplFilePath, 'utf-8');
+        ctx.res.writeHead(200, { "Content-Type": "text/html" });
 
-    //var tmplContent = getCachedTemplate(baseHref, tmplFilePath);
+        tmplContent = html.parse(ctx, tmplContent, {});
 
-    var tmplContent = fs.readFileSync(tmplFilePath, 'utf-8');
-    ctx.res.writeHead(200, { "Content-Type": "text/html" });
-
-    tmplContent = html.parse(ctx, tmplContent, {});
-
-    ctx.res.write(tmplContent);
+        ctx.res.write(tmplContent);
+    }
+    else {
+        ctx.res.write('could not find view file "' + tmplFilePath + '"');
+    }
     ctx.res.end();
 };
