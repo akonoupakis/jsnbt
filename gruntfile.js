@@ -12,7 +12,7 @@ module.exports = function (grunt) {
 
 		var files = [{
 			expand: true,
-			cwd: 'files/dpd/',
+			cwd: 'src/dpd/',
 			src: ['app.dpd', 'node_modules/**', 'resources/**'],
 			dest: folder + '/'
 		}];
