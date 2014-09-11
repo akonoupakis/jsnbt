@@ -1,0 +1,63 @@
+{
+  "name": "jsnbt",
+  "version": "1.0.3",
+  "description": "The Jsonbot engine",
+  "keywords": [
+    "jsnbt",
+    "jsonbot"
+  ],
+  "author": {
+    "name": "Apostolis Konoupakis",
+    "email": "konoupakis@gmail.com",
+    "url": ""
+  },
+  "readme": "null",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.org/akonoupakis/jsnbt.git"
+  },
+  "bugs": {
+    "url": "https://bitbucket.org/akonoupakis/jsnbt/issues",
+    "email": "konoupakis@gmail.com"
+  },
+  "config": {},
+  "main": "app/app.js",
+  "files": [
+    "files/**",
+    "app/**"
+  ],
+  "dependencies": {
+    "deployd": "git://github.com/akonoupakis/deployd",
+    "bower": "~1.2.7",
+    "formidable": "~1.0.15"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-contrib-uglify": "~0.2.4",
+    "grunt-contrib-jshint": "~0.6.4",
+    "bower": "~1.2.7",
+    "grunt-contrib-less": "~0.5.0",
+    "grunt-preprocess": "~3.0.1",
+    "grunt-env": "~0.4.0",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-copy": "~0.4.1",
+    "grunt-contrib-cssmin": "~0.9.0",
+    "less": "~1.3.3",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-compress": "~0.5.2",
+    "grunt-protractor": "0.0.0",
+    "underscore": "1.6.0",
+    "underscore.string": "2.3.3",
+    "parseUri": "1.2.3-2",
+    "nodecache": "0.0.2",
+    "session-manager": "0.1.0",
+    "custom-logger": "0.2.1",
+    "argv": "0.0.2",
+    "async": "~0.8.0",
+    "wait.for": "~0.6.4",
+    "moment": "~2.6.0",
+    "q": "~0.9"
+  }
+}

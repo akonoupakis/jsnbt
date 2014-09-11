@@ -1,0 +1,39 @@
+{
+  "name": "dpd-sync",
+  "version": "1.0.18",
+  "description": "A sync utility to use the internal dpd script on the server side.",
+  "keywords": [
+    "deployd",
+    "dpd",
+    "dpd.js",
+    "sync",
+    "synchronous"
+  ],
+  "author": {
+    "name": "Apostolis Konoupakis",
+    "email": "konoupakis@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.org/akonoupakis/dpd-sync.git"
+  },
+  "bugs": {
+    "url": "https://bitbucket.org/akonoupakis/dpd-sync/issues",
+    "email": "konoupakis@gmail.com"
+  },
+  "main": "dpd-sync.js",
+  "dependencies": {
+    "wait.for": "0.6.4"
+  },
+  "files": [
+    "dpd-sync.js"
+  ],
+  "license": "MIT",
+  "readme": "ERROR: No README data found!",
+  "_id": "dpd-sync@1.0.18",
+  "dist": {
+    "shasum": "22858523a39a6ab2dc84776444819991040a2a9e"
+  },
+  "_from": "https://npm.fury.io/NeRpngfSdmWnUT68ASCz/akonoupakis/dpd-sync/-/latest.tgz",
+  "_resolved": "https://npm.fury.io/NeRpngfSdmWnUT68ASCz/akonoupakis/dpd-sync/-/latest.tgz"
+}
