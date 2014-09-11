@@ -19,7 +19,7 @@ exports.dpd = null;
 
 exports.packages = [];
 
-exports.init = function (env, config) {
+exports.init = function (env, config, module) {
     var self = this;
 
     var configSection = config[env];
@@ -71,6 +71,35 @@ exports.init = function (env, config) {
 
         fs.createWriteStream('fatal.log', { 'flags': 'a' }).write(moment().format() + ' ' + err.toString() + "\n");
     };
+
+    if (module) {
+        try {
+            if (typeof (moduleinit) == 'function')
+                module.init(this);
+
+            jsnbt.registerConfig(module.domain, module.config || {});
+
+            if (module.addon === true) {
+                jsnbt.registerAddon(module.domain, {
+                    domain: module.domain || '',
+                    entities: module.entities || [],
+                    lists: module.lists || []
+                });
+            }
+
+            if (module.modules) {
+                if (module.modules.public)
+                    jsnbt.registerModule('public', module.modules.public);
+                if (module.modules.admin)
+                    jsnbt.registerModule('admin', module.modules.admin);
+            }
+
+            this.packages.push(module);
+        }
+        catch (err) {
+            this.logger.error(err.toString());
+        }
+    }
 
     var installedPackages = pack.npm.getInstalled();
     for (var i in installedPackages) {

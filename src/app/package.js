@@ -55,21 +55,20 @@ module.exports = {
         },
 
         pack: function (name, force) {
-            if (!fs.existsSync(server.getPath('node_modules/' + name)) && name !== 'jsnbt')
-                throw new Error('npm module not installed in node_modules: ' + name);
+            if (fs.existsSync(server.getPath('node_modules/' + name))) {
+                var sourcePath = server.getPath('node_modules/' + name + '/src');
+                var targetPath = server.getPath('src/pck/' + name);
 
-            var sourcePath = server.getPath('node_modules/' + name + '/src');
-            var targetPath = server.getPath('src/pck/' + name);
-
-            if (fs.existsSync(sourcePath)) {
-                if (fs.existsSync(targetPath)) {
-                    if (force) {
-                        fs.delete(targetPath, true);
+                if (fs.existsSync(sourcePath)) {
+                    if (fs.existsSync(targetPath)) {
+                        if (force) {
+                            fs.delete(targetPath, true);
+                            fs.copy(sourcePath, targetPath);
+                        }
+                    }
+                    else {
                         fs.copy(sourcePath, targetPath);
                     }
-                }
-                else {
-                    fs.copy(sourcePath, targetPath);
                 }
             }
         },
