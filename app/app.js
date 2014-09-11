@@ -21,7 +21,7 @@ exports.packages = [];
 
 exports.init = function (env, config) {
     var self = this;
-    
+
     var configSection = config[env];
 
     if (!configSection)
@@ -61,7 +61,7 @@ exports.init = function (env, config) {
         this.debug(arguments.callee.caller.toString());
         errorFn(err.toString());
 
-        fs.createWriteStream('error.log', { 'flags': 'a' }).write(moment().format() + ' ' + err.toString() +  "\n");
+        fs.createWriteStream('error.log', { 'flags': 'a' }).write(moment().format() + ' ' + err.toString() + "\n");
     };
 
     var fatalFn = this.logger.fatal;
@@ -121,16 +121,15 @@ exports.init = function (env, config) {
                 router.process(req, res);
             },
             listening: function () {
-                exports.logger.info('server is listening on ' + config.host + ':' + config.port);
-                exports.dpd = require('deployd/lib/internal-client').build(exports.server);
+                self.logger.info('server is listening on ' + config.host + ':' + config.port);
+                self.dpd = require('deployd/lib/internal-client').build(self.server);
             },
             "request:error": function (err, req, res) {
-                exports.logger.error(req.method, req.url, err.stack || err);
+                self.logger.error(req.method, req.url, err.stack || err);
                 process.exit(1);
             }
         }
     });
-
     delete this.init;
 };
 
