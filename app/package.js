@@ -58,7 +58,7 @@ module.exports = {
             if (!fs.existsSync(server.getPath('node_modules/' + name)))
                 throw new Error('npm module not installed in node_modules: ' + name);
 
-            var sourcePath = server.getPath('node_modules/' + name + '/files');
+            var sourcePath = server.getPath('node_modules/' + name + '/src');
             var targetPath = server.getPath('src/pck/' + name);
 
             if (fs.existsSync(sourcePath)) {
