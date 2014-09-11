@@ -10,9 +10,11 @@ fs.create = function (target) {
 
 fs.copy = function (source, target, override) {
     if (fs.lstatSync(source).isDirectory()) {
+        console.log('copy1');
         copyFolder(source, target, override);
     }
     else if (fs.lstatSync(source).isFile()) {
+        console.log('copy2');
         copyFile(source, target, override);
     }
 };

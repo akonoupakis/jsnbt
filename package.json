@@ -32,8 +32,24 @@
     "postuninstall": "node scripts/uninstall.js"
   },
   "dependencies": {
-    "deployd": "git://github.com/akonoupakis/deployd",
-    "grunt": "~0.4.1",
+    "formidable": "~1.0.15",
+    "dpd-sync": "*",
+    "server-root": "*",
+    "underscore": "1.6.0",
+    "underscore.string": "2.3.3",
+    "parseUri": "1.2.3-2",
+    "nodecache": "0.0.2",
+    "session-manager": "0.1.0",
+    "custom-logger": "0.2.1",
+	"async": "~0.8.0",
+    "wait.for": "~0.6.4",
+    "moment": "~2.6.0",
+    "q": "~0.9"
+  },
+  "devDependencies": {
+	"async": "~0.8.0",
+	"deployd": "git://github.com/akonoupakis/deployd",    
+	"grunt": "~0.4.1",
     "grunt-contrib-watch": "~0.5.3",
     "grunt-contrib-jshint": "~0.6.4",
     "grunt-contrib-uglify": "~0.2.4",
@@ -48,19 +64,6 @@
     "grunt-contrib-compress": "~0.5.2",
     "grunt-protractor": "0.0.0",
     "bower": "~1.2.7",
-    "formidable": "~1.0.15",
-    "dpd-sync": "*",
-    "server-root": "*",
-    "underscore": "1.6.0",
-    "underscore.string": "2.3.3",
-    "parseUri": "1.2.3-2",
-    "nodecache": "0.0.2",
-    "session-manager": "0.1.0",
-    "custom-logger": "0.2.1",
-    "argv": "0.0.2",
-    "async": "~0.8.0",
-    "wait.for": "~0.6.4",
-    "moment": "~2.6.0",
-    "q": "~0.9"
+	"argv": "0.0.2"
   }
 }

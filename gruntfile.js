@@ -154,6 +154,15 @@ module.exports = function (grunt) {
 
 		var folder = this.target == 'prod' ? 'dist' : 'dev';
 
+		if (!fs.existsSync('./src'))
+		    fs.create('./src');
+
+		if (!fs.existsSync('./src/pck'))
+		    fs.create('./src/pck');
+
+		if (!fs.existsSync('./src/web'))
+		    fs.create('./src/web');
+
 		var found = fs.readdirSync('./src/pck');
 		for (var i in found) {
 			pack.npm.deploy(found[i], folder);
