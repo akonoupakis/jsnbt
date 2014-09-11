@@ -1,6 +1,6 @@
 {
   "name": "jsnbt",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "The Jsonbot engine",
   "keywords": [
     "jsnbt",
@@ -44,7 +44,7 @@
     "q": "~0.9"
   },
   "devDependencies": {
-	"underscore": "1.6.0",
+    "underscore": "1.6.0",
     "underscore.string": "2.3.3",
     "grunt": "~0.4.1",
     "grunt-contrib-watch": "~0.5.3",
