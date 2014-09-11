@@ -1,6 +1,6 @@
 {
   "name": "jsnbt",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "description": "The Jsonbot engine",
   "keywords": [
     "jsnbt",
@@ -26,7 +26,7 @@
     "app/**",
     "src/**",
     "scripts/**",
-	"bower.json"
+    "bower.json"
   ],
   "scripts": {
     "install": "node scripts/install.js",
