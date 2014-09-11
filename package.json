@@ -1,6 +1,6 @@
 {
   "name": "jsnbt",
-  "version": "1.0.10",
+  "version": "1.0.9",
   "description": "The Jsonbot engine",
   "keywords": [
     "jsnbt",
@@ -23,8 +23,8 @@
   "config": {},
   "main": "app/app.js",
   "files": [
-    "files/**",
-    "app/**"
+    "app/**",
+	"src/**"
   ],
   "dependencies": {
     "deployd": "git://github.com/akonoupakis/deployd",
