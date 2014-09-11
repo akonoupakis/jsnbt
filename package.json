@@ -25,7 +25,7 @@
   "files": [
     "app/**",
     "src/**",
-    "scripts/**"m
+    "scripts/**",
 	"bower.json"
   ],
   "scripts": {
