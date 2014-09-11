@@ -1,6 +1,6 @@
 {
   "name": "jsnbt",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "The Jsonbot engine",
   "keywords": [
     "jsnbt",
@@ -31,7 +31,7 @@
     "formidable": "~1.0.15",
     "dpd-sync": "*",
     "server-root": "*",
-	"underscore": "1.6.0",
+    "underscore": "1.6.0",
     "underscore.string": "2.3.3",
     "parseUri": "1.2.3-2",
     "nodecache": "0.0.2",
