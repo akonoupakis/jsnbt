@@ -1,5 +1,5 @@
-var fs = require('./app/utils/fs.js'),
-	pack = require('./app/package.js'),
+var fs = require('./src/app/utils/fs.js'),
+	pack = require('./src/app/package.js'),
 	path = require('path'),
 	bower = require('bower'),
 	async = require('async'),

@@ -21,9 +21,9 @@
     "email": "konoupakis@gmail.com"
   },
   "config": {},
-  "main": "app/app.js",
+  "main": "src/app/app.js",
   "files": [
-    "app/**",
+    "src/app/**",
     "src/dpd/**",
     "src/web/admin",
     "scripts/**",

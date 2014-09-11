@@ -74,33 +74,35 @@ exports.init = function (env, config) {
 
     var installedPackages = pack.npm.getInstalled();
     for (var i in installedPackages) {
-        try {
-            var router = require(installedPackages[i]);
+        if (installedPackages[i] !== 'jsnbt') {
+            try {
+                var router = require(installedPackages[i]);
 
-            if (typeof (router.init) == 'function')
-                router.init(this);
+                if (typeof (router.init) == 'function')
+                    router.init(this);
 
-            jsnbt.registerConfig(installedPackages[i], router.config || {});
+                jsnbt.registerConfig(installedPackages[i], router.config || {});
 
-            if (router.addon === true) {
-                jsnbt.registerAddon(installedPackages[i], {
-                    domain: router.domain || '',
-                    entities: router.entities || [],
-                    lists: router.lists || []
-                });
+                if (router.addon === true) {
+                    jsnbt.registerAddon(installedPackages[i], {
+                        domain: router.domain || '',
+                        entities: router.entities || [],
+                        lists: router.lists || []
+                    });
+                }
+
+                if (router.modules) {
+                    if (router.modules.public)
+                        jsnbt.registerModule('public', router.modules.public);
+                    if (router.modules.admin)
+                        jsnbt.registerModule('admin', router.modules.admin);
+                }
+
+                this.packages.push(router);
             }
-
-            if (router.modules) {
-                if (router.modules.public)
-                    jsnbt.registerModule('public', router.modules.public);
-                if (router.modules.admin)
-                    jsnbt.registerModule('admin', router.modules.admin);
+            catch (err) {
+                this.logger.error(err.toString());
             }
-
-            this.packages.push(router);
-        }
-        catch (err) {
-            this.logger.error(err.toString());
         }
     }
 

@@ -1,5 +1,5 @@
 var config = require('./config.js');
-var app = require('./app/app.js');
+var app = require('./src/app/app.js');
 var argv = require('argv');
 
 var args = argv.option({

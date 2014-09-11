@@ -1,5 +1,5 @@
 var config = require('./config.js');
-var app = require('./app/app.js');
+var app = require('./src/app/app.js');
 var dpdSync = require('dpd-sync');
 var argv = require('argv');
 

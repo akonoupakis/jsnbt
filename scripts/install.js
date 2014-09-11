@@ -1,5 +1,5 @@
 var config = require('../package');
-var pack = require('../app/package.js')
+var pack = require('../src/app/package.js')
 
 console.log('installing ' + config.name + ' v' + config.version);
 pack.npm.pack(config.name, true);
