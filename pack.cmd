@@ -4,3 +4,4 @@ CALL npm version patch
 ECHO Version set
 CALL npm pack
 ECHO Package packed
+pause
