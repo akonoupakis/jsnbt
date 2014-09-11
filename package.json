@@ -24,8 +24,13 @@
   "main": "app/app.js",
   "files": [
     "app/**",
-    "src/**"
+    "src/**",
+	"scripts/**"
   ],
+  "scripts": {
+    "install": "node scripts/install.js",
+    "postuninstall": "node scripts/uninstall.js"
+  },
   "dependencies": {
     "deployd": "git://github.com/akonoupakis/deployd",
     "grunt": "~0.4.1",
