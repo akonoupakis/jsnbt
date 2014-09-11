@@ -36,8 +36,6 @@ exports.init = function (env, config) {
         name: configSection.db.name
     };
 
-    config.prefix = configSection.dpd.resource.path;
-
     delete config.dev;
     delete config.prod;
 

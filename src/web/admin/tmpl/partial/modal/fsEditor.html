@@ -1,0 +1,11 @@
+﻿<div ng-controller="FileSystemEditorController">
+    <div class="file-editor-name">
+        <label>name</label>
+        <input type="text" class="form-control bootbox-form" ng-model="name" />
+    </div>
+
+    <div class="file-editor-path">
+        <label>path</label>
+        <ctrl-tree ng-model="nodes" ng-selectable="true" ng-select-mode="'single'"></ctrl-tree>
+    </div>
+</div>

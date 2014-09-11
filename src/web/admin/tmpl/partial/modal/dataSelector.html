@@ -1,0 +1,15 @@
+﻿<div ng-controller="DataSelectorController">
+    <ctrl-grid class="table-striped" ng-model="data" ng-selectable="true" ng-select-mode="mode">
+        <ctrl-grid-header>
+            <ctrl-grid-header-column>Name</ctrl-grid-header-column>
+        </ctrl-grid-header>
+        <ctrl-grid-body>
+            <ctrl-grid-column>
+                {{ data.name }}
+            </ctrl-grid-column>
+        </ctrl-grid-body>
+        <ctrl-grid-footer>
+            <ctrl-grid-infinite-scroll></ctrl-grid-infinite-scroll>
+        </ctrl-grid-footer>
+    </ctrl-grid>
+</div>

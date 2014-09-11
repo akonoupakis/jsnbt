@@ -1,0 +1,6 @@
+﻿<div ng-controller="LanguageSelectorController">
+    <select class="form-control bootbox-form" ng-model="selected" ng-change="setSelected(selected)">
+        <option value=""></option>
+        <option ng-repeat="option in data | orderBy:'name'" value="{{ option.code }}">{{option.name}}</option>
+    </select>
+</div>

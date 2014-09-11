@@ -1,0 +1,20 @@
+﻿<div class="row" id="page-content-related" data-scrollspy="Nodes">
+    <ctrl-node class="col-md-6" ng-model="node.data.contentNodeId" ng-domain="'core'" ng-options="{ entities: ['page', 'link'] }" ng-required="false" ng-label="Core Node"></ctrl-node>
+    <ctrl-node class="col-md-6" ng-model="node.data.eshopNodeId" ng-domain="'eshop'" ng-required="false" ng-label="EShop Node"></ctrl-node>
+</div>      
+<div class="row" id="page-content-related2" data-scrollspy="Nodes Required">
+    <ctrl-node class="col-md-6" ng-model="node.data.contentNodeId2" ng-domain="'core'" ng-options="{ entities: ['page', 'link'] }" ng-required="true" ng-label="Core Node Required"></ctrl-node>
+    <ctrl-node class="col-md-6" ng-model="node.data.eshopNodeId2" ng-domain="'eshop'" ng-required="true" ng-label="EShop Node Required"></ctrl-node>
+</div>      
+<div class="row" id="page-content-related3" data-scrollspy="Core NodeList">
+    <ctrl-node-list class="col-md-12" ng-model="node.data.contentNodeIds" ng-domain="'core'" ng-options="{ entities: ['page', 'link'] }" ng-required="false" ng-label="Core NodeList"></ctrl-node-list>
+</div>      
+<div class="row" id="page-content-related35" data-scrollspy="Core NodeList Required">
+    <ctrl-node-list class="col-md-12" ng-model="node.data.contentNodeIds3" ng-domain="'core'" ng-options="{ entities: ['page', 'link'] }" ng-required="true" ng-label="Core NodeList Required"></ctrl-node-list>
+</div>      
+<div class="row" id="page-content-related4" data-scrollspy="EShop NodeList">
+    <ctrl-node-list class="col-md-12" ng-model="node.data.contentNodeIds2" ng-domain="'eshop'" ng-required="false" ng-label="EShop NodeList"></ctrl-node-list>
+</div>      
+<div class="row" id="page-content-related45" data-scrollspy="EShop NodeList Required">
+    <ctrl-node-list class="col-md-12" ng-model="node.data.contentNodeIds4" ng-domain="'eshop'" ng-required="true" ng-label="EShop NodeList Required"></ctrl-node-list>
+</div>      

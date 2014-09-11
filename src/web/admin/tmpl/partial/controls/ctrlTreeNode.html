@@ -1,0 +1,13 @@
+﻿<li class="dd-item" ng-class="{ 'dd-collapsed': node.collapsed, 'loading': node.loading }">
+    <button type="button" class="dd-collapse" ng-show="node.expandable && !node.root && node.childCount !== 0" ng-click="node.collapse()" >Collapse</button>
+    <button type="button" class="dd-expand" ng-show="node.expandable && !node.root && node.childCount !== 0" ng-click="node.expand()">Expand</button>
+    <img class="dd-loading" src="img/node-loading.gif" />
+    <div class="dd-content" ng-class="{ 'dd-selected': node.selected }"><div ng-click="select(node)">{{node.name}}</div></div>
+    <div class="dd-buttons">
+        <button title="Create child" ng-show="!ngSelectable" class="btn btn-default btn-sm glyphicon glyphicon-plus-sign" ng-disabled="ngDomain !== node.domain || !canCreate(node)" ng-click="create(node)"></button>
+        <button title="Edit" ng-show="!ngSelectable" class="btn btn-default btn-sm glyphicon glyphicon-edit" ng-disabled="ngDomain !== node.domain || !canEdit(node)" ng-click="edit(node)"></button>
+        <button title="Delete" ng-show="!ngSelectable" class="btn btn-default btn-sm glyphicon glyphicon-remove" ng-disabled="ngDomain !== node.domain || !canDelete(node)" ng-click="delete(node)"></button>
+        <button title="Publish" ng-show="!ngSelectable" ng-class="{'btn-primary': ngDomain === node.domain && canPublish(node), 'btn-default': ngDomain !== node.domain || !canPublish(node)}" class="btn btn-sm glyphicon glyphicon-ok-circle" ng-disabled="ngDomain !== node.domain || !canPublish(node)" ng-click="publish(node)"></button>
+        <button title="Open" class="btn btn-default btn-sm glyphicon glyphicon-circle-arrow-right" ng-disabled="!canOpen(node)" ng-click="open(node)"></button>
+    </div>
+</li>

@@ -1,0 +1,50 @@
+﻿<div class="container">
+
+    <section class="col-md-10 scrollspy-container" data-scrollspy>
+
+        <breadcrumb ng-model="current.breadcrumb"></breadcrumb>    
+
+        <div class="row title-container">
+            <div class="col-md-1 back-button-container">
+                <span ng-click="back()" class="glyphicon glyphicon-arrow-left"></span>
+            </div>
+            <div class="col-md-11 page-title-title">
+                <h1>{{ name }}</h1>
+            </div>
+        </div>
+
+        <div class="row buttons-container">
+            <div class="col-md-12">
+                <div class="btn-group">
+                    <button type="button" ng-disabled="published" class="btn btn-success" ng-click="publish()">Publish</button>
+                </div>
+                <div class="btn-group">
+                    <button type="button" ng-show="!published" class="btn btn-danger" ng-click="discard()">Discard</button>
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="row" id="page-text-key" data-scrollspy="Key">
+            <ctrl-text class="col-md-12" ng-model="text.key" ng-required="true" ng-label="Key"></ctrl-text>
+        </div>
+
+        <hr />
+
+        <div id="page-text-value" data-scrollspy="Value">
+            <div ng-repeat="language in languages" class="row" id="page-text-value-{{language.code}}" data-scrollspy="{{language.name}}">
+                <ctrl-text-area class="col-md-12" ng-model="text.value[language.code]" ng-required="true" ng-label="{{language.name}}"></ctrl-text-area>
+            </div>
+        </div>
+
+
+        <hr />
+
+    </section>
+
+    <div class="col-md-2">
+        <scrollspy data="nav" />
+    </div>
+
+</div>

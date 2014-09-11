@@ -1,0 +1,37 @@
+{
+	"type": "Collection",
+	"properties": {
+		"nodeId": {
+			"name": "nodeId",
+			"type": "string",
+			"typeLabel": "string",
+			"required": true,
+			"id": "nodeId",
+			"order": 0
+		},
+		"source": {
+			"name": "source",
+			"type": "string",
+			"typeLabel": "string",
+			"required": true,
+			"id": "source",
+			"order": 1
+		},
+		"target": {
+			"name": "target",
+			"type": "string",
+			"typeLabel": "string",
+			"required": true,
+			"id": "target",
+			"order": 2
+		},
+		"createdOn": {
+			"name": "createdOn",
+			"type": "number",
+			"typeLabel": "number",
+			"required": true,
+			"id": "createdOn",
+			"order": 6
+		}
+	}
+}

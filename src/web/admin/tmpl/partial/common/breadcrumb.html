@@ -1,0 +1,6 @@
+﻿<div>
+    <span class="guide">you are here: </span>
+    <ol class="breadcrumb">
+        <li ng-repeat="item in ngModel"><a data-url="{{item.url}}" href="javascript:;" ng-click="previousTo(item.url)" ng-class="{ active: item.active }">{{item.name}}</a></li>
+    </ol>
+</div>

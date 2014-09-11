@@ -7,11 +7,6 @@ module.exports = {
             host: 'localhost',
             port: 27017,
             name: 'jsnbt-dev'
-        },
-        dpd: {
-            resource: {
-                path: 'jsnbt'
-            }
         }
     },
     prod: {
@@ -22,11 +17,6 @@ module.exports = {
             host: 'localhost',
             port: 27017,
             name: 'jsnbt-dev'
-        },
-        dpd: {
-            resource: {
-                path: 'jsnbt'
-            }
         }
     }
 };

@@ -1,0 +1,241 @@
+{
+  "name": "jsnbt-admin",
+  "version": "1.0.0",
+  "homepage": "",
+  "authors": [
+    "akon <konoupakis@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "angular": "~1.3.0",
+    "angular-route": "~1.3.0",
+    "angular-animate": "~1.3.0",
+    "jquery": "2.0.3",
+    "underscore": "~1.5.2",
+    "underscore.string": "~2.3.3",
+    "bootstrap": "~3.2.0",
+    "bootstrap-switch": "3.0.2",
+    "fuelux": "~2.6.2",
+    "angular-bootstrap": "~0.11.0",
+    "angular-bootstrap-switch": "~0.3.0",
+    "angular-motion": "~0.3.3",
+    "angular-strap": "~2.0.5",
+    "jquery.scrollTo": "~1.4.13",
+    "bootstrap-ui": "~0.11.0",
+    "angular-ui-sortable": "~0.12.10",
+    "jquery-ui": "~1.11.1",
+    "ngInfiniteScroll": "~1.1.2",
+    "ng-flow": "~2"
+  },
+  "deploy": {
+    "angular": {
+      "files": [
+        {
+          "src": "angular/angular.js",
+          "dest": [
+            "js/lib/angular/angular.js",
+            "admin/js/lib/angular/angular.js"
+          ]
+        }
+      ]
+    },
+    "angular-route": {
+      "files": [
+        {
+          "src": "angular-route/angular-route.js",
+          "dest": [
+            "admin/js/lib/angular-lib/angular.route.js"
+          ]
+        }
+      ]
+    },
+    "angular-animate": {
+      "files": [
+        {
+          "src": "angular-animate/angular-animate.js",
+          "dest": [
+            "admin/js/lib/angular-lib/angular.animate.js"
+          ]
+        }
+      ]
+    },
+    "angular-strap": {
+      "files": [
+        {
+          "src": "angular-strap/dist/angular-strap.js",
+          "dest": [
+            "admin/js/lib/angular-lib/angular.strap.js"
+          ]
+        }
+      ]
+    },
+    "angular-ui-sortable": {
+      "files": [
+        {
+          "src": "angular-ui-sortable/sortable.js",
+          "dest": [
+            "admin/js/lib/angular-lib/angular-ui-sortable.js"
+          ]
+        }
+      ]
+    },
+    "jquery": {
+      "files": [
+        {
+          "src": "jquery/jquery.js",
+          "dest": [
+            "js/lib/jquery.js",
+            "admin/js/lib/jquery.js"
+          ]
+        }
+      ]
+    },
+    "jquery-ui": {
+      "files": [
+        {
+          "src": "jquery-ui/jquery-ui.js",
+          "dest": [
+            "admin/js/lib/jquery/jquery-ui.js"
+          ]
+        }
+      ]
+    },
+    "jquery.scrollTo": {
+      "files": [
+        {
+          "src": "jquery.scrollTo/jquery.scrollTo.js",
+          "dest": [
+            "js/lib/jquery/jquery.scrollTo.js",
+            "admin/js/lib/jquery/jquery.scrollTo.js"
+          ]
+        }
+      ]
+    },
+    "underscore": {
+      "files": [
+        {
+          "src": "underscore/underscore.js",
+          "dest": [
+            "js/lib/underscore/underscore.js",
+            "admin/js/lib/underscore/underscore.js"
+          ]
+        }
+      ]
+    },
+    "underscore.string": {
+      "files": [
+        {
+          "src": "underscore.string/lib/underscore.string.js",
+          "dest": [
+            "js/lib/underscore/underscore.string.js",
+            "admin/js/lib/underscore/underscore.string.js"
+          ]
+        }
+      ]
+    },
+    "bootstrap": {
+      "files": [
+        {
+          "src": "bootstrap/dist/css/bootstrap.css",
+          "dest": [
+            "admin/css/lib/bootstrap/css/bootstrap.css"
+          ]
+        },
+        {
+          "src": "bootstrap/dist/css/bootstrap.css.map",
+          "dest": [
+            "admin/css/lib/bootstrap/css/bootstrap.css.map"
+          ]
+        },
+        {
+          "src": "bootstrap/dist/css/bootstrap.min.css",
+          "dest": [
+            "admin/css/lib/bootstrap/css/bootstrap.min.css"
+          ]
+        },
+        {
+          "src": "bootstrap/dist/js/bootstrap.js",
+          "dest": [
+            "admin/js/lib/bootstrap/bootstrap.js"
+          ]
+        }
+      ],
+      "folders": [
+        {
+          "src": "bootstrap/dist/fonts",
+          "dest": [
+            "admin/css/lib/bootstrap/fonts"
+          ]
+        }
+      ]
+    },
+    "bootstrap-switch": {
+      "files": [
+        {
+          "src": "bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css",
+          "dest": [
+            "admin/css/lib/bootstrap/css/bootstrap.switch.css"
+          ]
+        },
+        {
+          "src": "bootstrap-switch/dist/js/bootstrap-switch.js",
+          "dest": [
+            "admin/js/lib/bootstrap/bootstrap.switch.js"
+          ]
+        }
+      ]
+    },
+    "angular-bootstrap": {
+      "files": [
+        {
+          "src": "angular-bootstrap/ui-bootstrap.js",
+          "dest": [
+            "admin/js/lib/angular-lib/angular-bootstrap.js"
+          ]
+        }
+      ]
+    },
+    "angular-bootstrap-switch": {
+      "files": [
+        {
+          "src": "angular-bootstrap-switch/dist/angular-bootstrap-switch.js",
+          "dest": [
+            "admin/js/lib/angular-lib/angular-bootstrap-switch.js"
+          ]
+        }
+      ]
+    },
+    "ngInfiniteScroll": {
+      "files": [
+        {
+          "src": "ngInfiniteScroll/build/ng-infinite-scroll.js",
+          "dest": [
+            "admin/js/lib/ngInfiniteScroll/ngInfiniteScroll.js"
+          ]
+        }
+      ]
+    },
+	"ng-flow": {
+	  "files": [
+        {
+          "src": "flow.js/dist/flow.js",
+          "dest": [
+            "admin/js/lib/flow/flow.js"
+          ]
+        },
+		{
+          "src": "ng-flow/dist/ng-flow.js",
+          "dest": [
+            "admin/js/lib/ng-flow/ng-flow.js"
+          ]
+        }
+      ]
+	}
+  }
+}

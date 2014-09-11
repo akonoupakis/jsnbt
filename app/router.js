@@ -38,14 +38,11 @@ module.exports = function () {
     return {
         process: function (req, res) {
             var ctx = require('./context.js')(req, res);
-            var ignoredPaths = ['dashboard', 'dpd.js', '__resources', 'socket.io', 'favicon.ico', 'app-offline.htm'];
+            var ignoredPaths = ['dashboard', 'dpd.js', '__resources', 'socket.io', 'favicon.ico', 'app-offline.htm', 'dpd'];
 
             var ignoredPathPrefixes = ['/css/', '/font/', '/img/', '/js/', '/tmpl/partial/', '/tmpl/spec/', '/admin/css/', '/admin/font/', '/admin/img/', '/admin/js/', '/admin/tmpl/partial/', '/admin/tmpl/spec/'];
 
             var forbiddedPathPrefixes = ['/tmpl/view/', '/tmpl/error/', '/admin/tmpl/view/', '/admin/tmpl/error/'];
-
-            if (app.config.prefix)
-                ignoredPaths.push(app.config.prefix);
 
             var forbidRequest = false;
             for (var i = 0; i < forbiddedPathPrefixes.length; i++) {

@@ -1,0 +1,35 @@
+﻿<div class="container">
+
+    <section class="col-md-12">
+
+        <breadcrumb ng-model="current.breadcrumb"></breadcrumb>    
+
+        <div class="row title-container">
+            <div class="col-md-12">
+                <h1>addons</h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <ctrl-grid class="table-striped" ng-model="data">
+                    <ctrl-grid-header>
+                        <ctrl-grid-header-column>Name</ctrl-grid-header-column>
+                        <ctrl-grid-header-column></ctrl-grid-header-column>
+                    </ctrl-grid-header>
+                    <ctrl-grid-body>
+                        <ctrl-grid-column>
+                            {{ data.name }}
+                        </ctrl-grid-column>
+                        <ctrl-grid-buttons-column>
+                            <button class="btn btn-default glyphicon glyphicon-circle-arrow-right" ng-click="edit(data)" />
+                        </ctrl-grid-buttons-column>
+                    </ctrl-grid-body>              
+                </ctrl-grid>
+            </div>
+        </div>
+
+    </section>
+
+</div>
+

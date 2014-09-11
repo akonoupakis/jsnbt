@@ -1,0 +1,30 @@
+﻿<div class="container">
+
+    <section class="col-md-12">
+
+        <breadcrumb ng-model="current.breadcrumb"></breadcrumb>    
+
+        <div class="row title-container">
+            <div class="col-md-1 back-button-container">
+                <span ng-click="back()" class="glyphicon glyphicon-arrow-left"></span>
+            </div>
+            <div class="col-md-9">
+                <h1>nodes</h1>
+            </div>
+            <div class="col-md-2">
+                <div class="btn-group">
+                    <button title="Create new" class="btn btn-default glyphicon glyphicon-plus-sign" type="button" value="Create" ng-click="create()"></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <ctrl-tree ng-model="nodes[0].children" ng-domain="domain"></ctrl-tree>
+            </div>
+        </div>
+
+    </section>
+
+</div>
+

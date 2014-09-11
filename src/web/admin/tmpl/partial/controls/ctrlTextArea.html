@@ -1,0 +1,7 @@
+﻿<div>
+    <div class="form-group" ng-class="{ 'has-error': !isValid(), 'has-feedback': !isValid() }">
+        <label ng-show="ngLabel" class="control-label" for="txt{{id}}">{{ngLabel}}</label>
+        <textarea class="form-control" rows="{{ngRows}}" id="txt{{id}}" ng-model="ngModel" ng-change="changed()"></textarea>
+        <span ng-show="!isValid()" class="glyphicon glyphicon-remove form-control-feedback"></span>
+    </div>
+</div>
