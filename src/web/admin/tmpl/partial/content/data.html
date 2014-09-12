@@ -20,6 +20,9 @@
                         <ctrl-grid-header-column>Name</ctrl-grid-header-column>
                         <ctrl-grid-header-column></ctrl-grid-header-column>
                     </ctrl-grid-header>
+                    <ctrl-grid-footer>
+                        <ctrl-grid-empty>no lists</ctrl-grid-empty>
+                    </ctrl-grid-footer>
                     <ctrl-grid-body>
                         <ctrl-grid-column>
                             {{ data.name }}
@@ -28,8 +31,6 @@
                             <button class="btn btn-default glyphicon glyphicon-circle-arrow-right" ng-click="edit(data)" />
                         </ctrl-grid-buttons-column>
                     </ctrl-grid-body>
-                    <ctrl-grid-footer>
-                    </ctrl-grid-footer>
                 </ctrl-grid>
             </div>
         </div>

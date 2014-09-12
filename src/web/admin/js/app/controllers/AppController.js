@@ -19,7 +19,7 @@
 
             $scope.defaults.languages = [];
             $scope.defaults.language = null;
-            
+
 
             var fn = {
 
@@ -29,7 +29,7 @@
                     var results = jsnbt.languages;
 
                     $scope.defaults.languages = results;
-                    
+
                     deferred.resolve(results);
 
                     return deferred.promise;
@@ -38,8 +38,8 @@
                 setApplicationLanguages: function () {
                     var deferred = $q.defer();
 
-                    $data.languages.get({ active: true}).then(function (results) {
-                        
+                    $data.languages.get({ active: true }).then(function (results) {
+
                         var languages = _.sortBy(_.filter(results, function (x) { return x.active === true; }), 'name');
 
                         $scope.application.languages = languages;
@@ -79,6 +79,15 @@
 
             };
 
+            dpd.on('languageCreated', function (language) {
+                fn.setApplicationLanguages().then(function () {
+                    if (language.default)
+                        $scope.defaults.language = language.code;
+                });
+            });
+            dpd.on('languageDeleted', function (language) {
+                fn.setApplicationLanguages();
+            });
 
             $scope.current.setBreadcrumb = function (value) {
                 $scope.current.breadcrumb = value;
@@ -87,16 +96,22 @@
             $scope.current.setUser = function (value) {
                 console.log('setCurrentUser', value);
             };
-            
+
             $rootScope.$on('$routeChangeSuccess', function () {
                 $scope.current.setBreadcrumb(LocationService.getBreadcrumb());
             });
 
-     
+
             fn.setDefaultLanguages().then(function () {
                 fn.setApplicationLanguages().then(function () {
-                    fn.setDefaultLanguage();
+                    fn.setDefaultLanguage().then(function () { }, function (dlError) {
+                        logger.error(dlError);
+                    });
+                }, function (alsError) {
+                    logger.error(alsError);
                 });
+            }, function (dlsError) {
+                logger.error(dlsError);
             });
 
         });

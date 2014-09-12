@@ -1,0 +1,1 @@
+emit('languageUpdated', this);

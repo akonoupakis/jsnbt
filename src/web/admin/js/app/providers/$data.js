@@ -115,7 +115,9 @@
 
             $data.register('languages', {
                 code: '',
-                name: ''
+                name: '',
+                active: false,
+                default: false
             });
 
             $data.register('data', {

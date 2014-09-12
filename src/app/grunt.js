@@ -660,7 +660,7 @@ module.exports = function (grunt) {
                 'src/web/public/js/**', 'src/web/public/css/**', 'src/web/public/tmpl/partial/**',
             ],
             tasks: [
-                'jshint',
+                //'jshint',
                 'copy:devAdminJs', 'copy:devAdminImg', 'copy:devAdminTmpl', 'copy:devAdminCss', 'preprocess:devAdmin', 'less:devAdmin', 'clean:devLess', 'cleanempty:dev',
                 'copy:devPublicJs', 'copy:devPublicImg', 'copy:devPublicTmpl', 'copy:devPublicCss', 'preprocess:devPublic', 'less:devPublic', 'clean:devLess', 'cleanempty:dev'
             ]

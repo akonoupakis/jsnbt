@@ -41,9 +41,15 @@
                 restrict: 'E',
                 replace: true,
                 transclude: true,
-                template: '<thead><tr ng-transclude></tr></thead>',
+                template: '<thead ng-show="data.items.length !== 0"><tr ng-transclude></tr></thead>',
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl-grid-header');
+
+                    scope.data = scope.$$prevSibling.ngModel;
+
+                    scope.$$prevSibling.$watch('ngModel', function (newValue, prevValue) {
+                        scope.data = newValue;
+                    });
                 }
             };
 
@@ -84,7 +90,7 @@
                 template: '<td ng-click="select(data)" ng-transclude></td>',
                 link: function (scope, element, attrs, ctrlGrid) {
                     element.addClass('ctrl-grid-column');
-                    
+
                     scope.selectable = ctrlGrid.selectable;
                     scope.selectMode = ctrlGrid.selectMode;
 
@@ -127,65 +133,84 @@
         })
         .directive('ctrlGridFooter', function ($compile) {
 
+            return {
+                restrict: 'E',
+                replace: true,
+                transclude: true,
+                template: '<tfoot><tr><td colspan="0" ng-transclude></td></tr></tfoot>',
+                link: function (scope, element, attrs) {
+                    element.addClass('ctrl-grid-footer');
+
+                    scope.data = scope.$$prevSibling.ngModel;
+
+                    scope.$$prevSibling.$watch('ngModel', function (newValue, prevValue) {
+                        scope.data = newValue;
+                    });
+                }
+            };
+
+        })
+       .directive('ctrlGridInfiniteScroll', function ($compile) {
+
            return {
                restrict: 'E',
                replace: true,
-               transclude: true,
-               template: '<tfoot><tr ng-transclude></tr></tfoot>',
+               template: '<div infinite-scroll="more()"><div class="infinite-loading-bar"><img src="img/loading.gif" /></div></div>',
                link: function (scope, element, attrs) {
-                   element.addClass('ctrl-grid-footer');
+                   element.addClass('ctrl-grid-infinite-scroll');
 
-                   scope.data = scope.$$prevSibling.ngModel;
+                   scope.ended = false;
 
-                   scope.$$prevSibling.$watch('ngModel', function (newValue, prevValue) {
-                       scope.data = newValue;
-                   });
+                   scope.loading = false;
+                   scope.more = function () {
+                       if (!scope.ended && typeof (scope.$parent.data.more) === 'function' && !scope.loading) {
+                           scope.loading = true;
+                           scope.$parent.$$prevSibling.loading = true;
+                           scope.$parent.$parent.$$prevSibling.loading = true;
+                           scope.$parent.data.more().then(function (response) {
+                               if (response.items.length > 0) {
+                                   scope.$parent.data.more = response.more;
+                                   $(response.items).each(function (i, item) {
+                                       item.$parent = scope.$parent.data;
+                                       scope.$parent.data.items.push(item);
+                                   });
+                               }
+                               else {
+                                   scope.ended = true;
+                               }
+                               scope.$parent.$$prevSibling.loading = false;
+                               scope.$parent.$parent.$$prevSibling.loading = false;
+                               scope.loading = false;
+                           }, function (error) {
+                               scope.$parent.$$prevSibling.loading = false;
+                               scope.$parent.$parent.$$prevSibling.loading = false;
+                               scope.loading = false;
+                               throw error;
+                           });
+                       }
+                   };
+
                }
            };
 
        })
-        .directive('ctrlGridInfiniteScroll', function ($compile) {
+      .directive('ctrlGridEmpty', function ($compile) {
 
-            return {
-                restrict: 'E',
-                replace: true,
-                template: '<div infinite-scroll="more()"><div class="infinite-loading-bar"><img src="img/loading.gif" /></div></div>',
-                link: function (scope, element, attrs) {
-                    element.addClass('ctrl-grid-infinite-scroll');
+        return {
+            restrict: 'E',
+            replace: true,
+            transclude: true,
+            template: '<div ng-show="data.items.length === 0"><span ng-transclude /></div>',
+            link: function (scope, element, attrs) {
+                element.addClass('ctrl-grid-empty');
 
-                    scope.ended = false;
+                scope.data = scope.$parent.data;
 
-                    scope.loading = false;
-                    scope.more = function () {
-                        if (!scope.ended && typeof (scope.$parent.data.more) === 'function' && !scope.loading) {
-                            scope.loading = true;
-                            scope.$parent.$$prevSibling.loading = true;
-                            scope.$parent.$parent.$$prevSibling.loading = true;
-                            scope.$parent.data.more().then(function (response) {
-                                if (response.items.length > 0) {
-                                    scope.$parent.data.more = response.more;
-                                    $(response.items).each(function (i, item) {
-                                        item.$parent = scope.$parent.data;
-                                        scope.$parent.data.items.push(item);
-                                    });
-                                }
-                                else {
-                                    scope.ended = true;
-                                }
-                                scope.$parent.$$prevSibling.loading = false;
-                                scope.$parent.$parent.$$prevSibling.loading = false;
-                                scope.loading = false;
-                            }, function (error) {
-                                scope.$parent.$$prevSibling.loading = false;
-                                scope.$parent.$parent.$$prevSibling.loading = false;
-                                scope.loading = false;
-                                throw error;
-                            });
-                        }
-                    };
+                scope.$parent.$watch('data', function (newValue, prevValue) {
+                    scope.data = newValue;
+                });
+            }
+        };
 
-                }
-            };
-
-        });
+    });
 })();

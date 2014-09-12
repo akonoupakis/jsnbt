@@ -25,6 +25,10 @@
                         <ctrl-grid-header-column>Key</ctrl-grid-header-column>
                         <ctrl-grid-header-column></ctrl-grid-header-column>
                     </ctrl-grid-header>
+                    <ctrl-grid-footer>
+                        <ctrl-grid-infinite-scroll></ctrl-grid-infinite-scroll>
+                        <ctrl-grid-empty>no texts</ctrl-grid-empty>
+                    </ctrl-grid-footer>
                     <ctrl-grid-body>
                         <ctrl-grid-column>
                             {{ data.key }}
@@ -35,11 +39,6 @@
                             <button class="btn btn-default glyphicon glyphicon-remove btn-sm" ng-click="delete(data)" />
                         </ctrl-grid-buttons-column>
                     </ctrl-grid-body>
-                    <ctrl-grid-footer>
-                        <ctrl-grid-column colspan="2">
-                            <ctrl-grid-infinite-scroll></ctrl-grid-infinite-scroll>
-                        </ctrl-grid-column>
-                    </ctrl-grid-footer>
                 </ctrl-grid>
             </div>
         </div>

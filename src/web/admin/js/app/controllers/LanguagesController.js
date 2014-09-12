@@ -39,7 +39,12 @@
                     }).then(function (language) {
                         $data.languages.get({ code: language.code }).then(function (results) {
                             if (results.length === 0) {
-                                $data.languages.post($data.create('languages', { code: language.code, name: language.name })).then(function (result) {
+                                var newLang = $data.create('languages', { code: language.code, name: language.name });
+                                if ($scope.application.languages.length === 0) {
+                                    newLang.active = true;
+                                    newLang.default = true;
+                                }
+                                $data.languages.post(newLang).then(function (result) {
                                   deferred.resolve(result);
                                 }, function (error) {
                                     deferred.reject(error);
