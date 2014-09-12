@@ -14,6 +14,7 @@ src/web/public/js/lib/*
 
 # User-specific files
 *.suo
+*.dat
 *.user
 *.sln.docstates
 
