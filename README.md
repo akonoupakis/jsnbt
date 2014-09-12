@@ -8,7 +8,7 @@
 	
 ## quick start
 
-## install
+### install
 
 	NodeJs
 
