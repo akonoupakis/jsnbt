@@ -22,8 +22,6 @@ if (args.options.env)
     if (['dev', 'prod'].indexOf(args.options.env.toLowerCase()) != -1)
         env = args.options.env;
 
-process.chdir(env === 'prod' ? 'dist' : 'dev');
-
 app.init(env);
 app.start();
 

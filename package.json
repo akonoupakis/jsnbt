@@ -61,6 +61,8 @@
     "grunt-contrib-cssmin": "*",
     "grunt-contrib-copy": "*",
     "grunt-preprocess": "*",
-    "grunt-env": "*"
+    "grunt-env": "*",
+
+	"argv": "*"
   }
 }
