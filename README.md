@@ -6,6 +6,39 @@
 	working with NodeJs and MongoDB, 
 	jsnbt could grow to be a fast driven CMS for any purpose.
 	
+## quick start
+
+## install
+
+	NodeJs
+
+	MongoDB
+
+	bower : npm install -g bower
+	grunt : npm install -g grunt-cli
+
+### gruntfile.js
+
+	module.exports = function (grunt) {
+		require('jsnbt/src/app/grunt.js')(grunt);
+	};
+
+
+### install dependencies
+
+	npm install jsnbt --save
+	npm install grunt --save-dev
+	npm install grunt-env --save-dev
+	npm install grunt-contrib-clean --save-dev
+	npm install grunt-contrib-uglify --save-dev
+	npm install grunt-contrib-jshint --save-dev
+    npm install grunt-contrib-watch --save-dev
+    npm install grunt-contrib-less --save-dev
+	npm install grunt-contrib-cssmin --save-dev
+	npm install grunt-contrib-copy --save-dev
+    npm install grunt-preprocess --save-dev
+    
+
 ## license
 
 	The MIT License (MIT)
