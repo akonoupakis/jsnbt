@@ -22,6 +22,8 @@ exports.packages = [];
 exports.init = function (env, config, module) {
     var self = this;
 
+    process.chdir(env === 'prod' ? 'dist' : 'dev');
+
     var configSection = config[env];
 
     if (!configSection)
