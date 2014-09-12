@@ -2,7 +2,9 @@
 
 ## overview
 
-	Getting its name from our well-known json objects, working with NodeJs and MongoDB, jsnbt should grow to be a fast driven CMS for any purpose.
+	Getting its name from our well-known json objects, 
+	working with NodeJs and MongoDB, 
+	jsnbt could grow to be a fast driven CMS for any purpose.
 	
 ## license
 

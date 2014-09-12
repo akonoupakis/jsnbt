@@ -1,7 +1,7 @@
 module.exports = {
     dev: {
         host: 'localhost',
-        port: 3001,
+        port: 3000,
         env: 'dev',
         db: {
             host: 'localhost',
@@ -11,7 +11,7 @@ module.exports = {
     },
     prod: {
         host: 'localhost',
-        port: 4001,
+        port: 4000,
         env: 'prod',
         db: {
             host: 'localhost',
