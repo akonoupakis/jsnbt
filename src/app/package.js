@@ -83,17 +83,6 @@ module.exports = {
         deploy: function (name, folder) {
             if (fs.existsSync(server.getPath('src/pck/' + name))) {
 
-                if (!fs.existsSync(server.getPath(folder))) {
-                    fs.create(server.getPath(folder));
-                }
-
-                if (!fs.existsSync(server.getPath(folder + '/public'))) {
-                    fs.create(server.getPath(folder + '/public'));
-                }
-                if (!fs.existsSync(server.getPath(folder + '/public/admin'))) {
-                    fs.create(server.getPath(folder + '/public/admin'));
-                }
-
                 if (fs.existsSync(server.getPath('src/pck/' + name + '/web/public'))) {
                     deployFiles(server.getPath('src/pck/' + name + '/web/public'), server.getPath(folder + '/public'));
                 }
@@ -145,6 +134,10 @@ module.exports = {
 };
 
 var deployFiles = function (source, target) {
+    if (!fs.existsSync(target)) {
+        fs.create(target);
+    }
+
     fs.copy(source, target, false);
     diffLessFile(source + '/css/_.less', target + '/css/_.less');
 };

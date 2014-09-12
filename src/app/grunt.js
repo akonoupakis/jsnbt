@@ -40,65 +40,45 @@ module.exports = function (grunt) {
 
         var paths = [];
 
+        var addPath = function (internalPath) {
+            if (fs.existsSync(server.getPath(internalPath))) {
+                paths.push(internalPath);
+            }
+        };
+
         if (site === undefined || site === 'admin') {
-            var adminErrorsPath = 'src/web/admin/tmpl/error';
-            if (fs.existsSync(server.getPath(adminErrorsPath))) {
-                paths.push(adminErrorsPath);
-            }
-            var adminViewsPath = 'src/web/admin/tmpl/view';
-            if (fs.existsSync(server.getPath(adminViewsPath))) {
-                paths.push(adminViewsPath);
-            }
+            addPath('src/web/admin/tmpl/error');
+            addPath('src/web/admin/tmpl/view');
         }
 
         if (site === undefined || site === 'public') {
-            var publicErrorsPath = 'src/web/public/tmpl/error';
-            if (fs.existsSync(server.getPath(publicErrorsPath))) {
-                paths.push(publicErrorsPath);
-            }
-            var publicViewsPath = 'src/web/public/tmpl/view';
-            if (fs.existsSync(server.getPath(publicViewsPath))) {
-                paths.push(publicViewsPath);
-            }
+            addPath('src/web/public/tmpl/error');
+            addPath('src/web/public/tmpl/view');
         }
 
         if (fs.existsSync(server.getPath('src/pck'))) {
             var packages = fs.readdirSync(server.getPath('src/pck'));
-            for (var pckI = 0; pckI < packages.length; pckI++) {
-
+            _.each(packages, function (packageItem) {
                 if (site === undefined || site === 'admin') {
-                    var pckAdminErrorsPath = 'src/pck/' + packages[pckI] + '/web/admin/tmpl/error';
-                    if (fs.existsSync(server.getPath(pckAdminErrorsPath))) {
-                        paths.push(pckAdminErrorsPath);
-                    }
-                    var pckAdminViewsPath = 'src/pck/' + packages[pckI] + '/web/admin/tmpl/view';
-                    if (fs.existsSync(server.getPath(pckAdminViewsPath))) {
-                        paths.push(pckAdminViewsPath);
-                    }
+                    addPath('src/pck/' + packageItem + '/web/admin/tmpl/error');
+                    addPath('src/pck/' + packageItem + '/web/admin/tmpl/view');
                 }
 
                 if (site === undefined || site === 'public') {
-                    var pckPublicErrorsPath = 'src/pck/' + packages[pckI] + '/web/public/tmpl/error';
-                    if (fs.existsSync(server.getPath(pckPublicErrorsPath))) {
-                        paths.push(pckPublicErrorsPath);
-                    }
-                    var pckPublicViewsPath = 'src/pck/' + packages[pckI] + '/web/public/tmpl/view';
-                    if (fs.existsSync(server.getPath(pckPublicViewsPath))) {
-                        paths.push(pckPublicViewsPath);
-                    }
+                    addPath('src/pck/' + packageItem + '/web/public/tmpl/error');
+                    addPath('src/pck/' + packageItem + '/web/public/tmpl/view');
                 }
-            }
+            });
         }
 
         var denormalize = function (text) {
             return text.replace(/\\/g, '/');
         };
 
-        for (var p = 0; p < paths.length; p++) {
-            var adminErrorFiles = fs.readdirSync(server.getPath(paths[p]));
-            for (var i = 0; i < adminErrorFiles.length; i++) {
-
-                var destPath = paths[p];
+        _.each(paths, function (pathItem) {
+            var adminErrorFiles = fs.readdirSync(server.getPath(pathItem));
+            _.each(adminErrorFiles, function (adminErrorFile) {
+                var destPath = pathItem;
 
                 if (destPath.indexOf('web/admin/') !== -1) {
                     destPath = 'admin/' + destPath.substring(destPath.indexOf('web/admin/') + 'web/admin/'.length);
@@ -108,11 +88,11 @@ module.exports = function (grunt) {
                 }
 
                 files.push({
-                    src: './' + denormalize(path.join(paths[p], adminErrorFiles[i])),
-                    dest: './' + denormalize(path.join(folder, '/', 'public', '/', destPath, adminErrorFiles[i]))
+                    src: './' + denormalize(path.join(pathItem, adminErrorFile)),
+                    dest: './' + denormalize(path.join(folder, '/', 'public', '/', destPath, adminErrorFile))
                 });
-            }
-        }
+            });
+        });
 
         return files;
     };
@@ -164,44 +144,31 @@ module.exports = function (grunt) {
 		}, {
 		    src: ['./' + folder + '/public/js/init.js'],
 		    dest: './' + folder + '/public/js/init.min.js'
-		}]
+		}];
     };
 
     grunt.registerMultiTask('mod', 'Install & pack modules', function () {
-        if (this.target == 'npm') {
-            if (fs.existsSync(server.getPath('npm'))) {
-                var found = fs.readdirSync(server.getPath('npm'));
-                for (var i in found) {
-                    pack.npm.install(found[i], this.data.force);
-                }
+        var runFn = function (mod) {
+            if (fs.existsSync(server.getPath(mod))) {
+                var found = fs.readdirSync(server.getPath(mod));
+                _.each(found, function (f) {
+                    pack[mod].install(f, this.data.force);
+                });
             }
-        }
-        else if (this.target == 'bower') {
-            if (fs.existsSync(server.getPath('bower'))) {
-                var found = fs.readdirSync(server.getPath('bower'));
-                for (var i in found) {
-                    pack.bower.install(found[i], this.data.force);
-                }
-            }
-        }
+        };
+
+        runFn(this.target);
     });
 
     grunt.registerMultiTask('patch', 'Patch the copied with the package files', function () {
 
         var folder = this.target == 'prod' ? 'dist' : 'dev';
-
-        if (!fs.existsSync(server.getPath('src')))
-            fs.create(server.getPath('src'));
-
-        if (!fs.existsSync(server.getPath('src/pck')))
-            fs.create(server.getPath('src/pck'));
-
-        if (!fs.existsSync(server.getPath('src/web')))
-            fs.create(server.getPath('src/web'));
-
-        var found = fs.readdirSync(server.getPath('src/pck'));
-        for (var i in found) {
-            pack.npm.deploy(found[i], folder);
+        
+        if (fs.existsSync(server.getPath('src/pck'))) {
+            var found = fs.readdirSync(server.getPath('src/pck'));
+            _.each(found, function (f) {
+                pack.npm.deploy(f, folder);
+            });
         }
     });
 
@@ -209,9 +176,10 @@ module.exports = function (grunt) {
 
         var folder = this.target == 'prod' ? 'dist' : 'dev';
 
-        for (var i = 0; i < this.data.src.length; i++) {
-            fs.clean(this.data.src[i], true);
-        }
+        _.each(this.data.src, function (item) {
+            fs.clean(item, true);
+        });
+
     });
 
     grunt.registerMultiTask('bower', 'Install bower components', function () {
@@ -241,18 +209,16 @@ module.exports = function (grunt) {
 
         var bowerConfigs = [];
 
-        bowerConfigs.push(require(server.getPath('./bower.json')));
+        bowerConfigs.push(require(server.getPath('bower.json')));
 
         var installedPackages = pack.npm.getInstalled();
-        for (var i = 0; i < installedPackages.length; i++) {
-            if (fs.existsSync(server.getPath('node_modules/' + installedPackages[i] + '/bower.json'))) {
-                bowerConfigs.push(require(server.getPath('node_modules/' + installedPackages[i] + '/bower.json')));
+        _.each(installedPackages, function (installedPackage) {
+            if (fs.existsSync(server.getPath('node_modules/' + installedPackage + '/bower.json'))) {
+                bowerConfigs.push(require(server.getPath('node_modules/' + installedPackage + '/bower.json')));
             }
-        }
+        });
 
-        for (var i = 0; i < bowerConfigs.length; i++) {
-            var bowerConfig = bowerConfigs[i];
-
+        _.each(bowerConfigs, function (bowerConfig) {
             if (bowerConfig.dependencies) {
                 for (var dep in bowerConfig.dependencies) {
                     if (!fs.existsSync(server.getPath('bower_components/' + dep))) {
@@ -263,11 +229,12 @@ module.exports = function (grunt) {
                     }
                 }
             }
-        }
+        });
 
-        for (var p = 0; p < bowerPackages.length; p++) {
-            add('installed bower package ' + bowerPackages[p], bowerPackages[p]);
-        }
+        _.each(bowerPackages, function (bowerPackage) {
+            add('installed bower package ' + bowerPackage, bowerPackage);
+        });
+
         async.series(tasks, done);
     });
 
@@ -277,38 +244,34 @@ module.exports = function (grunt) {
         var bowerComponents = "bower_components";
 
         var bowerConfigs = [];
-        bowerConfigs.push(require(server.getPath('./bower.json')));
+        bowerConfigs.push(require(server.getPath('bower.json')));
 
         var installedPackages = pack.npm.getInstalled();
-        for (var i = 0; i < installedPackages.length; i++) {
-            if (fs.existsSync(server.getPath('node_modules/' + installedPackages[i] + '/bower.json'))) {
-                bowerConfigs.push(require(server.getPath('node_modules/' + installedPackages[i] + '/bower.json')));
+        _.each(installedPackages, function (installedPack) {
+            if (fs.existsSync(server.getPath('node_modules/' + installedPack + '/bower.json'))) {
+                bowerConfigs.push(require(server.getPath('node_modules/' + installedPack + '/bower.json')));
             }
-        }
+        });
 
-        for (var i = 0; i < bowerConfigs.length; i++) {
-            var bowerConfig = bowerConfigs[i];
-
+        _.each(bowerConfigs, function (bowerConfig) {
             if (bowerConfig.dependencies) {
                 if (bowerConfig.deploy) {
-                    for (var deployd in bowerConfig.deploy) {
+                    var bowerConfigKeys = _.keys(bowerConfig.deploy);
+                    _.each(bowerConfigKeys, function (deployd) {
                         var packName = deployd;
                         if (bowerConfig.dependencies[packName]) {
                             var packSpecs = bowerConfig.deploy[packName];
 
                             if (packSpecs.folders) {
-                                for (p = 0; p < packSpecs.folders.length; p++) {
-
-                                    var folderSpecs = packSpecs.folders[p];
-
+                                _.each(packSpecs.folders, function (folderSpecs) {
                                     if (folderSpecs.src && folderSpecs.dest) {
                                         folderSpecs.src = typeof (folderSpecs.src) !== 'string' ? folderSpecs.src : [folderSpecs.src];
                                         folderSpecs.dest = typeof (folderSpecs.dest) !== 'string' ? folderSpecs.dest : [folderSpecs.dest];
 
-                                        for (var ii = 0; ii < folderSpecs.src.length; ii++) {
-                                            for (var iii = 0; iii < folderSpecs.dest.length; iii++) {
-                                                var sourceDir = server.getPath(bowerComponents + '/' + folderSpecs.src[ii]);
-                                                var targetDir = server.getPath(folder + '/public/' + folderSpecs.dest[iii]);
+                                        _.each(folderSpecs.src, function (folderSpecsSrc) {
+                                            _.each(folderSpecs.dest, function (folderSpecsDest) {
+                                                var sourceDir = server.getPath(bowerComponents + '/' + folderSpecsSrc);
+                                                var targetDir = server.getPath(folder + '/public/' + folderSpecsDest);
 
                                                 if (fs.existsSync(sourceDir)) {
                                                     if (!fs.existsSync(targetDir))
@@ -316,25 +279,21 @@ module.exports = function (grunt) {
 
                                                     fs.copy(sourceDir, targetDir, true);
                                                 }
-                                            }
-                                        }
+                                            });
+                                        });
                                     }
-
-                                }
+                                });
                             }
                             if (packSpecs.files) {
-                                for (p = 0; p < packSpecs.files.length; p++) {
-
-                                    var fileSpecs = packSpecs.files[p];
-
+                                _.each(packSpecs.files, function (fileSpecs) {
                                     if (fileSpecs.src && fileSpecs.dest) {
                                         fileSpecs.src = typeof (fileSpecs.src) !== 'string' ? fileSpecs.src : [fileSpecs.src];
                                         fileSpecs.dest = typeof (fileSpecs.dest) !== 'string' ? fileSpecs.dest : [fileSpecs.dest];
 
-                                        for (var ii = 0; ii < fileSpecs.src.length; ii++) {
-                                            for (var iii = 0; iii < fileSpecs.dest.length; iii++) {
-                                                var sourceFile = server.getPath(bowerComponents + '/' + fileSpecs.src[ii]);
-                                                var targetFile = server.getPath(folder + '/public/' + fileSpecs.dest[iii]);
+                                        _.each(fileSpecs.src, function (fileSpecsSrc) {
+                                            _.each(fileSpecs.dest, function (fileSpecsDest) {
+                                                var sourceFile = server.getPath(bowerComponents + '/' + fileSpecsSrc);
+                                                var targetFile = server.getPath(folder + '/public/' + fileSpecsDest);
 
                                                 if (fs.existsSync(sourceFile)) {
                                                     var sourceFileName = path.basename(sourceFile);
@@ -346,334 +305,337 @@ module.exports = function (grunt) {
 
                                                     fs.copy(sourceFile, targetFile, true);
                                                 }
-                                            }
-                                        }
+                                            });
+                                        });
                                     }
-
-                                }
+                                });
                             }
                         }
-                    }
+                    });
                 }
             }
-        }
+        });
     });
 
-    grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
-        mod: {
-            bower: {
-                force: true
-            },
-            npm: {
-                force: true
-            }
-        },
-        bower: {
-            dev: {},
-            prod: {}
-        },
-        jshint: {
-            files: ['*.js', '!gruntfile.js', 'src/app/*.js', 'src/app/**/*.js', 'src/web/admin/js/**/*.js', 'src/web/public/js/**/*.js'],
-            options: {
-                globals: {
-                    jQuery: true,
-                    console: true,
-                    module: true,
-                    document: true,
-                    angular: true
-                }
-            }
-        },
-        env: {
-            options: {},
-            dev: {
-                NODE_ENV: 'DEVELOPMENT'
-            },
-            prod: {
-                NODE_ENV: 'PRODUCTION'
-            }
-        },
+    var gruntConfig = {};
 
-        clean: {
-            dev: {
-                options: { force: true },
-                src: ['dev']
+    gruntConfig.pkg = grunt.file.readJSON('package.json');
+
+    gruntConfig.mod = {
+        bower: {
+            force: true
+        },
+        npm: {
+            force: true
+        }
+    };
+
+    gruntConfig.bower = {
+        dev: {},
+        prod: {}
+    };
+
+    gruntConfig.jshint = {
+        files: ['*.js', 'src/app/*.js', 'src/app/**/*.js', 'src/web/admin/js/**/*.js', 'src/web/public/js/**/*.js'],
+        options: {
+            globals: {
+                jQuery: true,
+                console: true,
+                module: true,
+                document: true,
+                angular: true
+            }
+        }
+    };
+
+    gruntConfig.env = {
+        options: {},
+        dev: {
+            NODE_ENV: 'DEVELOPMENT'
+        },
+        prod: {
+            NODE_ENV: 'PRODUCTION'
+        }
+    };
+
+    gruntConfig.clean = {
+        dev: {
+            options: { force: true },
+            src: ['dev']
+        },
+        prod: {
+            options: { force: true },
+            src: ['dist']
+        },
+        devLess: [
+            "dev/public/admin/css/**/*.less",
+            "dev/public/admin/css/*.less",
+            "dev/public/css/**/*.less",
+            "dev/public/css/*.less"
+        ],
+        prodLess: [
+            "dist/public/admin/css/**/*.less",
+            "dist/public/admin/css/*.less",
+            "dist/public/css/**/*.less",
+            "dist/public/css/*.less"
+        ],
+        prodMinified: [
+            "dist/public/admin/css/*.css",
+            "!dist/public/admin/css/*.min.css",
+            "dist/public/css/*.css",
+            "!dist/public/css/*.min.css"
+        ],
+        prodUglified: [
+            "dist/public/admin/js/app",
+            "dist/public/admin/js/lib",
+            "dist/public/admin/js/*.js",
+            "!dist/public/admin/js/*.min.js",
+            "dist/public/js/app",
+            "dist/public/js/lib",
+            "dist/public/js/*.js",
+            "!dist/public/js/*.min.js",
+        ]
+    };
+
+    gruntConfig.copy = {
+        devAdminJs: {
+            files: [{
+                expand: true,
+                onlyIf: 'newer',
+                cwd: 'src/web/admin/',
+                src: ['js/**'],
+                dest: 'dev/public/admin/'
+            }]
+        },
+        devAdminImg: {
+            files: [{
+                expand: true,
+                onlyIf: 'newer',
+                cwd: 'src/web/admin/',
+                src: ['img/**'],
+                dest: 'dev/public/admin/'
+            }]
+        },
+        devAdminTmpl: {
+            files: [{
+                expand: true,
+                onlyIf: 'newer',
+                cwd: 'src/web/public/tmpl/view/',
+                src: ['spec/**'],
+                dest: 'dev/public/tmpl/'
+            }, {
+                expand: true,
+                onlyIf: 'newer',
+                cwd: 'src/web/admin/tmpl/',
+                src: ['partial/**'],
+                dest: 'dev/public/admin/tmpl/'
+            }]
+        },
+        devAdminCss: {
+            files: [{
+                expand: true,
+                onlyIf: 'newer',
+                cwd: 'src/web/admin/css/',
+                src: ['**'],
+                dest: 'dev/public/admin/css/'
+            }]
+        },
+        devPublicJs: {
+            files: [{
+                expand: true,
+                onlyIf: 'newer',
+                cwd: 'src/web/public/',
+                src: ['js/**'],
+                dest: 'dev/public/'
+            }]
+        },
+        devPublicImg: {
+            files: [{
+                expand: true,
+                onlyIf: 'newer',
+                cwd: 'src/web/public/',
+                src: ['img/**'],
+                dest: 'dev/public/'
+            }]
+        },
+        devPublicTmpl: {
+            files: [{
+                expand: true,
+                onlyIf: 'newer',
+                cwd: 'src/web/public/tmpl/',
+                src: ['partial/**', 'spec/**'],
+                dest: 'dev/public/tmpl/'
+            }]
+        },
+        devPublicCss: {
+            files: [{
+                expand: true,
+                onlyIf: 'newer',
+                cwd: 'src/web/public/css/',
+                src: ['**'],
+                dest: 'dev/public/css/'
+            }]
+        },
+        dev: {
+            files: getFilesToCopy('dev')
+        },
+        prod: {
+            files: getFilesToCopy('dist')
+        }
+    };
+
+    gruntConfig.patch = {
+        dev: {},
+        prod: {}
+    };
+
+    gruntConfig.deploybower = {
+        dev: {},
+        prod: {}
+    };
+
+    gruntConfig.less = {
+        devPublic: {
+            options: {
+                concat: false,
+                paths: getLessPaths('dev')
             },
-            prod: {
-                options: { force: true },
-                src: ['dist']
+            files: getFilesToLess('dev', 'public')
+        },
+        devAdmin: {
+            options: {
+                concat: false,
+                paths: getLessPaths('dev')
             },
-            devLess: [
-				"dev/public/admin/css/**/*.less",
-				"dev/public/admin/css/*.less",
-				"dev/public/css/**/*.less",
-				"dev/public/css/*.less"
-            ],
-            prodLess: [
-				"dist/public/admin/css/**/*.less",
-				"dist/public/admin/css/*.less",
-				"dist/public/css/**/*.less",
-				"dist/public/css/*.less"
-            ],
-            prodMinified: [
-				"dist/public/admin/css/*.css",
-				"!dist/public/admin/css/*.min.css",
-				"dist/public/css/*.css",
-				"!dist/public/css/*.min.css"
-            ],
-            prodUglified: [
-				"dist/public/admin/js/app",
-				"dist/public/admin/js/lib",
-				"dist/public/admin/js/*.js",
-				"!dist/public/admin/js/*.min.js",
-				"dist/public/js/app",
-				"dist/public/js/lib",
-				"dist/public/js/*.js",
-				"!dist/public/js/*.min.js",
+            files: getFilesToLess('dev', 'admin')
+        },
+        dev: {
+            options: {
+                concat: false,
+                paths: getLessPaths('dev')
+            },
+            files: getFilesToLess('dev')
+        },
+        prod: {
+            options: {
+                concat: false,
+                paths: getLessPaths('dist')
+            },
+            files: getFilesToLess('dist')
+        }
+    };
+
+    gruntConfig.preprocess = {
+        devPublic: {
+            files: getFilesToPreprocess('dev', 'public')
+        },
+        devAdmin: {
+            files: getFilesToPreprocess('dev', 'admin')
+        },
+        dev: {
+            files: getFilesToPreprocess('dev')
+        },
+        prod: {
+            files: getFilesToPreprocess('dist')
+        }
+    };
+
+    gruntConfig.cssmin = {
+        prod: {
+            files: [{
+                src: './dist/public/admin/css/style.css',
+                dest: './dist/public/admin/css/style.min.css'
+            }, {
+                src: './dist/public/css/style.css',
+                dest: './dist/public/css/style.min.css'
+            }]
+        }
+    };
+
+    gruntConfig.uglify = {
+        prod: {
+            options: {
+                preserveComments: false,
+                mangle: false,
+                compress: false,
+                wrap: false
+            },
+            files: getFilesToUglify('dist')
+        }
+    };
+
+    gruntConfig.cleanempty = {
+        dev: {
+            src: [
+                'dev/public/admin/css/',
+                'dev/public/css/'
             ]
         },
-        copy: {
-            devAdminJs: {
-                files: [{
-                    expand: true,
-                    onlyIf: 'newer',
-                    cwd: 'src/web/admin/',
-                    src: ['js/**'],
-                    dest: 'dev/public/admin/'
-                }]
-            },
-            devAdminImg: {
-                files: [{
-                    expand: true,
-                    onlyIf: 'newer',
-                    cwd: 'src/web/admin/',
-                    src: ['img/**'],
-                    dest: 'dev/public/admin/'
-                }]
-            },
-            devAdminTmpl: {
-                files: [{
-                    expand: true,
-                    onlyIf: 'newer',
-                    cwd: 'src/web/public/tmpl/view/',
-                    src: ['spec/**'],
-                    dest: 'dev/public/tmpl/'
-                }, {
-                    expand: true,
-                    onlyIf: 'newer',
-                    cwd: 'src/web/admin/tmpl/',
-                    src: ['partial/**'],
-                    dest: 'dev/public/admin/tmpl/'
-                }]
-            },
-            devAdminCss: {
-                files: [{
-                    expand: true,
-                    onlyIf: 'newer',
-                    cwd: 'src/web/admin/css/',
-                    src: ['**'],
-                    dest: 'dev/public/admin/css/'
-                }]
-            },
-            devPublicJs: {
-                files: [{
-                    expand: true,
-                    onlyIf: 'newer',
-                    cwd: 'src/web/public/',
-                    src: ['js/**'],
-                    dest: 'dev/public/'
-                }]
-            },
-            devPublicImg: {
-                files: [{
-                    expand: true,
-                    onlyIf: 'newer',
-                    cwd: 'src/web/public/',
-                    src: ['img/**'],
-                    dest: 'dev/public/'
-                }]
-            },
-            devPublicTmpl: {
-                files: [{
-                    expand: true,
-                    onlyIf: 'newer',
-                    cwd: 'src/web/public/tmpl/',
-                    src: ['partial/**', 'spec/**'],
-                    dest: 'dev/public/tmpl/'
-                }]
-            },
-            devPublicCss: {
-                files: [{
-                    expand: true,
-                    onlyIf: 'newer',
-                    cwd: 'src/web/public/css/',
-                    src: ['**'],
-                    dest: 'dev/public/css/'
-                }]
-            },
-            dev: {
-                files: getFilesToCopy('dev')
-            },
-            prod: {
-                files: getFilesToCopy('dist')
-            }
-        },
-        patch: {
-            dev: {},
-            prod: {}
-        },
-        deploybower: {
-            dev: {},
-            prod: {}
-        },
-        less: {
-            devPublic: {
-                options: {
-                    concat: false,
-                    paths: getLessPaths('dev')
-                },
-                files: getFilesToLess('dev', 'public')
-            },
-            devAdmin: {
-                options: {
-                    concat: false,
-                    paths: getLessPaths('dev')
-                },
-                files: getFilesToLess('dev', 'admin')
-            },
-            dev: {
-                options: {
-                    concat: false,
-                    paths: getLessPaths('dev')
-                },
-                files: getFilesToLess('dev')
-            },
-            prod: {
-                options: {
-                    concat: false,
-                    paths: getLessPaths('dist')
-                },
-                files: getFilesToLess('dist')
-            }
-        },
-        preprocess: {
-            devPublic: {
-                files: getFilesToPreprocess('dev', 'public')
-            },
-            devAdmin: {
-                files: getFilesToPreprocess('dev', 'admin')
-            },
-            dev: {
-                files: getFilesToPreprocess('dev')
-            },
-            prod: {
-                files: getFilesToPreprocess('dist')
-            }
-        },
-        cssmin: {
-            prod: {
-                files: [{
-                    src: './dist/public/admin/css/style.css',
-                    dest: './dist/public/admin/css/style.min.css'
-                }, {
-                    src: './dist/public/css/style.css',
-                    dest: './dist/public/css/style.min.css'
-                }]
-            }
-        },
-
-        uglify: {
-            prod: {
-                options: {
-                    preserveComments: false,
-                    mangle: false,
-                    compress: false,
-                    wrap: false
-                },
-                files: getFilesToUglify('dist')
-            }
-        },
-        cleanempty: {
-            dev: {
-                src: [
-					'dev/public/admin/css/',
-					'dev/public/css/'
-                ]
-            },
-            prod: {
-                src: [
-					'dist/public/admin/css/',
-					'dist/public/css/'
-                ]
-            }
-        },
-        watch: {
-            adminCss: {
-                files: 'src/web/admin/css/**',
-                tasks: ['less:devAdmin']
-            },
-            adminJs: {
-                files: 'src/web/admin/js/**',
-                tasks: ['copy:devAdminJs']
-            },
-            adminImg: {
-                files: 'src/web/admin/img/**',
-                tasks: ['copy:devAdminImg']
-            },
-            adminTmpl: {
-                files: ['src/web/admin/tmpl/error/**', 'src/web/admin/tmpl/view/**'],
-                tasks: ['preprocess:devAdmin']
-            },
-            adminFiles: {
-                files: ['src/web/admin/**'],
-                tasks: ['copy:devAdminJs', 'copy:devAdminImg', 'copy:devAdminTmpl', 'preprocess:devAdmin']
-            },
-            adminAll: {
-                files: ['src/web/admin/**', 'src/web/public/**'],
-                tasks: ['copy:devAdminJs', 'copy:devAdminImg', 'copy:devAdminTmpl', 'copy:devAdminCss', 'preprocess:devAdmin', 'less:devAdmin', 'clean:devLess', 'cleanempty:dev']
-            },
-
-            publicCss: {
-                files: 'src/web/public/css/**',
-                tasks: ['less:devPublic']
-            },
-            publicJs: {
-                files: 'src/web/public/js/**',
-                tasks: ['copy:devPublicJs']
-            },
-            publicImg: {
-                files: 'src/web/public/img/**',
-                tasks: ['copy:devPublicImg']
-            },
-            publicTmpl: {
-                files: ['src/web/public/tmpl/error/**', 'src/web/public/tmpl/view/**'],
-                tasks: ['preprocess:devPublic']
-            },
-            publicFiles: {
-                files: ['src/web/public/**'],
-                tasks: ['copy:devPublicJs', 'copy:devPublicImg', 'copy:devPublicTmpl', 'preprocess:devPublic']
-            },
-            publicAll: {
-                files: ['src/web/public/**'],
-                tasks: ['copy:devPublicJs', 'copy:devPublicImg', 'copy:devPublicTmpl', 'copy:devPublicCss', 'preprocess:devPublic', 'less:devPublic', 'clean:devLess', 'cleanempty:dev']
-            }
-        },
-        html2js: {
-            //options: {
-            //  rename : function (moduleName) {
-            //	return moduleName.replace('web/', '');
-            //  }
-            //},
-            dev: {
-                files: [{
-                    src: ['dev/public/admin/tmpl/partial/*.html'],
-                    dest: 'dev/public/admin/js/tmpl.js'
-                }]
-            },
+        prod: {
+            src: [
+                'dist/public/admin/css/',
+                'dist/public/css/'
+            ]
         }
-    });
+    };
 
+    gruntConfig.watch = {
+        adminCss: {
+            files: 'src/web/admin/css/**',
+            tasks: ['less:devAdmin']
+        },
+        adminJs: {
+            files: 'src/web/admin/js/**',
+            tasks: ['copy:devAdminJs']
+        },
+        adminImg: {
+            files: 'src/web/admin/img/**',
+            tasks: ['copy:devAdminImg']
+        },
+        adminTmpl: {
+            files: ['src/web/admin/tmpl/error/**', 'src/web/admin/tmpl/view/**'],
+            tasks: ['preprocess:devAdmin']
+        },
+        adminFiles: {
+            files: ['src/web/admin/**'],
+            tasks: ['copy:devAdminJs', 'copy:devAdminImg', 'copy:devAdminTmpl', 'preprocess:devAdmin']
+        },
+        adminAll: {
+            files: ['src/web/admin/**', 'src/web/public/**'],
+            tasks: ['copy:devAdminJs', 'copy:devAdminImg', 'copy:devAdminTmpl', 'copy:devAdminCss', 'preprocess:devAdmin', 'less:devAdmin', 'clean:devLess', 'cleanempty:dev']
+        },
+
+        publicCss: {
+            files: 'src/web/public/css/**',
+            tasks: ['less:devPublic']
+        },
+        publicJs: {
+            files: 'src/web/public/js/**',
+            tasks: ['copy:devPublicJs']
+        },
+        publicImg: {
+            files: 'src/web/public/img/**',
+            tasks: ['copy:devPublicImg']
+        },
+        publicTmpl: {
+            files: ['src/web/public/tmpl/error/**', 'src/web/public/tmpl/view/**'],
+            tasks: ['preprocess:devPublic']
+        },
+        publicFiles: {
+            files: ['src/web/public/**'],
+            tasks: ['copy:devPublicJs', 'copy:devPublicImg', 'copy:devPublicTmpl', 'preprocess:devPublic']
+        },
+        publicAll: {
+            files: ['src/web/public/**'],
+            tasks: ['copy:devPublicJs', 'copy:devPublicImg', 'copy:devPublicTmpl', 'copy:devPublicCss', 'preprocess:devPublic', 'less:devPublic', 'clean:devLess', 'cleanempty:dev']
+        }
+    };
+    
+    grunt.initConfig(gruntConfig);
+
+
+
+    grunt.loadNpmTasks('grunt-env');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -682,13 +644,14 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-preprocess');
-    grunt.loadNpmTasks('grunt-env');
+    
 
     grunt.registerTask('default', ['jshint']);
 
-    // 'jshint'
-    grunt.registerTask('dev', ['mod:bower', 'mod:npm', 'bower:dev', 'env:dev', 'clean:dev', 'copy:dev', 'patch:dev', 'deploybower:dev', 'less:dev', 'preprocess:dev', 'clean:devLess', 'cleanempty:dev']);
+
+    grunt.registerTask('dev', ['mod:bower', 'mod:npm', 'bower:dev', 'jshint', 'env:dev', 'clean:dev', 'copy:dev', 'patch:dev', 'deploybower:dev', 'less:dev', 'preprocess:dev', 'clean:devLess', 'cleanempty:dev']);
     grunt.registerTask('prod', ['mod:bower', 'mod:npm', 'bower:prod', 'jshint', 'env:prod', 'clean:prod', 'copy:prod', 'patch:prod', 'deploybower:prod', 'less:prod', 'preprocess:prod', 'clean:prodLess', 'cssmin:prod', 'clean:prodMinified', 'uglify:prod', 'clean:prodUglified', 'cleanempty:prod']);
+
 
     grunt.registerTask('watch-public-css', ['watch:publicCss']);
     grunt.registerTask('watch-public-js', ['watch:publicJs']);
