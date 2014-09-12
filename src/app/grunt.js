@@ -38,44 +38,79 @@ module.exports = function (grunt) {
 
         var files = [];
 
+        var paths = [];
+
         if (site === undefined || site === 'admin') {
-            if (fs.existsSync(server.getPath('src/web/admin/tmpl/error'))) {
-                var adminErrorFiles = fs.readdirSync(server.getPath('src/web/admin/tmpl/error'));
-                for (var i in adminErrorFiles) {
-                    files.push({
-                        src: './src/web/admin/tmpl/error/' + adminErrorFiles[i],
-                        dest: './' + folder + '/public/admin/tmpl/error/' + adminErrorFiles[i]
-                    });
-                }
+            var adminErrorsPath = 'src/web/admin/tmpl/error';
+            if (fs.existsSync(server.getPath(adminErrorsPath))) {
+                paths.push(adminErrorsPath);
             }
-            if (fs.existsSync(server.getPath('src/web/admin/tmpl/view'))) {
-                var adminViewFiles = fs.readdirSync(server.getPath('src/web/admin/tmpl/view'));
-                for (var i in adminViewFiles) {
-                    files.push({
-                        src: './src/web/admin/tmpl/view/' + adminViewFiles[i],
-                        dest: './' + folder + '/public/admin/tmpl/view/' + adminViewFiles[i]
-                    });
+            var adminViewsPath = 'src/web/admin/tmpl/view';
+            if (fs.existsSync(server.getPath(adminViewsPath))) {
+                paths.push(adminViewsPath);
+            }
+        }
+
+        if (site === undefined || site === 'public') {
+            var publicErrorsPath = 'src/web/public/tmpl/error';
+            if (fs.existsSync(server.getPath(publicErrorsPath))) {
+                paths.push(publicErrorsPath);
+            }
+            var publicViewsPath = 'src/web/public/tmpl/view';
+            if (fs.existsSync(server.getPath(publicViewsPath))) {
+                paths.push(publicViewsPath);
+            }
+        }
+
+        if (fs.existsSync(server.getPath('src/pck'))) {
+            var packages = fs.readdirSync(server.getPath('src/pck'));
+            for (var pckI = 0; pckI < packages.length; pckI++) {
+
+                if (site === undefined || site === 'admin') {
+                    var pckAdminErrorsPath = 'src/pck/' + packages[pckI] + '/web/admin/tmpl/error';
+                    if (fs.existsSync(server.getPath(pckAdminErrorsPath))) {
+                        paths.push(pckAdminErrorsPath);
+                    }
+                    var pckAdminViewsPath = 'src/pck/' + packages[pckI] + '/web/admin/tmpl/view';
+                    if (fs.existsSync(server.getPath(pckAdminViewsPath))) {
+                        paths.push(pckAdminViewsPath);
+                    }
+                }
+
+                if (site === undefined || site === 'public') {
+                    var pckPublicErrorsPath = 'src/pck/' + packages[pckI] + '/web/public/tmpl/error';
+                    if (fs.existsSync(server.getPath(pckPublicErrorsPath))) {
+                        paths.push(pckPublicErrorsPath);
+                    }
+                    var pckPublicViewsPath = 'src/pck/' + packages[pckI] + '/web/public/tmpl/view';
+                    if (fs.existsSync(server.getPath(pckPublicViewsPath))) {
+                        paths.push(pckPublicViewsPath);
+                    }
                 }
             }
         }
-        if (site === undefined || site === 'public') {
-            if (fs.existsSync(server.getPath('src/web/public/tmpl/error'))) {
-                var publicErrorFiles = fs.readdirSync(server.getPath('src/web/public/tmpl/error'));
-                for (var i in publicErrorFiles) {
-                    files.push({
-                        src: './src/web/public/tmpl/error/' + publicErrorFiles[i],
-                        dest: './' + folder + '/public/tmpl/error/' + publicErrorFiles[i]
-                    });
+
+        var denormalize = function (text) {
+            return text.replace(/\\/g, '/');
+        };
+
+        for (var p = 0; p < paths.length; p++) {
+            var adminErrorFiles = fs.readdirSync(server.getPath(paths[p]));
+            for (var i = 0; i < adminErrorFiles.length; i++) {
+
+                var destPath = paths[p];
+
+                if (destPath.indexOf('web/admin/') !== -1) {
+                    destPath = 'admin/' + destPath.substring(destPath.indexOf('web/admin/') + 'web/admin/'.length);
                 }
-            }
-            if (fs.existsSync(server.getPath('src/web/public/tmpl/view'))) {
-                var publicViewFiles = fs.readdirSync(server.getPath('src/web/public/tmpl/view'));
-                for (var i in publicViewFiles) {
-                    files.push({
-                        src: './src/web/public/tmpl/view/' + publicViewFiles[i],
-                        dest: './' + folder + '/public/tmpl/view/' + publicViewFiles[i]
-                    });
+                else if (destPath.indexOf('web/public/') !== -1) {
+                    destPath = destPath.substring(destPath.indexOf('web/public/') + 'web/public/'.length);
                 }
+
+                files.push({
+                    src: './' + denormalize(path.join(paths[p], adminErrorFiles[i])),
+                    dest: './' + denormalize(path.join(folder, '/', 'public', '/', destPath, adminErrorFiles[i]))
+                });
             }
         }
 
