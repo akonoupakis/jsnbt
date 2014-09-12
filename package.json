@@ -1,6 +1,6 @@
 {
   "name": "jsnbt",
-  "version": "1.0.34",
+  "version": "1.0.35",
   "description": "The Jsonbot engine",
   "keywords": [
     "jsnbt",
@@ -62,7 +62,6 @@
     "grunt-contrib-copy": "*",
     "grunt-preprocess": "*",
     "grunt-env": "*",
-
-	"argv": "*"
+    "argv": "*"
   }
 }
