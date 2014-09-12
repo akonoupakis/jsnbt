@@ -10,9 +10,9 @@
 
 ### install
 
-	NodeJs
+	NodeJs : http://nodejs.org/download/
 
-	MongoDB
+	MongoDB : http://nodejs.org/download/
 
 	bower : npm install -g bower
 	grunt : npm install -g grunt-cli
