@@ -1,6 +1,6 @@
 {
   "name": "jsnbt",
-  "version": "1.0.33",
+  "version": "1.0.34",
   "description": "The Jsonbot engine",
   "keywords": [
     "jsnbt",
@@ -53,13 +53,13 @@
   },
   "devDependencies": {
     "grunt": "*",
-	"grunt-contrib-clean": "*",
-	"grunt-contrib-uglify": "*",
-	"grunt-contrib-jshint": "*",
+    "grunt-contrib-clean": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-jshint": "*",
     "grunt-contrib-watch": "*",
     "grunt-contrib-less": "*",
-	"grunt-contrib-cssmin": "*",
-	"grunt-contrib-copy": "*",
+    "grunt-contrib-cssmin": "*",
+    "grunt-contrib-copy": "*",
     "grunt-preprocess": "*",
     "grunt-env": "*"
   }
