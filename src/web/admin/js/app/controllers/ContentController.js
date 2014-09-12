@@ -9,6 +9,6 @@
             $scope.goto = function (name) {
                 $location.next('/content/' + name);
             };
-
+            
         });
 })();

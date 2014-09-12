@@ -39,8 +39,8 @@
         {
           "src": "angular/angular.js",
           "dest": [
-            "js/lib/angular/angular.js",
-            "admin/js/lib/angular/angular.js"
+            "js/lib/angular.js",
+            "admin/js/lib/angular.js"
           ]
         }
       ]

@@ -123,7 +123,7 @@ module.exports = function (grunt) {
 			'./bower_components'
         ];
     };
-
+    
     getFilesToUglify = function (folder) {
         return [{
             src: ['./' + folder + '/public/admin/js/lib/*.js', './' + folder + '/public/admin/js/lib/**/**.js'],
@@ -136,7 +136,7 @@ module.exports = function (grunt) {
             dest: './' + folder + '/public/admin/js/init.min.js'
         },
 		{
-		    src: ['./' + folder + '/public/js/lib/**/**.js'],
+		    src: ['./' + folder + '/public/js/lib/*.js', './' + folder + '/public/js/lib/**/**.js'],
 		    dest: './' + folder + '/public/js/lib.min.js'
 		}, {
 		    src: ['./' + folder + '/public/js/app/main.js', './' + folder + '/public/js/app/**/*.js'],
@@ -336,7 +336,7 @@ module.exports = function (grunt) {
     };
 
     gruntConfig.jshint = {
-        files: ['*.js', 'src/app/*.js', 'src/app/**/*.js', 'src/web/admin/js/**/*.js', 'src/web/public/js/**/*.js'],
+        files: ['src/app/**', 'src/web/admin/js/**', 'src/web/public/js/**'],
         options: {
             globals: {
                 jQuery: true,
@@ -418,12 +418,6 @@ module.exports = function (grunt) {
         },
         devAdminTmpl: {
             files: [{
-                expand: true,
-                onlyIf: 'newer',
-                cwd: 'src/web/public/tmpl/view/',
-                src: ['spec/**'],
-                dest: 'dev/public/tmpl/'
-            }, {
                 expand: true,
                 onlyIf: 'newer',
                 cwd: 'src/web/admin/tmpl/',
@@ -628,6 +622,17 @@ module.exports = function (grunt) {
         publicAll: {
             files: ['src/web/public/**'],
             tasks: ['copy:devPublicJs', 'copy:devPublicImg', 'copy:devPublicTmpl', 'copy:devPublicCss', 'preprocess:devPublic', 'less:devPublic', 'clean:devLess', 'cleanempty:dev']
+        },
+        dev: {
+            files: [
+                'src/web/admin/js/**', 'src/web/admin/css/**', 'src/web/admin/tmpl/partial/**',
+                'src/web/public/js/**', 'src/web/public/css/**', 'src/web/public/tmpl/partial/**',
+            ],
+            tasks: [
+                'jshint',
+                'copy:devAdminJs', 'copy:devAdminImg', 'copy:devAdminTmpl', 'copy:devAdminCss', 'preprocess:devAdmin', 'less:devAdmin', 'clean:devLess', 'cleanempty:dev',
+                'copy:devPublicJs', 'copy:devPublicImg', 'copy:devPublicTmpl', 'copy:devPublicCss', 'preprocess:devPublic', 'less:devPublic', 'clean:devLess', 'cleanempty:dev'
+            ]
         }
     };
     
@@ -666,4 +671,6 @@ module.exports = function (grunt) {
     grunt.registerTask('watch-admin-tmpl', ['watch:adminTmpl']);
     grunt.registerTask('watch-admin-files', ['watch:adminFiles']);
     grunt.registerTask('watch-admin', ['watch:adminAll']);
+
+    grunt.registerTask('update-files', ['watch:dev']);
 };
