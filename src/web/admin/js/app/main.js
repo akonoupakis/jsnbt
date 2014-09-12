@@ -80,6 +80,10 @@
               templateUrl: 'tmpl/partial/content/list-entry.html',
               controller: 'ListEntryController'
           }).
+          when('/test', {
+             templateUrl: 'tmpl/partial/test.html',
+             controller: 'TestController'
+          }).
           otherwise({
               redirectTo: '/'
           });

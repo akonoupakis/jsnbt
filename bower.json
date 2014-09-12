@@ -13,10 +13,10 @@
     "bower_components"
   ],
   "dependencies": {
+    "jquery": "*",
     "angular": "*",
     "angular-route": "*",
     "angular-animate": "*",
-	"jquery": "*",
     "underscore": "*",
     "underscore.string": "*",
 	"bootstrap": "*",
@@ -34,13 +34,24 @@
     "ng-flow": "*"    
   },
   "deploy": {
+    "jquery": {
+      "files": [
+        {
+          "src": "jquery/dist/jquery.js",
+          "dest": [
+            "js/lib/1-jquery.js",
+            "admin/js/lib/a-jquery.js"
+          ]
+        }
+      ]
+    },
     "angular": {
       "files": [
         {
           "src": "angular/angular.js",
           "dest": [
-            "js/lib/angular.js",
-            "admin/js/lib/angular.js"
+            "js/lib/2-angular.js",
+            "admin/js/lib/b-angular.js"
           ]
         }
       ]
@@ -81,17 +92,6 @@
           "src": "angular-ui-sortable/sortable.js",
           "dest": [
             "admin/js/lib/angular-lib/angular-ui-sortable.js"
-          ]
-        }
-      ]
-    },
-    "jquery": {
-      "files": [
-        {
-          "src": "jquery/dist/jquery.js",
-          "dest": [
-            "js/lib/jquery.js",
-            "admin/js/lib/jquery.js"
           ]
         }
       ]
