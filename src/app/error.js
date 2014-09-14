@@ -58,6 +58,11 @@ exports.render = function (ctx, error, stack) {
     if (errors[error])
         text = errors[error];
 
+    if (!ctx.meta.title || ctx.meta.title === '')
+        ctx.meta.title = app.title;
+    else
+        ctx.meta.title = app.title + (app.title ? ' | ' : '') + ctx.meta.title;
+
     errorContent = html.parse(ctx, errorContent, {
         error: error,
         text: text,

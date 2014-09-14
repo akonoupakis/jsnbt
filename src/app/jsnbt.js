@@ -1,9 +1,15 @@
 var app = require('./app.js');
 var path = require('path');
+var server = require('server-root');
 var fs = require('./utils/fs.js');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
+
+var getVersion = function () {
+    var versionInfo = fs.existsSync(server.getPath('node_modules/jsnbt/package.json')) ? require(server.getPath('node_modules/jsnbt/package.json')) : require(server.getPath('package.json'));
+    return versionInfo.version;
+};
 
 var getViews = function () {
 
@@ -116,6 +122,7 @@ module.exports = {
 
         if (site === 'admin') {
 
+            result.version = getVersion();
             result.views = getViews();
             result.addons = [];
             result.entities = [];

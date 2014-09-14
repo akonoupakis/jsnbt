@@ -15,6 +15,7 @@
             $scope.current.user = undefined;
             $scope.current.breadcrumb = [];
 
+            $scope.application.version = jsnbt.version;
             $scope.application.languages = [];
 
             $scope.defaults.languages = [];

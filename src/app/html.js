@@ -39,6 +39,11 @@ exports.parse = function (ctx, tmpl, model) {
     findJsFiles('../' + app.root + '/public/' + (isAdmin ? 'admin/' : '') + 'js/lib/', libFiles, isAdmin);
     mdl.js.lib = libFiles;
 
+    if (!mdl.meta.title || mdl.meta.title === '')
+        mdl.meta.title = app.title;
+    else
+        mdl.meta.title = app.title + (app.title ? ' | ' : '') + mdl.meta.title;
+
     html = _.template(tmpl, mdl);
 
     return html;

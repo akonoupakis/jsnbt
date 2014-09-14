@@ -21,7 +21,7 @@ exports.packages = [];
 
 exports.init = function (env, config, module) {
     var self = this;
-
+    
     process.chdir(env === 'prod' ? 'dist' : 'dev');
 
     var configSection = config[env];
@@ -166,6 +166,7 @@ exports.init = function (env, config, module) {
     delete this.init;
 };
 
-exports.start = function () {
+exports.start = function (title) {
+    this.title = title;
     this.server.listen();
 };
