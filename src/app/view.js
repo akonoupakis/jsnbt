@@ -5,19 +5,6 @@ var _ = require('underscore');
 
 _.str = require('underscore.string');
 
-//var getCachedTemplate = function (baseHref, view) {
-//    if (cached) {
-//        var cached = app.cache.get('tmpl:' + baseHref + view);
-//        return cached;
-//    }
-//    else {
-//        var tmplContent = fs.readFileSync(view, 'utf-8');
-//        tmplContent = tmplContent.replace(/<base href="" \/>/g, '<base href="' + baseHref + '" />');
-//        app.cache.set('tmpl:' + view, tmplContent);
-//        return tmplContent;
-//    }
-//}
-
 exports.render = function (ctx, view) {
     var tmplFilePath = '../' + app.root + '/public' + view;
     if (fs.existsSync(tmplFilePath)) {

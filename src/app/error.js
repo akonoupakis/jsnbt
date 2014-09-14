@@ -16,24 +16,6 @@ var errors = {
     503: 'Service Unavailable',
 };
 
-//var getCachedTemplate = function (baseHref, view) {
-//    if (cached) {
-//        var cached = app.cache.get('tmpl:' + baseHref + view);
-//        return cached;
-//    }
-//    else {
-//        var errorContent = '';
-
-//        if (fs.existsSync(view)) {
-//            errorContent = fs.readFileSync(view, 'utf-8');
-//            errorContent = errorContent.replace(/<base href="" \/>/g, '<base href="' + baseHref + '" />');
-//        }
-
-//        app.cache.set('tmpl:' + view, errorContent);
-//        return errorContent;
-//    }
-//}
-
 exports.render = function (ctx, error, stack) {
     var tmplPath = '../' + app.root + '/public/tmpl/error/';
     if (ctx.uri.first === 'admin')
@@ -49,7 +31,12 @@ exports.render = function (ctx, error, stack) {
     }
 
     if (errorContent === '') {
-        errorContent = fs.readFileSync(tmplDefaultFilePath, 'utf-8');
+        if (fs.existsSync(tmplDefaultFilePath)) {
+            errorContent = fs.readFileSync(tmplDefaultFilePath, 'utf-8');
+        }
+        else {
+            errorContent = '<%= error %>';
+        }
     }
 
     ctx.res.writeHead(error, { "Content-Type": "text/html" });
