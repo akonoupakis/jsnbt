@@ -21,8 +21,12 @@
                 items: _.sortBy(_.filter(jsnbt.lists, function (x) { return x.domain === 'core'; }), 'name')
             };
             
-            $scope.edit = function (item) {
-                $location.next('/content/data/' + item.domain + '/' + item.id);
+            $scope.gridFn = {
+
+                edit: function (item) {
+                    $location.next('/content/data/' + item.domain + '/' + item.id);
+                }
+
             };
 
         });

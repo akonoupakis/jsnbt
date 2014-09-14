@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlGrid', function ($compile) {
+        .directive('ctrlGrid', function () {
 
             return {
                 restrict: 'E',
@@ -14,7 +14,8 @@
                 scope: {
                     ngModel: '=',
                     ngSelectable: '=',
-                    ngSelectMode: '='
+                    ngSelectMode: '=',
+                    ngFn: '='
                 },
                 controller: function ($scope) {
                     this.selectable = $scope.ngSelectable;
@@ -30,12 +31,16 @@
                         if (newValue.items)
                             scope.loading = false;
                     });
+
+                    scope.$watch('ngFn', function (newValue, prevValue) {
+                        scope.fn = newValue;
+                    });
                 },
                 templateUrl: 'tmpl/partial/controls/ctrlGrid.html'
             };
 
         })
-        .directive('ctrlGridHeader', function ($compile) {
+        .directive('ctrlGridHeader', function () {
 
             return {
                 restrict: 'E',
@@ -50,11 +55,15 @@
                     scope.$$prevSibling.$watch('ngModel', function (newValue, prevValue) {
                         scope.data = newValue;
                     });
+
+                    scope.$$prevSibling.$watch('ngFn', function (newValue, prevValue) {
+                        scope.fn = newValue;
+                    });
                 }
             };
 
         })
-        .directive('ctrlGridHeaderColumn', function ($compile) {
+        .directive('ctrlGridHeaderColumn', function () {
 
             return {
                 restrict: 'E',
@@ -131,13 +140,13 @@
             };
 
         })
-        .directive('ctrlGridFooter', function ($compile) {
+        .directive('ctrlGridFooter', function () {
 
             return {
                 restrict: 'E',
                 replace: true,
                 transclude: true,
-                template: '<tfoot><tr><td colspan="0" ng-transclude></td></tr></tfoot>',
+                template: '<tfoot><tr><td colspan="1000" ng-transclude></td></tr></tfoot>',
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl-grid-footer');
 
@@ -150,7 +159,7 @@
             };
 
         })
-       .directive('ctrlGridInfiniteScroll', function ($compile) {
+       .directive('ctrlGridInfiniteScroll', function () {
 
            return {
                restrict: 'E',
@@ -166,7 +175,6 @@
                        if (!scope.ended && typeof (scope.$parent.data.more) === 'function' && !scope.loading) {
                            scope.loading = true;
                            scope.$parent.$$prevSibling.loading = true;
-                           scope.$parent.$parent.$$prevSibling.loading = true;
                            scope.$parent.data.more().then(function (response) {
                                if (response.items.length > 0) {
                                    scope.$parent.data.more = response.more;
@@ -179,11 +187,9 @@
                                    scope.ended = true;
                                }
                                scope.$parent.$$prevSibling.loading = false;
-                               scope.$parent.$parent.$$prevSibling.loading = false;
                                scope.loading = false;
                            }, function (error) {
                                scope.$parent.$$prevSibling.loading = false;
-                               scope.$parent.$parent.$$prevSibling.loading = false;
                                scope.loading = false;
                                throw error;
                            });
@@ -194,7 +200,7 @@
            };
 
        })
-      .directive('ctrlGridEmpty', function ($compile) {
+      .directive('ctrlGridEmpty', function () {
 
         return {
             restrict: 'E',

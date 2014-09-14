@@ -6,6 +6,10 @@
 
     <div class="file-editor-path">
         <label>path</label>
-        <ctrl-tree ng-model="nodes" ng-selectable="true" ng-select-mode="'single'"></ctrl-tree>
+        <ctrl-tree ng-model="nodes" ng-selectable="true" ng-select-mode="'single'">
+            <ctrl-tree-node>
+                <ctrl-tree-node-content>{{ node.name }}</ctrl-tree-node-content>
+            </ctrl-tree-node>
+        </ctrl-tree>
     </div>
 </div>

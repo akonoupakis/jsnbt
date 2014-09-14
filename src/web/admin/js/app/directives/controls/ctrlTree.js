@@ -5,168 +5,134 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlTree', function ($timeout) {
+     .directive('ctrlTree', function ($compile) {
 
-            return {
-                restrict: 'E',
-                replace: true,
-                scope: {
-                    ngModel: '=',
-                    ngDomain: '=',
-                    ngSelectable: '=',
-                    ngSelectMode: '='
-                },
-                controller: function ($scope) {
-                    this.selectable = $scope.ngSelectable;
-                    this.selectMode = $scope.ngSelectMode;
-                },
-                link: function (scope, element, attrs) {
-                    element.addClass('ctrl');
-                    element.addClass('ctrl-tree');
+         return {
+             restrict: 'E',
+             replace: true,
+             transclude: true,
+             scope: {
+                 ngModel: '=',
+                 ngDomain: '=',
+                 ngSelectable: '=',
+                 ngSelectMode: '=',
+                 ngTranscludeFn: '=',
+                 ngFn: '=',
+                 ngRoot: '='
+             },
+             template: '<ol class="dd-list" ng-class="{ \'dd-list-root\': root, \'dd-selectable\': root && ngSelectable }"></ol>',
+             compile: function (elem, attrs, transclude) {
 
-                    scope.data = scope.ngModel;
+                 return function (scope, lElem, lAttrs) {
+                     scope.transcludeFn = scope.ngTranscludeFn || transclude;
 
-                    scope.$watch('ngModel', function (newValue) {
-                        scope.data = newValue;
-                    });
+                     lElem.addClass('ctrl');
+                     lElem.addClass('ctrl-tree');
 
-                    scope.root = element.parents('.dd-list').length === 0;
+                     var root = scope.ngRoot === undefined || scope.ngRoot === true;
+                     scope.root = root;
 
-                    scope.$on('deleted', function (sender, node) {
-                        if (scope.root) {
-                            
-                            if (node.parent.id === '') {
-                                scope.data = _.filter(scope.data, function (x) { return x.id !== node.id; });
-                            }
+                     scope.$watch('ngModel', function (data) {
+                         lElem.empty();
+                         $(data).each(function (i, node) {
+                             var childScope = scope.$new();
+                             childScope.node = node;
+                             childScope.ngDomain = scope.ngDomain;
+                             childScope.ngSelectable = scope.ngSelectable;
+                             childScope.ngSelectMode = scope.ngSelectMode;
+                             childScope.ngTranscludeFn = scope.transcludeFn;
+                             childScope.ngFn = scope.ngFn;
+                             childScope.ngRoot = false;
 
-                            sender.stopPropagation();
-                        }
-                    });
-                },
-                templateUrl: 'tmpl/partial/controls/ctrlTree.html' 
-            };
+                             scope.transcludeFn(childScope, function (clone, innerScope) {
+                                 lElem.append(clone);
+                             });
+                         });
+                     });
+                 };
+             }
+         };
 
-        })
-        .directive('ctrlTreeNode', function ($compile, $location, $q, $fn) {
+     })
+     .directive('ctrlTreeNode', function ($compile) {
 
-            return {
-                 restrict: 'E',
-                 replace: true,
-                 scope: {
-                     ngModel: '=',
-                     ngDomain: '=',
-                     ngSelectable: '=',
-                     ngSelectMode: '='
-                 },
-                 link: function (scope, element, attrs) {
-                     element.addClass('ctrl-tree-node');
+         return {
+             restrict: 'E',
+             replace: true,
+             transclude: true,
+             template: '<li class="dd-item" ng-class="{ \'dd-collapsed\': node.collapsed, \'loading\': node.loading }" ng-transclude></li>',
+             compile: function (elem, attrs, transclude) {
 
-                     scope.node = scope.ngModel;
+                 return function (scope, lElem, lAttrs) {
+                     lElem.addClass('ctrl-tree-node');
 
-                     scope.$watch('ngModel', function (newValue) {
-                         scope.node = newValue;
+                     var transcludeFn = scope.$parent.transcludeFn;
+
+                     scope.$watch('ngFn', function (value) {
+                         scope.fn = value;
                      });
 
-                     var getDomain = function (node) {
-                         if (node.entity === 'pointer')
-                             return node.pointer.domain;
+                     scope.$watch('node.children', function (value) {
+                         lElem.empty();
 
-                         return node.domain;
-                     };
+                         transclude(scope, function (clone, innerScope) {
+                             lElem.append($compile(angular.element('<button type="button" class="dd-collapse" ng-show="node.expandable && !node.root && node.childCount !== 0" ng-click="node.collapse()">Collapse</button>'))(innerScope));
+                             lElem.append($compile(angular.element('<button type="button" class="dd-expand" ng-show="node.expandable && !node.root && node.childCount !== 0" ng-click="node.expand()">Expand</button>'))(innerScope));
+                             lElem.append($compile(angular.element('<img class="dd-loading" src="img/node-loading.gif" />'))(innerScope));
+                             lElem.append(clone);
 
-                     scope.canCreate = function (node) {
-                         return $fn.invoke(node.domain, 'tree.canCreate', [node]);
-                     };
+                             var childScope = scope.$new();
+                             childScope.ngModel = value;
+                             childScope.ngDomain = scope.$parent.ngDomain;
+                             childScope.ngSelectable = scope.$parent.ngSelectable;
+                             childScope.ngSelectMode = scope.$parent.ngSelectMode;
+                             childScope.ngTranscludeFn = transcludeFn;
+                             childScope.ngRoot = false;
+                             childScope.ngFn = scope.$parent.ngFn;
 
-                     scope.create = function (node) {
-                         $fn.invoke(getDomain(node), 'tree.create', [node]);
-                     };
-
-                     scope.canEdit = function (node) {
-                         return node.editUrl && node.editUrl !== '';
-                     };
-
-                     scope.edit = function (node) {
-                         $location.next(node.editUrl);
-                     };
-
-                     scope.canDelete = function (node) {
-                         return $fn.invoke(getDomain(node), 'tree.canDelete', [node]);
-                     };
-
-                     var deleteInternal = function (node) {
-                         var deferred = $q.defer();
-
-                         $fn.invoke(getDomain(node), 'tree.delete', [node, function (deleted) {
-                             deferred.resolve(deleted);
-                         }]);
-
-                         return deferred.promise;
-                     };
-
-                     scope.delete = function (node) {
-                         $fn.invoke(getDomain(node), 'tree.delete', [node]).then(function (deleted) {
-                             if (deleted) {
-                                 if (node.parent.id === '') {
-                                     scope.$emit('deleted', node);
-                                 }
-                                 else {
-                                     node.parent.children = _.filter(node.parent.children, function (x) { return x.id !== node.id; });
-                                     node.parent.childCount = node.parent.children.length;
-
-                                     if (node.parent.childCount === 0)
-                                         node.parent.collapsed = true;
-                                 }
-                             }
-                         }, function (ex) {
-                             throw ex;
+                             var collectionElement = angular.element('<ctrl-tree ng-model="ngModel" ng-domain="ngDomain" ng-root="ngRoot" ng-selectable="ngSelectable" ng-select-mode="ngSelectMode" ng-transclude-fn="ngTranscludeFn" ng-fn="ngFn"></ctrl-tree>');
+                             var compiled = $compile(collectionElement)(childScope);
+                             lElem.append(compiled);
                          });
+                     });
 
-                     };
+                 };
+             }
+         };
 
-                     scope.canPublish = function (node) {
-                         return node.draft;
-                     };
+     })
+     .directive('ctrlTreeNodeContent', function () {
 
-                     scope.publish = function (node) {
-                         $location.next(node.editUrl);
-                     };
+         return {
+             restrict: 'E',
+             replace: true,
+             transclude: true,
+             link: function (scope, element, attrs) {
+                 element.addClass('ctrl-tree-node-content');
 
-                     scope.canOpen = function (node) {
-                         return node.viewUrl && node.viewUrl !== '';
-                     };
+                 var selectMode = scope.ngSelectMode || 'single';
+                 if (scope.ngSelectable) {
+                     if (['single', 'multiple'].indexOf(selectMode) == -1)
+                         selectMode = 'single';
+                 }
 
-                     scope.open = function (node) {
-                         //if (scope.selectable)
-                         //    scope.$emit('opened', node);
-                         //else
-                             $location.next(node.viewUrl);
-                     };
+                 var unselect = function (node) {
+                     if (node.selected === true)
+                         node.selected = false;
 
-                     if (scope.selectable) {
-                         if (!scope.selectmode)
-                             scope.selectmode = 'single';
+                     $(node.children).each(function (i, item) {
+                         unselect(item);
+                     });
+                 };
 
-                         if (['single', 'multiple'].indexOf(scope.selectmode) == -1)
-                             scope.selectmode = 'single';
-                     }
-
-                     var unselect = function (node) {
-                         if (node.selected === true)
-                             node.selected = false;
-
-                         $(node.children).each(function (i, item) {
-                             unselect(item);
-                         });
-                     };
-
-                     scope.select = function (node) {
+                 scope.select = function (node) {
+                     if (node) {
                          if (scope.ngSelectable) {
-                             if (scope.ngSelectMode === 'single') {
+                             if (selectMode === 'single') {
                                  if (!node.selected) {
                                      var totalParent = node.root ? node : node.parent;
-                                    while (!totalParent.root)
-                                        totalParent = totalParent.parent;
+                                     while (!totalParent.root)
+                                         totalParent = totalParent.parent;
 
                                      unselect(totalParent);
 
@@ -177,17 +143,46 @@
                                  node.selected = !(node.selected || false);
                              }
                          }
-                     };
-
-                     if (angular.isArray(scope.node.children)) {
-                         var collectionElement = angular.element('<ctrl-tree ng-selectable="ngSelectable" ng-select-mode="ngSelectMode" ng-model="node.children" ng-domain="ngDomain"></nestablelist>');
-                         $compile(collectionElement)(scope);
-                         element.append(collectionElement);
                      }
-                 },
-                 templateUrl: 'tmpl/partial/controls/ctrlTreeNode.html'
-             };
+                 };
+             },
+             template: '<div class="dd-content" ng-class="{ \'dd-selected\': node.selected }"><div ng-click="select(node)" ng-transclude></div></div>'
+         };
 
-         });
+     })
+     .directive('ctrlTreeNodeButtons', function ($compile, $location, $q, $fn) {
+
+         return {
+             restrict: 'E',
+             replace: true,
+             transclude: true,
+             link: function (scope, element, attrs) {
+                 element.addClass('ctrl-tree-node-buttons');
+             },
+             template: '<div class="dd-buttons" ng-transclude></div>'
+         };
+
+     })
+     .directive('ctrlTreeEmpty', function () {
+
+         return {
+             restrict: 'E',
+             replace: true,
+             transclude: true,
+             scope: {
+                 ngModel: '='
+             },
+             template: '<div class="dd-list-empty" ng-show="data.length === 0"><span ng-transclude></span></div>',
+             link: function (scope, element, attrs) {
+                 element.addClass('ctrl-tree-empty');
+
+                 scope.$watch('ngModel', function (newValue) {
+                     scope.data = newValue || [];
+                 });
+
+             }
+         };
+
+     });
 
 })();

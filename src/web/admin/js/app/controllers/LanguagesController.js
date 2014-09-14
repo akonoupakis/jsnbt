@@ -45,7 +45,7 @@
                                     newLang.default = true;
                                 }
                                 $data.languages.post(newLang).then(function (result) {
-                                  deferred.resolve(result);
+                                    deferred.resolve(result);
                                 }, function (error) {
                                     deferred.reject(error);
                                 });
@@ -158,34 +158,37 @@
                 });
             };
 
-            $scope.edit = function (language) {
-                $location.next('/content/languages/' + language.id);
-            };
+            $scope.gridFn = {
 
-            $scope.setDefault = function (language) {
-                fn.setDefault(language).then(function () {
-                    $($scope.data.items).each(function (i, item) {
-                        if (item.code === language.code) {
-                            item.default = true;
-                        }
-                        else {
-                            item.default = false;
-                        }
+                edit: function (language) {
+                    $location.next('/content/languages/' + language.id);
+                },
+
+                setDefault: function (language) {
+                    fn.setDefault(language).then(function () {
+                        $($scope.data.items).each(function (i, item) {
+                            if (item.code === language.code) {
+                                item.default = true;
+                            }
+                            else {
+                                item.default = false;
+                            }
+                        });
+                    }, function (error) {
+                        logger.error(error);
                     });
-                }, function (error) {
-                    logger.error(error);
-                });
+
+                },
+
+                delete: function (language) {
+                    fn.delete(language).then(function () {
+                        $scope.data.items = _.filter($scope.data.items, function (x) { return x.id !== language.id; });
+                    }, function (error) {
+                        logger.error(error);
+                    });
+                }
 
             };
-            
-            $scope.delete = function (language) {
-                fn.delete(language).then(function () {
-                    $scope.data.items = _.filter($scope.data.items, function (x) { return x.id !== language.id; });
-                }, function (error) {
-                    logger.error(error);
-                });
-            };
-
 
             fn.load().then(function (data) {
                 $scope.data = data;

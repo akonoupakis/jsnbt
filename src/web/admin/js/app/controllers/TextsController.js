@@ -51,7 +51,7 @@
                     var deferred = $q.defer();
 
                     ModalService.open({
-                        title: 'Are you sure you want to delete the key ' + text.key + '?',
+                        title: 'Are you sure you want to delete the key ' + data.key + '?',
                         template: 'tmpl/partial/modal/deletePrompt.html'
                     }).then(function (confirmed) {
                         if (confirmed) {
@@ -80,16 +80,20 @@
                 });
             };
 
-            $scope.edit = function (text) {
-                $location.next('/content/texts/' + text.id);
-            };
+            $scope.gridFn = {
 
-            $scope.delete = function (text) {
-                fn.delete(item).then(function () {
-                    $scope.data.items = _.filter($scope.data.items, function (x) { return x.id !== text.id; });
-                }, function (ex) {
-                    logger.error(ex);
-                });
+                edit: function (text) {
+                    $location.next('/content/texts/' + text.id);
+                },
+
+                delete: function (text) {
+                    fn.delete(text).then(function () {
+                        $scope.data.items = _.filter($scope.data.items, function (x) { return x.id !== text.id; });
+                    }, function (ex) {
+                        logger.error(ex);
+                    });
+                }
+
             };
 
 

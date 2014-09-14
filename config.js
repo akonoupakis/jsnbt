@@ -6,7 +6,7 @@ module.exports = {
         db: {
             host: 'localhost',
             port: 27017,
-            name: 'test-dev'
+            name: 'jsnbt-dev'
         }
     },
     prod: {

@@ -15,7 +15,7 @@
 
         <div class="row">
             <div class="col-md-12">
-                <ctrl-grid class="table-striped" ng-model="data">
+                <ctrl-grid class="table-striped" ng-model="data" ng-fn="gridFn">
                     <ctrl-grid-header>
                         <ctrl-grid-header-column>Name</ctrl-grid-header-column>
                         <ctrl-grid-header-column></ctrl-grid-header-column>
@@ -28,7 +28,7 @@
                             {{ data.name }}
                         </ctrl-grid-column>
                         <ctrl-grid-buttons-column>
-                            <button class="btn btn-default glyphicon glyphicon-circle-arrow-right" ng-click="edit(data)" />
+                            <button class="btn btn-default glyphicon glyphicon-circle-arrow-right" ng-click="fn.edit(data)" />
                         </ctrl-grid-buttons-column>
                     </ctrl-grid-body>
                 </ctrl-grid>

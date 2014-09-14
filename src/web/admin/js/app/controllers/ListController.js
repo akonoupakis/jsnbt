@@ -118,21 +118,25 @@
                 });
             };
 
-            $scope.edit = function (item) {
-                if ($scope.current.breadcrumb[0].name === 'addons') {
-                    $location.next('/addons/' + $routeParams.domain + '/list/' + $routeParams.list + '/' + item.id);
-                }
-                else {
-                    $location.next('/content/data/' + $routeParams.domain + '/' + $routeParams.list + '/' + item.id);
-                }
-            };
+            $scope.gridFn = {
 
-            $scope.delete = function (item) {
-                fn.delete(item).then(function () {
-                    $scope.data.items = _.filter($scope.data.items, function (x) { return x.id !== item.id; });
-                }, function (ex) {
-                    logger.error(ex);
-                });
+                edit: function (item) {
+                    if ($scope.current.breadcrumb[0].name === 'addons') {
+                        $location.next('/addons/' + $routeParams.domain + '/list/' + $routeParams.list + '/' + item.id);
+                    }
+                    else {
+                        $location.next('/content/data/' + $routeParams.domain + '/' + $routeParams.list + '/' + item.id);
+                    }
+                },
+
+                delete: function (item) {
+                    fn.delete(item).then(function () {
+                        $scope.data.items = _.filter($scope.data.items, function (x) { return x.id !== item.id; });
+                    }, function (ex) {
+                        logger.error(ex);
+                    });
+                }
+
             };
 
 

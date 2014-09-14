@@ -10,9 +10,37 @@
 
         <div class="row">
             <div class="col-md-12">
-                <ctrl-tree ng-model="nodes[0].children" ng-domain="domain"></ctrl-tree>
+               
+                <!--<button type="button" class="dd-collapse" ng-show="node.expandable && !node.root && node.childCount !== 0" ng-click="node.collapse()">Collapse</button>
+                <button type="button" class="dd-expand" ng-show="node.expandable && !node.root && node.childCount !== 0" ng-click="node.expand()">Expand</button>
+                <img class="dd-loading" src="img/node-loading.gif" />-->
+
+                <ctrl-tree ng-model="nodes1[0].children" ng-domain="domain" ng-fn="fn">
+                    <ctrl-tree-node>                        
+                        <ctrl-tree-node-content>{{ node.name }}</ctrl-tree-node-content>
+                        <ctrl-tree-node-buttons>
+                            <button title="Create child" class="btn btn-default btn-sm glyphicon glyphicon-plus-sign" ng-click="createNow(node)"></button>
+                            <button title="Edit" class="btn btn-default btn-sm glyphicon glyphicon-edit" ng-disabled="!fn.canEdit(node)" ng-click="fn.edit(node)"></button>
+                            <button title="Delete" class="btn btn-default btn-sm glyphicon glyphicon-remove" ng-disabled="!fn.canDelete(node)" ng-click="fn.delete(node)"></button>
+                            <button title="Publish" ng-class="{'btn-primary': fn.canPublish(node), 'btn-default': !fn.canPublish(node)}" class="btn btn-sm glyphicon glyphicon-ok-circle" ng-disabled="!fn.canPublish(node)" ng-click="fn.publish(node)"></button>
+                            <button title="Open" class="btn btn-default btn-sm glyphicon glyphicon-circle-arrow-right" ng-disabled="!fn.canOpen(node)" ng-click="fn.open(node)"></button>
+                        </ctrl-tree-node-buttons>
+                    </ctrl-tree-node>
+                </ctrl-tree>
+                <ctrl-tree-empty ng-model="nodes1[0].children" ng-domain="domain">no nodes</ctrl-tree-empty>
             </div>
         </div>
+        <!--<br /><br />
+        <div class="row">
+            <div class="col-md-12">
+                <ctrl-node-tree ng-model="nodes2[0].children" ng-domain="domain" ng-fn="fn" ng-selectable="true" ng-select-mode="'single'">
+                    <button type="button" class="dd-collapse" ng-show="node.expandable && !node.root && node.childCount !== 0" ng-click="node.collapse()">Collapse</button>
+                    <button type="button" class="dd-expand" ng-show="node.expandable && !node.root && node.childCount !== 0" ng-click="node.expand()">Expand</button>
+                    <img class="dd-loading" src="img/node-loading.gif" />
+                    <div class="dd-content" ng-class="{ 'dd-selected': node.selected }"><div ng-click="select(node)">{{node.name}}</div></div>
+                </ctrl-node-tree>
+            </div>
+        </div>-->
     </section>
 
 </div>

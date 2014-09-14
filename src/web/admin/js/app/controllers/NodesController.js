@@ -42,6 +42,13 @@
                     });
 
                     return deferred.promise;
+                },
+
+                getDomain: function (node) {
+                    if (node.entity === 'pointer')
+                        return node.pointer.domain;
+
+                    return node.domain;
                 }
 
             };
@@ -59,6 +66,65 @@
                 });
             };
 
+            $scope.treeFn = {
+
+                canCreate: function (node) {
+                    return $fn.invoke(node.domain, 'tree.canCreate', [node]);
+                },
+
+                create: function (node) {
+                    $fn.invoke(fn.getDomain(node), 'tree.create', [node]);
+                },
+
+                canEdit: function (node) {
+                    return node.editUrl && node.editUrl !== '';
+                },
+
+                edit: function (node) {
+                    $location.next(node.editUrl);
+                },
+
+                canDelete: function (node) {
+                    return $fn.invoke(fn.getDomain(node), 'tree.canDelete', [node]);
+                },
+
+                delete: function (node) {
+                    $fn.invoke(fn.getDomain(node), 'tree.delete', [node]).then(function (deleted) {
+                        if (deleted) {
+                            if (node.parent.id === '') {
+                                $scope.nodes[0].children = _.filter($scope.nodes[0].children, function (x) { return x.id !== node.id; });
+                                $scope.nodes[0].childCount = $scope.nodes[0].children.length;
+                            }
+                            else {
+                                node.parent.children = _.filter(node.parent.children, function (x) { return x.id !== node.id; });
+                                node.parent.childCount = node.parent.children.length;
+
+                                if (node.parent.childCount === 0)
+                                    node.parent.collapsed = true;
+                            }
+                        }
+                    }, function (ex) {
+                        throw ex;
+                    });
+                },
+
+                canPublish: function (node) {
+                    return node.draft;
+                },
+
+                publish: function (node) {
+                    $location.next(node.editUrl);
+                },
+
+                canOpen: function (node) {
+                    return node.viewUrl && node.viewUrl !== '';
+                },
+
+                open: function (node) {
+                    $location.next(node.viewUrl);
+                }
+
+            };
 
             fn.load().then(function (response) {
                 $scope.nodes = response;

@@ -1,3 +1,8 @@
 ﻿<div ng-controller="NodeSelectorController" class="node-select">
-    <ctrl-tree ng-model="nodes" ng-selectable="true" ng-domain="domain" ng-select-mode="mode"></ctrl-tree>
+    <ctrl-tree ng-model="nodes" ng-selectable="true" ng-domain="domain" ng-select-mode="mode">
+        <ctrl-tree-node>
+            <ctrl-tree-node-content>{{ node.name }}</ctrl-tree-node-content>
+        </ctrl-tree-node>
+    </ctrl-tree>
+    <ctrl-tree-empty ng-model="nodes" ng-domain="domain">no nodes</ctrl-tree-empty>
 </div>

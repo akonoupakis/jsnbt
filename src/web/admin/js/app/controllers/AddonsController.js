@@ -35,9 +35,13 @@
 
             };
 
-            
-            $scope.edit = function (addon) {
-                $location.next('/addons/' + addon.domain);
+
+            $scope.gridFn = {
+
+                edit: function (addon) {
+                    $location.next('/addons/' + addon.domain);
+                }
+
             };
 
 
