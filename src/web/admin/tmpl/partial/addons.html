@@ -15,6 +15,7 @@
                 <ctrl-grid class="table-striped" ng-model="data" ng-fn="gridFn">
                     <ctrl-grid-header>
                         <ctrl-grid-header-column>Name</ctrl-grid-header-column>
+                        <ctrl-grid-header-column>Version</ctrl-grid-header-column>
                         <ctrl-grid-header-column></ctrl-grid-header-column>
                     </ctrl-grid-header>
                     <ctrl-grid-footer>
@@ -23,6 +24,9 @@
                     <ctrl-grid-body>
                         <ctrl-grid-column>
                             {{ data.name }}
+                        </ctrl-grid-column>
+                        <ctrl-grid-column>
+                            {{ data.version }}
                         </ctrl-grid-column>
                         <ctrl-grid-buttons-column>
                             <button class="btn btn-default glyphicon glyphicon-circle-arrow-right" ng-click="fn.edit(data)" />

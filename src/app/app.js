@@ -84,6 +84,7 @@ exports.init = function (env, config, module) {
             if (module.addon === true) {
                 jsnbt.registerAddon(module.domain, {
                     domain: module.domain || '',
+                    version: module.version,
                     entities: module.entities || [],
                     lists: module.lists || []
                 });
@@ -117,6 +118,7 @@ exports.init = function (env, config, module) {
                 if (router.addon === true) {
                     jsnbt.registerAddon(installedPackages[i], {
                         domain: router.domain || '',
+                        version: router.version,
                         entities: router.entities || [],
                         lists: router.lists || []
                     });
