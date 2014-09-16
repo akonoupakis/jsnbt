@@ -3,7 +3,7 @@
     "use strict";
 
     $(document).ready(function () {
-        //angular.bootstrap(document, ['jsnbt']);
+        angular.bootstrap(document, ['jsnbt']);
     });
 
 })();          

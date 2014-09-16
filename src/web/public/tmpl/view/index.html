@@ -36,5 +36,16 @@
 </head>
 <body>
     jsnbt index page
+
+    <p>test header text: {{page.header}}</p>
+    <p>test body text: {{page.body}}</p>
+
+
+    <p>
+        links:
+        <ul>
+            <li ng-repeat="item in languages"><a href="{{localizedUrls[item]}}">{{item}}</a></li>
+        </ul>
+    </p>
 </body>
 </html>

@@ -6,20 +6,11 @@
     angular.module("jsnbt")
         .controller('AppController', function ($scope, DpdService, UserService, TextService, LanguageService, NodeService, Cache, Session) {
 
-
-
-
             $scope.user = null;
             $scope.language = null;
             $scope.page = null;
             
             $scope.localizedUrls = {};
-
-            //UserService.getCurrent().then(function (result) {
-            //    $scope.user = result;
-            //}, function (error) {
-            //    throw error;
-            //});
 
             LanguageService.getCurrent().then(function (result) {
                 $scope.language = result;
@@ -28,19 +19,22 @@
                 throw error;
             });
 
+
             NodeService.getCurrent().then(function (result) {
                 $scope.page = result;
                 console.log('current node by url', result);
             }, function (error) {
                 throw error;
             }).then(function () {
-                //console.log($scope.page);
                 if ($scope.page) {
+                    var languages = [];
                     NodeService.getById($scope.page.id).then(function (results) {
                         for (var i = 0; i < results.length; i++) {
                             $scope.localizedUrls[results[i].language] = results[i].fullUrl;
+                            languages.push(results[i].language);
                         }
-                        console.log($scope.localizedUrls);
+
+                        $scope.languages = languages;
                     }, function (error2) {
                         throw error2;
                     }).then(function () {
