@@ -1,8 +1,10 @@
 ﻿<!DOCTYPE html>
-<html lang="<%= language %>" ng-controller="AppController">
+<html lang="<%= language %>">
 <head>
     <base href="<%= baseHref %>" />
     <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!--meta-->
     <title><%= meta.title %></title>
@@ -12,12 +14,15 @@
     <!-- @if NODE_ENV='DEVELOPMENT' -->
     <link rel="stylesheet" href="css/style.css" />
 
-    <% _.each(js.lib, function(file) { %><script type="text/javascript" src="<%= file %>"></script>
+    <% _.each(js.lib, function(file) { %>
+    <script type="text/javascript" src="<%= file %>"></script>
     <% }); %>
+
     <script type="text/javascript" src="../dpd.js"></script>
     <script type="text/javascript" src="jsnbt.js"></script>
 
-    <% _.each(js.app, function(file) { %><script type="text/javascript" src="<%= file %>"></script>
+    <% _.each(js.app, function(file) { %>
+    <script type="text/javascript" src="<%= file %>"></script>
     <% }); %>
     <script type="text/javascript" src="js/init.js"></script>
     <!-- @endif -->
@@ -32,9 +37,24 @@
     <script type="text/javascript" src="js/app.min.js"></script>
 
     <script type="text/javascript" src="js/init.min.js"></script>
+
     <!-- @endif -->
 </head>
-<body>
-    login
+<body ng-app="jsnbt" ng-controller="AppController">
+    <iframe src="tmpl/partial/blank.html" name="sink"
+            style="display:none"></iframe>
+    <form name="loginForm"
+          action="tmpl/partial/blank.html" target="sink" method="post"
+          ng-controller="LoginController"
+          ng-submit="login(credentials)"
+          novalidate form-autofill-fix>
+        <label for="username">Username:</label>
+        <input type="text" id="username"
+               ng-model="credentials.username">
+        <label for="password">Password:</label>
+        <input type="password" id="password"
+               ng-model="credentials.password">
+        <button type="submit">Login</button>
+    </form>
 </body>
 </html>
