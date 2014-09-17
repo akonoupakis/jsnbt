@@ -41,10 +41,9 @@
     <!-- @endif -->
 </head>
 <body ng-app="jsnbt" ng-controller="AppController">
-    <iframe src="tmpl/partial/blank.html" name="sink"
-            style="display:none"></iframe>
+    <iframe src="http://localhost:3000/admin/tmpl/partial/blank.html" name="sink"></iframe>
     <form name="loginForm"
-          action="tmpl/partial/blank.html" target="sink" method="post"
+          action="http://localhost:3000/admin/tmpl/partial/blank.html" target="sink" method="post"
           ng-controller="LoginController"
           ng-submit="login(credentials)"
           novalidate form-autofill-fix>
