@@ -685,7 +685,8 @@ module.exports = function (grunt) {
     grunt.registerTask('default', ['jshint']);
 
 
-    grunt.registerTask('dev', ['mod:bower', 'mod:npm', 'bower:dev', 'jshint', 'env:dev', 'clean:dev', 'copy:dev', 'patch:dev', 'deploybower:dev', 'less:dev', 'preprocess:dev', 'clean:devLess', 'cleanempty:dev']);
+    // 'jshint'
+    grunt.registerTask('dev', ['mod:bower', 'mod:npm', 'bower:dev', 'env:dev', 'clean:dev', 'copy:dev', 'patch:dev', 'deploybower:dev', 'less:dev', 'preprocess:dev', 'clean:devLess', 'cleanempty:dev']);
     grunt.registerTask('prod', ['mod:bower', 'mod:npm', 'bower:prod', 'jshint', 'env:prod', 'clean:prod', 'copy:prod', 'patch:prod', 'deploybower:prod', 'less:prod', 'preprocess:prod', 'clean:prodLess', 'cssmin:prod', 'clean:prodMinified', 'uglify:prod', 'clean:prodUglified', 'cleanempty:prod']);
 
 

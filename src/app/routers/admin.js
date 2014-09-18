@@ -17,6 +17,8 @@ module.exports = function () {
                             viewPath = '/admin/tmpl/view/index.html';
                         else if (location === 'login.html')
                             viewPath = '/admin/tmpl/view/login.html';
+                        else if (location === 'logging')
+                            viewPath = '/admin/tmpl/partial/blank.html';
                     }
 
                     if (viewPath !== null) {

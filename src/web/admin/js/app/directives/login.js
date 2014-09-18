@@ -13,7 +13,7 @@
                 scope: {
                     ngModel: '='
                 },
-                template: '<div ng-if="visible" ng-include="\'tmpl/partial/login.html\'">',
+                templateUrl: 'tmpl/partial/common/login.html',
                 link: function (scope, element, attrs) {
                     element.addClass('login');
 
@@ -21,10 +21,57 @@
                         scope.visible = true;
                     };
 
-                    scope.visible = false;
-                    scope.$on(AUTH_EVENTS.notAuthenticated, showDialog);
-                    scope.$on(AUTH_EVENTS.sessionTimeout, showDialog);
+                    scope.visible = true;
+                    //scope.$on(AUTH_EVENTS.notAuthenticated, showDialog);
+                    //scope.$on(AUTH_EVENTS.sessionTimeout, showDialog);
 
+
+                    scope.credentials = {
+                        username: '',
+                        password: ''
+                    };
+
+                    scope.login = function () {
+                        
+                        var iframe = $('<iframe />')
+                            .addClass('loginIframe')
+                            .css('display', 'none')
+                            .prop('src', 'tmpl/partial/blank.html');
+                            
+
+                        element.append(iframe);
+                        
+                        iframe.load(function () {
+                            iframe.unbind('load');
+                            var form = $('<form />')
+                            .prop('action', '/admin/logging')
+                            .prop('method', 'POST')
+                            .append(
+                                $('<input />')
+                                    .prop('type', 'text')
+                                    .prop('id', 'username')
+                                    .prop('name', 'username')
+                                    .val(scope.credentials.username)
+                            )
+                            .append(
+                                $('<input />')
+                                    .prop('type', 'password')
+                                    .prop('id', 'password')
+                                    .prop('name', 'password')
+                                    .val(scope.credentials.password)
+                            )
+                            .append(
+                                $('<button />')
+                                    .prop('type', 'submit')
+                            );
+
+                            iframe.contents().find('body').append(form);
+
+                            form.submit();
+
+                            iframe.remove();
+                        });
+                    };
                 }
             };
 
