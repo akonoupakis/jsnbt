@@ -16,85 +16,88 @@
     
     angular.module('jsnbt', modules)
     .config(function ($routeProvider, flowFactoryProvider) {
-        $routeProvider.
-          when('/', {
-              templateUrl: 'tmpl/partial/dashboard.html',
-              controller: 'DashboardController'
-          }).
-          when('/content', {
-              templateUrl: 'tmpl/partial/content.html',
-              controller: 'ContentController'
-          }).
-          when('/content/languages', {
-              templateUrl: 'tmpl/partial/content/languages.html',
-              controller: 'LanguagesController'
-          }).
-          when('/content/languages/:id', {
-              templateUrl: 'tmpl/partial/content/language.html',
-              controller: 'LanguageController'
-          }).
-          when('/content/nodes', {
-              templateUrl: 'tmpl/partial/content/nodes.html',
-              controller: 'NodesController'
-          }).
-          when('/content/nodes/:id', {
-              templateUrl: 'tmpl/partial/content/node.html',
-              controller: 'NodeController'
-          }).
-          when('/content/data', {
-              templateUrl: 'tmpl/partial/content/data.html',
-              controller: 'DataController'
-          }).
-          when('/content/data/:domain/:list', {
-              templateUrl: 'tmpl/partial/content/list.html',
-              controller: 'ListController'
-          }).
-          when('/content/data/:domain/:list/:id', {
-              templateUrl: 'tmpl/partial/content/list-entry.html',
-              controller: 'ListEntryController'
-          }).
-          when('/content/texts', {
-              templateUrl: 'tmpl/partial/content/texts.html',
-              controller: 'TextsController'
-          }).
-          when('/content/texts/:id', {
-              templateUrl: 'tmpl/partial/content/text.html',
-              controller: 'TextController'
-          }).
-          when('/content/files', {
-              templateUrl: 'tmpl/partial/content/files.html',
-              controller: 'FilesController'
-          }).
-          when('/addons', {
-              templateUrl: 'tmpl/partial/addons.html',
-              controller: 'AddonsController'
-          }).
-          when('/addons/:domain/list/:list', {
-              templateUrl: 'tmpl/partial/content/list.html',
-              controller: 'ListController'
-          }).
-          when('/addons/:domain/list', {
-              redirectTo: '/addons/:domain'
-          }).
-          when('/addons/:domain/list/:list/:id', {
-              templateUrl: 'tmpl/partial/content/list-entry.html',
-              controller: 'ListEntryController'
-          }).
-          when('/test', {
-             templateUrl: 'tmpl/partial/test.html',
-             controller: 'TestController'
-          }).
-          otherwise({
-              redirectTo: '/'
-          });
+        
+        if (document.location.pathname.toLowerCase() !== '/admin/login.html') {
+            $routeProvider.
+              when('/', {
+                  templateUrl: 'tmpl/partial/dashboard.html',
+                  controller: 'DashboardController'
+              }).
+              when('/content', {
+                  templateUrl: 'tmpl/partial/content.html',
+                  controller: 'ContentController'
+              }).
+              when('/content/languages', {
+                  templateUrl: 'tmpl/partial/content/languages.html',
+                  controller: 'LanguagesController'
+              }).
+              when('/content/languages/:id', {
+                  templateUrl: 'tmpl/partial/content/language.html',
+                  controller: 'LanguageController'
+              }).
+              when('/content/nodes', {
+                  templateUrl: 'tmpl/partial/content/nodes.html',
+                  controller: 'NodesController'
+              }).
+              when('/content/nodes/:id', {
+                  templateUrl: 'tmpl/partial/content/node.html',
+                  controller: 'NodeController'
+              }).
+              when('/content/data', {
+                  templateUrl: 'tmpl/partial/content/data.html',
+                  controller: 'DataController'
+              }).
+              when('/content/data/:domain/:list', {
+                  templateUrl: 'tmpl/partial/content/list.html',
+                  controller: 'ListController'
+              }).
+              when('/content/data/:domain/:list/:id', {
+                  templateUrl: 'tmpl/partial/content/list-entry.html',
+                  controller: 'ListEntryController'
+              }).
+              when('/content/texts', {
+                  templateUrl: 'tmpl/partial/content/texts.html',
+                  controller: 'TextsController'
+              }).
+              when('/content/texts/:id', {
+                  templateUrl: 'tmpl/partial/content/text.html',
+                  controller: 'TextController'
+              }).
+              when('/content/files', {
+                  templateUrl: 'tmpl/partial/content/files.html',
+                  controller: 'FilesController'
+              }).
+              when('/addons', {
+                  templateUrl: 'tmpl/partial/addons.html',
+                  controller: 'AddonsController'
+              }).
+              when('/addons/:domain/list/:list', {
+                  templateUrl: 'tmpl/partial/content/list.html',
+                  controller: 'ListController'
+              }).
+              when('/addons/:domain/list', {
+                  redirectTo: '/addons/:domain'
+              }).
+              when('/addons/:domain/list/:list/:id', {
+                  templateUrl: 'tmpl/partial/content/list-entry.html',
+                  controller: 'ListEntryController'
+              }).
+              when('/test', {
+                  templateUrl: 'tmpl/partial/test.html',
+                  controller: 'TestController'
+              }).
+              otherwise({
+                  redirectTo: '/'
+              });
 
-        flowFactoryProvider.defaults = {
-            target: '/jsnbt-upload',
-            permanentErrors: [500, 501],
-            maxChunkRetries: 1,
-            chunkRetryInterval: 5000,
-            simultaneousUploads: 1
-        };
+            flowFactoryProvider.defaults = {
+                target: '/jsnbt-upload',
+                permanentErrors: [500, 501],
+                maxChunkRetries: 1,
+                chunkRetryInterval: 5000,
+                simultaneousUploads: 1
+            };
+        }
     })
     .run(function ($rootScope, $location, $route, $timeout, $fn, FunctionService) {
         $fn.register('core', FunctionService);

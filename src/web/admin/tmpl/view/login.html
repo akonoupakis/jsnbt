@@ -41,22 +41,6 @@
     <!-- @endif -->
 </head>
 <body ng-app="jsnbt" ng-controller="AppController">
-
-    <login></login>
-
-    <!--<iframe src="logging.htm" name="sink"></iframe>
-    <form name="loginForm"
-          action="logging.htm" target="sink" method="post"
-          ng-controller="LoginController"
-          ng-submit="login(credentials)"
-          novalidate form-autofill-fix>
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username"
-               ng-model="credentials.username">
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password"
-               ng-model="credentials.password">
-        <button type="submit">Login</button>
-    </form>-->
+    <div class="login-page" ng-include="'tmpl/partial/login.html'" ng-controller="LoginController"></div>
 </body>
 </html>
