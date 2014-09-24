@@ -114,6 +114,5 @@
             }, function (dlsError) {
                 logger.error(dlsError);
             });
-
         });
 })();
