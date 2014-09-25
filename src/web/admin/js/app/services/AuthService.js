@@ -24,7 +24,10 @@
                                     deferred.reject(userError);
                                 }
                                 else {
-                                    deferred.resolve(userResponse);
+                                    if (userResponse)
+                                        deferred.resolve(userResponse);
+                                    else
+                                        deferred.reject();
                                 }
                             });
                         }
@@ -32,6 +35,34 @@
                             deferred.reject(response);
                         }
                     }
+                });
+
+                return deferred.promise;
+            };
+
+            AuthService.get = function () {
+                var deferred = $q.defer();
+
+                dpd.users.me(function (userResponse, userError) {
+                    if (userError) {
+                        deferred.reject(userError);
+                    }
+                    else {
+                        if (userResponse)
+                            deferred.resolve(userResponse);
+                        else
+                            deferred.reject();
+                    }
+                });
+
+                return deferred.promise;
+            };
+
+            AuthService.logout = function () {
+                var deferred = $q.defer();
+
+                dpd.users.logout(function () {
+                    deferred.resolve();
                 });
 
                 return deferred.promise;

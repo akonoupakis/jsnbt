@@ -9,6 +9,7 @@
             loginFailed: 'auth-login-failed',
             logoutSuccess: 'auth-logout-success',
             sessionTimeout: 'auth-session-timeout',
+            authenticated: 'auth-authenticated',
             notAuthenticated: 'auth-not-authenticated',
             notAuthorized: 'auth-not-authorized'
         });

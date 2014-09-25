@@ -12,25 +12,57 @@
                 setSettings: function (value) {
                     settings = value;
                 },
-                $get: function ($q) {
+                $get: function ($q, $rootScope, AUTH_EVENTS) {
                     var Data = {};
-
-                    var getPromise = function (name, fn, args) {
+                   
+                    var getPromise = function (name, fn, args, double) {
                         var deferred = $q.defer();
 
-                        var params = [];
-                        $(args).each(function (a, arg) {
-                            if (typeof (arg) !== 'function')
-                                params.push(arg);
-                        });
-                        params.push(function (result, error) {
-                            if (error)
-                                deferred.reject(error);
-                            else
-                                deferred.resolve(result);
-                        });
+                        var promiseArgs = args;
 
-                        dpd[name][fn].apply(dpd[name][fn], params);
+                        var getPromiseParams = function () {
+                            var params = [];
+                            $(promiseArgs).each(function (a, arg) {
+                                if (typeof (arg) !== 'function')
+                                    params.push(arg);
+                            });
+                            params.push(function (result, error) {
+                                if (error) {
+                                    if (error.status) {
+                                        if (!double) {
+
+                                            var authCodes = {
+                                                401: AUTH_EVENTS.notAuthenticated,
+                                                403: AUTH_EVENTS.notAuthorized,
+                                                419: AUTH_EVENTS.sessionTimeout,
+                                                440: AUTH_EVENTS.sessionTimeout
+                                            };
+
+                                            if (authCodes[error.status]) {
+                                                $rootScope.$broadcast(authCodes[error.status], function () {
+                                                    dpd[name][fn].apply(dpd[name][fn], getPromiseParams(true));
+                                                });
+                                            }
+                                            else {
+                                                deferred.reject(error);
+                                            }
+                                        }
+                                        else {
+                                            deferred.reject(error);
+                                        }
+                                    }
+                                    else {
+                                        deferred.reject(error);
+                                    }
+                                }
+                                else {
+                                    deferred.resolve(result);
+                                }
+                            });
+                            return params;
+                        };
+
+                        dpd[name][fn].apply(dpd[name][fn], getPromiseParams());
 
                         return deferred.promise;
                     };
@@ -136,6 +168,11 @@
             });
 
             $data.register('texts', {
+                key: '',
+                value: {}
+            });
+
+            $data.register('tests', {
                 key: '',
                 value: {}
             });
