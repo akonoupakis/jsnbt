@@ -11,6 +11,7 @@
             sessionTimeout: 'auth-session-timeout',
             authenticated: 'auth-authenticated',
             notAuthenticated: 'auth-not-authenticated',
-            notAuthorized: 'auth-not-authorized'
+            notAuthorized: 'auth-not-authorized',
+            noUsers: 'auth-no-users'
         });
 })();

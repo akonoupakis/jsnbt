@@ -101,6 +101,9 @@
     .run(function ($rootScope, $location, $route, $timeout, $fn, FunctionService, AuthService, AUTH_EVENTS) {
         $fn.register('core', FunctionService);
 
+        $rootScope.initiated = $rootScope.initiated || false;
+        $rootScope.users = 0;
+
         var history = [];
 
         $rootScope.back = function () {
@@ -115,9 +118,30 @@
                 $rootScope.$broadcast(AUTH_EVENTS.authenticated, user);
             }, function () {
                 event.preventDefault();
-                $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated, function () {
-                    $route.reload();
-                });
+                if (!$rootScope.initiated) {
+                    AuthService.count().then(function (count) {
+                        if (count === 0) {
+                            console.log('no users');
+                            $rootScope.$broadcast(AUTH_EVENTS.noUsers, function () {
+                                $route.reload();
+                            });
+                        }
+                        else {
+                            $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated, function () {
+                                $route.reload();
+                            });
+                        }
+                        $rootScope.initiated = true;
+                    }, function (error) {
+                        throw error;
+                    });
+                }
+                else {
+                    $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated, function () {
+                        $route.reload();
+                    });
+                }
+
             });
         });
 

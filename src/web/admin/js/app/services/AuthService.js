@@ -58,6 +58,21 @@
                 return deferred.promise;
             };
 
+            AuthService.count = function () {
+                var deferred = $q.defer();
+
+                dpd.users.get({}, function (userResponse, userError) {
+                    if (userError) {
+                        deferred.reject(userError);
+                    }
+                    else {
+                        deferred.resolve(userResponse.length);                        
+                    }
+                });
+
+                return deferred.promise;
+            };
+
             AuthService.logout = function () {
                 var deferred = $q.defer();
 
