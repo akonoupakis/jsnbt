@@ -1,4 +1,7 @@
 var view = require('../view.js');
+var _ = require('underscore');
+
+_.str = require('underscore.string');
 
 module.exports = function () {
 
@@ -19,8 +22,12 @@ module.exports = function () {
                             viewPath = '/admin/tmpl/partial/blank.html';
                     }
 
-                    if (ctx.req.url === '/admin') {
+                    if (ctx.req.url.toLowerCase() === '/admin' || _.str.startsWith(ctx.req.url.toLowerCase(), '/admin#')) {
+                        if (_.str.startsWith(ctx.req.url.toLowerCase(), '/admin#'))
+                            ctx.res.writeHead(302, { "Location": ctx.req.url.replace(/\/admin#/, '/admin/#') });
+
                         ctx.res.writeHead(302, { "Location": "/admin/" });
+
                         ctx.res.end();
                     }
                     else {
