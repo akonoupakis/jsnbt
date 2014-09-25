@@ -35,7 +35,7 @@
                 };
 
                 var modalInstance = $modal.open({
-                    templateUrl: 'tmpl/partial/common/modal-content.html',
+                    template: '<div ng-controller="' + scope.controller + '" ng-include="\'tmpl/partial/common/modal-content.html\'"></div>',
                     backdrop: true,
                     controller: modalCtrl,
                     size: 'lg'

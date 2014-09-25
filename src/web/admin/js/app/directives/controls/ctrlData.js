@@ -78,6 +78,7 @@
 
                         ModalService.open({
                             title: 'Select a data item',
+                            controller: 'DataSelectorController',
                             selected: scope.ngModel,
                             template: 'tmpl/partial/modal/dataSelector.html',
                             domain: scope.ngDomain,

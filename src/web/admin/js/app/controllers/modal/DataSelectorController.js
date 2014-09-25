@@ -7,7 +7,7 @@
             $scope.data = [];
 
             if (!$scope.domain)
-                throw new Error('$scope.domain not defined in NodeSelectorController');
+                throw new Error('$scope.domain not defined in DataSelectorController');
             
             if (!$scope.mode)
                 $scope.mode = 'single';

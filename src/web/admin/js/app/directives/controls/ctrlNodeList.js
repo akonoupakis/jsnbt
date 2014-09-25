@@ -97,12 +97,20 @@
                         if (!scope.ngDomain || scope.ngDomain === '')
                             return;
 
-                        $fn.invoke(scope.ngDomain, 'node.selectMany', [scope.ngModel, scope.ngOptions], false).then(function (selectedNodeIds) {
-                            scope.ngModel = selectedNodeIds || [];
-                            scope.changed();
-                        }, function (error) {
-                            throw error;
-                        });
+
+                        var invoked = $fn.invoke(scope.ngDomain, 'node.selectMany', [scope.ngModel, scope.ngOptions], false);
+                        
+                        if (invoked) {
+                            invoked.then(function (selectedNodeIds) {
+                                scope.ngModel = selectedNodeIds || [];
+                                scope.changed();
+                            }, function (error) {
+                                throw error;
+                            });
+                        }
+                        else {
+                            throw new Error('unable to select node for domain: ' + scope.ngDomain);
+                        }
                     };
 
                     scope.clear = function (node) {

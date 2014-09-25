@@ -51,6 +51,7 @@
 
                     ModalService.open({
                         title: 'Type a name',
+                        controller: 'NamePromptController',
                         template: 'tmpl/partial/modal/namePrompt.html'
                     }).then(function (result) {
                         if (!!result && result !== '') {
@@ -74,6 +75,7 @@
 
                     ModalService.open({
                         title: 'Are you sure you want to delete the item ' + data.name + '?',
+                        controller: 'DeletePromptController',
                         template: 'tmpl/partial/modal/deletePrompt.html'
                     }).then(function (confirmed) {
                         if (confirmed) {
