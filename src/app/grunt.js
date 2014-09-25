@@ -656,12 +656,12 @@ module.exports = function (grunt) {
         },
         dev: {
             files: [
-                'src/web/admin/js/**', 'src/web/admin/css/**', 'src/web/admin/tmpl/partial/**',
-                'src/web/public/js/**', 'src/web/public/css/**', 'src/web/public/tmpl/partial/**',
+                'src/web/admin/js/**', 'src/web/admin/css/**', 'src/web/admin/tmpl/partial/**', 'src/web/admin/tmpl/view/**', 'src/web/admin/tmpl/error/**',
+                'src/web/public/js/**', 'src/web/public/css/**', 'src/web/public/tmpl/partial/**', 'src/web/public/tmpl/view/**', 'src/web/public/tmpl/error/**',
             ],
             tasks: [
                 //'jshint',
-                'copy:devAdminJs', 'copy:devAdminImg', 'copy:devAdminTmpl', 'copy:devAdminCss', 'preprocess:devAdmin', 'less:devAdmin', 'clean:devLess', 'cleanempty:dev',
+                'copy:devAdminJs', 'copy:devAdminImg', 'copy:devAdminTmpl', 'copy:devAdminCss', 'less:devAdmin', 'preprocess:devAdmin', 'clean:devLess', 'cleanempty:dev',
                 'copy:devPublicJs', 'copy:devPublicImg', 'copy:devPublicTmpl', 'copy:devPublicCss', 'preprocess:devPublic', 'less:devPublic', 'clean:devLess', 'cleanempty:dev'
             ]
         }

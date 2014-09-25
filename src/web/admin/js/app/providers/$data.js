@@ -119,6 +119,13 @@
         })
         .run(function ($data) {
 
+            $data.register('users', {
+                username: undefined,
+                password: undefined,
+                firstName: undefined,
+                lastName: undefined
+            });
+
             $data.register('drafts', {
                 refId: '',
                 collection: '',

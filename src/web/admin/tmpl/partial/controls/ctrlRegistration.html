@@ -1,0 +1,33 @@
+﻿<form name="registrationForm" action="/admin/logging" target="sink" method="post" ng-submit="register()" class="col-md-12">
+    <div class="row ctrl-text">
+        <div class="form-group">
+            <label class="control-label" for="txtRegistrationUsername">Username</label>
+            <input type="text" class="form-control" id="txtRegistrationUsername" name="username" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <label class="control-label" for="txtRegistrationPassword">Password</label>
+            <input type="password" class="form-control" id="txtRegistrationPassword" name="password" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <label class="control-label" for="txtRegistrationFirstName">First name</label>
+            <input type="text" class="form-control" id="txtRegistrationFirstName" name="firstName" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <label class="control-label" for="txtRegistrationLastName">Last name</label>
+            <input type="text" class="form-control" id="txtRegistrationLastName" name="lastName" />
+        </div>
+    </div>
+    <div class="row" style="text-align:right">
+        <div class="btn-group">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+    
+    <iframe src="/admin/logging" name="sink" ng-hide="true"></iframe>
+</form>
