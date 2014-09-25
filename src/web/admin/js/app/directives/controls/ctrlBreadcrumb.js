@@ -11,7 +11,8 @@
                 restrict: 'E',
                 replace: true,
                 scope: {
-                    ngModel: '='
+                    ngModel: '=',
+                    ngTitle: '@'
                 },
                 link: function (scope, element, attrs) {
                     element.addClass('breadcrumb');
