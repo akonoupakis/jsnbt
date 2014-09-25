@@ -19,11 +19,17 @@ module.exports = function () {
                             viewPath = '/admin/tmpl/partial/blank.html';
                     }
 
-                    if (viewPath !== null) {
-                        view.render(ctx, viewPath);
+                    if (ctx.req.url === '/admin') {
+                        ctx.res.writeHead(302, { "Location": "/admin/" });
+                        ctx.res.end();
                     }
                     else {
-                        next();
+                        if (viewPath !== null) {
+                            view.render(ctx, viewPath);
+                        }
+                        else {
+                            next();
+                        }
                     }
                 }
                 catch (err) {
