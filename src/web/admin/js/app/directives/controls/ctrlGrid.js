@@ -36,7 +36,7 @@
                         scope.fn = newValue;
                     });
                 },
-                templateUrl: 'tmpl/partial/controls/ctrlGrid.html'
+                template: '<table class="table table-condensed" ng-class="{\'ctrl-grid-loading\': loading}" ng-transclude></table>'
             };
 
         })
