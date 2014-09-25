@@ -24,10 +24,8 @@
                         var password = $passwordElement.val();
 
                         AuthService.login(username, password).then(function (user) {
-                            // mark valid
                             $rootScope.$broadcast(AUTH_EVENTS.loginSuccess, user);
                         }, function (error) {
-                            // mark invalid
                             $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
                         });
                     };

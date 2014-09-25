@@ -121,7 +121,6 @@
                 if (!$rootScope.initiated) {
                     AuthService.count().then(function (count) {
                         if (count === 0) {
-                            console.log('no users');
                             $rootScope.$broadcast(AUTH_EVENTS.noUsers, function () {
                                 $route.reload();
                             });

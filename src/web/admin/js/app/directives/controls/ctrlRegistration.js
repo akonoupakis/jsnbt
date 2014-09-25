@@ -32,7 +32,9 @@
                                 password: password,
                                 firstName: firstName,
                                 lastName: lastName
-                            })).then(function () {
+                            })).then(function (created) {
+                                $rootScope.$broadcast(AUTH_EVENTS.userCreated, created);
+
                                 AuthService.login(username, password).then(function (user) {
                                     $rootScope.$broadcast(AUTH_EVENTS.loginSuccess, user);
                                 }, function (error) {

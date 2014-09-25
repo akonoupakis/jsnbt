@@ -12,6 +12,7 @@
             authenticated: 'auth-authenticated',
             notAuthenticated: 'auth-not-authenticated',
             notAuthorized: 'auth-not-authorized',
-            noUsers: 'auth-no-users'
+            noUsers: 'auth-no-users',
+            userCreated: 'auth-user-created'
         });
 })();

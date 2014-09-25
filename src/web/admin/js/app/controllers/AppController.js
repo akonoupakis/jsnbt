@@ -13,6 +13,7 @@
             $scope.defaults = {};
           
             $scope.current.user = undefined;
+            $scope.current.users = true;
             $scope.current.restoreFn = undefined;
             $scope.current.breadcrumb = [];
 
@@ -132,6 +133,18 @@
             
             $rootScope.$on('$routeChangeSuccess', function () {
                 $scope.current.setBreadcrumb(LocationService.getBreadcrumb());
+            });
+
+            $scope.$on(AUTH_EVENTS.noUsers, function (sender, fn) {
+                apply(function () {
+                    $scope.current.users = false;
+                });
+            });
+
+            $scope.$on(AUTH_EVENTS.userCreated, function (sender, fn) {
+                apply(function () {
+                    $scope.current.users = true;
+                });
             });
 
             $scope.$on(AUTH_EVENTS.authenticated, function (sender, user) {
