@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('breadcrumb', function ($location) {
+        .directive('ctrlBreadcrumb', function ($location) {
 
             return {
                 restrict: 'E',
@@ -15,12 +15,13 @@
                 },
                 link: function (scope, element, attrs) {
                     element.addClass('breadcrumb');
+                    element.addClass('ctrl-breadcrumb');
 
                     scope.previousTo = function (path) {
                         $location.previous(path);
                     };
                 },
-                templateUrl: 'tmpl/partial/common/breadcrumb.html' 
+                templateUrl: 'tmpl/partial/controls/ctrlBreadcrumb.html' 
             };
 
         });

@@ -1,0 +1,22 @@
+﻿<form name="loginForm" action="/admin/logging" target="sink" method="post" ng-submit="login()" class="col-md-12">
+    <div class="row ctrl-text">
+        <div class="form-group">
+            <label class="control-label" for="txtLoginUsername">Username</label>
+            <input type="text" class="form-control" id="txtLoginUsername" name="username" value="konoupakis@gmail.com" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <label class="control-label" for="txtLoginPassword">Password</label>
+            <input type="password" class="form-control" id="txtLoginPassword" name="password" value="asdasd" />
+        </div>
+    </div>
+
+    <div class="row" style="text-align:right">
+        <div class="btn-group">
+            <button type="submit" class="btn btn-primary">Login</button>
+        </div>
+    </div>
+    
+    <iframe src="/admin/logging" name="sink" ng-hide="true"></iframe>
+</form>

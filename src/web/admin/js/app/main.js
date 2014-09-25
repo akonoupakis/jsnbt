@@ -16,77 +16,78 @@
     
     angular.module('jsnbt', modules)
     .config(function ($routeProvider, flowFactoryProvider) {
+        
         $routeProvider.
-          when('/', {
-              templateUrl: 'tmpl/partial/dashboard.html',
-              controller: 'DashboardController'
-          }).
-          when('/content', {
-              templateUrl: 'tmpl/partial/content.html',
-              controller: 'ContentController'
-          }).
-          when('/content/languages', {
-              templateUrl: 'tmpl/partial/content/languages.html',
-              controller: 'LanguagesController'
-          }).
-          when('/content/languages/:id', {
-              templateUrl: 'tmpl/partial/content/language.html',
-              controller: 'LanguageController'
-          }).
-          when('/content/nodes', {
-              templateUrl: 'tmpl/partial/content/nodes.html',
-              controller: 'NodesController'
-          }).
-          when('/content/nodes/:id', {
-              templateUrl: 'tmpl/partial/content/node.html',
-              controller: 'NodeController'
-          }).
-          when('/content/data', {
-              templateUrl: 'tmpl/partial/content/data.html',
-              controller: 'DataController'
-          }).
-          when('/content/data/:domain/:list', {
-              templateUrl: 'tmpl/partial/content/list.html',
-              controller: 'ListController'
-          }).
-          when('/content/data/:domain/:list/:id', {
-              templateUrl: 'tmpl/partial/content/list-entry.html',
-              controller: 'ListEntryController'
-          }).
-          when('/content/texts', {
-              templateUrl: 'tmpl/partial/content/texts.html',
-              controller: 'TextsController'
-          }).
-          when('/content/texts/:id', {
-              templateUrl: 'tmpl/partial/content/text.html',
-              controller: 'TextController'
-          }).
-          when('/content/files', {
-              templateUrl: 'tmpl/partial/content/files.html',
-              controller: 'FilesController'
-          }).
-          when('/addons', {
-              templateUrl: 'tmpl/partial/addons.html',
-              controller: 'AddonsController'
-          }).
-          when('/addons/:domain/list/:list', {
-              templateUrl: 'tmpl/partial/content/list.html',
-              controller: 'ListController'
-          }).
-          when('/addons/:domain/list', {
-              redirectTo: '/addons/:domain'
-          }).
-          when('/addons/:domain/list/:list/:id', {
-              templateUrl: 'tmpl/partial/content/list-entry.html',
-              controller: 'ListEntryController'
-          }).
-          when('/test', {
-             templateUrl: 'tmpl/partial/test.html',
-             controller: 'TestController'
-          }).
-          otherwise({
-              redirectTo: '/'
-          });
+            when('/', {
+                templateUrl: 'tmpl/partial/dashboard.html',
+                controller: 'DashboardController'
+            }).
+            when('/content', {
+                templateUrl: 'tmpl/partial/content.html',
+                controller: 'ContentController'
+            }).
+            when('/content/languages', {
+                templateUrl: 'tmpl/partial/content/languages.html',
+                controller: 'LanguagesController'
+            }).
+            when('/content/languages/:id', {
+                templateUrl: 'tmpl/partial/content/language.html',
+                controller: 'LanguageController'
+            }).
+            when('/content/nodes', {
+                templateUrl: 'tmpl/partial/content/nodes.html',
+                controller: 'NodesController'
+            }).
+            when('/content/nodes/:id', {
+                templateUrl: 'tmpl/partial/content/node.html',
+                controller: 'NodeController'
+            }).
+            when('/content/data', {
+                templateUrl: 'tmpl/partial/content/data.html',
+                controller: 'DataController'
+            }).
+            when('/content/data/:domain/:list', {
+                templateUrl: 'tmpl/partial/content/list.html',
+                controller: 'ListController'
+            }).
+            when('/content/data/:domain/:list/:id', {
+                templateUrl: 'tmpl/partial/content/list-entry.html',
+                controller: 'ListEntryController'
+            }).
+            when('/content/texts', {
+                templateUrl: 'tmpl/partial/content/texts.html',
+                controller: 'TextsController'
+            }).
+            when('/content/texts/:id', {
+                templateUrl: 'tmpl/partial/content/text.html',
+                controller: 'TextController'
+            }).
+            when('/content/files', {
+                templateUrl: 'tmpl/partial/content/files.html',
+                controller: 'FilesController'
+            }).
+            when('/addons', {
+                templateUrl: 'tmpl/partial/addons.html',
+                controller: 'AddonsController'
+            }).
+            when('/addons/:domain/list/:list', {
+                templateUrl: 'tmpl/partial/content/list.html',
+                controller: 'ListController'
+            }).
+            when('/addons/:domain/list', {
+                redirectTo: '/addons/:domain'
+            }).
+            when('/addons/:domain/list/:list/:id', {
+                templateUrl: 'tmpl/partial/content/list-entry.html',
+                controller: 'ListEntryController'
+            }).
+            when('/test', {
+                templateUrl: 'tmpl/partial/test.html',
+                controller: 'TestController'
+            }).
+            otherwise({
+                redirectTo: '/'
+            });
 
         flowFactoryProvider.defaults = {
             target: '/jsnbt-upload',
@@ -95,8 +96,9 @@
             chunkRetryInterval: 5000,
             simultaneousUploads: 1
         };
+
     })
-    .run(function ($rootScope, $location, $route, $timeout, $fn, FunctionService) {
+    .run(function ($rootScope, $location, $route, $timeout, $fn, FunctionService, AuthService, AUTH_EVENTS) {
         $fn.register('core', FunctionService);
 
         var history = [];
@@ -108,7 +110,18 @@
 
         $rootScope.location = $rootScope.location || {};
 
-        $rootScope.$on("$routeChangeStart", function (event) {
+        $rootScope.$on('$locationChangeStart', function (event, next, a, b, c) {
+            AuthService.get().then(function (user) {
+                $rootScope.$broadcast(AUTH_EVENTS.authenticated, user);
+            }, function () {
+                event.preventDefault();
+                $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated, function () {
+                    $route.reload();
+                });
+            });
+        });
+
+        $rootScope.$on("$routeChangeStart", function () {
             if ($rootScope.location.leaving) {
                 $rootScope.location.coming = true;
             }
@@ -138,7 +151,7 @@
                 }
             }, 1000);
         });
-
+        
         $location.next = function (path) {
             $rootScope.location.direction = 'ltr';
             $rootScope.location.coming = false;

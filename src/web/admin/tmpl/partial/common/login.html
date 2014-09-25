@@ -1,9 +1,9 @@
-﻿<div>
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username"
-           ng-model="credentials.username">
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password"
-           ng-model="credentials.password">
-    <button type="submit" ng-click="login()" ng-disabled="!credentials.username || !credentials.password">Login</button>
+﻿<div class="login-dialog">
+    <div class="login-dialog-container">
+        <div class="container">
+            <div class="col-md-12">
+                <ctrl-login></ctrl-login>
+            </div>
+        </div>
+    </div>
 </div>

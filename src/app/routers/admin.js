@@ -15,8 +15,6 @@ module.exports = function () {
                         var location = ctx.uri.parts[1];
                         if (location === 'index.html')
                             viewPath = '/admin/tmpl/view/index.html';
-                        else if (location === 'login.html')
-                            viewPath = '/admin/tmpl/view/login.html';
                         else if (location === 'logging')
                             viewPath = '/admin/tmpl/partial/blank.html';
                     }

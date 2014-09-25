@@ -4,15 +4,16 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('AppController', function ($scope, $rootScope, $location, $logger, $q, $data, LocationService) {
+        .controller('AppController', function ($scope, $rootScope, $route, $location, $logger, $q, $data, LocationService, AuthService, AUTH_EVENTS) {
 
             var logger = $logger.create('AppController');
 
             $scope.application = {};
             $scope.current = {};
             $scope.defaults = {};
-
+          
             $scope.current.user = undefined;
+            $scope.current.restoreFn = undefined;
             $scope.current.breadcrumb = [];
 
             $scope.application.version = jsnbt.version;
@@ -20,6 +21,18 @@
 
             $scope.defaults.languages = [];
             $scope.defaults.language = null;
+
+
+            var apply = function (fn) {
+                var phase = $scope.$root.$$phase;
+                if (phase == '$apply' || phase == '$digest') {
+                    if (fn && (typeof (fn) === 'function')) {
+                        fn();
+                    }
+                } else {
+                    $scope.$apply(fn);
+                }
+            };
 
 
             var fn = {
@@ -80,29 +93,70 @@
 
             };
 
-            dpd.on('languageCreated', function (language) {
-                fn.setApplicationLanguages().then(function () {
-                    if (language.default)
-                        $scope.defaults.language = language.code;
-                });
-            });
-            dpd.on('languageDeleted', function (language) {
-                fn.setApplicationLanguages();
-            });
 
             $scope.current.setBreadcrumb = function (value) {
                 $scope.current.breadcrumb = value;
             };
 
             $scope.current.setUser = function (value) {
-                console.log('setCurrentUser', value);
+                $scope.current.user = !!value ? value : undefined;
             };
 
+            $scope.current.login = function (username, password) {
+                AuthService.login(username, password).then(function (user) {
+                    $rootScope.$broadcast(AUTH_EVENTS.loginSuccess, user);
+                }, function (error) {
+                    $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
+                });
+            };
+
+            $scope.current.logout = function () {
+                AuthService.logout().then(function () {
+                    $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated, function () {
+                        $route.reload();
+                    });                    
+                });
+            };
+
+
+            dpd.on('languageCreated', function (language) {
+                fn.setApplicationLanguages().then(function () {
+                    if (language.default)
+                        $scope.defaults.language = language.code;
+                });
+            });
+
+            dpd.on('languageDeleted', function (language) {
+                fn.setApplicationLanguages();
+            });
+            
             $rootScope.$on('$routeChangeSuccess', function () {
                 $scope.current.setBreadcrumb(LocationService.getBreadcrumb());
             });
 
+            $scope.$on(AUTH_EVENTS.authenticated, function (sender, user) {
+                apply(function () {
+                    $scope.current.setUser(user);
+                });
+            });
 
+            $scope.$on(AUTH_EVENTS.notAuthenticated, function (sender, fn) {
+                apply(function () {
+                    $scope.current.setUser(null);
+                    $scope.current.restoreFn = fn;
+                });
+            });
+
+            $scope.$on(AUTH_EVENTS.loginSuccess, function (sender, user) {
+                apply(function () {
+                    $scope.current.setUser(user);
+                    if (typeof ($scope.current.restoreFn) === 'function') {
+                        $scope.current.restoreFn();
+                    }
+                });
+            });
+
+            
             fn.setDefaultLanguages().then(function () {
                 fn.setApplicationLanguages().then(function () {
                     fn.setDefaultLanguage().then(function () { }, function (dlError) {
@@ -114,5 +168,6 @@
             }, function (dlsError) {
                 logger.error(dlsError);
             });
+
         });
 })();
