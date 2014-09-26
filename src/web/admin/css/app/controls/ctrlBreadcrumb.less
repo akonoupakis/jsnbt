@@ -5,10 +5,12 @@
     padding: 0px;
     margin: 0px;
     display: inline;
-    padding-left: 5px;
+    padding-left: 10px;
 }
-.ctrl-breadcrumb .active {
-    text-decoration:none;
-    color: inherit;
-    cursor: default;
+.ctrl-breadcrumb > .breadcrumb li {
+    display: inline-block;
+}
+.ctrl-breadcrumb > .breadcrumb li a, .ctrl-breadcrumb > .breadcrumb li span {
+    position: relative;
+    left: -5px;
 }
