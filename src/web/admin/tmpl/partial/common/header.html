@@ -12,7 +12,7 @@
         </div>
     </div>
     <nav class="navbar navbar-default" role="navigation">
-        <div class="container-fluid">
+        <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span class="sr-only">Toggle navigation</span>
@@ -41,16 +41,18 @@
                         </ul>
                     </li>-->
                     <li ng-class="{'active': current.breadcrumb[0].name === 'addons'}"><a href="#/addons">addons</a></li>
+                    <li ng-class="{'active': current.breadcrumb[0].name === 'users'}"><a href="#/users">users</a></li>
+                    <li ng-class="{'active': current.breadcrumb[0].name === 'settings'}"><a href="#/settings">settings</a></li>
                 </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <!--<li class="dropdown">
+                <!--<ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
                         <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">Administration <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li><a href="#/administration/users">Users</a></li>
                             <li><a href="#/administration/settings">Settings</a></li>
                         </ul>
-                    </li>-->
-                </ul>
+                    </li>
+                </ul>-->
             </div>
         </div>
     </nav>
