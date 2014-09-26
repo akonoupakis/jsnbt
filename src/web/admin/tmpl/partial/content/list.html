@@ -5,14 +5,10 @@
         <ctrl-breadcrumb ng-model="current.breadcrumb" ng-title="you are here:"></ctrl-breadcrumb>    
 
         <div class="row title-container">
-            <div class="col-md-1 back-button-container">
-                <span ng-click="back()" class="glyphicon glyphicon-arrow-left"></span>
-            </div>
-            <div class="col-md-9">
-                <h1>{{ name }}</h1>
-            </div>
-            <div class="col-md-2">
-                <div class="btn-group">
+            <div class="col-md-12">
+                <span ng-click="back()" class="glyphicon glyphicon-arrow-left back-button"></span>
+                <h1 class="title">{{ name }}</h1>
+                <div class="buttons">
                     <button title="Create new" class="btn btn-default glyphicon glyphicon-plus-sign" type="button" value="Create" ng-click="create()"></button>
                 </div>
             </div>

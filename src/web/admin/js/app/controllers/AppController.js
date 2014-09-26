@@ -113,9 +113,7 @@
 
             $scope.current.logout = function () {
                 AuthService.logout().then(function () {
-                    $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated, function () {
-                        $route.reload();
-                    });                    
+                    $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);                    
                 });
             };
 

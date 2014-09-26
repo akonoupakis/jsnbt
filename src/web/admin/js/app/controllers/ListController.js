@@ -98,7 +98,7 @@
                     $location.previous($rootScope.location.previous);
                 }
                 else {
-                    if ($scope.breadcrumb[0].name === 'addons') {
+                    if ($scope.current.breadcrumb[0].name === 'addons') {
                         $location.previous('/addons/' + $routeParams.domain);
                     }
                     else {

@@ -5,21 +5,12 @@
         <ctrl-breadcrumb ng-model="current.breadcrumb" ng-title="you are here:"></ctrl-breadcrumb>    
 
         <div class="row title-container">
-            <div class="col-md-1 back-button-container">
-                <span ng-click="back()" class="glyphicon glyphicon-arrow-left"></span>
-            </div>
-            <div class="col-md-11 page-title-title">
-                <h1>{{ name }}</h1>
-            </div>
-        </div>
-
-        <div class="row buttons-container">
             <div class="col-md-12">
-                <div class="btn-group">
-                    <button type="button" ng-disabled="published" class="btn btn-success" ng-click="publish()">Publish</button>
-                </div>
-                <div class="btn-group">
+                <span ng-click="back()" class="glyphicon glyphicon-arrow-left back-button"></span>
+                <h1 class="title">{{ name }}</h1>
+                <div class="buttons">
                     <button type="button" ng-show="!published" class="btn btn-danger" ng-click="discard()">Discard</button>
+                    <button type="button" ng-disabled="published" class="btn btn-success" ng-click="publish()">Publish</button>
                 </div>
             </div>
         </div>
@@ -37,7 +28,6 @@
                 <ctrl-text-area class="col-md-12" ng-model="text.value[language.code]" ng-required="true" ng-label="{{language.name}}"></ctrl-text-area>
             </div>
         </div>
-
 
         <hr />
 
