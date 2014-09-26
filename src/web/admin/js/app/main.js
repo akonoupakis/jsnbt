@@ -13,6 +13,7 @@
     modules.push('ui.sortable');
     modules.push('infinite-scroll');
     modules.push('flow');
+    modules.push('ui.tinymce');
     
     angular.module('jsnbt', modules)
     .config(function ($routeProvider, flowFactoryProvider) {
@@ -97,13 +98,14 @@
             simultaneousUploads: 1
         };
 
+        tinymce.baseURL = '/admin/css/lib/tinymce';
     })
     .run(function ($rootScope, $location, $route, $timeout, $fn, FunctionService, AuthService, AUTH_EVENTS) {
         $fn.register('core', FunctionService);
 
         $rootScope.initiated = $rootScope.initiated || false;
         $rootScope.users = 0;
-
+        
         var history = [];
 
         $rootScope.back = function () {

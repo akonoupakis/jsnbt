@@ -33,6 +33,11 @@
                 entities: []
             };
 
+            $scope.tinymceOptions = {
+                resize: false,
+                height: '500px'
+            };
+
             var fn = {
 
                 set: function () {

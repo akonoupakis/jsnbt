@@ -27,11 +27,13 @@
     "angular-motion": "*",
     "angular-strap": "*",
     "jquery.scrollTo": "*",
+	"jquery-ui": "*",
     "bootstrap-ui": "*",
-    "angular-ui-sortable": "*",
-    "jquery-ui": "*",
+    "angular-ui-sortable": "*",    
     "ngInfiniteScroll": "*",
-    "ng-flow": "*"    
+    "ng-flow": "*",
+	"tinymce": "*",
+	"angular-ui-tinymce": "*"
   },
   "deploy": {
     "jquery": {
@@ -236,6 +238,46 @@
           ]
         }
       ]
+	},
+	"tinymce": {
+	  "files": [
+        {
+          "src": "tinymce/tinymce.min.js",
+          "dest": [
+            "admin/js/lib/tinymce/a-tinymce.js"
+          ]
+        }, {
+          "src": "tinymce/themes/modern/theme.min.js",
+          "dest": [
+            "admin/js/lib/tinymce/themes/theme.js"
+          ]
+        }, {
+          "src": "tinymce/skins/lightgray/skin.min.css",
+          "dest": [
+            "admin/css/lib/tinymce/skins/lightgray/skin.min.css"
+          ]
+        }, {
+          "src": "tinymce/skins/lightgray/content.min.css",
+          "dest": [
+            "admin/css/lib/tinymce/skins/lightgray/content.min.css"
+          ]
+        }, {
+          "src": "tinymce/skins/lightgray/fonts/icomoon.svg",
+          "dest": [
+            "admin/css/lib/tinymce/skins/lightgray/fonts/icomoon.svg"
+          ]
+        }
+	  ]
+	},
+	"angular-ui-tinymce": {
+	  "files": [
+        {
+          "src": "angular-ui-tinymce/src/tinymce.js",
+          "dest": [
+            "admin/js/lib/tinymce/b-angular-ui-tinymce.js"
+          ]
+        }
+	  ]
 	}
   }
 }
