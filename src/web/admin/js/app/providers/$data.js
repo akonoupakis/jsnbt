@@ -179,6 +179,11 @@
                 value: {}
             });
 
+            $data.register('settings', {
+                domain: '',
+                data: {}
+            });
+
             $data.register('tests', {
                 key: '',
                 value: {}

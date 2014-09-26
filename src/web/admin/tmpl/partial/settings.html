@@ -1,0 +1,38 @@
+﻿<div class="container">
+
+    <section class="col-md-10 scrollspy-container" data-scrollspy>
+
+        <ctrl-breadcrumb ng-model="current.breadcrumb" ng-title="you are here:"></ctrl-breadcrumb>
+
+        <div class="row title-container">
+            <div class="col-md-12">
+                <span ng-show="current.breadcrumb[0].name === 'addons'" ng-click="back()" class="glyphicon glyphicon-arrow-left back-button"></span>
+                <h1 class="title">{{ name }}</h1>
+            </div>
+        </div>
+
+        <div class="row buttons-container">
+            <div class="col-md-12">
+                <div class="btn-group">
+                    <button type="button" ng-disabled="published" class="btn btn-success" ng-click="publish()">Save</button>
+                </div>
+                <div class="btn-group">
+                    <button type="button" ng-show="!published" class="btn btn-danger" ng-click="discard()">Discard</button>
+                </div>
+            </div>
+        </div>
+                
+        <hr />
+
+        <div ng-show="tmpl" ng-include="tmpl"></div>
+
+        <hr ng-show="tmpl" />
+
+    </section>
+
+    <div class="col-md-2">
+        <scrollspy data="nav" />
+    </div>
+
+</div>
+

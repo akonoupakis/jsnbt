@@ -4,35 +4,39 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('LanguageController', function ($scope, $routeParams, $location, $timeout, $q, $logger, $data, ScrollSpyService, LocationService) {
-           
-            var logger = $logger.create('LanguageController');
+        .controller('SettingsController', function ($scope, $rootScope, $location, $route, $timeout, $q, $logger, $queue, $data, ScrollSpyService, LocationService) {
+            
+            var logger = $logger.create('SettingsController');
 
-            $scope.id = $routeParams.id;
-            $scope.name = undefined;
-            $scope.language = undefined;
-            $scope.languages = [];
+            $scope.domain = $route.current.$$route.domain;
+            $scope.name = ($scope.domain !== 'core' ? ($scope.domain + ' ') : '') + 'settings';
+
+            $scope.id = undefined;
+            $scope.settings = undefined;
 
             $scope.valid = false;
             $scope.published = false;
-            
+
+            $scope.tmpl = $route.current.$$route.tmpl;
+
+
             var fn = {
 
                 set: function () {
                     var deferred = $q.defer();
-                    
-                    $data.languages.get($scope.id).then(function (result) {
 
-                        $scope.name = result.name;
-                        $scope.language = result;
+                    $data.settings.get({ domain: $scope.domain }).then(function (results) {
+                        var first = _.first(results)
+                        if (first) {
+                            $scope.id = first.id;
+                            $scope.settings = first.data;
+                        }
 
-                        $scope.languages = $scope.defaults.languages;
-                            
                         $scope.valid = true;
 
                         $scope.published = true;
 
-                        deferred.resolve(result);
+                        deferred.resolve(first);
 
                     }, function (error) {
                         deferred.reject(error);
@@ -45,11 +49,7 @@
                     var deferred = $q.defer();
 
                     var breadcrumb = LocationService.getBreadcrumb();
-                    breadcrumb = breadcrumb.slice(0, breadcrumb.length - 1);
-                    breadcrumb.push({
-                        name: $scope.name,
-                        active: true
-                    });
+
                     $scope.current.setBreadcrumb(breadcrumb);
 
                     deferred.resolve(breadcrumb);
@@ -67,17 +67,17 @@
 
                     return deferred.promise;
                 },
-                
+
                 save: function () {
                     var deferred = $q.defer();
 
                     $scope.published = false;
-                    
+
                     deferred.resolve();
 
                     return deferred.promise;
                 },
-
+                
                 validate: function () {
                     var deferred = $q.defer();
 
@@ -89,7 +89,7 @@
                     return deferred.promise;
                 },
 
-                publish: function () {
+                publish: function (cb) {
                     var deferred = $q.defer();
 
                     this.validate().then(function (validationResults) {
@@ -98,14 +98,27 @@
                             deferred.resolve(false);
                         }
                         else {
-                            $data.languages.put($scope.id, {
-                                active: $scope.language.active
-                            }).then(function (result) {
-                                $scope.name = result.name;
-                                deferred.resolve(true);
-                            }, function (error) {
-                                deferred.reject(error);
-                            });
+                            if ($scope.id) {
+                                $data.settings.put($scope.id, {
+                                    data: $scope.settings
+                                }).then(function (result) {
+                                    deferred.resolve(true);
+                                }, function (error) {
+                                    deferred.reject(error);
+                                });
+                            }
+                            else {
+                                $data.settings.post({
+                                    domain: $scope.domain,
+                                    data: $scope.settings
+                                }).then(function (result) {
+                                    $scope.id = result.id;
+                                    $scope.settings = result.data;
+                                    deferred.resolve(true);
+                                }, function (error) {
+                                    deferred.reject(error);
+                                });
+                            }
                         }
                     });
 
@@ -116,7 +129,12 @@
 
 
             $scope.back = function () {
-                $location.previous('/content/languages');
+                if ($scope.current.breadcrumb[0].name === 'addons') {
+                    $location.previous('/addons/' + $scope.domain);
+                }
+                else {
+                    $location.previous('/');
+                }
             };
 
             $scope.discard = function () {
@@ -134,12 +152,6 @@
                 });
             };
 
-            $scope.$watch('name', function (newValue, prevValue) {
-                fn.setLocation().then(function () { }, function (ex) {
-                    logger.error(ex);
-                });
-            });
-
             $scope.$on('changed', function (sender) {
                 sender.stopPropagation();
 
@@ -156,7 +168,7 @@
                 if (!value)
                     $scope.valid = false;
             });
-            
+
 
             $timeout(function () {
                 fn.set().then(function () {
@@ -165,5 +177,6 @@
                     logger.error(ex);
                 });
             }, 200);
+
         });
-})();
+})(); 
