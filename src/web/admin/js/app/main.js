@@ -82,6 +82,10 @@
                 templateUrl: 'tmpl/partial/content/list-entry.html',
                 controller: 'ListEntryController'
             }).
+             when('/users', {
+                 templateUrl: 'tmpl/partial/users.html',
+                 controller: 'UsersController'
+             }).
             when('/settings', {
                 templateUrl: 'tmpl/partial/settings.html',
                 controller: 'SettingsController',
