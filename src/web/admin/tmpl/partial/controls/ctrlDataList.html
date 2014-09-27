@@ -6,11 +6,11 @@
             <li ng-repeat="item in value">
                 <div class="input-group">
                     <span class="input-group-btn">
-                        <button class="btn btn-default glyphicon glyphicon-move" type="button"></button>
+                        <button class="btn btn-default glyphicon glyphicon-move" type="button" ng-disabled="!enabled"></button>
                     </span>
                     <input type="text" class="form-control" id="data{{id}}{{item.id}}" ng-model="item.name" ng-disabled="true" />
                     <span class="input-group-btn">
-                        <button class="btn btn-default glyphicon glyphicon-remove" type="button" ng-click="clear(item)"></button>
+                        <button class="btn btn-default glyphicon glyphicon-remove" type="button" ng-click="clear(item)" ng-disabled="!enabled"></button>
                     </span>
                 </div>
             </li>
@@ -20,7 +20,7 @@
             <input type="text" class="form-control" id="data{{id}}" ng-disabled="true" />
             <span ng-show="initiated && !isValid()" class="glyphicon glyphicon-remove form-control-feedback"></span>
             <span class="input-group-btn">
-                <button class="btn btn-default glyphicon glyphicon-plus-sign" type="button" ng-click="select()" ng-disabled="!ngDomain"></button>
+                <button class="btn btn-default glyphicon glyphicon-plus-sign" type="button" ng-click="select()" ng-disabled="!enabled || !ngDomain"></button>
             </span>
         </div>
     </div>

@@ -23,7 +23,12 @@
                     scope.id = Math.random().toString().replace('.', '');
                     scope.initiated = false;
                     scope.value = '';
-                    
+                    scope.enabled = scope.ngEnabled !== undefined ? scope.ngEnabled : true;
+
+                    scope.$watch('ngEnabled', function (newValue) {
+                        scope.enabled = newValue !== undefined ? newValue : true;
+                    });
+
                     scope.changed = function () {
                         $timeout(function () {
                             scope.$emit(FORM_EVENTS.valueChanged, scope.ngModel);
@@ -33,19 +38,22 @@
                     var isValid = function () {
                         var valid = true;
 
-                        if (scope.ngEnabled === false)
-                            valid = true;
+                        if (scope.enabled) {
 
-                        if (valid) {
-                            if (scope.ngRequired) {
-                                valid = !!scope.ngModel && scope.ngModel !== '';
+                            if (valid) {
+                                if (scope.ngRequired) {
+                                    valid = !!scope.ngModel && scope.ngModel !== '';
+                                }
                             }
-                        }
 
-                        if (!valid)
-                            element.addClass('invalid');
-                        else
+                            if (!valid)
+                                element.addClass('invalid');
+                            else
+                                element.removeClass('invalid');
+                        }
+                        else {
                             element.removeClass('invalid');
+                        }
 
                         return valid;
                     };
