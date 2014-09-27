@@ -2,13 +2,13 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('FileUploadController', function ($scope) {
+        .controller('FileUploadController', function ($scope, MODAL_EVENTS) {
 
             if (!$scope.path)
                 throw new Error('$scope.path not defined in FileUploadController');
             
-            $scope.$on('select', function (sender) {
-                $scope.$emit('selected', true);
+            $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
+                $scope.$emit(MODAL_EVENTS.valueSubmitted, true);
             });
 
         });

@@ -2,12 +2,10 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('DeletePromptController', function ($scope) {
+        .controller('DeletePromptController', function ($scope, MODAL_EVENTS) {
      
-            $scope.selected = false;
-
-            $scope.$on('select', function (sender) {
-                $scope.$emit('selected', $scope.selected);
+            $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {     
+                $scope.$emit(MODAL_EVENTS.valueSubmitted, true);
             });
 
         });

@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlFile', function ($timeout, ModalService) {
+        .directive('ctrlFile', function ($timeout, ModalService, FORM_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -20,14 +20,13 @@
                     element.addClass('ctrl');
                     element.addClass('ctrl-file');
 
-                    
-
                     scope.id = Math.random().toString().replace('.', '');
+                    scope.initiated = false;
                     scope.value = '';
                     
                     scope.changed = function () {
                         $timeout(function () {
-                            scope.$emit('changed', scope.ngModel);
+                            scope.$emit(FORM_EVENTS.valueChanged, scope.ngModel);
                         }, 50);
                     };
 
@@ -55,8 +54,9 @@
                         scope.value = newValue || '';
                     });
 
-                    scope.$on('validate', function (sender) {
-                        scope.$emit('valid', isValid());
+                    scope.$on(FORM_EVENTS.initiateValidation, function (sender) {
+                        scope.initiated = true;
+                        scope.$emit(FORM_EVENTS.valueIsValid, isValid());
                     });
 
                     scope.isValid = function () {

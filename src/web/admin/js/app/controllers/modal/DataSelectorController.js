@@ -2,7 +2,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('DataSelectorController', function ($scope, $data, PagedDataService) {
+        .controller('DataSelectorController', function ($scope, $data, PagedDataService, MODAL_EVENTS) {
      
             $scope.data = [];
 
@@ -24,10 +24,10 @@
                 throw error;
             });
 
-            $scope.$on('select', function (sender) {
+            $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
                 var allSelected = _.pluck(_.filter($scope.data.items, function (x) { return x.selected; }), 'id');
                 var selected = $scope.mode === 'single' ? _.first(allSelected) : allSelected;
-                $scope.$emit('selected', selected);
+                $scope.$emit(MODAL_EVENTS.valueSubmitted, selected);
             });
 
         });

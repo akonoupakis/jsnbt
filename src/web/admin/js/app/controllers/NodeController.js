@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('NodeController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $q, $queue, $data, ScrollSpyService, $fn, LocationService, DraftService) {
+        .controller('NodeController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $q, $queue, $data, ScrollSpyService, $fn, LocationService, DraftService, FORM_EVENTS) {
 
             var logger = $logger.create('TextController');
 
@@ -319,7 +319,7 @@
                     var deferred = $q.defer();
 
                     $scope.valid = true;
-                    $scope.$broadcast('validate');
+                    $scope.$broadcast(FORM_EVENTS.initiateValidation);
 
                     if (!$scope.valid) {
                         deferred.resolve(false);
@@ -331,7 +331,7 @@
                                 $scope.language = lang.code;
 
                                 $timeout(function () {
-                                    $scope.$broadcast('validate');
+                                    $scope.$broadcast(FORM_EVENTS.initiateValidation);
 
                                     if (!$scope.valid) {
                                         deferred.resolve(false);
@@ -503,7 +503,7 @@
                 }
             });
             
-            $scope.$on('changed', function (sender) {
+            $scope.$on(FORM_EVENTS.valueChanged, function (sender) {
                 sender.stopPropagation();
                 
                 fn.save().then(function () {
@@ -513,7 +513,7 @@
                 });
             });
 
-            $scope.$on('valid', function (sender, value) {
+            $scope.$on(FORM_EVENTS.valueIsValid, function (sender, value) {
                 sender.stopPropagation();
 
                 if (!value)

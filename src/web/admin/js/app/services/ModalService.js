@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .factory('ModalService', function ($q, $modal) {
+        .factory('ModalService', function ($q, $modal, MODAL_EVENTS) {
             var ModalService = {};
             
             ModalService.open = function (scope) {
@@ -16,14 +16,16 @@
                 var modalCtrl = function ($scope, $modalInstance) {
                     angular.extend($scope, scope);
                     
-                    $scope.$on('selected', function (sender, value) {
+                    $scope.valid = false;
+
+                    $scope.$on(MODAL_EVENTS.valueSubmitted, function (sender, value) {
                         sender.stopPropagation();
 
                         $scope.selected = value;
                     });
 
                     $scope.ok = function () {
-                        $scope.$broadcast('select');
+                        $scope.$broadcast(MODAL_EVENTS.valueRequested);
 
                         if ($scope.selected !== undefined && $scope.selected !== '')
                             $modalInstance.close($scope.selected);

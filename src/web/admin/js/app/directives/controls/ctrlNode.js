@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlNode', function ($timeout, $data, $fn) {
+        .directive('ctrlNode', function ($timeout, $data, $fn, FORM_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -22,14 +22,13 @@
                     element.addClass('ctrl');
                     element.addClass('ctrl-node');
 
-                    
-
                     scope.id = Math.random().toString().replace('.', '');
+                    scope.initiated = false;
                     scope.value = '';
                     
                     scope.changed = function () {
                         $timeout(function () {
-                            scope.$emit('changed', scope.ngModel);
+                            scope.$emit(FORM_EVENTS.valueChanged, scope.ngModel);
                         }, 50);
                     };
 
@@ -66,8 +65,9 @@
                         }
                     });
 
-                    scope.$on('validate', function (sender) {
-                        scope.$emit('valid', isValid());
+                    scope.$on(FORM_EVENTS.initiateValidation, function (sender) {
+                        scope.initiated = true;
+                        scope.$emit(FORM_EVENTS.valueIsValid, isValid());
                     });
 
                     scope.isValid = function () {

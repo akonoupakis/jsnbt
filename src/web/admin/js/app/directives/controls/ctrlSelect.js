@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlSelect', function ($timeout) {
+        .directive('ctrlSelect', function ($timeout, FORM_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -29,10 +29,11 @@
                     scope.nameField = scope.ngNameField ? scope.ngNameField : 'name';
                     
                     scope.id = Math.random().toString().replace('.', '');
+                    scope.initiated = false;
 
                     scope.changed = function () {
-                        $timeout(function () { 
-                            scope.$emit('changed', scope.ngModel);
+                        $timeout(function () {
+                            scope.$emit(FORM_EVENTS.valueChanged, scope.ngModel);
                         }, 50);
                     };
 
@@ -68,8 +69,9 @@
                         return valid;
                     };
 
-                    scope.$on('validate', function (sender) {
-                        scope.$emit('valid', isValid());
+                    scope.$on(FORM_EVENTS.initiateValidation, function (sender) {
+                        scope.initiated = true;
+                        scope.$emit(FORM_EVENTS.valueIsValid, isValid());
                     });
 
                     scope.isValid = function () {

@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlExplorer', function ($timeout, $rootScope, FileService, ModalService) {
+        .directive('ctrlExplorer', function ($timeout, $rootScope, FileService, ModalService, MODAL_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -226,7 +226,7 @@
                             event.preventDefault();
                     });
                     
-                    scope.$on('select', function () {
+                    scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
 
                         if (scope.ngSelectMode === 'single') {
                             var sel = '';
@@ -238,7 +238,7 @@
                                 }
                             }
 
-                            scope.$emit('selected', sel);
+                            scope.$emit(MODAL_EVENTS.valueSubmitted, sel);
                         }
                         else {
                             var selected = [];
@@ -249,7 +249,8 @@
                                 }
                             }
 
-                            scope.$emit('selected', selected);
+
+                            scope.$emit(MODAL_EVENTS.valueSubmitted, selected);
                         }
                     });
 

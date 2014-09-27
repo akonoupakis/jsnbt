@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlTextArea', function () {
+        .directive('ctrlTextArea', function ($timeout, FORM_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -23,9 +23,12 @@
                     element.addClass('ctrl-text-area');
 
                     scope.id = Math.random().toString().replace('.', '');
+                    scope.initiated = false;
 
                     scope.changed = function () {
-                        scope.$emit('changed', scope.ngModel);
+                        $timeout(function () {
+                            scope.$emit(FORM_EVENTS.valueChanged, scope.ngModel);
+                        }, 50);
                     };
 
                     var isValid = function () {
@@ -51,8 +54,9 @@
                         return valid;
                     };
 
-                    scope.$on('validate', function (sender) {
-                        scope.$emit('valid', isValid());
+                    scope.$on(FORM_EVENTS.initiateValidation, function (sender) {
+                        scope.initiated = true;
+                        scope.$emit(FORM_EVENTS.valueIsValid, isValid());
                     });
 
                     scope.isValid = function () {

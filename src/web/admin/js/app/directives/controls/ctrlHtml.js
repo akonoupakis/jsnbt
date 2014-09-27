@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlHtml', function () {
+        .directive('ctrlHtml', function ($timeout, FORM_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -24,7 +24,6 @@
                         height: '250px',
                         menubar: false,
                         statusbar: false
-                     //   toolbar: "undo redo | styleselect | bold italic | link image"
                     };
 
                     var options = {};
@@ -56,9 +55,12 @@
                         element.addClass('ctrl-html');
 
                         scope.id = Math.random().toString().replace('.', '');
+                        scope.initiated = false;
 
                         scope.changed = function () {
-                            scope.$emit('changed', scope.ngModel);
+                            $timeout(function () {
+                                scope.$emit(FORM_EVENTS.valueChanged, scope.ngModel);
+                            }, 50);
                         };
 
                         var isValid = function () {
@@ -78,8 +80,9 @@
                             return valid;
                         };
 
-                        scope.$on('validate', function (sender) {
-                            scope.$emit('valid', isValid());
+                        scope.$on(FORM_EVENTS.initiateValidation, function (sender) {
+                            scope.initiated = true;
+                            scope.$emit(FORM_EVENTS.valueIsValid, isValid());
                         });
 
                         scope.isValid = function () {

@@ -2,7 +2,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('NodeSelectorController', function ($scope, $data, TreeNodeService) {
+        .controller('NodeSelectorController', function ($scope, $data, TreeNodeService, MODAL_EVENTS) {
      
             $scope.nodes = [];
 
@@ -63,9 +63,9 @@
                 });
             }
 
-            $scope.$on('select', function (sender) {
+            $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
                 var selected = $scope.mode === 'single' ? _.first(TreeNodeService.getSelected($scope.nodes)) : TreeNodeService.getSelected($scope.nodes);
-                $scope.$emit('selected', selected);
+                $scope.$emit(MODAL_EVENTS.valueSubmitted, selected);
             });
 
         });
