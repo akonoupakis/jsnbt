@@ -101,7 +101,7 @@
          };
 
      })
-     .directive('ctrlTreeNodeContent', function () {
+     .directive('ctrlTreeNodeContent', function (MODAL_EVENTS) {
 
          return {
              restrict: 'E',
@@ -125,18 +125,30 @@
                      });
                  };
 
-                 scope.select = function (node) {
+                 scope.select = function (node, double) {
                      if (node) {
                          if (scope.ngSelectable) {
                              if (selectMode === 'single') {
-                                 if (!node.selected) {
-                                     var totalParent = node.root ? node : node.parent;
-                                     while (!totalParent.root)
-                                         totalParent = totalParent.parent;
+                                 if (double) {
+                                        var totalParent = node.root ? node : node.parent;
+                                        while (!totalParent.root)
+                                            totalParent = totalParent.parent;
 
-                                     unselect(totalParent);
+                                        unselect(totalParent);
 
-                                     node.selected = true;
+                                        node.selected = true;
+                                        scope.$emit(MODAL_EVENTS.valueSelected, node);
+                                 }
+                                 else {
+                                     if (!node.selected) {
+                                         var totalParent = node.root ? node : node.parent;
+                                         while (!totalParent.root)
+                                             totalParent = totalParent.parent;
+
+                                         unselect(totalParent);
+
+                                         node.selected = true;
+                                     }
                                  }
                              }
                              else {
@@ -146,7 +158,7 @@
                      }
                  };
              },
-             template: '<div class="dd-content" ng-class="{ \'dd-selected\': node.selected }"><div ng-click="select(node)" ng-transclude></div></div>'
+             template: '<div class="dd-content" ng-class="{ \'dd-selected\': node.selected }"><div ng-click="select(node, false)" ng-dblclick="select(node, true)" ng-transclude></div></div>'
          };
 
      })

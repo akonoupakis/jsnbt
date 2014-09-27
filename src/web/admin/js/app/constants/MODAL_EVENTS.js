@@ -6,6 +6,7 @@
     angular.module("jsnbt")
         .constant('MODAL_EVENTS', {
             valueRequested: 'modal-value-requested',
-            valueSubmitted: 'modal-value-submitted'
+            valueSubmitted: 'modal-value-submitted',
+            valueSelected: 'modal-value-selected'
         });
 })();

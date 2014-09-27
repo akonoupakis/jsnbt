@@ -12,6 +12,12 @@
 
             $scope.ngModel = $scope.selected;
 
+            $scope.$on(MODAL_EVENTS.valueSelected, function (sender, selected) {
+                sender.stopPropagation();
+
+                $scope.$emit(MODAL_EVENTS.valueSubmitted, selected);
+            });
+
             $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
                 $scope.$emit(MODAL_EVENTS.valueSubmitted, $scope.ngModel);
             });

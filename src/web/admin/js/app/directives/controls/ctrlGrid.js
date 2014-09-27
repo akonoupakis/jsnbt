@@ -89,32 +89,42 @@
             };
 
         })
-        .directive('ctrlGridColumn', function () {
+        .directive('ctrlGridColumn', function (MODAL_EVENTS) {
 
             return {
                 require: '^ctrlGrid',
                 restrict: 'E',
                 replace: true,
                 transclude: true,
-                template: '<td ng-click="select(data)" ng-transclude></td>',
+                template: '<td ng-click="select(data, false)" ng-dblclick="select(data, true)" ng-transclude></td>',
                 link: function (scope, element, attrs, ctrlGrid) {
                     element.addClass('ctrl-grid-column');
 
                     scope.selectable = ctrlGrid.selectable;
                     scope.selectMode = ctrlGrid.selectMode;
 
-                    scope.select = function (item) {
+                    scope.select = function (item, double) {
                         if (ctrlGrid.selectable) {
                             if (ctrlGrid.selectMode === 'multiple') {
                                 item.selected = !item.selected;
                             }
                             else {
-                                if (!item.selected) {
+                                if (double) {
                                     $(item.$parent.items).each(function (d, ditem) {
                                         if (ditem.selected)
                                             ditem.selected = false;
                                     });
                                     item.selected = true;
+                                    scope.$emit(MODAL_EVENTS.valueSelected, item);
+                                }
+                                else {
+                                    if (!item.selected) {
+                                        $(item.$parent.items).each(function (d, ditem) {
+                                            if (ditem.selected)
+                                                ditem.selected = false;
+                                        });
+                                        item.selected = true;
+                                    }
                                 }
                             }
                         }

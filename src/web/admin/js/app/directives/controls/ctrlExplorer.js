@@ -148,6 +148,14 @@
                                 scope.current = item.path;
                                 scrollToTop();
                             }
+                            else {
+                                if (scope.ngSelectable && item.type === 'file') {
+                                    if (scope.ngSelectMode === 'single') {
+                                        scope.select(item);
+                                        scope.$emit(MODAL_EVENTS.valueSelected, item.location);
+                                    }
+                                }
+                            }
                         }
                     };
 

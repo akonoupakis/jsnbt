@@ -22,13 +22,13 @@
                         sender.stopPropagation();
 
                         $scope.selected = value;
+
+                        if ($scope.selected !== undefined && $scope.selected !== '')
+                            $modalInstance.close($scope.selected);
                     });
 
                     $scope.ok = function () {
                         $scope.$broadcast(MODAL_EVENTS.valueRequested);
-
-                        if ($scope.selected !== undefined && $scope.selected !== '')
-                            $modalInstance.close($scope.selected);
                     };
 
                     $scope.cancel = function () {

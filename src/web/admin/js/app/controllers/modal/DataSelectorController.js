@@ -24,6 +24,13 @@
                 throw error;
             });
 
+            $scope.$on(MODAL_EVENTS.valueSelected, function (sender, selected) {
+                sender.stopPropagation();
+
+                var selectedId = selected.id;
+                $scope.$emit(MODAL_EVENTS.valueSubmitted, selectedId);
+            });
+            
             $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
                 var allSelected = _.pluck(_.filter($scope.data.items, function (x) { return x.selected; }), 'id');
                 var selected = $scope.mode === 'single' ? _.first(allSelected) : allSelected;

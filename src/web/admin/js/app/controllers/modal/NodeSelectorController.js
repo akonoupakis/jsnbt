@@ -63,6 +63,13 @@
                 });
             }
 
+            $scope.$on(MODAL_EVENTS.valueSelected, function (sender, selected) {
+                sender.stopPropagation();
+
+                var selectedId = selected.id;
+                $scope.$emit(MODAL_EVENTS.valueSubmitted, selectedId);
+            });
+
             $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
                 var selected = $scope.mode === 'single' ? _.first(TreeNodeService.getSelected($scope.nodes)) : TreeNodeService.getSelected($scope.nodes);
                 $scope.$emit(MODAL_EVENTS.valueSubmitted, selected);
