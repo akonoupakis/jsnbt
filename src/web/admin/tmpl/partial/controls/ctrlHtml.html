@@ -1,7 +1,7 @@
 ﻿<div>
     <div class="form-group" ng-class="{ 'has-error': initiated && !isValid(), 'has-feedback': initiated && !isValid() }">
         <label ng-show="ngLabel" class="control-label">{{ngLabel}}</label>
-        <textarea ui-tinymce class="form-control" ng-model="ngModel" ng-change="changed()"></textarea>
+        <textarea ui-tinymce class="form-control" ng-model="ngModel" ng-required="ngRequired" ng-change="changed()"></textarea>
         <span ng-show="initiated && !isValid()" class="glyphicon glyphicon-remove form-control-feedback"></span>
     </div>
 </div>
