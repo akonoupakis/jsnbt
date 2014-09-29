@@ -23,7 +23,7 @@
             $scope.language = undefined;
 
             $scope.valid = false;
-            $scope.uniqueSeo = false;
+            $scope.uniqueSeo = true;
             $scope.published = false;
 
             $scope.tmpl = null;
@@ -319,6 +319,7 @@
                     var deferred = $q.defer();
 
                     $scope.valid = true;
+                    $scope.uniqueSeo = true;
                     $scope.$broadcast(FORM_EVENTS.initiateValidation);
 
                     if (!$scope.valid) {

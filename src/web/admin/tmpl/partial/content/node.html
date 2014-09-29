@@ -49,8 +49,8 @@
                 <ol class="breadcrumb">
                     <li ng-repeat="item in seoNames"><span>{{item[language]}}</span></li>
                     <li class="active">
-                        <ctrl-text ng-model="node.data.localized[language].seoName" ng-required="true" ng-enabled="!node.locked" ng-validate="validateSeo" ng-characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_"></ctrl-text>
-                        <span ng-show="!uniqueSeo">(taken)</span>
+                        <ctrl-text ng-model="node.data.localized[language].seoName" ng-required="true" ng-validate="validateSeo" ng-characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_"></ctrl-text>
+                        <span ng-show="!uniqueSeo">(name is taken)</span>
                     </li>
                 </ol>
             </div>

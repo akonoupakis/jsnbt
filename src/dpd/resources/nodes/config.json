@@ -49,14 +49,6 @@
 			"id": "secure",
 			"order": 5
 		},
-		"locked": {
-			"name": "locked",
-			"type": "boolean",
-			"typeLabel": "boolean",
-			"required": false,
-			"id": "locked",
-			"order": 5
-		},
 		"icon": {
 			"name": "icon",
 			"type": "string",
