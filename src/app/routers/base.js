@@ -1,7 +1,9 @@
 var app = require('../app.js');
+var dpdSync = require('dpd-sync');
 var nodeService = require('../services/node.js');
 var error = require('../error.js');
 var view = require('../view.js');
+var languageService = require('../services/language.js');
 var _ = require('underscore');
 
 module.exports = function () {
@@ -23,35 +25,42 @@ module.exports = function () {
     return {
         sync: true,
         route: function (ctx, next) {
-            if (ctx.uri.path === '/' || ctx.uri.path === '/index.html') {
+            if (ctx.uri.path === '/') {
                 try {
-                    var resolved = nodeService.getByUrl(ctx.uri.path);
-                    if (resolved) {
-                        var session = app.session.start(ctx.req, ctx.res);
-                        session.set('language', resolved.language);
+                    var settingNode = _.first(dpdSync.call(app.dpd.settings.get, { domain: 'core' }));
+                    if (settingNode && settingNode.data && settingNode.data.homepage) {
+                        var defaultLanguage = languageService.getDefault();
+                        var resolved = nodeService.getById(settingNode.data.homepage, defaultLanguage);
+                        if (resolved) {
+                            var session = app.session.start(ctx.req, ctx.res);
+                            session.set('language', resolved.language);
 
-                        if (resolved.ref) {
-                            ctx.node = resolved;
+                            if (resolved.ref) {
+                                ctx.node = resolved;
 
-                            var nextIndex = 0;
-                            var nextInternal = function () {
-                                nextIndex++;
-                                var router = addonRouters[nextIndex];
-                                router.route(ctx, nextInternal);
-                            };
+                                var nextIndex = 0;
+                                var nextInternal = function () {
+                                    nextIndex++;
+                                    var router = addonRouters[nextIndex];
+                                    router.route(ctx, nextInternal);
+                                };
 
-                            var first = _.first(addonRouters);
-                            first.route(ctx, nextInternal);
+                                var first = _.first(addonRouters);
+                                first.route(ctx, nextInternal);
+                            }
+                            else {
+                                ctx.uri.scheme = resolved.secure === true ? 'https' : 'http';
+                                _.extend(ctx.meta, resolved.meta);
+                                view.render(ctx, resolved.view);
+                            }
                         }
                         else {
-                            ctx.uri.scheme = resolved.secure === true ? 'https' : 'http';
-                            _.extend(ctx.meta, resolved.meta);
-                            view.render(ctx, resolved.view);
+                            next();
                         }
                     }
                     else {
                         next();
-                    }
+                    }                    
                 }
                 catch (err) {
                     app.logger.error(err);

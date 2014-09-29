@@ -22,7 +22,7 @@ if (args.options.env)
     if (['dev', 'prod'].indexOf(args.options.env.toLowerCase()) != -1)
         env = args.options.env;
 
-app.init(env);
+app.init(env, config);
 app.start();
 
 app.server.on('listening', function () {

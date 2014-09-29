@@ -185,6 +185,8 @@ module.exports = {
     getByUrl: function (url) {
         if (!url)
             throw new Error('url is required');
+        
+        var self = this;
 
         var uri = parseUri(url);
         uri.path = uri.path.toLowerCase();
@@ -195,9 +197,17 @@ module.exports = {
         var languagePart = '';
         var urlPart = '';
         
-        if (uri.path === '/' || uri.path === '/index.html') {
+        if (uri.path === '/') {
             languagePart = defaultLanguage;
             urlPart = uri.path;
+
+            var settingNode = _.first(dpdSync.call(app.dpd.settings.get, { domain: 'core' }));
+            if (settingNode && settingNode.data && settingNode.data.homepage) {
+                var resolved = _.first(dpdSync.call(app.dpd.nodeurls.get, { nodeId: settingNode.data.homepage, language: defaultLanguage, active: true }));
+                if (resolved) {
+                    urlPart = resolved.url;
+                }
+            }
         }
         else if (activeLanguages.length > 0) {
             if (activeLanguages.length == 1) {
