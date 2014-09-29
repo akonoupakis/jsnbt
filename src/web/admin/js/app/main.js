@@ -176,6 +176,8 @@
                 if ($rootScope.location.coming) {
                     $rootScope.location.previous = history[history.length - 2];
                 }
+
+                $('body').scrollTo($('body'), { duration: 400 });
             }
 
             $timeout(function () {
@@ -187,6 +189,13 @@
             }, 1000);
         });
         
+        $location.goto = function (path) {
+            $rootScope.location.direction = undefined;
+            $rootScope.location.coming = false;
+            $rootScope.location.leaving = false;
+            $location.path(path);
+        };
+
         $location.next = function (path) {
             $rootScope.location.direction = 'ltr';
             $rootScope.location.coming = false;

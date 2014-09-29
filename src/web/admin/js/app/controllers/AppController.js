@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('AppController', function ($scope, $rootScope, $route, $location, $logger, $q, $data, LocationService, AuthService, AUTH_EVENTS) {
+        .controller('AppController', function ($scope, $rootScope, $route, $location, $logger, $q, $data, LocationService, AuthService, AUTH_EVENTS, DATA_EVENTS) {
 
             var logger = $logger.create('AppController');
 
@@ -117,15 +117,18 @@
                 });
             };
 
+            $scope.goto = function (path) {
+                $location.goto(path);
+            };
 
-            dpd.on('languageCreated', function (language) {
+            dpd.on(DATA_EVENTS.languageCreated, function (language) {
                 fn.setApplicationLanguages().then(function () {
                     if (language.default)
                         $scope.defaults.language = language.code;
                 });
             });
 
-            dpd.on('languageDeleted', function (language) {
+            dpd.on(DATA_EVENTS.languageDeleted, function (language) {
                 fn.setApplicationLanguages();
             });
             
