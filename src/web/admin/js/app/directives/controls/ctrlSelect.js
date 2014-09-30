@@ -20,7 +20,8 @@
                     ngValueField: '@',
                     ngNameField: '@',
                     ngValidate: '=',
-                    ngInvalid: '='
+                    ngInvalid: '=',
+                    ngAutoFocus: '='
                 },
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl');
@@ -88,6 +89,12 @@
                         scope.valid = isValid();
                         scope.$emit(FORM_EVENTS.valueIsValid, scope.valid);
                     });
+
+                    if (scope.ngAutoFocus === true) {
+                        setTimeout(function () {
+                            element.find('select').focus();
+                        }, 200);
+                    }
 
                 },
                 templateUrl: 'tmpl/partial/controls/ctrlSelect.html' 
