@@ -17,7 +17,8 @@
                     ngLabel: '@',
                     ngValidate: '=',
                     ngInvalid: '=',
-                    ngCharacters: '@'
+                    ngCharacters: '@',
+                    ngAutoFocus: '='
                 },
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl');
@@ -73,6 +74,12 @@
                         scope.valid = isValid();
                         scope.$emit(FORM_EVENTS.valueIsValid, scope.valid);
                     });
+
+                    if (scope.ngAutoFocus === true) {
+                        setTimeout(function () {
+                            element.find('input[type="text"]').focus();
+                        }, 200);
+                    }
 
                 },
                 templateUrl: 'tmpl/partial/controls/ctrlText.html' 

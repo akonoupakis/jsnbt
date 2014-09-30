@@ -17,7 +17,8 @@
                     ngLabel: '@',
                     ngRows: '=',
                     ngValidate: '=',
-                    ngInvalid: '='
+                    ngInvalid: '=',
+                    ngAutoFocus: '='
                 },
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl');
@@ -74,6 +75,11 @@
                         scope.$emit(FORM_EVENTS.valueIsValid, scope.valid);
                     });
                     
+                    if (scope.ngAutoFocus === true) {
+                        setTimeout(function () {
+                            element.find('textarea').focus();
+                        }, 200);
+                    }
                 },
                 templateUrl: 'tmpl/partial/controls/ctrlTextArea.html' 
             };
