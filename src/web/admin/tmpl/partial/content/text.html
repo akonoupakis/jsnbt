@@ -18,7 +18,7 @@
         <hr />
 
         <div class="row" id="page-text-key" data-scrollspy="Key">
-            <ctrl-text class="col-md-12" ng-model="text.key" ng-required="true" ng-label="Key"></ctrl-text>
+            <ctrl-text class="col-md-12" ng-model="text.key" ng-required="true" ng-validate="validateKey" ng-invalid="validation.key" ng-characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_" ng-label="Key"></ctrl-text>
         </div>
 
         <hr />

@@ -16,6 +16,7 @@
                     ngRequired: '=',
                     ngLabel: '@',
                     ngValidate: '=',
+                    ngInvalid: '=',
                     ngCharacters: '@'
                 },
                 link: function (scope, element, attrs) {
@@ -23,7 +24,14 @@
                     element.addClass('ctrl-text');
                     
                     scope.id = Math.random().toString().replace('.', '');
-                    scope.initiated = false;
+                    scope.valid = true;
+                    scope.enabled = scope.ngEnabled !== undefined ? scope.ngEnabled : true;
+
+                    scope.$watch('ngEnabled', function (newValue) {
+                        scope.enabled = newValue !== undefined ? newValue : true;
+                    });
+
+                    var initiated = false;
 
                     scope.changed = function () {
                         $timeout(function () { 
@@ -31,10 +39,16 @@
                         }, 50);
                     };
 
+                    scope.$watch('ngInvalid', function (newValue) {
+                        if (initiated)
+                            if (newValue === false)
+                                scope.valid = false;
+                    });
+                    
                     var isValid = function () {
                         var valid = true;
 
-                        if (scope.ngEnabled === undefined || scope.ngEnabled === true) {
+                        if (scope.enabled) {
                             if (scope.ngRequired) {
                                 valid = !!scope.ngModel && scope.ngModel !== '';
                             }
@@ -46,22 +60,19 @@
                             }
                         }
 
-                        if (!valid)
-                            element.addClass('invalid');
-                        else
-                            element.removeClass('invalid');
-
                         return valid;
                     };
 
-                    scope.$on(FORM_EVENTS.initiateValidation, function (sender) {
-                        scope.initiated = true;
-                        scope.$emit(FORM_EVENTS.valueIsValid, isValid());
+                    scope.$watch('ngModel', function () {
+                        if (initiated)
+                            scope.valid = isValid();
                     });
-                    
-                    scope.isValid = function () {
-                        return isValid();
-                    };
+
+                    scope.$on(FORM_EVENTS.initiateValidation, function (sender) {
+                        initiated = true;
+                        scope.valid = isValid();
+                        scope.$emit(FORM_EVENTS.valueIsValid, scope.valid);
+                    });
 
                 },
                 templateUrl: 'tmpl/partial/controls/ctrlText.html' 

@@ -12,9 +12,14 @@
             $scope.name = undefined;
             $scope.text = undefined;
 
+            $scope.siblingKeys = [];
             $scope.languages = [];
 
-            $scope.valid = false;
+            $scope.valid = true;
+            $scope.validation = {
+                key: true
+            };
+
             $scope.published = false;
 
 
@@ -32,9 +37,8 @@
                             $scope.languages = $scope.application.languages;
 
                             $scope.valid = true;
-
                             $scope.published = published;
-                            
+
                             deferred.resolve();
                         };
 
@@ -107,14 +111,39 @@
 
                     return deferred.promise;
                 },
-
+                
                 validate: function () {
                     var deferred = $q.defer();
 
                     $scope.valid = true;
+                    $scope.validation.key = true;
+
                     $scope.$broadcast(FORM_EVENTS.initiateValidation);
 
-                    deferred.resolve($scope.valid);
+                    if ($scope.valid) {
+
+                        $data.texts.get({ id: { $nin: [$scope.id] }, $fields: { key: true } }).then(function (siblingsResponse) {
+
+                            $scope.siblingKeys = _.pluck(siblingsResponse, 'key');
+
+                            if ($scope.siblingKeys.indexOf($scope.text.key) === -1) {
+                                $scope.valid = true;
+                                $scope.validation.key = true;
+                            }
+                            else {
+                                $scope.valid = false;
+                                $scope.validation.key = false;
+                            }
+
+                            deferred.resolve($scope.valid);
+                        }, function (siblingsError) {
+                            deferred.reject(siblingsError);
+                        });
+
+                    }
+                    else {
+                        deferred.resolve(false);
+                    }
 
                     return deferred.promise;
                 },
@@ -124,7 +153,6 @@
 
                     this.validate().then(function (validationResults) {
                         if (!validationResults) {
-                            $('body').scrollTo($('.ctrl.invalid:visible:first'), { offset: -150, duration: 400 });
                             deferred.resolve(false);
                         }
                         else {
@@ -147,6 +175,15 @@
 
             };
 
+            $scope.validateKey = function (value) {
+                var valid = true;
+
+                valid = $scope.siblingKeys.indexOf(value) === -1;
+                $scope.validation.key = valid;
+
+                return valid;
+            };
+
 
             $scope.back = function () {
                 $location.previous('/content/texts');
@@ -165,6 +202,9 @@
             $scope.publish = function () {
                 fn.publish().then(function (success) {
                     $scope.published = success;
+
+                    if (!success)
+                        $scope.scroll2error();
                 }, function (ex) {
                     logger.error(ex);
                 });

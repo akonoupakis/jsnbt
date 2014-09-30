@@ -55,12 +55,14 @@
                         element.addClass('ctrl-html');
 
                         scope.id = Math.random().toString().replace('.', '');
-                        scope.initiated = false;
+                        scope.valid = true;
                         scope.enabled = true;// scope.ngEnabled !== undefined ? scope.ngEnabled : true;
 
                         scope.$watch('ngEnabled', function (newValue) {
                             scope.enabled = newValue !== undefined ? newValue : true;
                         });
+
+                        var initiated = false;
 
                         scope.changed = function () {
                             $timeout(function () {
@@ -79,27 +81,22 @@
                                     }
                                 }
 
-                                if (!valid)
-                                    element.addClass('invalid');
-                                else
-                                    element.removeClass('invalid');
-                            }
-                            else {
-                                element.removeClass('invalid');
                             }
 
                             return valid;
                         };
 
-                        scope.$on(FORM_EVENTS.initiateValidation, function (sender) {
-                            scope.initiated = true;
-                            scope.$emit(FORM_EVENTS.valueIsValid, isValid());
+                        scope.$watch('ngModel', function () {
+                            if (initiated)
+                                scope.valid = isValid();
                         });
 
-                        scope.isValid = function () {
-                            return isValid();
-                        };
-
+                        scope.$on(FORM_EVENTS.initiateValidation, function (sender) {
+                            initiated = true;
+                            scope.valid = isValid();
+                            scope.$emit(FORM_EVENTS.valueIsValid, scope.valid);
+                        });
+                        
                     }
                 },
                 templateUrl: 'tmpl/partial/controls/ctrlHtml.html' 

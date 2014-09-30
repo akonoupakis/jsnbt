@@ -121,6 +121,13 @@
                 $location.goto(path);
             };
 
+            $scope.scroll2error = function () {
+                setTimeout(function () {
+                    if ($('.ctrl.invalid:visible:first').length > 0)
+                        $('body').scrollTo($('.ctrl.invalid:visible:first'), { offset: -150, duration: 400 });
+                }, 100);
+            };
+
             dpd.on(DATA_EVENTS.languageCreated, function (language) {
                 fn.setApplicationLanguages().then(function () {
                     if (language.default)

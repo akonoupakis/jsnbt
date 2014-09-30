@@ -1,0 +1,1 @@
+emit('textCreated', this);

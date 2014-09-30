@@ -11,8 +11,10 @@
             $scope.id = $routeParams.id;
             $scope.name = undefined;
             $scope.node = undefined;
-            $scope.siblings = [];
             $scope.seoNames = [];
+        
+            $scope.siblingSeoNames = [];
+            $scope.restNodeCodes = [];
 
             $scope.types = [];
             $scope.languages = [];
@@ -22,8 +24,12 @@
             $scope.localized = false;
             $scope.language = undefined;
 
-            $scope.valid = false;
-            $scope.uniqueSeo = true;
+            $scope.valid = true;
+            $scope.validation = {
+                seo: true,
+                code: true
+            };
+
             $scope.published = false;
 
             $scope.tmpl = null;
@@ -55,17 +61,10 @@
 
                             $scope.parentOptions.restricted = [$scope.id];
                                 
-                            $data.nodes.get({ parent: node.parent, id: { $nin: [$scope.id] }, domain: node.domain }).then(function (siblingsResponse) {
-                                    
-                                $scope.siblings = siblingsResponse;                                    
-                                $scope.valid = true;
-                                $scope.published = published;
+                            $scope.valid = true;
+                            $scope.published = published;
 
-                                deferred.resolve(data);
-
-                            }, function (siblingsError) {
-                                deferred.reject(siblingsError);
-                            });
+                            deferred.resolve(data);
                         };
 
                         DraftService.get('nodes', $scope.id).then(function (draftResult) {
@@ -318,59 +317,112 @@
                 validate: function () {
                     var deferred = $q.defer();
 
+                    var checkExtras = function (lang) {
+
+                        var deferredInternal = $q.defer();
+
+                        $data.nodes.get({ parent: $scope.node.parent, id: { $nin: [$scope.id] }, domain: $scope.node.domain, $fields: { data: true } }).then(function (siblingsResponse) {
+                                                        
+                            $scope.siblingSeoNames = _.pluck(_.pluck(_.pluck(_.pluck(_.filter(siblingsResponse, function (x) { return x.data && x.data.localized && x.data.localized[lang]; }), 'data'), 'localized'), $scope.language), 'seoName');
+
+                            $scope.validation.seo = $scope.siblingSeoNames.indexOf($scope.node.data.localized[lang].seoName) === -1;
+
+                            if (!$scope.validation.seo)
+                                $scope.valid = false;
+
+                            $data.nodes.get({ id: { $nin: [$scope.id] }, domain: $scope.node.domain, $fields: { code: true } }).then(function (nodesResponse) {
+
+                                $scope.restNodeCodes = _.pluck(nodesResponse, 'code');
+                                $scope.validation.code = $scope.restNodeCodes.indexOf($scope.node.code) === -1;
+                                
+                                if (!$scope.validation.code)
+                                    $scope.valid = false;
+
+                                deferredInternal.resolve($scope.valid);
+
+                            }, function (nodesError) {
+                                deferredInternal.reject(nodesError);
+                            });
+
+                        }, function (siblingsError) {
+                            deferredInternal.reject(siblingsError);
+                        });
+
+                        return deferredInternal.promise;
+                    };
+
                     $scope.valid = true;
-                    $scope.uniqueSeo = true;
+                    $scope.validation.seo = true;
+                    $scope.validation.code = true;
                     $scope.$broadcast(FORM_EVENTS.initiateValidation);
 
                     if (!$scope.valid) {
                         deferred.resolve(false);
                     }
                     else {
-                        if ($scope.localized) {
 
-                            var checkLanguage = function (lang, next) {
-                                $scope.language = lang.code;
+                        checkExtras($scope.language).then(function (validationResults) {
 
-                                $timeout(function () {
-                                    $scope.$broadcast(FORM_EVENTS.initiateValidation);
-
-                                    if (!$scope.valid) {
-                                        deferred.resolve(false);
-                                    }
-                                    else {
-                                        next();
-                                    }
-                                }, 50);
-                            };
-
-                            var currentLanguage = $scope.language;
-                            var restLanguages = _.filter($scope.languages, function (x) { return x.active && x.code !== currentLanguage; });
-                            if (restLanguages.length > 0) {
-                                var nextIndex = 0;
-                                var next = function () {
-                                    nextIndex++;
-
-                                    var lang = restLanguages[nextIndex];
-                                    if (lang) {
-                                        checkLanguage(lang, next);
-                                    }
-                                    else {
-                                        $scope.language = currentLanguage;
-
-                                        deferred.resolve(true);
-                                    }
-                                };
-
-                                var first = _.first(restLanguages);
-                                checkLanguage(first, next);
+                            if (!validationResults) {
+                                deferred.resolve(false);
                             }
                             else {
-                                deferred.resolve(true);
+
+                                if ($scope.localized) {
+
+                                    var checkLanguage = function (lang, next) {
+                                        $scope.language = lang.code;
+
+                                        $timeout(function () {
+                                            $scope.$broadcast(FORM_EVENTS.initiateValidation);
+
+                                            checkExtras(lang.code).then(function (internalValidationResults) {
+                                                if (!$scope.valid)
+                                                    deferred.resolve(false);
+                                                else
+                                                    next();
+                                            }, function (internalValidationError) {
+                                                throw internalValidationError;
+                                            });
+
+                                        }, 50);
+                                    };
+
+                                    var currentLanguage = $scope.language;
+                                    var restLanguages = _.filter($scope.languages, function (x) { return x.active && x.code !== currentLanguage; });
+                                    if (restLanguages.length > 0) {
+                                        var nextIndex = 0;
+                                        var next = function () {
+                                            nextIndex++;
+
+                                            var lang = restLanguages[nextIndex];
+                                            if (lang) {
+                                                checkLanguage(lang, next);
+                                            }
+                                            else {
+                                                $scope.language = currentLanguage;
+
+                                                deferred.resolve(true);
+                                            }
+                                        };
+
+                                        var first = _.first(restLanguages);
+                                        checkLanguage(first, next);
+                                    }
+                                    else {
+                                        deferred.resolve(true);
+                                    }
+                                }
+                                else {
+                                    deferred.resolve(true);
+                                }
+
                             }
-                        }
-                        else {
-                            deferred.resolve(true);
-                        }
+
+                        }, function (validationError) {
+                            deferred.reject(validationError);
+                        });
+                       
                     }
 
                     return deferred.promise;
@@ -381,7 +433,6 @@
 
                     this.validate().then(function (validationResults) {
                         if (!validationResults) {
-                            $('body').scrollTo($('.ctrl.invalid:visible:first'), { offset: -150, duration: 400 });
                             deferred.resolve(false);
                         }
                         else {
@@ -403,15 +454,22 @@
                 }
 
             };
+            
 
-            $scope.validateSeo = function (name) {
-
+            $scope.validateSeo = function (value) {
                 var valid = true;
 
-                var seoNames = _.pluck(_.pluck(_.pluck(_.pluck(_.filter($scope.siblings, function (x) { return x.data && x.data.localized && x.data.localized[$scope.language]; }), 'data'), 'localized'), $scope.language), 'seoName');
+                valid = $scope.siblingSeoNames.indexOf(value) === -1;
+                $scope.validation.seo = valid;
 
-                valid = seoNames.indexOf(name) === -1;
-                $scope.uniqueSeo = valid;
+                return valid;
+            };
+
+            $scope.validateCode = function (value) {
+                var valid = true;
+
+                valid = $scope.restNodeCodes.indexOf(value) === -1;
+                $scope.validation.code = valid;
 
                 return valid;
             };
@@ -443,11 +501,14 @@
             $scope.publish = function () {
                 fn.publish().then(function (success) {
                     $scope.published = success;
+
+                    if (!success)
+                        $scope.scroll2error();
                 }, function (ex) {
                     logger.error(ex);
                 });
             };
-
+            
             $scope.$watch('name', function (newValue, prevValue) {
                 fn.setLocation().then(function () { }, function (ex) {
                     logger.error(ex);

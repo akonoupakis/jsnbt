@@ -94,7 +94,6 @@
 
                     this.validate().then(function (validationResults) {
                         if (!validationResults) {
-                            $('body').scrollTo($('.ctrl.invalid:visible:first'), { offset: -150, duration: 400 });
                             deferred.resolve(false);
                         }
                         else {
@@ -129,6 +128,9 @@
             $scope.publish = function () {
                 fn.publish().then(function (success) {
                     $scope.published = success;
+
+                    if (!success)
+                        $scope.scroll2error();
                 }, function (ex) {
                     logger.error(ex);
                 });

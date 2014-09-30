@@ -23,13 +23,15 @@
                     element.addClass('ctrl-data-list');
 
                     scope.id = Math.random().toString().replace('.', '');
-                    scope.initiated = false;
                     scope.value = [];
+                    scope.valid = true;
                     scope.enabled = scope.ngEnabled !== undefined ? scope.ngEnabled : true;
 
                     scope.$watch('ngEnabled', function (newValue) {
                         scope.enabled = newValue !== undefined ? newValue : true;
                     });
+
+                    var initiated = false;
 
                     scope.changed = function () {
                         $timeout(function () {
@@ -48,13 +50,6 @@
                                 }
                             }
 
-                            if (!valid)
-                                element.addClass('invalid');
-                            else
-                                element.removeClass('invalid');
-                        }
-                        else {
-                            element.removeClass('invalid');
                         }
 
                         return valid;
@@ -85,23 +80,26 @@
 
                                 scope.value = scopeValues;
 
+                                if (initiated)
+                                    scope.valid = isValid();
+
                             }, function (error) {
                                 throw error;
                             });
                         }
                         else {
                             scope.value = [];
+
+                            if (initiated)
+                                scope.valid = isValid();
                         }
                     });
 
                     scope.$on(FORM_EVENTS.initiateValidation, function (sender) {
-                        scope.initiated = true;
-                        scope.$emit(FORM_EVENTS.valueIsValid, isValid());
+                        initiated = true;
+                        scope.valid = isValid();
+                        scope.$emit(FORM_EVENTS.valueIsValid, scope.valid);
                     });
-
-                    scope.isValid = function () {
-                        return isValid();
-                    };
 
                     scope.select = function () {
                         if (!scope.ngDomain || scope.ngDomain === '')
