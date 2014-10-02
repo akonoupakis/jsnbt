@@ -17,7 +17,7 @@
                     var deferred = $q.defer();
 
                     var addons = [];
-                    $(jsnbt.modules).each(function (i, item) {
+                    $(jsnbt.addons).each(function (i, item) {
                         var addon = {};
                         $.extend(true, addon, item);
                         addons.push(addon);

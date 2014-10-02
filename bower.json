@@ -32,7 +32,7 @@
     "angular-ui-sortable": "*",    
     "ngInfiniteScroll": "*",
     "ng-flow": "*",
-	"tinymce": "*",
+	"tinymce": "~4.0",
 	"angular-ui-tinymce": "*"
   },
   "deploy": {
