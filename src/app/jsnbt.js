@@ -134,14 +134,16 @@ module.exports = {
 
                 var moduleLists = module.lists || [];
                 _.each(moduleLists, function (moduleList) {
-                    var fileName = moduleList.spec.substring(0, moduleList.spec.lastIndexOf('.'));
-                    fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
-
                     var newListSpec = {
-                        id: fileName,
                         domain: module.addon ? module.domain : 'core'
                     };
+                    
                     _.extend(newListSpec, moduleList);
+
+                    var fileName = moduleList.spec.substring(0, moduleList.spec.lastIndexOf('.'));
+                    fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
+                    newListSpec.id = fileName;
+
                     result.lists.push(newListSpec);
                 });
             });
