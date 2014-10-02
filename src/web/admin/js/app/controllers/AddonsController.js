@@ -17,10 +17,9 @@
                     var deferred = $q.defer();
 
                     var addons = [];
-                    $(jsnbt.addons).each(function (i, item) {
+                    $(jsnbt.modules).each(function (i, item) {
                         var addon = {};
                         $.extend(true, addon, item);
-                        delete addon.entities;
                         addons.push(addon);
                     });
                     var data = {

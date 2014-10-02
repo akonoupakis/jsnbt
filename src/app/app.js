@@ -19,6 +19,21 @@ exports.dpd = null;
 
 exports.packages = [];
 
+var jsnbtModule = {
+
+    entities: [{
+        name: 'page',
+        allowed: ['page', 'pointer', 'link']
+    }, {
+        name: 'pointer',
+        allowed: []
+    }, {
+        name: 'link',
+        allowed: []
+    }]
+
+};
+
 exports.init = function (env, config, module) {
     var self = this;
     
@@ -74,29 +89,14 @@ exports.init = function (env, config, module) {
         fs.createWriteStream('fatal.log', { 'flags': 'a' }).write(moment().format() + ' ' + err.toString() + "\n");
     };
 
+    jsnbt.registerModule('jsnbt', jsnbtModule);
+
     if (module) {
         try {
-            if (typeof (moduleinit) == 'function')
+            if (typeof (module.init) == 'function')
                 module.init(this);
 
-            jsnbt.registerConfig(module.domain, module.config || {});
-
-            if (module.addon === true) {
-                jsnbt.registerAddon(module.domain, {
-                    domain: module.domain || '',
-                    version: module.version,
-                    entities: module.entities || [],
-                    lists: module.lists || []
-                });
-            }
-
-            if (module.modules) {
-                if (module.modules.public)
-                    jsnbt.registerModule('public', module.modules.public);
-                if (module.modules.admin)
-                    jsnbt.registerModule('admin', module.modules.admin);
-            }
-
+            jsnbt.registerModule(module.domain, module);
             this.packages.push(module);
         }
         catch (err) {
@@ -113,23 +113,7 @@ exports.init = function (env, config, module) {
                 if (typeof (router.init) == 'function')
                     router.init(this);
 
-                jsnbt.registerConfig(installedPackages[i], router.config || {});
-
-                if (router.addon === true) {
-                    jsnbt.registerAddon(installedPackages[i], {
-                        domain: router.domain || '',
-                        version: router.version,
-                        entities: router.entities || [],
-                        lists: router.lists || []
-                    });
-                }
-
-                if (router.modules) {
-                    if (router.modules.public)
-                        jsnbt.registerModule('public', router.modules.public);
-                    if (router.modules.admin)
-                        jsnbt.registerModule('admin', router.modules.admin);
-                }
+                jsnbt.registerModule(installedPackages[i], router);
 
                 this.packages.push(router);
             }

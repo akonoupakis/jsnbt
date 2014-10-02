@@ -57,25 +57,23 @@ var getLists = function () {
 
 module.exports = {
 
-    modules: {
-        public: [],
-        admin: []
-    },
-
     configurations: {},
 
-    addons: {},
+    modules: [],
+    
+    addons: [],
 
-    registerModule: function (site, module) {
-        if (typeof (module) === 'string') {
-            if (this.modules[site].indexOf(module) == -1)
-                this.modules[site].push(module);
-        }
-        else {
-            for (var i = 0; i < module.length; i++) {
-                if (this.modules[site].indexOf(module[i]) == -1)
-                    this.modules[site].push(module[i]);
-            }
+    registerModule: function (name, module) {
+        
+        module.name = name;
+        this.modules.push(module);
+
+        if (module.addon) {
+            this.addons.push({
+                name: module.name,
+                domain: module.domain,
+                version: module.version
+            });
         }
     },
 
@@ -83,12 +81,7 @@ module.exports = {
         config.name = name;
         this.configurations[name] = config;
     },
-
-    registerAddon: function (name, addon) {
-        addon.name = name;
-        this.addons[name] = addon;
-    },
-
+    
     getConfiguration: function (name) {
         return this.configurations[name] || {};
     },
@@ -102,79 +95,57 @@ module.exports = {
         return results;
     },
 
-    getAddon: function (name) {
-        return this.addons[name] || {};
-    },
-
-    getAddons: function () {
-        var results = [];
-
-        for (var addonName in this.addons)
-            results.push(this.addons[addonName]);
-        
-        return results;
-    },
-    
     getClientData: function (site) {
+        var self = this;
+
         var result = {};
 
-        result.modules = this.modules[site];
+        result.modules = [];
+        _.each(this.modules, function (mod) {
+            if (mod.modules && mod.modules[site]) {
+                if (typeof (mod.modules[site]) === 'string') {
+                    result.modules.push(mod.modules[site]);
+                }
+                else {
+                    _.each(mod.modules[site], function (mod2) {
+                        result.modules.push(mod2);
+                    });
+                }
+            }
+        });
 
         if (site === 'admin') {
 
             result.version = getVersion();
+
             result.views = getViews();
-            result.addons = [];
+
+            result.addons = self.addons;
             result.entities = [];
-            result.lists = getLists();
+            result.lists = []; 
 
-            var registered = this.getAddons();
-            
-            result.entities.push({
-                name: 'page',
-                allowed: ['page', 'pointer', 'link']
-            });
-
-            result.entities.push({
-                name: 'pointer',
-                allowed: []
-            });
-
-            result.entities.push({
-                name: 'link',
-                allowed: []
-            });
-
-            for (var addonName in registered) {
-
-                var clonedAddon = {};
-                _.extend(clonedAddon, registered[addonName]);
-                
-                var addonEntities = clonedAddon.entities || [];
-                for (var i = 0; i < addonEntities.length; i++) {
+            _.each(self.modules, function (module) {
+                var moduleEntities = module.entities || [];
+                _.each(moduleEntities, function (moduleEntity) {
                     var newEntitySpec = {};
-                    _.extend(newEntitySpec, addonEntities[i]);
+                    _.extend(newEntitySpec, moduleEntity);
                     result.entities.push(newEntitySpec);
-                }
+                });
 
-                var addonLists = clonedAddon.lists || [];
-                for (var ii = 0; ii < addonLists.length; ii++) {
-                    var fileName = addonLists[ii].spec.substr(0, addonLists[ii].spec.lastIndexOf('.'));
+                var moduleLists = module.lists || [];
+                _.each(moduleLists, function (moduleList) {
+                    var fileName = moduleList.spec.substring(0, moduleList.spec.lastIndexOf('.'));
                     fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
 
                     var newListSpec = {
                         id: fileName,
-                        domain: clonedAddon.domain
+                        domain: module.addon ? module.domain : 'core'
                     };
-                    _.extend(newListSpec, addonLists[ii]);
+                    _.extend(newListSpec, moduleList);
                     result.lists.push(newListSpec);
-                }
+                });
+            });
 
-                delete clonedAddon.entities;
-                delete clonedAddon.lists;
-
-                result.addons.push(clonedAddon);
-            }
         }
 
         return result;
