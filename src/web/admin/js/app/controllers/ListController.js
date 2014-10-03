@@ -58,7 +58,11 @@
                             $data.data.post($data.create('data', {
                                 domain: $routeParams.domain,
                                 list: $routeParams.list,
-                                name: result
+                                name: result,
+                                localization: {
+                                    enabled: $scope.list.localized ? true : false,
+                                    language: $scope.list.localized ? 'en' : ''
+                                }
                             })).then(function (response) {
                                 deferred.resolve(response);                                
                             }, function (error) {
