@@ -37,7 +37,8 @@
                                 username: scope.username,
                                 password: scope.password,
                                 firstName: scope.firstName,
-                                lastName: scope.lastName
+                                lastName: scope.lastName,
+                                roles: ['admin']
                             })).then(function (created) {
                                 $rootScope.$broadcast(AUTH_EVENTS.userCreated, created);
 
