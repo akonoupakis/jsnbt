@@ -16,6 +16,7 @@
                     element.addClass('ctrl-login');
                     
                     scope.valid = false;
+                    scope.failed = false;
 
                     scope.username = '';
                     scope.password = '';
@@ -27,17 +28,22 @@
                             scope.valid = false;
                     });
                     
-                    scope.login = function () {
-                        scope.valid = true;
-                        scope.$broadcast(FORM_EVENTS.initiateValidation);
-                        if (scope.valid) {
-                            AuthService.login(scope.username, scope.password).then(function (user) {
-                                $rootScope.$broadcast(AUTH_EVENTS.loginSuccess, user);
-                            }, function (error) {
-                                $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
-                            });
-                        }
-                    };
+                     scope.login = function () {
+                         scope.failed = false;
+                         scope.valid = true;
+                         scope.$broadcast(FORM_EVENTS.initiateValidation);
+                         if (scope.valid) {
+                             AuthService.login(scope.username, scope.password).then(function (user) {
+                                 if (AuthService.isInRole(user, 'admin'))
+                                     $rootScope.$broadcast(AUTH_EVENTS.loginSuccess, user);
+                                 else
+                                     scope.failed = true;
+                             }, function (error) {
+                                 $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
+                                 scope.failed = true;
+                             });
+                         }
+                     };
                 },
                 templateUrl: 'tmpl/partial/controls/ctrlLogin.html'
             };

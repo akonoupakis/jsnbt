@@ -184,5 +184,7 @@
                 });
             }, 200);
 
+
+            var section = $route.current.$$route.section;
         });
 })(); 

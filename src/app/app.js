@@ -30,6 +30,93 @@ var jsnbtModule = {
     }, {
         name: 'link',
         allowed: []
+    }],
+
+    roles: [{
+        name: 'public',
+        inherits: []
+    }, {
+        name: 'member',
+        inherits: ['public']
+    }, {
+        name: 'admin',
+        inherits: ['member']
+    }, {
+        name: 'sa',
+        inherits: ['admin']
+    }],
+
+    sections: [{
+        name: 'languages',
+        roles: ['sa']
+    }, {
+        name: 'nodes',
+        roles: ['admin']
+    }, {
+        name: 'data',
+        roles: ['admin']
+    }, {
+        name: 'texts',
+        roles: ['admin']
+    }, {
+        name: 'files',
+        roles: ['admin']
+    }, {
+        name: 'users',
+        roles: ['sa']
+    }, {
+        name: 'settings',
+        roles: ['sa']
+    }],
+
+    data: [{
+        collection: 'languages',
+        permissions: [{
+            role: 'public',
+            crud: ['R']
+        }, {
+            role: 'sa',
+            crud: ['C', 'R', 'U', 'D']
+        }]
+    }, {
+        collection: 'nodes',
+        permissions: [{
+            role: 'public',
+            crud: ['R']
+        }, {
+            role: 'admin',
+            crud: ['C', 'R', 'U', 'D']
+        }]
+    }, {
+        collection: 'data',
+        permissions: [{
+            role: 'public',
+            crud: ['R']
+        }, {
+            role: 'admin',
+            crud: ['C', 'R', 'U', 'D']
+        }]
+    }, {
+        collection: 'texts',
+        permissions: [{
+            role: 'public',
+            crud: ['R']
+        }, {
+            role: 'admin',
+            crud: ['C', 'R', 'U', 'D']
+        }]
+    }, {
+        collection: 'users',
+        permissions: [{
+            role: 'sa',
+            crud: ['C', 'R', 'U', 'D']
+        }]
+    }, {
+        collection: 'settings',
+        permissions: [{
+            role: 'sa',
+            crud: ['C', 'R', 'U', 'D']
+        }]
     }]
 
 };

@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('AppController', function ($scope, $rootScope, $route, $location, $logger, $q, $data, LocationService, AuthService, AUTH_EVENTS, DATA_EVENTS) {
+        .controller('AppController', function ($scope, $rootScope, $route, $location, $logger, $q, $data, LocationService, AuthService, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
 
             var logger = $logger.create('AppController');
 
@@ -14,6 +14,8 @@
           
             $scope.current.user = undefined;
             $scope.current.users = true;
+            $scope.current.denied = false;
+            $scope.current.initiated = false;
             $scope.current.restoreFn = undefined;
             $scope.current.breadcrumb = [];
 
@@ -121,6 +123,10 @@
                 $location.goto(path);
             };
 
+            $scope.isAuthorized = function (section) {
+                return AuthService.authorize($scope.current.user, section);
+            };
+
             $scope.scroll2error = function () {
                 setTimeout(function () {
                     if ($('.ctrl.invalid:visible:first').length > 0)
@@ -143,6 +149,18 @@
                 $scope.current.setBreadcrumb(LocationService.getBreadcrumb());
             });
 
+            $scope.$on(ROUTE_EVENTS.routeStarted, function (sender) {
+                apply(function () {
+                    $scope.current.initiated = false;
+                });
+            });
+
+            $scope.$on(ROUTE_EVENTS.routeCompleted, function (sender) {
+                apply(function () {
+                    $scope.current.initiated = true;
+                });
+            });
+
             $scope.$on(AUTH_EVENTS.noUsers, function (sender, fn) {
                 apply(function () {
                     $scope.current.users = false;
@@ -157,22 +175,36 @@
 
             $scope.$on(AUTH_EVENTS.authenticated, function (sender, user) {
                 apply(function () {
+                    $scope.current.denied = false;
                     $scope.current.setUser(user);
                 });
             });
 
             $scope.$on(AUTH_EVENTS.notAuthenticated, function (sender, fn) {
                 apply(function () {
+                    $scope.current.denied = false;
                     $scope.current.setUser(null);
                     $scope.current.restoreFn = fn;
+                });
+            });
+
+            $scope.$on(AUTH_EVENTS.accessDenied, function (sender) {
+                apply(function () {
+                    $scope.current.denied = true;
                 });
             });
 
             $scope.$on(AUTH_EVENTS.loginSuccess, function (sender, user) {
                 apply(function () {
                     $scope.current.setUser(user);
-                    if (typeof ($scope.current.restoreFn) === 'function') {
-                        $scope.current.restoreFn();
+
+                    if (!AuthService.authorize(user, $route.current.$$route.section)) {
+                        $scope.current.denied = true;
+                    }
+                    else {
+                        if (typeof ($scope.current.restoreFn) === 'function') {
+                            $scope.current.restoreFn();
+                        }
                     }
                 });
             });

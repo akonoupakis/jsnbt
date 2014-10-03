@@ -124,6 +124,9 @@ module.exports = {
             result.entities = [];
             result.lists = []; 
 
+            result.roles = [];
+            result.sections = [];
+
             _.each(self.modules, function (module) {
                 var moduleEntities = module.entities || [];
                 _.each(moduleEntities, function (moduleEntity) {
@@ -145,6 +148,20 @@ module.exports = {
                     newListSpec.id = fileName;
 
                     result.lists.push(newListSpec);
+                });
+
+                var moduleRoles = module.roles || [];
+                _.each(moduleRoles, function (moduleRole) {
+                    var newRoleSpec = {};
+                    _.extend(newRoleSpec, moduleRole);
+                    result.roles.push(newRoleSpec);
+                });
+
+                var moduleSections = module.sections || [];
+                _.each(moduleSections, function (moduleSection) {
+                    var newSectionSpec = {};
+                    _.extend(newSectionSpec, moduleSection);
+                    result.sections.push(newSectionSpec);
                 });
             });
 

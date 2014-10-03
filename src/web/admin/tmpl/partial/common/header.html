@@ -25,34 +25,10 @@
                 <ul class="nav navbar-nav">
                     <li ng-class="{'active': current.breadcrumb.length === 0}"><a href="javascript:;" ng-click="goto('/dashboard')">dashboard</a></li>
                     <li ng-class="{'active': current.breadcrumb[0].name === 'content'}"><a href="javascript:;" ng-click="goto('/content')">content</a></li>
-                    <!--<li ng-class="{'active': path[0] === 'content'}" class="dropdown">
-                        <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">content <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li ng-class="{'active': path[1] === 'languages'}"><a href="#/content/languages">languages</a></li>
-                            <li class="divider"></li>
-                            <li ng-class="{'active': path[1] === 'nodes'}"><a href="#/content/nodes">nodes</a></li>
-                            <li ng-class="{'active': path[1] === 'data'}"><a href="#/content/data">data</a></li>
-                            <li class="divider"></li>
-                            <li ng-class="{'active': path[1] === 'texts'}"><a href="#/content/texts">texts</a></li>
-                            <li class="divider"></li>
-                            <li ng-class="{'active': path[1] === 'files'}"><a href="#/content/files">files</a></li>
-                            <li class="divider"></li>
-                            <li ng-class="{'active': path[1] === 'media'}"><a href="#/content/media">media</a></li>
-                        </ul>
-                    </li>-->
                     <li ng-class="{'active': current.breadcrumb[0].name === 'addons'}"><a href="javascript:;" ng-click="goto('/addons')">addons</a></li>
-                    <li ng-class="{'active': current.breadcrumb[0].name === 'users'}"><a href="javascript:;" ng-click="goto('/users')">users</a></li>
-                    <li ng-class="{'active': current.breadcrumb[0].name === 'settings'}"><a href="javascript:;" ng-click="goto('/settings')">settings</a></li>
+                    <li ng-class="{'active': current.breadcrumb[0].name === 'users'}" ng-show="isAuthorized('users')"><a href="javascript:;" ng-click="goto('/users')">users</a></li>
+                    <li ng-class="{'active': current.breadcrumb[0].name === 'settings'}" ng-show="isAuthorized('settings')"><a href="javascript:;" ng-click="goto('/settings')">settings</a></li>
                 </ul>
-                <!--<ul class="nav navbar-nav navbar-right">
-                    <li class="dropdown">
-                        <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">Administration <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#/administration/users">Users</a></li>
-                            <li><a href="#/administration/settings">Settings</a></li>
-                        </ul>
-                    </li>
-                </ul>-->
             </div>
         </div>
     </nav>

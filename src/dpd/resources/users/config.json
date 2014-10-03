@@ -16,6 +16,14 @@
 			"required": true,
 			"id": "lastName",
 			"order": 1
+		},
+		"roles": {
+			"name": "roles",
+			"type": "array",
+			"typeLabel": "array",
+			"required": true,
+			"id": "roles",
+			"order": 2
 		}
 	}
 }

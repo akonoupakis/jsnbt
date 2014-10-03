@@ -29,43 +29,53 @@
             }).
             when('/content/languages', {
                 templateUrl: 'tmpl/partial/content/languages.html',
-                controller: 'LanguagesController'
+                controller: 'LanguagesController',
+                section: 'languages'
             }).
             when('/content/languages/:id', {
                 templateUrl: 'tmpl/partial/content/language.html',
-                controller: 'LanguageController'
+                controller: 'LanguageController',
+                section: 'languages'
             }).
             when('/content/nodes', {
                 templateUrl: 'tmpl/partial/content/nodes.html',
-                controller: 'NodesController'
+                controller: 'NodesController',
+                section: 'nodes'
             }).
             when('/content/nodes/:id', {
                 templateUrl: 'tmpl/partial/content/node.html',
-                controller: 'NodeController'
+                controller: 'NodeController',
+                section: 'nodes'
             }).
             when('/content/data', {
                 templateUrl: 'tmpl/partial/content/data.html',
-                controller: 'DataController'
+                controller: 'DataController',
+                section: 'data'
             }).
             when('/content/data/:domain/:list', {
                 templateUrl: 'tmpl/partial/content/list.html',
-                controller: 'ListController'
+                controller: 'ListController',
+                section: 'data'
             }).
             when('/content/data/:domain/:list/:id', {
                 templateUrl: 'tmpl/partial/content/list-entry.html',
-                controller: 'ListEntryController'
+                controller: 'ListEntryController',
+                section: 'data'
             }).
             when('/content/texts', {
                 templateUrl: 'tmpl/partial/content/texts.html',
-                controller: 'TextsController'
+                controller: 'TextsController',
+                section: 'texts'
             }).
             when('/content/texts/:id', {
                 templateUrl: 'tmpl/partial/content/text.html',
-                controller: 'TextController'
+                controller: 'TextController',
+                section: 'texts'
             }).
             when('/content/files', {
                 templateUrl: 'tmpl/partial/content/files.html',
-                controller: 'FilesController'
+                controller: 'FilesController',
+                section: 'files'
             }).
             when('/addons', {
                 templateUrl: 'tmpl/partial/addons.html',
@@ -84,11 +94,13 @@
             }).
              when('/users', {
                  templateUrl: 'tmpl/partial/users.html',
-                 controller: 'UsersController'
+                 controller: 'UsersController',
+                 section: 'users'
              }).
             when('/settings', {
                 templateUrl: 'tmpl/partial/settings.html',
                 controller: 'SettingsController',
+                section: 'settings',
                 domain: 'core',
                 tmpl: 'tmpl/partial/settings/settings.html'
             }).
@@ -110,7 +122,7 @@
 
         tinymce.baseURL = '/admin/css/lib/tinymce';
     })
-    .run(function ($rootScope, $location, $route, $timeout, $fn, FunctionService, AuthService, AUTH_EVENTS) {
+    .run(function ($rootScope, $location, $route, $timeout, $fn, FunctionService, AuthService, AUTH_EVENTS, ROUTE_EVENTS) {
         $fn.register('core', FunctionService);
 
         $rootScope.initiated = $rootScope.initiated || false;
@@ -125,13 +137,31 @@
 
         $rootScope.location = $rootScope.location || {};
 
-        $rootScope.$on('$locationChangeStart', function (event, next, a, b, c) {
+        $rootScope.$on('$locationChangeStart', function (event, next) {
+            $rootScope.$broadcast(ROUTE_EVENTS.routeStarted);
+
             AuthService.get().then(function (user) {
-                $rootScope.$broadcast(AUTH_EVENTS.authenticated, user);
+                $rootScope.$broadcast(ROUTE_EVENTS.routeCompleted);
+                if (!AuthService.isInRole(user, 'admin')) {
+                    $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated, function () {
+                        $route.reload();
+                    });
+                }
+                else {
+                    $rootScope.$broadcast(AUTH_EVENTS.authenticated, user);
+                    var currentSection = $route.current.$$route.section;
+                    if (currentSection) {
+                        if (!AuthService.authorize(user, currentSection)) {
+                            $rootScope.$broadcast(AUTH_EVENTS.accessDenied);
+                        }
+                    }
+                }
             }, function () {
                 event.preventDefault();
                 if (!$rootScope.initiated) {
                     AuthService.count().then(function (count) {
+                        $rootScope.$broadcast(ROUTE_EVENTS.routeCompleted);
+
                         if (count === 0) {
                             $rootScope.$broadcast(AUTH_EVENTS.noUsers, function () {
                                 $route.reload();
@@ -148,6 +178,8 @@
                     });
                 }
                 else {
+                    $rootScope.$broadcast(ROUTE_EVENTS.routeCompleted);
+
                     $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated, function () {
                         $route.reload();
                     });

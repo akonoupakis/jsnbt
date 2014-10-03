@@ -82,7 +82,66 @@
 
                 return deferred.promise;
             };
+
+            var getAllRoles = function (role) {
+                var results = [];
+
+                var matchedRole = _.first(_.filter(jsnbt.roles, function (x) { return x.name === role; }));
+                if (matchedRole) {
+                    results.push(role);
+
+                    if (matchedRole.inherits) {
+                        $(matchedRole.inherits).each(function (i, item) {
+                            var allRoles = getAllRoles(item);
+                            $(allRoles).each(function (r, rol) {
+                                if (results.indexOf(rol) === -1) {
+                                    results.push(rol);
+                                }
+                            });
+                        });
+                    }
+                }
+
+                return results;
+            };
             
+            AuthService.isInRole = function (user, role) {
+                var result = false;
+
+                var roles = user.roles || [];
+
+                var allRoles = [];
+
+                $(roles).each(function (i, item) {
+                    var itemRoles = getAllRoles(item);
+                    $(itemRoles).each(function (r, rol) {
+                        if (allRoles.indexOf(rol) === -1) {
+                            allRoles.push(rol);
+                        }
+                    });
+                });
+
+                return allRoles.indexOf(role) !== -1;
+            };
+
+            AuthService.authorize = function (user, section) {
+                var self = this;
+
+                var result = false;
+
+                var matchedSection = _.first(_.filter(jsnbt.sections, function (x) { return x.name === section; }));
+                if (matchedSection && matchedSection.roles) {
+                    $(matchedSection.roles).each(function (r, role) {
+                        if (self.isInRole(user, role)) {
+                            result = true;
+                            return false;
+                        }
+                    });
+                }
+
+                return result;
+            }
+
             return AuthService;
         });
 })();
