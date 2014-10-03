@@ -92,11 +92,16 @@
                 templateUrl: 'tmpl/partial/content/list-entry.html',
                 controller: 'ListEntryController'
             }).
-             when('/users', {
+            when('/users', {
                  templateUrl: 'tmpl/partial/users.html',
                  controller: 'UsersController',
                  section: 'users'
-             }).
+            }).
+            when('/users/:id', {
+                templateUrl: 'tmpl/partial/user.html',
+                controller: 'UserController',
+                section: 'users'
+            }).
             when('/settings', {
                 templateUrl: 'tmpl/partial/settings.html',
                 controller: 'SettingsController',

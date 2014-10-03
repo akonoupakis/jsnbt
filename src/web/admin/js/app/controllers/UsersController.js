@@ -62,7 +62,7 @@
 
             $scope.create = function () {
                 fn.create().then(function (result) {
-                    $location.next('/content/users/' + result.id);
+                    $location.next('/users/' + result.id);
                 }, function (ex) {
                     logger.error(ex);
                 });
@@ -71,7 +71,7 @@
             $scope.gridFn = {
 
                 edit: function (user) {
-                    $location.next('/content/users/' + user.id);
+                    $location.next('/users/' + user.id);
                 }
 
             };
