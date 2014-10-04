@@ -1,19 +1,23 @@
+var dpdSync = require('dpd-sync');
+var user = requireApp('user.js');
+
+var _ = require('underscore');
+
 var self = this;
 
-dpd.drafts.get({ refId: self.id }, function (results, error) {
-    if (error) {
-        throw error;
-    }
-    else {
-        var deleteDraftIds = [];
+var processFn = function () {
 
-        for (var i = 0; i < results.length; i++) {
-            deleteDraftIds.push(results[i].id);
-        }
+    if (!user.isAuthorized(me, 'texts', 'D'))
+        cancel('access denied', 500);
 
-        dpd.drafts.del({ id: { $in: deleteDraftIds } }, function (deleteResults, deleteError) {
-            if (deleteError)
-                throw deleteError;
-        });
+    var drafts = dpdSync.call(dpd.drafts.get, { refId: self.id });
+    if (drafts.length > 0) {
+        var deleteDraftIds = _.pluck(drafts, 'id');
+        dpdSync.call(dpd.drafts.del, { id: { $in: deleteDraftIds } });
     }
-});
+
+    emit('textDeleted', self);
+
+};
+
+dpdSync.wrap(processFn);

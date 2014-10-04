@@ -7,9 +7,9 @@ var processFn = function () {
     if (!user.isAuthorized(me, 'languages', 'U'))
         cancel('access denied', 500);
 
-    var matchedLanguages = dpdSync.call(dpd.languages.get, { code: self.code, id: { $nin: [self.id] } });
-    if (matchedLanguages.length > 0)
-        cancel('laguage code already exists', 400);
+    var matched = dpdSync.call(dpd.languages.get, { code: self.code, id: { $nin: [self.id] } });
+    if (matched.length > 0)
+        cancel('language code already exists', 400);
 
     emit('languageUpdated', self);
 };

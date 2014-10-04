@@ -6,7 +6,7 @@
      
             if (!$scope.data)
                 throw new Error('$scope.data not defined in LanguageSelectorController');
-
+            
             $scope.valid = false;
             $scope.ngModel = $scope.selected;
 

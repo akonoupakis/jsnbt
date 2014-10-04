@@ -1,0 +1,1 @@
+// validate text key format ?

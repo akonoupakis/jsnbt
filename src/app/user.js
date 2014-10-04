@@ -27,7 +27,7 @@ var getSubRoles = function (role) {
 };
 
 var getUserRoles = function (user) {
-    var roles = user.roles || [];
+    var roles = (user || {}).roles || ['public'];
 
     var allRoles = [];
 

@@ -190,7 +190,7 @@
                 publish: function (cb) {
                     var deferred = $q.defer();
 
-                    this.validate(function (validationResults) {
+                    this.validate().then(function (validationResults) {
                         if (!validationResults) {
                             deferred.resolve(false);
                         }

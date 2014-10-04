@@ -42,8 +42,11 @@ var jsnbtModule = {
         name: 'admin',
         inherits: ['member']
     }, {
-        name: 'sa',
+        name: 'translator',
         inherits: ['admin']
+    }, {
+        name: 'sa',
+        inherits: ['admin', 'translator']
     }],
 
     sections: [{
@@ -57,7 +60,7 @@ var jsnbtModule = {
         roles: ['admin']
     }, {
         name: 'texts',
-        roles: ['admin']
+        roles: ['translator', 'sa']
     }, {
         name: 'files',
         roles: ['admin']
@@ -88,6 +91,12 @@ var jsnbtModule = {
             crud: ['C', 'R', 'U', 'D']
         }]
     }, {
+        collection: 'drafts',
+        permissions: [{
+            role: 'admin',
+            crud: ['C', 'R', 'U', 'D']
+        }]
+    }, {
         collection: 'data',
         permissions: [{
             role: 'public',
@@ -102,7 +111,10 @@ var jsnbtModule = {
             role: 'public',
             crud: ['R']
         }, {
-            role: 'admin',
+            role: 'translator',
+            crud: ['R', 'U']
+        }, {
+            role: 'sa',
             crud: ['C', 'R', 'U', 'D']
         }]
     }, {
@@ -117,7 +129,17 @@ var jsnbtModule = {
             role: 'sa',
             crud: ['C', 'R', 'U', 'D']
         }]
-    }]
+    }],
+
+    lists: [{
+        name: 'Sample 01',
+        spec: '/tmpl/spec/list/sample1.html',
+        localized: true
+    }, {
+        name: 'Sample 02',
+        spec: '/tmpl/spec/list/sample2.html',
+        localized: true
+    }],
 
 };
 
