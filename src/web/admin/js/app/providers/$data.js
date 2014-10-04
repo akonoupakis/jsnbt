@@ -123,7 +123,8 @@
                 username: undefined,
                 password: undefined,
                 firstName: undefined,
-                lastName: undefined
+                lastName: undefined,
+                roles: []
             });
 
             $data.register('drafts', {

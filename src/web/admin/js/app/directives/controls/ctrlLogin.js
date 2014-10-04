@@ -34,10 +34,10 @@
                          scope.$broadcast(FORM_EVENTS.initiateValidation);
                          if (scope.valid) {
                              AuthService.login(scope.username, scope.password).then(function (user) {
-                                 if (AuthService.isInRole(user, 'admin'))
-                                     $rootScope.$broadcast(AUTH_EVENTS.loginSuccess, user);
-                                 else
-                                     scope.failed = true;
+                                 //if (AuthService.isInRole(user, 'admin'))
+                                 //    $rootScope.$broadcast(AUTH_EVENTS.loginSuccess, user);
+                                 //else
+                                 //    scope.failed = true;
                              }, function (error) {
                                  $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
                                  scope.failed = true;

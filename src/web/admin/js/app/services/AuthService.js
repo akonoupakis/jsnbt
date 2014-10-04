@@ -106,8 +106,11 @@
             };
             
             AuthService.isInRole = function (user, role) {
-                var result = false;
+                if (!user)
+                    return false;
 
+                var result = false;
+                
                 var roles = user.roles || [];
 
                 var allRoles = [];
@@ -126,6 +129,9 @@
 
             AuthService.authorize = function (user, section) {
                 var self = this;
+
+                if (!user)
+                    return false;
 
                 var result = false;
 

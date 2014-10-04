@@ -10,10 +10,24 @@
                 AuthService.logout();
             };
 
+            var userId = 1;
             $scope.click = function () {
                 
-                $data.tests.get('9846f2e6232cf822').then(function (results) {
+                //$data.tests.post({ key: 'a', value: {}}).then(function (results) {
+                //    console.log('result', results);
+                //}, function (error) {
+                //    console.log('error', error);
+                //});
+
+                $data.users.post({
+                    username: 'test@test.com' + userId,
+                    password: 'asdasd',
+                    firstName: 'Alpha',
+                    lastName: 'Vita',
+                    roles: []
+                }).then(function (results) {
                     console.log('result', results);
+                    userId++;
                 }, function (error) {
                     console.log('error', error);
                 });

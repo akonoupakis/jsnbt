@@ -198,10 +198,11 @@
                 apply(function () {
                     $scope.current.setUser(user);
 
-                    if (!AuthService.authorize(user, $route.current.$$route.section)) {
+                    if ($route.current.$$route.section && !AuthService.authorize(user, $route.current.$$route.section)) {
                         $scope.current.denied = true;
                     }
                     else {
+                        $scope.current.denied = false;
                         if (typeof ($scope.current.restoreFn) === 'function') {
                             $scope.current.restoreFn();
                         }

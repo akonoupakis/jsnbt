@@ -11,6 +11,7 @@
                 restrict: 'E',
                 replace: true,
                 scope: {
+                    ngRoles: '='
                 },
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl-registration');
@@ -38,7 +39,7 @@
                                 password: scope.password,
                                 firstName: scope.firstName,
                                 lastName: scope.lastName,
-                                roles: ['admin']
+                                roles: scope.ngRoles
                             })).then(function (created) {
                                 $rootScope.$broadcast(AUTH_EVENTS.userCreated, created);
 

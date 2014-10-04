@@ -109,7 +109,7 @@ var jsnbtModule = {
         collection: 'users',
         permissions: [{
             role: 'sa',
-            crud: ['C', 'R', 'U', 'D']
+            crud: ['C', 'R', 'U']
         }]
     }, {
         collection: 'settings',
@@ -234,7 +234,8 @@ exports.init = function (env, config, module) {
                 self.logger.error(req.method, req.url, err.stack || err);
                 process.exit(1);
             }
-        }
+        },
+        appPath: __dirname
     });
     delete this.init;
 };

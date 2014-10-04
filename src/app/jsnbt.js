@@ -59,12 +59,24 @@ module.exports = {
 
     configurations: {},
 
+    entities: [],
+
+    lists: [],
+
+    roles: [],
+
+    sections: [],
+
+    data: [],
+
     modules: [],
     
     addons: [],
 
     registerModule: function (name, module) {
         
+        var self = this;
+
         module.name = name;
         this.modules.push(module);
 
@@ -74,7 +86,80 @@ module.exports = {
                 domain: module.domain,
                 version: module.version
             });
+        };
+
+        var clone = function (obj) {
+            var resultObj = {};
+            _.extend(resultObj, obj);
+            return resultObj
         }
+
+        var moduleEntities = module.entities || [];
+        _.each(moduleEntities, function (moduleEntity) {
+            var matchedEntity = _.first(_.filter(self.entities, function (x) { return x.name === moduleEntity.name; }));
+            if (matchedEntity) {
+                _.extend(matchedEntity, moduleEntity);
+            }
+            else {
+                self.entities.push(clone(moduleEntity));
+            }            
+        });
+
+        var moduleLists = module.lists || [];
+        _.each(moduleLists, function (moduleList) {
+            var fileName = moduleList.spec.substring(0, moduleList.spec.lastIndexOf('.'));
+            fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
+
+            var moduleListDomain = moduleList.addon ? moduleList.domain : 'core';
+
+            var matchedList = _.first(_.filter(self.lists, function (x) { return x.id === fileName && x.domain == moduleListDomain; }));
+            if (matchedList) {
+                _.extend(matchedList, moduleList);
+            }
+            else {
+                var newListSpec = {
+                    domain: moduleListDomain
+                };
+
+                _.extend(newListSpec, moduleList);
+                newListSpec.id = fileName;
+
+                self.lists.push(newListSpec);
+            }
+        });
+
+        var moduleRoles = module.roles || [];
+        _.each(moduleRoles, function (moduleRole) {
+            var matchedRole = _.first(_.filter(self.roles, function (x) { return x.name === moduleRole.name; }));
+            if (matchedRole) {
+                _.extend(matchedRole, moduleRole);
+            }
+            else {
+                self.roles.push(clone(moduleRole));
+            }
+        });
+
+        var moduleSections = module.sections || [];
+        _.each(moduleSections, function (moduleSection) {
+            var matchedSection = _.first(_.filter(self.sections, function (x) { return x.name === moduleSection.name; }));
+            if (matchedSection) {
+                _.extend(matchedSection, moduleSection);
+            }
+            else {
+                self.sections.push(clone(moduleSection));
+            }
+        });
+
+        var moduleData = module.data || [];
+        _.each(moduleData, function (moduleDatum) {
+            var matchedDatum = _.first(_.filter(self.data, function (x) { return x.collection === moduleDatum.collection; }));
+            if (matchedDatum) {
+                _.extend(matchedDatum, moduleDatum);
+            }
+            else {
+                self.data.push(clone(moduleDatum));
+            }
+        });
     },
 
     registerConfig: function (name, config) {
@@ -117,54 +202,12 @@ module.exports = {
         if (site === 'admin') {
 
             result.version = getVersion();
-
             result.views = getViews();
-
             result.addons = self.addons;
-            result.entities = [];
-            result.lists = []; 
-
-            result.roles = [];
-            result.sections = [];
-
-            _.each(self.modules, function (module) {
-                var moduleEntities = module.entities || [];
-                _.each(moduleEntities, function (moduleEntity) {
-                    var newEntitySpec = {};
-                    _.extend(newEntitySpec, moduleEntity);
-                    result.entities.push(newEntitySpec);
-                });
-
-                var moduleLists = module.lists || [];
-                _.each(moduleLists, function (moduleList) {
-                    var newListSpec = {
-                        domain: module.addon ? module.domain : 'core'
-                    };
-                    
-                    _.extend(newListSpec, moduleList);
-
-                    var fileName = moduleList.spec.substring(0, moduleList.spec.lastIndexOf('.'));
-                    fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
-                    newListSpec.id = fileName;
-
-                    result.lists.push(newListSpec);
-                });
-
-                var moduleRoles = module.roles || [];
-                _.each(moduleRoles, function (moduleRole) {
-                    var newRoleSpec = {};
-                    _.extend(newRoleSpec, moduleRole);
-                    result.roles.push(newRoleSpec);
-                });
-
-                var moduleSections = module.sections || [];
-                _.each(moduleSections, function (moduleSection) {
-                    var newSectionSpec = {};
-                    _.extend(newSectionSpec, moduleSection);
-                    result.sections.push(newSectionSpec);
-                });
-            });
-
+            result.entities = self.entities;
+            result.lists = self.lists; 
+            result.roles = self.roles;
+            result.sections = self.sections;
         }
 
         return result;
