@@ -31,8 +31,7 @@
             textsDeleted: 'textDeleted',
 
             usersCreated: 'userCreated',
-            usersUpdated: 'userUpdated',
-            usersDeleted: 'userDeleted'
+            usersUpdated: 'userUpdated'
 
         });
 })();

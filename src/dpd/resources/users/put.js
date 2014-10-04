@@ -5,10 +5,12 @@ var self = this;
 if (me && me.id == self.id) {
     if(changed('roles'))
         error('roles', 'cannot assign own roles');
+
+    emit('userUpdated', self);
 }
 else {
     if (!user.isAuthorized(me, 'users', 'U'))
-        cancel('Access denied', 500);
+        cancel('access denied', 500);
 
     if (changed('roles'))
     {
@@ -21,5 +23,7 @@ else {
                 error('roles', 'access denied for role "' + role + '"');
             }
         });
+
+        emit('userUpdated', self);
     }
 }
