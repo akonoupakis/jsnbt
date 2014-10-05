@@ -23,7 +23,6 @@
     "bootstrap-switch": "*",
     "fuelux": "*",
     "angular-bootstrap": "*",
-    "angular-bootstrap-switch": "*",
     "angular-motion": "*",
     "angular-strap": "*",
     "jquery.scrollTo": "*",
@@ -199,16 +198,6 @@
           "src": "angular-bootstrap/ui-bootstrap.js",
           "dest": [
             "admin/js/lib/angular-lib/angular-bootstrap.js"
-          ]
-        }
-      ]
-    },
-    "angular-bootstrap-switch": {
-      "files": [
-        {
-          "src": "angular-bootstrap-switch/dist/angular-bootstrap-switch.js",
-          "dest": [
-            "admin/js/lib/angular-lib/angular-bootstrap-switch.js"
           ]
         }
       ]

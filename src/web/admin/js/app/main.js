@@ -8,7 +8,6 @@
     modules.push('ngRoute');
     modules.push('ngAnimate');
     modules.push('mgcrea.ngStrap');
-    modules.push('frapontillo.bootstrap-switch');
     modules.push('ui.bootstrap');
     modules.push('ui.sortable');
     modules.push('infinite-scroll');

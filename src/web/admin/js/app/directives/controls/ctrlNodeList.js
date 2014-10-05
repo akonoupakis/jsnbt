@@ -27,11 +27,14 @@
                     scope.valid = true;
                     scope.enabled = scope.ngEnabled !== undefined ? scope.ngEnabled : true;
 
+                    var initiated = false;
+
                     scope.$watch('ngEnabled', function (newValue) {
                         scope.enabled = newValue !== undefined ? newValue : true;
-                    });
 
-                    var initiated = false;
+                        if (initiated)
+                            scope.valid = isValid();
+                    });
                     
                     scope.changed = function () {
                         $timeout(function () {
