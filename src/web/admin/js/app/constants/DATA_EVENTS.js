@@ -26,12 +26,12 @@
             settingUpdated: 'settingUpdated',
             settingDeleted: 'settingDeleted',
 
-            textsCreated: 'textCreated',
-            textsUpdated: 'textUpdated',
-            textsDeleted: 'textDeleted',
+            textCreated: 'textCreated',
+            textUpdated: 'textUpdated',
+            textDeleted: 'textDeleted',
 
-            usersCreated: 'userCreated',
-            usersUpdated: 'userUpdated'
+            userCreated: 'userCreated',
+            userUpdated: 'userUpdated'
 
         });
 })();
