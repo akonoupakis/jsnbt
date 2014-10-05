@@ -105,6 +105,10 @@
                 return results;
             };
             
+            AuthService.getRoles = function (role) {
+                return getAllRoles(role);
+            };
+
             AuthService.isInRole = function (user, role) {
                 if (!user)
                     return false;

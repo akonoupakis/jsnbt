@@ -4,13 +4,14 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('UserController', function ($scope, $routeParams, $location, $timeout, $q, $logger, $data, ScrollSpyService, LocationService, FORM_EVENTS) {
+        .controller('UserController', function ($scope, $routeParams, $location, $timeout, $q, $logger, $data, ScrollSpyService, LocationService, AuthService, FORM_EVENTS) {
            
             var logger = $logger.create('UserController');
 
             $scope.id = $routeParams.id;
             $scope.name = undefined;
             $scope.user = undefined;
+            $scope.roles = [];
 
             $scope.valid = false;
             $scope.published = false;
@@ -34,6 +35,27 @@
                     }, function (error) {
                         deferred.reject(error);
                     });
+
+                    return deferred.promise;
+                },
+
+                setRoles: function () {
+                    var deferred = $q.defer();
+
+                    var allRoles = [];
+
+                    $scope.roles = allRoles;
+
+                    $(jsnbt.roles).each(function (r, role) {
+                        var newRole = {};
+                        $.extend(true, newRole, role);
+                        newRole.value = newRole.name;
+                        newRole.disabled = !AuthService.isInRole($scope.current.user, role.name);
+                        newRole.description = role.inherits.length > 0 ? 'inherits from ' + role.inherits.join(', ') : '';
+                        allRoles.push(newRole);
+                    });
+
+                    deferred.resolve(allRoles);
 
                     return deferred.promise;
                 },
@@ -159,7 +181,11 @@
 
             $timeout(function () {
                 fn.set().then(function () {
-                    fn.setSpy(200);
+                    fn.setRoles().then(function () {
+                        fn.setSpy(200);
+                    }, function (rolesEx) {
+                        logger.error(rolesEx);
+                    });
                 }, function (ex) {
                     logger.error(ex);
                 });

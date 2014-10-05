@@ -66,7 +66,7 @@ var jsnbtModule = {
         roles: ['admin']
     }, {
         name: 'users',
-        roles: ['sa']
+        roles: ['admin']
     }, {
         name: 'settings',
         roles: ['sa']
@@ -120,7 +120,7 @@ var jsnbtModule = {
     }, {
         collection: 'users',
         permissions: [{
-            role: 'sa',
+            role: 'admin',
             crud: ['C', 'R', 'U']
         }]
     }, {

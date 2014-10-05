@@ -1,0 +1,12 @@
+﻿<div>
+    <div class="form-group">
+        <label ng-show="ngLabel" class="control-label">{{ ngLabel }}</label>
+        <div class="check-options">
+            <div class="check-option" ng-repeat="option in ngOptions">
+                <label class="check-option-title">{{ option[ngNameField] }}</label>
+                <input class="check-option-control" type="checkbox" id="chk{{ id }}{{ option[ngValueField] }}" />
+                <span class="check-option-description">{{ option[ngDescriptionField] }}</span>
+            </div>
+        </div>
+    </div>
+</div> 
