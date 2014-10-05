@@ -1,36 +1,46 @@
 var app = requireApp('app.js');
+var dpdSync = require('dpd-sync');
 var user = requireApp('user.js');
 
 var _ = require('underscore');
 
 var self = this;
 
-app.anyUsers = app.anyUsers || false;
+var processFn = function () {
 
-if (!app.anyUsers) {
-    if (self.roles.length === 0) {
-        error('roles', 'at least one role is required');
-    }
-    else if (self.roles.indexOf('sa') === -1) {
-        error('roles', 'first time user should be on the "sa" role');
+    if (app.anyUsers === undefined) {
+        var users = dpdSync.call(dpd.users.get, {});
+        app.anyUsers = users.length > 0;
     }
 
-    app.anyUsers = true;
-
-    emit('userCreated', self);
-}
-else {
-    if (!user.isAuthorized(me, 'users', 'C'))
-        cancel('access denied', 500);
-    else if (self.roles.length === 0) {
-        error('roles', 'at least one role is required');
-    }
-
-    _.each(self.roles, function (role) {
-        if (me.roles.indexOf(role) === -1) {
-            error('roles', 'access denied for role "' + role + '"');
+    if (!app.anyUsers) {
+        if (self.roles.length === 0) {
+            error('roles', 'at least one role is required');
         }
-    });
+        else if (self.roles.indexOf('sa') === -1) {
+            error('roles', 'first time user should be on the "sa" role');
+        }
 
-    emit('userCreated', self);
-}
+        app.anyUsers = true;
+
+        emit('userCreated', self);
+    }
+    else {
+        if (!user.isAuthorized(me, 'users', 'C'))
+            cancel('access denied', 500);
+        else if (self.roles.length === 0) {
+            error('roles', 'at least one role is required');
+        }
+
+        _.each(self.roles, function (role) {
+            if (!user.isInRole(me, role)) {
+                error('roles', 'access denied for role "' + role + '"');
+            }
+        });
+
+        emit('userCreated', self);
+    }
+
+};
+
+dpdSync.wrap(processFn);

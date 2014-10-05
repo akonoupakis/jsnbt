@@ -19,7 +19,7 @@ else {
         }
 
         _.each(self.roles, function (role) {
-            if (me.roles.indexOf(role) === -1) {
+            if (!user.isInRole(me, role)) {
                 error('roles', 'access denied for role "' + role + '"');
             }
         });

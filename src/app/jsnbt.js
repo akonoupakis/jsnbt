@@ -32,29 +32,6 @@ var getViews = function () {
     return views;
 };
 
-var getLists = function () {
-
-    var lists = [];
-
-    var templateSpecDir = '../' + app.root + '/public/tmpl/spec/list';
-
-    if (fs.existsSync(templateSpecDir)) {
-        var filesInternal = fs.readdirSync(templateSpecDir);
-        filesInternal.forEach(function (file) {
-            var fileSpecPath = templateSpecDir + '/' + file;
-            var fileName = file.substr(0, file.lastIndexOf('.'));
-            lists.push({
-                id: fileName,
-                domain: 'core',
-                name: fileName,
-                spec: fs.existsSync(fileSpecPath) ? '../tmpl/spec/list/' + file : undefined
-            });
-        });
-    }
-
-    return lists;
-};
-
 module.exports = {
 
     configurations: {},
