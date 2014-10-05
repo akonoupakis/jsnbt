@@ -24,7 +24,12 @@
         <hr />
 
         <div class="row" id="page-language" data-scrollspy="Language" ng-show="localized">
-            <ctrl-select class="col-md-12" ng-model="language" ng-required="true" ng-label="Language" ng-options="languages" ng-name-field="name" ng-value-field="code" ng-enabled="true"></ctrl-select>
+            <div class="col-md-12 form-group">
+                <label class="control-label" for="ddlLanguage">Language</label>
+                <select class="form-control" id="ddlLanguage" ng-model="language">
+                    <option ng-repeat="item in languages" value="{{item.code}}" ng-selected="item.code === language">{{item.name}}</option>
+                </select>
+            </div>
         </div>
 
         <hr ng-show="localized" />

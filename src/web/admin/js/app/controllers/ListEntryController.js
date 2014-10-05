@@ -132,13 +132,12 @@
 
                     $scope.valid = true;
                     $scope.$broadcast(FORM_EVENTS.initiateValidation);
-
+                    
                     if (!$scope.valid) {
                         deferred.resolve(false);
                     }
                     else {
                         if ($scope.localized) {
-
                             var checkLanguage = function (lang, next) {
                                 $scope.language = lang.code;
 

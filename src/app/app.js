@@ -138,7 +138,7 @@ var jsnbtModule = {
     }, {
         name: 'Sample 02',
         spec: '/tmpl/spec/list/sample2.html',
-        localized: true
+        localized: false
     }],
 
 };

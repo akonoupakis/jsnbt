@@ -95,7 +95,8 @@ module.exports = {
             }
             else {
                 var newListSpec = {
-                    domain: moduleListDomain
+                    domain: moduleListDomain,
+                    localized: true
                 };
 
                 _.extend(newListSpec, moduleList);
