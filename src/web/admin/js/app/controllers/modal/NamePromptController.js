@@ -6,6 +6,7 @@
      
             $scope.valid = false;
             $scope.ngModel = $scope.selected;
+            $scope.ngCharacters = ($scope.validChars || []).join('');
 
             $scope.$on(FORM_EVENTS.valueChanged, function (sender, value) {
                 sender.stopPropagation();

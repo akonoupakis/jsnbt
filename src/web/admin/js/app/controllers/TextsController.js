@@ -31,6 +31,7 @@
                     ModalService.open({
                         title: 'Type a text key',
                         controller: 'NamePromptController',
+                        validChars: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'.split(''),
                         template: 'tmpl/partial/modal/namePrompt.html'
                     }).then(function (result) {
                         if (!!result && result !== '') {
