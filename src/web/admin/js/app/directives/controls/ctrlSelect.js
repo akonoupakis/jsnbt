@@ -74,6 +74,9 @@
                                     valid = scope.ngValidate(scope.ngModel);
                                 }
                             }
+
+                            if (valid && scope.ngInvalid === false)
+                                valid = false;
                         }
 
                         return valid;

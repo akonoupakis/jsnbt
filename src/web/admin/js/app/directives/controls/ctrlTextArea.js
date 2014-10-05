@@ -60,6 +60,9 @@
                                 }
                             }
                         }
+
+                        if (valid && scope.ngInvalid === false)
+                            valid = false;
                         
                         return valid;
                     };

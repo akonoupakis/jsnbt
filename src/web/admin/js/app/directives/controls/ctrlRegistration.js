@@ -17,11 +17,24 @@
                     element.addClass('ctrl-registration');
                                         
                     scope.valid = false;
+                    scope.validEmail = false;
 
                     scope.username = '';
                     scope.password = '';
                     scope.firstName = '';
                     scope.lastName = '';
+
+                    scope.$watch('username', function (value) {
+                        if (value) {
+                            if (!scope.username.match(/^[A-Z0-9._%+-]+@(?:[A-Z0-9\-]+\.)+[A-Z]{2,4}$/i)) {
+                                scope.valid = false;
+                                scope.validEmail = false;
+                            }
+                            else {
+                                scope.validEmail = true;
+                            }
+                        }
+                    });
 
                     scope.$on(FORM_EVENTS.valueIsValid, function (sender, value) {
                         sender.stopPropagation();
@@ -32,25 +45,32 @@
 
                     scope.register = function () {
                         scope.valid = true;
+                        scope.validEmail = true;
                         scope.$broadcast(FORM_EVENTS.initiateValidation);
                         if (scope.valid) {
-                            $data.users.post($data.create('users', {
-                                username: scope.username,
-                                password: scope.password,
-                                firstName: scope.firstName,
-                                lastName: scope.lastName,
-                                roles: scope.ngRoles
-                            })).then(function (created) {
-                                $rootScope.$broadcast(AUTH_EVENTS.userCreated, created);
+                            if (!scope.username.match(/^[A-Z0-9._%+-]+@(?:[A-Z0-9\-]+\.)+[A-Z]{2,4}$/i)) {
+                                scope.valid = false;
+                                scope.validEmail = false;
+                            }
+                            else {
+                                $data.users.post($data.create('users', {
+                                    username: scope.username,
+                                    password: scope.password,
+                                    firstName: scope.firstName,
+                                    lastName: scope.lastName,
+                                    roles: scope.ngRoles
+                                })).then(function (created) {
+                                    $rootScope.$broadcast(AUTH_EVENTS.userCreated, created);
 
-                                AuthService.login(scope.username, scope.password).then(function (user) {
-                                    $rootScope.$broadcast(AUTH_EVENTS.loginSuccess, user);
+                                    AuthService.login(scope.username, scope.password).then(function (user) {
+                                        $rootScope.$broadcast(AUTH_EVENTS.loginSuccess, user);
+                                    }, function (error) {
+                                        $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
+                                    });
                                 }, function (error) {
-                                    $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
+                                    throw error;
                                 });
-                            }, function (error) {
-                                throw error;
-                            });
+                            }
                         }
                     };
                 },

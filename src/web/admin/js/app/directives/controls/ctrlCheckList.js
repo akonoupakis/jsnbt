@@ -26,6 +26,7 @@
                     element.addClass('ctrl-check-list');
                     
                     scope.id = Math.random().toString().replace('.', '');
+                    scope.valid = true;
                     scope.enabled = scope.ngEnabled !== undefined ? scope.ngEnabled : true;
 
                     var initiated = false;
@@ -50,6 +51,8 @@
                                                 scope.ngModel = _.filter(scope.ngModel, function (x) { return x !== option[scope.ngValueField]; });
                                             }
 
+                                            scope.valid = isValid();
+
                                             $timeout(function () {
                                                 scope.$emit(FORM_EVENTS.valueChanged, scope.ngModel);
                                             }, 50);
@@ -73,6 +76,7 @@
                                 }
                             });
                         }
+
                         initiated = true;
                     });
 
@@ -91,6 +95,24 @@
                                 }
                             }
                         });
+                    });
+
+                    var isValid = function () {
+                        var valid = true;
+
+                        if (scope.enabled) {
+                            if (scope.ngRequired) {
+                                valid = (scope.ngModel || []).length > 0;
+                            }
+                        }
+
+                        return valid;
+                    };
+
+                    scope.$on(FORM_EVENTS.initiateValidation, function (sender) {
+                        initiated = true;
+                        scope.valid = isValid();
+                        scope.$emit(FORM_EVENTS.valueIsValid, scope.valid);
                     });
 
                     if (scope.ngModel)
