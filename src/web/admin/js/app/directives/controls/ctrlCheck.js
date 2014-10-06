@@ -22,6 +22,7 @@
                     scope.id = Math.random().toString().replace('.', '');
                     scope.enabled = scope.ngEnabled !== undefined ? scope.ngEnabled : true;
 
+                    var initiating = true;
                     var initiated = false;
                     
                     scope.$watch('ngModel', function (newValue, prevValue) {
@@ -40,8 +41,8 @@
                         state: scope.ngModel
                     });
 
-                    $('input[type="checkbox"]').on('switchChange.bootstrapSwitch', function (event, state) {
-                        if (initiated) {
+                    element.find('input[type="checkbox"]').on('switchChange.bootstrapSwitch', function (event, state) {
+                        if (!initiating && initiated) {
                             scope.ngModel = state;
 
                             $timeout(function () {
@@ -52,6 +53,10 @@
 
                     if (scope.ngModel)
                         initiated = true;
+
+                    setTimeout(function () {
+                        initiating = false;
+                    }, 300);
                 },
                 templateUrl: 'tmpl/partial/controls/ctrlCheck.html' 
             };

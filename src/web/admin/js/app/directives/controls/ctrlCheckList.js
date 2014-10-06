@@ -29,28 +29,34 @@
                     scope.valid = true;
                     scope.enabled = scope.ngEnabled !== undefined ? scope.ngEnabled : true;
 
+                    scope.valueField = scope.ngValueField ? scope.ngValueField : 'value';
+                    scope.nameField = scope.ngNameField ? scope.ngNameField : 'name';
+                    scope.disabledField = scope.ngDisabledField ? scope.ngDisabledField : 'disabled';
+                    scope.descriptionField = scope.ngDescriptionField ? scope.ngDescriptionField : 'description';
+
+                    var initiating = true;
                     var initiated = false;
                     
                     scope.$watch('ngOptions', function (newValue, prevValue) {
                         if (newValue) {
                             $timeout(function () {
                                 $(newValue).each(function (o, option) {
-                                    var chkField = element.find('#chk' + scope.id + option[scope.ngValueField]);
+                                    var chkField = element.find('#chk' + scope.id + option[scope.valueField]);
                                     chkField.bootstrapSwitch({
-                                        disabled: !scope.enabled || (option[scope.ngDisabledField] || false),
-                                        state: (scope.ngModel || []).indexOf(option[scope.ngValueField]) !== -1
+                                        disabled: !scope.enabled || (option[scope.disabledField] || false),
+                                        state: (scope.ngModel || []).indexOf(option[scope.valueField]) !== -1
                                     });
 
                                     chkField.on('switchChange.bootstrapSwitch', function (event, state) {
-                                        if (initiated) {
+                                        if (!initiating && initiated) {
                                             if (state === true) {
-                                                if (scope.ngModel.indexOf(option[scope.ngValueField]) === -1)
-                                                    scope.ngModel.push(option[scope.ngValueField]);
+                                                if (scope.ngModel.indexOf(option[scope.valueField]) === -1)
+                                                    scope.ngModel.push(option[scope.valueField]);
                                             }
                                             else {
-                                                scope.ngModel = _.filter(scope.ngModel, function (x) { return x !== option[scope.ngValueField]; });
+                                                scope.ngModel = _.filter(scope.ngModel, function (x) { return x !== option[scope.valueField]; });
                                             }
-
+                                         
                                             scope.valid = isValid();
 
                                             $timeout(function () {
@@ -68,13 +74,24 @@
 
                         if (newValue) {
                             $(scope.ngOptions).each(function (o, option) {
-                                if ($('.bootstrap-switch-id-chk' + scope.id + option[scope.ngValueField]).length > 0) {
-                                    var chkField = element.find('#chk' + scope.id + option[scope.ngValueField]);
+                                var chkFieldWrapper = $('.bootstrap-switch-id-chk' + scope.id + option[scope.valueField]);
+                                if (chkFieldWrapper.length > 0) {
+                                    var chkField = element.find('#chk' + scope.id + option[scope.valueField]);
 
-                                    var selected = newValue.indexOf(option[scope.ngValueField]) !== -1;
+                                    var wasDisabled = chkFieldWrapper.hasClass('bootstrap-switch-disabled');
+
+                                    if (wasDisabled)
+                                        chkField.bootstrapSwitch('disabled', false);
+
+                                    var selected = newValue.indexOf(option[scope.valueField]) !== -1;
                                     chkField.bootstrapSwitch('state', selected);
+
+                                    if(wasDisabled)
+                                        chkField.bootstrapSwitch('disabled', true);
                                 }
                             });
+
+                            scope.valid = isValid();
                         }
 
                         initiated = true;
@@ -84,17 +101,19 @@
                         scope.enabled = newValue !== undefined ? newValue : true;
 
                         $(scope.ngOptions).each(function (o, option) {
-                            if ($('.bootstrap-switch-id-chk' + scope.id + option[scope.ngValueField]).length > 0) {
-                                var chkField = element.find('#chk' + scope.id + option[scope.ngValueField]);
+                            if ($('.bootstrap-switch-id-chk' + scope.id + option[scope.valueField]).length > 0) {
+                                var chkField = element.find('#chk' + scope.id + option[scope.valueField]);
 
                                 if (!scope.enabled) {
                                     chkField.bootstrapSwitch('disabled', true);
                                 }
                                 else {
-                                    chkField.bootstrapSwitch('disabled', option[scope.ngDisabledField]);
+                                    chkField.bootstrapSwitch('disabled', option[scope.disabledField]);
                                 }
                             }
                         });
+
+                        scope.valid = isValid();
                     });
 
                     var isValid = function () {
@@ -117,6 +136,10 @@
 
                     if (scope.ngModel)
                         initiated = true;
+
+                    setTimeout(function () {
+                        initiating = false;
+                    }, 300);
                 },
                 templateUrl: 'tmpl/partial/controls/ctrlCheckList.html' 
             };

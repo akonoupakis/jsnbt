@@ -4,15 +4,20 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('NodeController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $q, $queue, $data, ScrollSpyService, $fn, LocationService, DraftService, FORM_EVENTS) {
+        .controller('NodeController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $q, $queue, $data, ScrollSpyService, $fn, LocationService, AuthService, DraftService, DATA_EVENTS, FORM_EVENTS) {
 
             var logger = $logger.create('TextController');
 
             $scope.id = $routeParams.id;
             $scope.name = undefined;
             $scope.node = undefined;
+            
+            $scope.roleOptions = [];
+            $scope.roles = [];
+            $scope.draftRoles = [];
+
             $scope.seoNames = [];
-        
+            
             $scope.siblingSeoNames = [];
             $scope.restNodeCodes = [];
 
@@ -38,12 +43,7 @@
                 restricted: [],
                 entities: []
             };
-
-            $scope.tinymceOptions = {
-                resize: false,
-                height: '500px'
-            };
-
+           
             var fn = {
 
                 set: function () {
@@ -60,9 +60,12 @@
                             $scope.node.hierarchy = node.hierarchy;
 
                             $scope.parentOptions.restricted = [$scope.id];
-                                
+
                             $scope.valid = true;
                             $scope.published = published;
+
+                            $scope.roles = node.permissions.roles;
+                            $scope.draftRoles = node.permissions.roles;
 
                             deferred.resolve(data);
                         };
@@ -144,6 +147,66 @@
                     return deferred.promise;
                 },
 
+                setRoles: function () {
+                    var deferred = $q.defer();
+
+                    var allRoles = [];
+                    
+                    $(jsnbt.roles).each(function (r, role) {
+                        var newRole = {};
+                        $.extend(true, newRole, role);
+                        newRole.value = newRole.name;
+                        newRole.disabled = !AuthService.isInRole($scope.current.user, role.name);
+                        newRole.description = role.inherits.length > 0 ? 'inherits from ' + role.inherits.join(', ') : '';
+                        allRoles.push(newRole);
+                    });
+                    
+                    $scope.roleOptions = allRoles;
+
+                    deferred.resolve(allRoles);
+
+                    return deferred.promise;
+                },
+
+                setSelectedRoles: function () {
+                    var deferred = $q.defer();
+
+                    if ($scope.node.permissions.inherits) {
+                        $scope.draftRoles = $scope.roles.slice(0);
+
+                        var hierarchyNodeIds = _.filter($scope.node.hierarchy, function (x) { return x !== $scope.id; });
+                        $data.nodes.get({ id: { $in: hierarchyNodeIds } }).then(function (nodes) {
+                    
+                            var roles = [];
+
+                            $($scope.node.hierarchy).each(function (i, item) {
+                                var matchedNode = _.first(_.filter(nodes, function (x) { return x.id === item; }));
+                                if (matchedNode) {
+                                    if (!matchedNode.permissions.inherits) {
+                                        roles = matchedNode.permissions.roles.slice(0);
+                                    }
+                                }
+                                else {
+                                    return false;
+                                }
+                            });
+
+                            $scope.roles = roles;
+                            deferred.resolve(roles);
+
+                        }, function (error) {
+                            deferred.reject(error);
+                        });
+                    }
+                    else {
+                        var roles = $scope.draftRoles.slice(0);
+                        $scope.roles = roles;
+                        deferred.resolve(roles);
+                    }
+
+                    return deferred.promise;
+                },
+
                 setParentEntities: function () {
                     var deferred = $q.defer();
 
@@ -155,7 +218,7 @@
 
                     return deferred.promise;
                 },
-
+                                
                 setTmpl: function () {
                     var deferred = $q.defer();
 
@@ -289,7 +352,13 @@
 
                     $queue.enqueue('TextController:' + $scope.id + ':save', function () {
                         var d = $q.defer();
-                        DraftService.set('nodes', $scope.id, $scope.node).then(function (response) {
+
+                        var draftNode = {};
+                        $.extend(true, draftNode, $scope.node);
+                        if (!draftNode.permissions.inherits)
+                            draftNode.permissions.roles = $scope.draftRoles;
+
+                        DraftService.set('nodes', $scope.id, draftNode).then(function (response) {
                             d.resolve(response);
                         }, function (error) {
                             d.reject(error);
@@ -317,12 +386,14 @@
                 validate: function () {
                     var deferred = $q.defer();
 
+                    var me = this;
+
                     var checkExtras = function (lang) {
 
                         var deferredInternal = $q.defer();
 
-                        $data.nodes.get({ parent: $scope.node.parent, id: { $nin: [$scope.id] }, domain: $scope.node.domain, $fields: { data: true } }).then(function (siblingsResponse) {
-                                                        
+                        $data.nodes.get({ parent: $scope.node.parent, domain: $scope.node.domain, id: { $nin: [$scope.id] } }).then(function (siblingsResponse) {
+                                               
                             $scope.siblingSeoNames = _.pluck(_.pluck(_.pluck(_.pluck(_.filter(siblingsResponse, function (x) { return x.data && x.data.localized && x.data.localized[lang]; }), 'data'), 'localized'), $scope.language), 'seoName');
 
                             $scope.validation.seo = $scope.siblingSeoNames.indexOf($scope.node.data.localized[lang].seoName) === -1;
@@ -436,7 +507,12 @@
                             deferred.resolve(false);
                         }
                         else {
-                            $data.nodes.put($scope.id, $scope.node).then(function (result) {
+                            var publishNode = {};
+                            $.extend(true, publishNode, $scope.node);
+                            if (!publishNode.permissions.inherits)
+                                publishNode.permissions.roles = $scope.draftRoles;
+
+                            $data.nodes.put($scope.id, publishNode).then(function (result) {
                                 $scope.name = result.name;
 
                                 DraftService.clear('nodes', $scope.id).then(function (delResponse) {
@@ -565,6 +641,22 @@
                 }
             });
             
+            $scope.$watch('node.permissions.inherits', function (newValue, prevValue) {
+                if (newValue !== undefined && prevValue !== undefined) {
+                    fn.setSelectedRoles().then(function () { }, function (ex) {
+                        logger.error(ex);
+                    });
+                }
+            });
+            
+            dpd.on(DATA_EVENTS.nodeUpdated, function (node) {
+                // if current ???
+            });
+
+            dpd.on(DATA_EVENTS.nodeDeleted, function (node) {
+                // throw 404 if is current not found
+            });
+
             $scope.$on(FORM_EVENTS.valueChanged, function (sender) {
                 sender.stopPropagation();
                 
@@ -584,33 +676,41 @@
 
 
             $timeout(function () {
-                fn.setAddons().then(function (addonsResponse) {
-                    fn.setLanguages().then(function (languagesResponse) {
-                        fn.setLanguage().then(function (languageResponse) {
-                            fn.setTypes().then(function (typesResponse) {
-                                fn.setViews().then(function (viewsResponse) {
-                                    fn.set().then(function (setResponse) {
-                                        fn.setTmpl().then(function (tmplResponse) {
-                                        }, function (tmplError) {
-                                            logger.error(tmplError);
+                fn.setRoles().then(function (rolesResponse) {
+                    fn.setAddons().then(function (addonsResponse) {
+                        fn.setLanguages().then(function (languagesResponse) {
+                            fn.setLanguage().then(function (languageResponse) {
+                                fn.setTypes().then(function (typesResponse) {
+                                    fn.setViews().then(function (viewsResponse) {
+                                        fn.set().then(function (setResponse) {
+                                            fn.setSelectedRoles().then(function (selRolesResponse) {
+                                                fn.setTmpl().then(function (tmplResponse) {
+                                                }, function (tmplError) {
+                                                    logger.error(tmplError);
+                                                });
+                                            }, function (selRolesError) {
+                                                logger.error(selRolesError);
+                                            });                                               
+                                        }, function (setError) {
+                                            logger.error(setError);
                                         });
-                                    }, function (setError) {
-                                        logger.error(setError);
+                                    }, function (viewsError) {
+                                        logger.error(viewsError);
                                     });
-                                }, function (viewsError) {
-                                    logger.error(viewsError);
+                                }, function (typesError) {
+                                    logger.error(typesError);
                                 });
-                            }, function (typesError) {
-                                logger.error(typesError);
+                            }, function (languageError) {
+                                logger.error(languageError);
                             });
-                        }, function (languageError) {
-                            logger.error(languageError);
+                        }, function (languagesError) {
+                            logger.error(languagesError);
                         });
-                    }, function (languagesError) {
-                        logger.error(languagesError);
+                    }, function (addonsError) {
+                        logger.error(addonsError);
                     });
-                }, function (addonsError) {
-                    logger.error(addonsError);
+                }, function (rolesError) {
+                    logger.error(rolesError);
                 });
             }, 200);
 

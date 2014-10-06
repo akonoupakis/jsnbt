@@ -3,9 +3,9 @@
         <label ng-show="ngLabel" class="control-label">{{ ngLabel }}</label>
         <div class="check-options">
             <div class="check-option" ng-repeat="option in ngOptions">
-                <label class="check-option-title">{{ option[ngNameField] }}</label>
-                <input class="check-option-control" type="checkbox" id="chk{{ id }}{{ option[ngValueField] }}" />
-                <span class="check-option-description">{{ option[ngDescriptionField] }}</span>
+                <label class="check-option-title">{{ option[nameField] }}</label>
+                <input class="check-option-control" type="checkbox" id="chk{{ id }}{{ option[valueField] }}" />
+                <span class="check-option-description">{{ option[descriptionField] }}</span>
             </div>
         </div>
         <span ng-show="!valid" class="glyphicon glyphicon-remove form-control-feedback"></span>

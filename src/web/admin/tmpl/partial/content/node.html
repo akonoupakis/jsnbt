@@ -28,7 +28,7 @@
         <div class="row" id="page-parent" data-scrollspy="Parent">
             <ctrl-node class="col-md-12" ng-model="node.parent" ng-domain="node.domain" ng-required="false" ng-options="parentOptions" ng-label="Parent"></ctrl-node>
         </div>
-
+        
         <hr />
 
         <div class="row" id="page-type" ng-show="node.domain === 'core'" data-scrollspy="Type">
@@ -105,7 +105,16 @@
         </div>
 
         <hr />
-    
+
+        <div id="page-permissions" data-scrollspy="Permissions">
+            <div class="row">
+                <ctrl-check class="col-md-4" ng-model="node.permissions.inherits" ng-label="Inherits from parent"></ctrl-check>
+                <ctrl-check-list class="col-md-8" ng-model="roles" ng-options="roleOptions" ng-required="true" ng-enabled="!node.permissions.inherits" ng-label="Permissions"></ctrl-check-list>
+            </div>
+        </div>
+
+        <hr />
+
     </section>
 
     <div class="col-md-2">

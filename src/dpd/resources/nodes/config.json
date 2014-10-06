@@ -113,13 +113,21 @@
 			"id": "data",
 			"order": 12
 		},
+		"permissions": {
+			"name": "permissions",
+			"type": "object",
+			"typeLabel": "object",
+			"required": true,
+			"id": "permissions",
+			"order": 13
+		},
 		"config": {
 			"name": "config",
 			"type": "object",
 			"typeLabel": "object",
 			"required": true,
 			"id": "config",
-			"order": 13
+			"order": 14
 		}
 	}
 }
