@@ -56,7 +56,8 @@
                                             else {
                                                 scope.ngModel = _.filter(scope.ngModel, function (x) { return x !== option[scope.valueField]; });
                                             }
-                                         
+
+                                            scope.$apply();
                                             scope.valid = isValid();
 
                                             $timeout(function () {

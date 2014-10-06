@@ -6,7 +6,7 @@
     angular.module("jsnbt")
         .controller('NodeController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $q, $queue, $data, ScrollSpyService, $fn, LocationService, AuthService, DraftService, DATA_EVENTS, FORM_EVENTS) {
 
-            var logger = $logger.create('TextController');
+            var logger = $logger.create('NodeController');
 
             $scope.id = $routeParams.id;
             $scope.name = undefined;
@@ -64,8 +64,8 @@
                             $scope.valid = true;
                             $scope.published = published;
 
-                            $scope.roles = node.permissions.roles;
-                            $scope.draftRoles = node.permissions.roles;
+                            $scope.roles = data.permissions.roles;
+                            $scope.draftRoles = data.permissions.roles;
 
                             deferred.resolve(data);
                         };
@@ -176,24 +176,28 @@
 
                         var hierarchyNodeIds = _.filter($scope.node.hierarchy, function (x) { return x !== $scope.id; });
                         $data.nodes.get({ id: { $in: hierarchyNodeIds } }).then(function (nodes) {
-                    
-                            var roles = [];
+                            DraftService.patch('nodes', nodes).then(function (patchedNodes) {
 
-                            $($scope.node.hierarchy).each(function (i, item) {
-                                var matchedNode = _.first(_.filter(nodes, function (x) { return x.id === item; }));
-                                if (matchedNode) {
-                                    if (!matchedNode.permissions.inherits) {
-                                        roles = matchedNode.permissions.roles.slice(0);
+                                var roles = [];
+
+                                $($scope.node.hierarchy).each(function (i, item) {
+                                    var matchedNode = _.first(_.filter(patchedNodes, function (x) { return x.id === item; }));
+                                    if (matchedNode) {
+                                        if (!matchedNode.permissions.inherits) {
+                                            roles = matchedNode.permissions.roles.slice(0);
+                                        }
                                     }
-                                }
-                                else {
-                                    return false;
-                                }
+                                    else {
+                                        return false;
+                                    }
+                                });
+
+                                $scope.roles = roles;
+                                deferred.resolve(roles);
+
+                            }, function (patchedError) {
+                                deferred.reject(patchedError);
                             });
-
-                            $scope.roles = roles;
-                            deferred.resolve(roles);
-
                         }, function (error) {
                             deferred.reject(error);
                         });
@@ -301,41 +305,49 @@
 
                     if ($scope.node && $scope.node.parent && $scope.node.parent !== '') {
                         $data.nodes.get({ id: $scope.node.parent }).then(function (parentResult) {
-                            var nodeIds = parentResult.hierarchy;
+                            
+                            DraftService.patch('nodes', [parentResult]).then(function (parentResults) {
+                                var nodeIds = _.first(parentResults).hierarchy;
 
-                            if (nodeIds.length > 0) {
-                                $data.nodes.get({ id: { $in: nodeIds } }).then(function (results) {
-                                    var newSeoNodes = [];
+                                if (nodeIds.length > 0) {
+                                    $data.nodes.get({ id: { $in: nodeIds } }).then(function (results) {
+                                        DraftService.patch('nodes', results).then(function (patchedResults) {
+                                            var newSeoNodes = [];
 
-                                    $(nodeIds).each(function (n, nodeId) {
-                                        var result = _.find(results, function (x) { return x.id === nodeId; });
-                                        if (result) {
-                                            var newSeoNode = {};
+                                            $(nodeIds).each(function (n, nodeId) {
+                                                var result = _.find(patchedResults, function (x) { return x.id === nodeId; });
+                                                if (result) {
+                                                    var newSeoNode = {};
 
-                                            $($scope.application.languages).each(function (l, lang) {
-                                                if (result.data.localized[lang.code])
-                                                    newSeoNode[lang.code] = result.data.localized[lang.code].seoName;
+                                                    $($scope.application.languages).each(function (l, lang) {
+                                                        if (result.data.localized[lang.code])
+                                                            newSeoNode[lang.code] = result.data.localized[lang.code].seoName;
+                                                    });
+
+                                                    newSeoNodes.push(newSeoNode);
+                                                }
+                                                else {
+                                                    newSeoNodes.push({});
+                                                }
                                             });
 
-                                            newSeoNodes.push(newSeoNode);
-                                        }
-                                        else {
-                                            newSeoNodes.push({});
-                                        }
+                                            $scope.seoNames = newSeoNodes;
+                                            deferred.resolve(newSeoNodes);
+
+                                        }, function (patchedError) {
+                                            deferred.reject(patchedError);
+                                        });
+                                    }, function (error) {
+                                        deferred.reject(error);
                                     });
-
-                                    $scope.seoNames = newSeoNodes;
-
-                                    deferred.resolve(newSeoNodes);
-
-                                }, function (error) {
-                                    deferred.reject(error);
-                                });
-                            }
-                            else {
-                                $scope.seoNames = [];
-                                deferred.resolve([]);
-                            }
+                                }
+                                else {
+                                    $scope.seoNames = [];
+                                    deferred.resolve([]);
+                                }
+                            }, function (parentsError) {
+                                deferred.reject(parentsError);
+                            });
                         }, function (parentError) {
                             deferred.reject(parentError);
                         });
@@ -350,13 +362,13 @@
                 save: function () {
                     var deferred = $q.defer();
 
-                    $queue.enqueue('TextController:' + $scope.id + ':save', function () {
+                    $queue.enqueue('NodeController:' + $scope.id + ':save', function () {
                         var d = $q.defer();
 
                         var draftNode = {};
                         $.extend(true, draftNode, $scope.node);
                         if (!draftNode.permissions.inherits)
-                            draftNode.permissions.roles = $scope.draftRoles;
+                            draftNode.permissions.roles = $scope.roles;
 
                         DraftService.set('nodes', $scope.id, draftNode).then(function (response) {
                             d.resolve(response);
@@ -650,7 +662,46 @@
             });
             
             dpd.on(DATA_EVENTS.nodeUpdated, function (node) {
-                // if current ???
+                if ($scope.node.hierarchy.indexOf(node.id) !== -1 && node.id !== $scope.node.id) {
+                    fn.setSelectedRoles().then(function () { }, function (ex) {
+                        logger.error(ex);
+                    });
+                    fn.setSeo().then(function () { }, function (ex) {
+                        logger.error(ex);
+                    });
+                }
+            });
+
+            dpd.on(DATA_EVENTS.draftCreated, function (draft) {
+                if ($scope.node.hierarchy.indexOf(draft.refId) !== -1 && draft.refId !== $scope.node.id) {
+                    fn.setSelectedRoles().then(function () { }, function (ex) {
+                        logger.error(ex);
+                    });
+                    fn.setSeo().then(function () { }, function (ex) {
+                        logger.error(ex);
+                    });
+                }
+            });
+
+            dpd.on(DATA_EVENTS.draftDeleted, function (drafts) {
+                var draftRefIds = _.pluck(drafts, 'refId');
+
+                var cont = false;
+
+                $(drafts).each(function (d, draft) {
+                    if ($scope.node.hierarchy.indexOf(draft.refId) !== -1 && draft.refId !== $scope.node.id) {
+                        cont = true;
+                    }
+                });
+
+                if (cont) {
+                    fn.setSelectedRoles().then(function () { }, function (ex) {
+                        logger.error(ex);
+                    });
+                    fn.setSeo().then(function () { }, function (ex) {
+                        logger.error(ex);
+                    });
+                }
             });
 
             dpd.on(DATA_EVENTS.nodeDeleted, function (node) {

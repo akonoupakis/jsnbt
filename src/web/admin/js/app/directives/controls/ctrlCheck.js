@@ -45,6 +45,8 @@
                         if (!initiating && initiated) {
                             scope.ngModel = state;
 
+                            scope.$apply();
+
                             $timeout(function () {
                                 scope.$emit(FORM_EVENTS.valueChanged, scope.ngModel);
                             }, 50);

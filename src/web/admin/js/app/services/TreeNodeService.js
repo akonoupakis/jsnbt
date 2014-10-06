@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .factory('TreeNodeService', function ($q, $cacheFactory, $fn, FileService) {
+        .factory('TreeNodeService', function ($q, $cacheFactory, $fn, $session, FileService) {
             var TreeNodeService = {};
             
             var cache = $cacheFactory('NestableCache');
@@ -67,7 +67,7 @@
                         $in: ids
                     },
                     collection: 'nodes',
-                    user: 'test'
+                    user: $session.user.id
                 }, function (results, error) {
                     if (error)
                         deferred.reject(error);

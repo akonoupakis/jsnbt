@@ -15,6 +15,8 @@
 
                     var Session = {};
                     
+                    Session.user = undefined;
+
                     return Session;
                 }
             };

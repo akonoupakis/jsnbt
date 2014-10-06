@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('AppController', function ($scope, $rootScope, $route, $location, $logger, $q, $data, LocationService, AuthService, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
+        .controller('AppController', function ($scope, $rootScope, $route, $location, $logger, $q, $data, $session, LocationService, AuthService, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
 
             var logger = $logger.create('AppController');
 
@@ -103,6 +103,7 @@
 
             $scope.current.setUser = function (value) {
                 $scope.current.user = !!value ? value : undefined;
+                $session.user = $scope.current.user;
             };
 
             $scope.current.login = function (username, password) {

@@ -4,11 +4,9 @@
     "use strict";
 
     angular.module("jsnbt")
-        .factory('PagedDataService', function ($q) {
+        .factory('PagedDataService', function ($q, $session) {
             var PagedDataService = {};
             
-            var userId = 'test';
-
             var getData = function (fn, query, start, limit, selected) {
                 var deferred = $q.defer();
 
@@ -43,7 +41,7 @@
                             }
                         };
                         var resultIds = _.pluck(results, 'id');
-                        dpd.drafts.get({ refId: { $in: resultIds }, user: userId }, function (draftResults, draftError) {
+                        dpd.drafts.get({ refId: { $in: resultIds }, user: $session.user.id }, function (draftResults, draftError) {
                             if (draftError)
                                 deferred.reject(draftError);
                             else

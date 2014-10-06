@@ -82,7 +82,7 @@
 
                 return deferred.promise;
             };
-
+            
             var getAllRoles = function (role) {
                 var results = [];
 
