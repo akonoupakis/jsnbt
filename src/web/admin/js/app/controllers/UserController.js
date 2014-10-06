@@ -13,6 +13,8 @@
             $scope.user = undefined;
             $scope.roles = [];
 
+            $scope.editRoles = false;
+
             $scope.valid = false;
             $scope.published = false;
             
@@ -46,17 +48,29 @@
 
                     $scope.roles = allRoles;
 
+                    var allowEdit = true;
+
                     $(jsnbt.roles).each(function (r, role) {
                         var newRole = {};
                         $.extend(true, newRole, role);
                         newRole.value = newRole.name;
                         newRole.disabled = !AuthService.isInRole($scope.current.user, role.name);
                         newRole.description = role.inherits.length > 0 ? 'inherits from ' + role.inherits.join(', ') : '';
+
+                        if (!newRole.disabled && $scope.user.roles.indexOf(newRole.value) !== -1) {
+                            if (!AuthService.isInRole($scope.current.user, newRole.value))
+                                allowEdit = false;
+                        }
+
                         allRoles.push(newRole);
                     });
 
+                    $scope.editRoles = false;
+                    if ($scope.current.user.id !== $scope.user.id)
+                        $scope.editRoles = allowEdit;
+                    
                     deferred.resolve(allRoles);
-
+                    
                     return deferred.promise;
                 },
 
