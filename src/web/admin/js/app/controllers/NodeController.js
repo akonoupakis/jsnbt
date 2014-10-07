@@ -56,9 +56,6 @@
                             $scope.node = data;
                             $scope.localized = (data.localization || {}).enabled;
 
-                            $scope.node.parent = node.parent;
-                            $scope.node.hierarchy = node.hierarchy;
-
                             $scope.parentOptions.restricted = [$scope.id];
 
                             $scope.valid = true;
@@ -97,27 +94,49 @@
 
                     if ($scope.node) {
                         var currentUrl = _.pluck(breadcrumb, 'name').join('/');
-                        $data.nodes.get({ id: { $in: $scope.node.hierarchy } }).then(function (results) {
-                            DraftService.patch('nodes', results).then(function (patchedResults) {
 
-                                $($scope.node.hierarchy).each(function (i, item) {
-                                    var resultNode = _.first(_.filter(patchedResults, function (x) { return x.id === item; }));
-                                    breadcrumb.push({
-                                        name: resultNode ? resultNode.name : '-',
-                                        url: currentUrl + '/' + item,
-                                        active: i === ($scope.node.hierarchy.length - 1)
+                        var setLocInternal = function (hierarchy) {
+                            $data.nodes.get({ id: { $in: hierarchy } }).then(function (results) {
+                                DraftService.patch('nodes', results).then(function (patchedResults) {
+
+                                    $(hierarchy).each(function (i, item) {
+                                        var resultNode = _.first(_.filter(patchedResults, function (x) { return x.id === item; }));
+                                        if (resultNode) {
+                                            breadcrumb.push({
+                                                name: resultNode ? resultNode.name : '-',
+                                                url: currentUrl + '/' + item,
+                                                active: i === (hierarchy.length - 1)
+                                            });
+                                        }
                                     });
+
+                                    $scope.current.setBreadcrumb(breadcrumb);
+                                    deferred.resolve(breadcrumb);
+
+                                }, function (patchedError) {
+                                    deferred.reject(patchedError);
                                 });
-
-                                $scope.current.setBreadcrumb(breadcrumb);
-                                deferred.resolve(breadcrumb);
-
-                            }, function (patchedError) {
-                                deferred.reject(patchedError);
+                            }, function (error) {
+                                deferred.reject(error);
                             });
-                        }, function (error) {
-                            deferred.reject(error);
-                        });
+                        };
+
+                        var hierarchy = [];
+                        if ($scope.node.parent && $scope.node.parent !== '') {
+                            $data.nodes.get($scope.node.parent).then(function (parentResult) {
+                                hierarchy = parentResult.hierarchy.slice(0);
+                                hierarchy.push($scope.node.id);
+
+                                setLocInternal(hierarchy);
+                            }, function (parentError) {
+                                deferred.reject(parentError);
+                            });
+                        }
+                        else {
+                            hierarchy = [$scope.node.id];
+
+                            setLocInternal(hierarchy);
+                        }                       
                     }
                     else {
                         deferred.resolve(breadcrumb);
@@ -156,12 +175,14 @@
                     var allRoles = [];
                     
                     $(jsnbt.roles).each(function (r, role) {
-                        var newRole = {};
-                        $.extend(true, newRole, role);
-                        newRole.value = newRole.name;
-                        newRole.disabled = !AuthService.isInRole($scope.current.user, role.name);
-                        newRole.description = role.inherits.length > 0 ? 'inherits from ' + role.inherits.join(', ') : '';
-                        allRoles.push(newRole);
+                        if (!AuthService.isInRole({ roles: [role.name] }, 'admin')) {
+                            var newRole = {};
+                            $.extend(true, newRole, role);
+                            newRole.value = newRole.name;
+                            newRole.disabled = !AuthService.isInRole($scope.current.user, role.name);
+                            newRole.description = role.inherits.length > 0 ? 'inherits from ' + role.inherits.join(', ') : '';
+                            allRoles.push(newRole);
+                        }
                     });
                     
                     $scope.roleOptions = allRoles;
@@ -194,7 +215,7 @@
                                         return false;
                                     }
                                 });
-
+                                
                                 $scope.roles = roles;
                                 deferred.resolve(roles);
 
@@ -409,9 +430,9 @@
 
                         $data.nodes.get({ parent: $scope.node.parent, domain: $scope.node.domain, id: { $nin: [$scope.id] } }).then(function (siblingsResponse) {
                                                
-                            $scope.siblingSeoNames = _.pluck(_.pluck(_.pluck(_.pluck(_.filter(siblingsResponse, function (x) { return x.data && x.data.localized && x.data.localized[lang]; }), 'data'), 'localized'), $scope.language), 'seoName');
+                            $scope.siblingSeoNames = _.pluck(_.pluck(_.pluck(_.pluck(_.filter(siblingsResponse, function (x) { return x.data && x.data.localized && x.data.localized[lang]; }), 'data'), 'localized'), lang), 'seoName');
 
-                            $scope.validation.seo = $scope.siblingSeoNames.indexOf(($scope.node.data.localized[lang] || {}).seoName) === -1;
+                            $scope.validation.seo = ($scope.node.data.localized[lang] || {}).seoName !== '' && $scope.siblingSeoNames.indexOf(($scope.node.data.localized[lang] || {}).seoName) === -1;
 
                             if (!$scope.validation.seo)
                                 $scope.valid = false;
@@ -419,7 +440,12 @@
                             $data.nodes.get({ id: { $nin: [$scope.id] }, domain: $scope.node.domain, $fields: { code: true } }).then(function (nodesResponse) {
 
                                 $scope.restNodeCodes = _.pluck(nodesResponse, 'code');
-                                $scope.validation.code = $scope.restNodeCodes.indexOf($scope.node.code) === -1;
+
+                                $scope.validation.code = true;
+                                if ($scope.node.code !== undefined && $scope.node.code !== '')
+                                    if ($scope.restNodeCodes.indexOf($scope.node.code) !== -1) {
+                                        $scope.validation.code = false;
+                                    }
                                 
                                 if (!$scope.validation.code)
                                     $scope.valid = false;
@@ -460,6 +486,7 @@
                                         $scope.language = lang.code;
 
                                         $timeout(function () {
+                                        
                                             $scope.$broadcast(FORM_EVENTS.initiateValidation);
 
                                             checkExtras(lang.code).then(function (internalValidationResults) {
@@ -561,8 +588,11 @@
             $scope.validateCode = function (value) {
                 var valid = true;
 
-                valid = $scope.restNodeCodes.indexOf(value) === -1;
-                $scope.validation.code = valid;
+                if (value && value !== '') {
+                    if ($scope.restNodeCodes.indexOf(value) !== -1) {
+                        $scope.validation.code = false;
+                    }
+                }
 
                 return valid;
             };
@@ -595,8 +625,14 @@
                 fn.publish().then(function (success) {
                     $scope.published = success;
 
-                    if (!success)
+                    if (!success) {
                         $scope.scroll2error();
+                    }
+                    else {
+                        fn.setLocation().then(function () { }, function (locEx) {
+                            logger.error(locEx);
+                        });
+                    }
                 }, function (ex) {
                     logger.error(ex);
                 });

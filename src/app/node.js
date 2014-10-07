@@ -95,7 +95,7 @@ module.exports = {
                         secure: node.secure,
                         hierarchy: node.hierarchy,
                         view: node.view,
-                        data: ((['pointer', 'link'].indexOf(node.entity) !== -1) ? localizedData[node.entity] : localizedData['content']) || {},
+                        data: localizedData['content'] || {},
                         meta: localizedData.meta,
                         permissions: permissions
                     };

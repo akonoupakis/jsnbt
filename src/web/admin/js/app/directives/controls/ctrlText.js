@@ -16,7 +16,7 @@
                     ngRequired: '=',
                     ngLabel: '@',
                     ngValidate: '=',
-                    ngInvalid: '=',
+                    ngValid: '=',
                     ngCharacters: '@',
                     ngAutoFocus: '='
                 },
@@ -40,7 +40,7 @@
                         }, 50);
                     };
 
-                    scope.$watch('ngInvalid', function (newValue) {
+                    scope.$watch('ngValid', function (newValue) {
                         if (initiated)
                             if (newValue === false)
                                 scope.valid = false;
@@ -60,7 +60,7 @@
                                 }
                             }
 
-                            if (valid && scope.ngInvalid === false)
+                            if (valid && scope.ngValid === false)
                                 valid = false;
                         }
 

@@ -23,13 +23,12 @@ var jsnbtModule = {
 
     entities: [{
         name: 'page',
-        allowed: ['page', 'pointer', 'link']
+        allowed: ['page', 'pointer'],
+        localized: true
     }, {
         name: 'pointer',
-        allowed: []
-    }, {
-        name: 'link',
-        allowed: []
+        allowed: [],
+        localized: false
     }],
 
     roles: [{
