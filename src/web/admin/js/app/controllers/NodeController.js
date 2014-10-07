@@ -271,7 +271,6 @@
                     types.push({ value: 'page', name: 'CMS Page' });
                     if (jsnbt.addons.length > 0)
                         types.push({ value: 'pointer', name: 'Addon Pointer' });
-                    types.push({ value: 'link', name: 'External Link' });
 
                     $scope.types = types;
 
