@@ -23,10 +23,11 @@ var processFn = function () {
 
         app.anyUsers = true;
 
-        emit('userCreated', self);
+        if (!internal)
+            emit('userCreated', self);
     }
     else {
-        if (!user.isAuthorized(me, 'users', 'C'))
+        if (!internal && !user.isAuthorized(me, 'users', 'C'))
             cancel('access denied', 500);
         else if (self.roles.length === 0) {
             error('roles', 'at least one role is required');
@@ -38,7 +39,8 @@ var processFn = function () {
             }
         });
 
-        emit('userCreated', self);
+        if (!internal)
+            emit('userCreated', self);
     }
 
 };

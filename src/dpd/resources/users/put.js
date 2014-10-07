@@ -9,10 +9,11 @@ if (me && me.id == self.id) {
         console.log('self', self.roles);
         error('roles', 'cannot assign own roles');
     }
-    emit('userUpdated', self);
+    if (!internal)
+        emit('userUpdated', self);
 }
 else {
-    if (!user.isAuthorized(me, 'users', 'U'))
+    if (!internal && !user.isAuthorized(me, 'users', 'U'))
         cancel('access denied', 500);
 
     if (changed('roles') && !_.isEmpty(_.difference(previous.roles, self.roles))) {
@@ -26,6 +27,7 @@ else {
             }
         });
 
-        emit('userUpdated', self);
+        if (!internal)
+            emit('userUpdated', self);
     }
 }

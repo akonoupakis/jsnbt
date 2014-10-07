@@ -2,7 +2,8 @@ var user = requireApp('user.js');
 
 var self = this;
 
-if (!user.isAuthorized(me, 'nodeurls', 'U'))
+if (!internal && !user.isAuthorized(me, 'nodeurls', 'U'))
     cancel('access denied', 500);
 
-emit('nodeurlUpdated', self);
+if (!internal)
+    emit('nodeurlUpdated', self);

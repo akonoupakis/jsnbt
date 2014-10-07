@@ -73,7 +73,9 @@
                 },
 
                 create: function (node) {
-                    $fn.invoke(fn.getDomain(node), 'tree.create', [node]);
+                    $fn.invoke(fn.getDomain(node), 'tree.create', [node]).then(function (result) {
+                        $location.next('/content/nodes/' + result.id);
+                    });
                 },
 
                 canEdit: function (node) {

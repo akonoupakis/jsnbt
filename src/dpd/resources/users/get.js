@@ -8,7 +8,7 @@ if (app.anyUsers) {
         cancel('Access denied', 500);
     }
     else if (me.id !== self.id) {
-        if (!user.isAuthorized(me, 'users', 'R'))
+        if (!internal && !user.isAuthorized(me, 'users', 'R'))
             cancel('Access denied', 500);
     }
 }

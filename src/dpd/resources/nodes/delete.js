@@ -7,7 +7,7 @@ var self = this;
 
 var processFn = function () {
 
-    if (!user.isAuthorized(me, 'nodes', 'D'))
+    if (!internal && !user.isAuthorized(me, 'nodes', 'D'))
         cancel('access denied', 500);
 
     var nodeUrls = dpdSync.call(dpd.nodeurls.get, { nodeId: self.id });
@@ -22,7 +22,8 @@ var processFn = function () {
         dpdSync.call(dpd.drafts.del, { id: { $in: deleteDraftIds } });
     }
 
-    emit('nodeDeleted', self);
+    if (!internal)
+        emit('nodeDeleted', self);
 
 };
 

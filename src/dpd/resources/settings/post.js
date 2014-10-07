@@ -2,7 +2,8 @@ var user = requireApp('user.js');
 
 var self = this;
 
-if (!user.isAuthorized(me, 'settings', 'C'))
+if (!internal && !user.isAuthorized(me, 'settings', 'C'))
     cancel('access denied', 500);
 
-emit('settingCreated', self);
+if (!internal)
+    emit('settingCreated', self);

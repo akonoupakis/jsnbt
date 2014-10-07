@@ -4,7 +4,7 @@ var user = requireApp('user.js');
 var self = this;
 
 var processFn = function () {
-    if (!user.isAuthorized(me, 'languages', 'U'))
+    if (!internal && !user.isAuthorized(me, 'languages', 'U'))
         cancel('access denied', 500);
 
     if (changed('code')) {
@@ -26,7 +26,8 @@ var processFn = function () {
         }
     }
 
-    emit('languageUpdated', self);
+    if (!internal)
+        emit('languageUpdated', self);
 };
 
 dpdSync.wrap(processFn);

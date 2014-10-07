@@ -7,7 +7,7 @@ var self = this;
 
 var processFn = function () {
 
-    if (!user.isAuthorized(me, 'data', 'D'))
+    if (!internal && !user.isAuthorized(me, 'data', 'D'))
         cancel('access denied', 500);
 
     var drafts = dpdSync.call(dpd.drafts.get, { refId: self.id });
@@ -16,7 +16,8 @@ var processFn = function () {
         dpdSync.call(dpd.drafts.del, { id: { $in: deleteDraftIds } });
     }
 
-    emit('dataDeleted', self);
+    if (!internal)
+        emit('dataDeleted', self);
 
 };
 

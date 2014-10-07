@@ -191,7 +191,9 @@ module.exports = {
         var uri = parseUri(url);
         uri.path = uri.path.toLowerCase();
 
+        console.log(0);
         var defaultLanguage = languageService.getDefault();
+        console.log(1);
         var activeLanguages = languageService.getActive();
 
         var languagePart = '';

@@ -2,7 +2,11 @@ var user = requireApp('user.js');
 
 var self = this;
 
-if (!user.isAuthorized(me, 'data', 'C'))
+if (!internal && !user.isAuthorized(me, 'data', 'C'))
     cancel('access denied', 500);
 
-emit('dataCreated', self);
+self.createdOn = new Date().getTime();
+self.modifiedOn = new Date().getTime();
+
+if (!internal)
+    emit('dataCreated', self);

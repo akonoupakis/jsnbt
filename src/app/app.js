@@ -88,7 +88,7 @@ var jsnbtModule = {
             crud: ['C', 'R', 'U', 'D']
         }]
     }, {
-        collection: 'nodesurls',
+        collection: 'nodeurls',
         permissions: [{
             role: 'public',
             crud: ['R']

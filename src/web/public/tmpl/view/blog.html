@@ -12,12 +12,14 @@
     <!-- @if NODE_ENV='DEVELOPMENT' -->
     <link rel="stylesheet" href="css/style.css" />
 
-    <% _.each(js.lib, function(file) { %><script type="text/javascript" src="<%= file %>"></script>
+    <% _.each(js.lib, function(file) { %>
+    <script type="text/javascript" src="<%= file %>"></script>
     <% }); %>
     <script type="text/javascript" src="dpd.js"></script>
     <script type="text/javascript" src="jsnbt.js"></script>
 
-    <% _.each(js.app, function(file) { %><script type="text/javascript" src="<%= file %>"></script>
+    <% _.each(js.app, function(file) { %>
+    <script type="text/javascript" src="<%= file %>"></script>
     <% }); %>
     <script type="text/javascript" src="js/init.js"></script>
     <!-- @endif -->
@@ -34,7 +36,18 @@
     <script type="text/javascript" src="js/init.min.js"></script>
     <!-- @endif -->
 </head>
-<body ng-controller="BlogController">
-    {{blog.title}}
+<body>
+    jsnbt index page
+
+    <p>test header text: {{page.header}}</p>
+    <p>test body text: {{page.body}}</p>
+
+
+    <p>
+        links:
+        <ul>
+            <li ng-repeat="item in languages"><a href="{{localizedUrls[item]}}">{{item}}</a></li>
+        </ul>
+    </p>
 </body>
 </html>

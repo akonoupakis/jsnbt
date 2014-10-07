@@ -105,12 +105,12 @@
 			"id": "meta",
 			"order": 13
 		},
-		"active": {
-			"name": "active",
-			"type": "boolean",
-			"typeLabel": "boolean",
-			"required": false,
-			"id": "active",
+		"permissions": {
+			"name": "permissions",
+			"type": "array",
+			"typeLabel": "array",
+			"required": true,
+			"id": "permissions",
 			"order": 14
 		}
 	}
