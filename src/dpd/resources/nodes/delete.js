@@ -1,37 +1,29 @@
+var dpdSync = require('dpd-sync');
+var user = requireApp('user.js');
+
+var _ = require('underscore');
+
 var self = this;
 
-dpd.nodeurls.get({ nodeId: self.id }, function (results, error) {
-    if (error) {
-        throw error;
+var processFn = function () {
+
+    if (!user.isAuthorized(me, 'nodes', 'D'))
+        cancel('access denied', 500);
+
+    var nodeUrls = dpdSync.call(dpd.nodeurls.get, { nodeId: self.id });
+    if (nodeUrls.length > 0) {
+        var deleteNodeUrlIds = _.pluck(nodeUrls, 'id');
+        dpdSync.call(dpd.nodeurls.del, { id: { $in: deleteNodeUrlIds } });
     }
-    else {
-        var deleteNodeUrlIds = [];
 
-        for (var i = 0; i < results.length; i++) {
-            deleteNodeUrlIds.push(results[i].id);
-        }
-
-        dpd.nodeurls.del({ id: { $in: deleteNodeUrlIds } }, function (deleteResults, deleteError) {
-            if(deleteError)
-                throw deleteError;
-        });
+    var drafts = dpdSync.call(dpd.drafts.get, { refId: self.id });
+    if (drafts.length > 0) {
+        var deleteDraftIds = _.pluck(drafts, 'id');
+        dpdSync.call(dpd.drafts.del, { id: { $in: deleteDraftIds } });
     }
-});
 
-dpd.drafts.get({ refId: self.id }, function (results, error) {
-    if (error) {
-        throw error;
-    }
-    else {
-        var deleteDraftIds = [];
+    emit('nodeDeleted', self);
 
-        for (var i = 0; i < results.length; i++) {
-            deleteDraftIds.push(results[i].id);
-        }
+};
 
-        dpd.drafts.del({ id: { $in: deleteDraftIds } }, function (deleteResults, deleteError) {
-            if (deleteError)
-                throw deleteError;
-        });
-    }
-});
+dpdSync.wrap(processFn);

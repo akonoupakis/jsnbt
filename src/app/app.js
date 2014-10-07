@@ -84,6 +84,12 @@ var jsnbtModule = {
     }, {
         collection: 'nodes',
         permissions: [{
+            role: 'admin',
+            crud: ['C', 'R', 'U', 'D']
+        }]
+    }, {
+        collection: 'nodesurls',
+        permissions: [{
             role: 'public',
             crud: ['R']
         }, {

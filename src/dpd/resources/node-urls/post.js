@@ -1,1 +1,8 @@
-// todo: throw ex if the related id does not exist in the related collection
+var user = requireApp('user.js');
+
+var self = this;
+
+if (!user.isAuthorized(me, 'nodeurls', 'C'))
+    cancel('access denied', 500);
+
+emit('nodeurlCreated', self);
