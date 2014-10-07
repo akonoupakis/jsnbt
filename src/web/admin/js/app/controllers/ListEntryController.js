@@ -194,6 +194,7 @@
                             deferred.resolve(false);
                         }
                         else {
+                            $scope.item.published = true;
                             $data.data.put($scope.id, $scope.item).then(function (result) {
                                 $scope.name = result.name;
                                 DraftService.clear('data', $scope.id).then(function (delResponse) {

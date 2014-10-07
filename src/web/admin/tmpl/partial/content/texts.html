@@ -31,7 +31,7 @@
                         </ctrl-grid-column>
                         <ctrl-grid-buttons-column>
                             <button class="btn btn-default glyphicon glyphicon-edit btn-sm" ng-click="fn.edit(data)" />
-                            <button class="btn btn-default glyphicon glyphicon-ok-circle btn-sm" ng-disabled="!data.draft" ng-class="{'btn-primary': data.draft, 'btn-default': !data.draft }" ng-click="fn.edit(data)" />
+                            <button class="btn btn-default glyphicon glyphicon-ok-circle btn-sm" ng-disabled="!data.draft && data.published" ng-class="{'btn-primary': data.draft || !data.published, 'btn-default': !data.draft && data.published }" ng-click="fn.edit(data)" />
                             <button class="btn btn-default glyphicon glyphicon-remove btn-sm" ng-click="fn.delete(data)" />
                         </ctrl-grid-buttons-column>
                     </ctrl-grid-body>

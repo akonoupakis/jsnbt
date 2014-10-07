@@ -24,7 +24,7 @@ if (self.localization.enabled === true) {
     }
     else {
         for (var lang in self.data.localized) {
-            if (knownLanguageCodes.indexOf(self.data.localized[lang]) === -1)
+            if (knownLanguageCodes.indexOf(lang) === -1)
                 error('data.localized[' + lang + ']', lang + ' not a known language');
         }
     }

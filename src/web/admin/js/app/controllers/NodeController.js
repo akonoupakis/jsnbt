@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('NodeController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $q, $queue, $data, ScrollSpyService, $fn, LocationService, AuthService, DraftService, DATA_EVENTS, FORM_EVENTS) {
+        .controller('NodeController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $session, $q, $queue, $data, ScrollSpyService, $fn, LocationService, AuthService, DraftService, DATA_EVENTS, FORM_EVENTS) {
 
             var logger = $logger.create('NodeController');
 
@@ -98,20 +98,23 @@
                     if ($scope.node) {
                         var currentUrl = _.pluck(breadcrumb, 'name').join('/');
                         $data.nodes.get({ id: { $in: $scope.node.hierarchy } }).then(function (results) {
+                            DraftService.patch('nodes', results).then(function (patchedResults) {
 
-                            $($scope.node.hierarchy).each(function (i, item) {
-                                var resultNode = _.first(_.filter(results, function (x) { return x.id === item; }));
-                                breadcrumb.push({
-                                    name: resultNode ? resultNode.name : '-',
-                                    url: currentUrl + '/' + item,
-                                    active: i === ($scope.node.hierarchy.length - 1)
+                                $($scope.node.hierarchy).each(function (i, item) {
+                                    var resultNode = _.first(_.filter(patchedResults, function (x) { return x.id === item; }));
+                                    breadcrumb.push({
+                                        name: resultNode ? resultNode.name : '-',
+                                        url: currentUrl + '/' + item,
+                                        active: i === ($scope.node.hierarchy.length - 1)
+                                    });
                                 });
+
+                                $scope.current.setBreadcrumb(breadcrumb);
+                                deferred.resolve(breadcrumb);
+
+                            }, function (patchedError) {
+                                deferred.reject(patchedError);
                             });
-
-                            $scope.current.setBreadcrumb(breadcrumb);
-
-                            deferred.resolve(breadcrumb);
-
                         }, function (error) {
                             deferred.reject(error);
                         });
@@ -408,7 +411,7 @@
                                                
                             $scope.siblingSeoNames = _.pluck(_.pluck(_.pluck(_.pluck(_.filter(siblingsResponse, function (x) { return x.data && x.data.localized && x.data.localized[lang]; }), 'data'), 'localized'), $scope.language), 'seoName');
 
-                            $scope.validation.seo = $scope.siblingSeoNames.indexOf($scope.node.data.localized[lang].seoName) === -1;
+                            $scope.validation.seo = $scope.siblingSeoNames.indexOf(($scope.node.data.localized[lang] || {}).seoName) === -1;
 
                             if (!$scope.validation.seo)
                                 $scope.valid = false;
@@ -519,11 +522,13 @@
                             deferred.resolve(false);
                         }
                         else {
+                            $scope.node.published = true;
+
                             var publishNode = {};
                             $.extend(true, publishNode, $scope.node);
                             if (!publishNode.permissions.inherits)
-                                publishNode.permissions.roles = $scope.draftRoles;
-
+                                publishNode.permissions.roles = $scope.roles;
+                            
                             $data.nodes.put($scope.id, publishNode).then(function (result) {
                                 $scope.name = result.name;
 
@@ -662,48 +667,9 @@
             });
             
             dpd.on(DATA_EVENTS.nodeUpdated, function (node) {
-                if ($scope.node.hierarchy.indexOf(node.id) !== -1 && node.id !== $scope.node.id) {
-                    fn.setSelectedRoles().then(function () { }, function (ex) {
-                        logger.error(ex);
-                    });
-                    fn.setSeo().then(function () { }, function (ex) {
-                        logger.error(ex);
-                    });
-                }
+                // updated from another user??
             });
-
-            dpd.on(DATA_EVENTS.draftCreated, function (draft) {
-                if ($scope.node.hierarchy.indexOf(draft.refId) !== -1 && draft.refId !== $scope.node.id) {
-                    fn.setSelectedRoles().then(function () { }, function (ex) {
-                        logger.error(ex);
-                    });
-                    fn.setSeo().then(function () { }, function (ex) {
-                        logger.error(ex);
-                    });
-                }
-            });
-
-            dpd.on(DATA_EVENTS.draftDeleted, function (drafts) {
-                var draftRefIds = _.pluck(drafts, 'refId');
-
-                var cont = false;
-
-                $(drafts).each(function (d, draft) {
-                    if ($scope.node.hierarchy.indexOf(draft.refId) !== -1 && draft.refId !== $scope.node.id) {
-                        cont = true;
-                    }
-                });
-
-                if (cont) {
-                    fn.setSelectedRoles().then(function () { }, function (ex) {
-                        logger.error(ex);
-                    });
-                    fn.setSeo().then(function () { }, function (ex) {
-                        logger.error(ex);
-                    });
-                }
-            });
-
+            
             dpd.on(DATA_EVENTS.nodeDeleted, function (node) {
                 // throw 404 if is current not found
             });

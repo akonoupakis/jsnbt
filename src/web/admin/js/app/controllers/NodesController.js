@@ -109,7 +109,7 @@
                 },
 
                 canPublish: function (node) {
-                    return node.draft;
+                    return node.draft || !node.published;
                 },
 
                 publish: function (node) {

@@ -150,7 +150,12 @@
                     localized: {}
                 },
                 createdOn: new Date().getTime(),
-                modifiedOn: new Date().getTime()
+                modifiedOn: new Date().getTime(),
+                permissions: {
+                    inherits: true,
+                    roles: []
+                },
+                published: false
             });
 
             $data.register('languages', {
@@ -172,12 +177,14 @@
                     localized: {}
                 },
                 createdOn: new Date().getTime(),
-                modifiedOn: new Date().getTime()
+                modifiedOn: new Date().getTime(),
+                published: false
             });
 
             $data.register('texts', {
                 key: '',
-                value: {}
+                value: {},
+                published: false
             });
 
             $data.register('settings', {
