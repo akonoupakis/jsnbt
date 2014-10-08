@@ -183,7 +183,15 @@ module.exports = {
             result.views = getViews();
             result.addons = self.addons;
             result.entities = self.entities;
-            result.lists = self.lists; 
+            result.lists = [];
+
+            _.each(self.lists, function (list) {
+                var newList = {};
+                _.extend(newList, list);
+                delete newList.permissions;
+                result.lists.push(newList);
+            });
+
             result.roles = self.roles;
             result.sections = self.sections;
         }

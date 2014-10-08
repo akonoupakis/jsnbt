@@ -7,7 +7,7 @@ var self = this;
 
 var processFn = function () {
 
-    if (!internal && !user.isAuthorized(me, 'data', 'D'))
+    if (!internal && !user.isAuthorized(me, 'data:' + self.domain + ':' + self.list, 'D'))
         cancel('access denied', 500);
 
     var drafts = dpdSync.call(dpd.drafts.get, { refId: self.id });

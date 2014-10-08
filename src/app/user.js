@@ -43,12 +43,7 @@ var getUserRoles = function (user) {
     return allRoles;
 }
 
-exports.isInRole = function (user, role) {
-    var roles = getUserRoles(user);
-    return roles.indexOf(role) !== -1;
-};
-
-exports.isAuthorized = function (user, section, permission) {
+var isUserAuthorized = function (user, section, permission) {
     var dataCollections = jsnbt.data || [];
 
     var dataCollection = _.first(_.filter(dataCollections, function (x) { return x.collection === section; }));
@@ -71,4 +66,54 @@ exports.isAuthorized = function (user, section, permission) {
     }
 
     return result;
+}
+
+var isUserDataAuthorized = function (user, section, permission) {
+    var sectionParts = section.split(':');
+    if (sectionParts.length === 3) {
+        var dataName = sectionParts[0];
+        var domainName = sectionParts[1];
+        var listName = sectionParts[2];
+
+        var list = _.first(_.filter(jsnbt.lists, function (x) { return x.domain === domainName && x.id === listName; }));
+        if (list && list.permissions) {
+            var roles = getUserRoles(user);
+            result = false;
+
+            _.each(list.permissions, function (perm) {
+                if (roles.indexOf(perm.role) !== -1) {
+                    if (perm.crud.indexOf(permission) !== -1)
+                        result = true;
+                }
+            });
+
+            return result;
+        }
+        else {
+            return isUserAuthorized(user, 'data', permission);
+        }
+    }
+    else {
+        return isUserAuthorized(user, 'data', permission);
+    }
+}
+
+exports.isInRole = function (user, role) {
+    var roles = getUserRoles(user);
+    return roles.indexOf(role) !== -1;
+};
+
+exports.isAuthorized = function (user, section, permission) {
+    if (section.indexOf(':') !== -1) {
+        var sectionParts = section.split(':');
+        if (sectionParts[0] === 'data') {
+            return isUserDataAuthorized(user, section, permission);
+        }
+        else {
+            return isUserAuthorized(user, section, permission);
+        }
+    }
+    else {
+        return isUserAuthorized(user, section, permission);
+    }
 };

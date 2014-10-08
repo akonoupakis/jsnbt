@@ -139,7 +139,14 @@ var jsnbtModule = {
     lists: [{
         name: 'Sample 01',
         spec: '/tmpl/spec/list/sample1.html',
-        localized: true
+        localized: true,
+        permissions: [{
+            role: 'public',
+            crud: ['R']
+        }, {
+            role: 'admin',
+            crud: ['C', 'R', 'U', 'D']
+        }]
     }, {
         name: 'Sample 02',
         spec: '/tmpl/spec/list/sample2.html',

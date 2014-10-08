@@ -35,9 +35,9 @@
             <ctrl-select class="col-md-12" ng-model="node.entity" ng-required="true" ng-label="Type" ng-options="types" ng-enabled="node.domain === 'core'"></ctrl-select>
         </div>
 
-        <hr />
+        <hr ng-show="node.domain === 'core' && types.length > 1" />
 
-        <div class="row" id="page-language" data-scrollspy="Language">
+        <div class="row" id="page-language" data-scrollspy="Language" ng-show="localized">
             <div class="col-md-12 form-group">
                 <label class="control-label" for="ddlLanguage">Language</label>
                 <select class="form-control" id="ddlLanguage" ng-model="language">
@@ -46,7 +46,7 @@
             </div>
         </div>
 
-        <hr />
+        <hr ng-show="localized" />
 
         <div class="row breadcrumb-form-row" id="page-seo" data-scrollspy="Url">
             <div class="col-md-10">
