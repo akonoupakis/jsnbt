@@ -617,7 +617,7 @@
             };
 
             $scope.preview = function () {
-
+                window.open('../jsnbt-preview/' + $scope.language + '-' + $scope.id);
             };
 
             $scope.publish = function () {

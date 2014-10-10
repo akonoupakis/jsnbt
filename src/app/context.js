@@ -25,6 +25,9 @@ module.exports = function (req, res) {
     var ctx = {
         req: req,
         res: res,
+        node: {
+            id: ''
+        },
         meta: {
             title: '',
             description: '',
@@ -48,7 +51,8 @@ module.exports = function (req, res) {
                 href += '/';
                 return href;
             }
-        }
+        },
+        draft: false
     };
 
     return ctx;

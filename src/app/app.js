@@ -197,9 +197,11 @@ exports.init = function (env, config, module) {
     var errorFn = this.logger.error;
     this.logger.error = function (err) {
         this.debug(arguments.callee.caller.toString());
-        errorFn(err.toString());
 
-        fs.createWriteStream('error.log', { 'flags': 'a' }).write(moment().format() + ' ' + err.toString() + "\n");
+        throw err;
+        //errorFn(err.toString());
+
+        //fs.createWriteStream('error.log', { 'flags': 'a' }).write(moment().format() + ' ' + err.toString() + "\n");
     };
 
     var fatalFn = this.logger.fatal;
@@ -271,6 +273,7 @@ exports.init = function (env, config, module) {
         },
         appPath: __dirname
     });
+    
     delete this.init;
 };
 

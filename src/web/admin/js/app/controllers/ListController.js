@@ -54,7 +54,6 @@
                         controller: 'NamePromptController',
                         template: 'tmpl/partial/modal/namePrompt.html'
                     }).then(function (result) {
-                        console.log('12', $scope.list.localized);
                         if (!!result && result !== '') {
                             $data.data.post($data.create('data', {
                                 domain: $routeParams.domain,

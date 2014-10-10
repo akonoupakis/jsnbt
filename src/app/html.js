@@ -9,6 +9,8 @@ exports.parse = function (ctx, tmpl, model) {
     var mdl = {
         baseHref: ctx.uri.getBaseHref(),
         language: 'en',
+        node: ctx.node,
+        draft: ctx.draft,
         meta: {
             title: '',
             keywords: '',

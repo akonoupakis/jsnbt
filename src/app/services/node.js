@@ -7,7 +7,7 @@ var _ = require('underscore');
 
 _.str = require('underscore.string');
 
-var getCombinedNode = function (node, contNode) {
+var getFinalizedNode = function (node, contNode) {
 
     var result = {};
 
@@ -65,10 +65,10 @@ var getPatchedNode = function (node) {
                 throw new Error('pointer not found for nodeId: ' + node.nodeId);
             }
             
-            result = getCombinedNode(pointerNode, node);
+            result = getFinalizedNode(pointerNode, node);
         }
         else {
-            result = getCombinedNode(node);
+            result = getFinalizedNode(node);
         }
 
         var fullUrl = '';
@@ -191,9 +191,7 @@ module.exports = {
         var uri = parseUri(url);
         uri.path = uri.path.toLowerCase();
 
-        console.log(0);
         var defaultLanguage = languageService.getDefault();
-        console.log(1);
         var activeLanguages = languageService.getActive();
 
         var languagePart = '';
@@ -242,13 +240,13 @@ module.exports = {
                     var fmAddonNode = fmRouter.resolve(fullyMatched, pointedNode, fullUrlPart);
                     if (fmAddonNode) {
 
-                        node = getCombinedNode(fullyMatched, fmAddonNode);
+                        node = getFinalizedNode(fullyMatched, fmAddonNode);
                         break;
                     }
                 }
             }
             else {
-                node = getCombinedNode(fullyMatched);
+                node = getFinalizedNode(fullyMatched);
             }
         }
         else {
@@ -283,7 +281,7 @@ module.exports = {
                         var addonNode = router.resolve(matchedPointerNode, matchedPointedNode, fullUrlPart);
                         if (addonNode) {
 
-                            node = getCombinedNode(matchedPointerNode, addonNode);
+                            node = getFinalizedNode(matchedPointerNode, addonNode);
                             break;
                         }
                     }

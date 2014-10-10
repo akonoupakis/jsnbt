@@ -35,24 +35,26 @@ module.exports = function () {
                             var session = app.session.start(ctx.req, ctx.res);
                             session.set('language', resolved.language);
 
-                            if (resolved.ref) {
-                                ctx.node = resolved;
+                            ctx.node = resolved;
 
-                                var nextIndex = 0;
-                                var nextInternal = function () {
-                                    nextIndex++;
-                                    var router = addonRouters[nextIndex];
-                                    router.route(ctx, nextInternal);
-                                };
+                            //if (resolved.ref) {
+                            //    ctx.node = resolved;
 
-                                var first = _.first(addonRouters);
-                                first.route(ctx, nextInternal);
-                            }
-                            else {
+                            //    var nextIndex = 0;
+                            //    var nextInternal = function () {
+                            //        nextIndex++;
+                            //        var router = addonRouters[nextIndex];
+                            //        router.route(ctx, nextInternal);
+                            //    };
+
+                            //    var first = _.first(addonRouters);
+                            //    first.route(ctx, nextInternal);
+                            //}
+                            //else {
                                 ctx.uri.scheme = resolved.secure === true ? 'https' : 'http';
                                 _.extend(ctx.meta, resolved.meta);
                                 view.render(ctx, resolved.view);
-                            }
+                            //}
                         }
                         else {
                             next();

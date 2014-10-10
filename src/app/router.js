@@ -3,6 +3,7 @@ var dpdSync = require('dpd-sync');
 var fs = require('fs');
 var error = require('./error.js');
 var pack = require('./package.js');
+var cookies = require('cookies');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
@@ -10,9 +11,8 @@ _.str = require('underscore.string');
 var stardardRouterNames = [
 
     './routers/base.js',
-    './routers/session.js',
-    './routers/cache.js',
-    './routers/service.js',
+    './routers/preview.js',
+    './routers/api.js',
     './routers/jsnbt.js',
     './routers/package.js',
     './routers/upload.js',
@@ -71,16 +71,28 @@ module.exports = function () {
                 }
 
                 if (processRequest) {
-                    var nextIndex = 0;
-                    var next = function () {
-                        nextIndex++;
-                        var router = routers[nextIndex];
-                        if (router.sync === true) { dpdSync.wrap(router.route, ctx, next); } else { router.route(ctx, next); }
-                    };
-
-                    var first = _.first(routers);
-                    if (first.sync === true) { dpdSync.wrap(first.route, ctx, next); } else { first.route(ctx, next); }
                     req._routed = true;
+
+                    ctx.req.cookies = new cookies(ctx.req, ctx.res);
+                         
+                    app.server.sessions.createSession(ctx.req.cookies.get('sid'), function (err, session) {
+                        if (err) {
+                            throw err;
+                        } else {
+                            ctx.req.cookies.set('sid', session.sid);
+                            ctx.req.session = session;
+
+                            var nextIndex = 0;
+                            var next = function () {
+                                nextIndex++;
+                                var router = routers[nextIndex];
+                                if (router.sync === true) { dpdSync.wrap(router.route, ctx, next); } else { router.route(ctx, next); }
+                            };
+
+                            var first = _.first(routers);
+                            if (first.sync === true) { dpdSync.wrap(first.route, ctx, next); } else { first.route(ctx, next); }
+                        }
+                    });
                 }
             }
         }

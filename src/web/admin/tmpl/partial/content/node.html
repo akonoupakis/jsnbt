@@ -10,7 +10,7 @@
                 <h1 class="title">{{ name }}</h1>
                 <div class="buttons">
                     <button type="button" ng-show="!published" class="btn btn-danger" ng-click="discard()">Discard</button>                    
-                    <button type="button" ng-hide="true" class="btn btn-primary" ng-click="preview()">Preview</button>
+                    <button type="button" ng-show="!published" class="btn btn-primary" ng-click="preview()">Preview</button>
                     <button type="button" ng-disabled="published && node.published" class="btn btn-success" ng-click="publish()">Publish</button>
                 </div>
             </div>
