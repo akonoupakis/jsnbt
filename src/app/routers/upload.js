@@ -1,4 +1,5 @@
 var app = require('../app.js');
+var auth = require('../user.js');
 var fs = require('fs');
 var error = require('../error.js');
 var jsnbt = require('../jsnbt.js');
@@ -20,35 +21,42 @@ module.exports = function () {
 
                 if (ctx.req.method === 'POST') {
 
-                    var internalPath = './public/files' + (ctx.uri.query.path || '/');
+                    if (!auth.isInRole(ctx.req.session.user, 'admin')) {
+                        ctx.res.writeHead(400, { "Content-Type": "application/text" });
+                        ctx.res.write(401);
+                        ctx.res.end();
+                    }
+                    else {
+                        var internalPath = './public/files' + (ctx.uri.query.path || '/');
 
-                    current.post(ctx.req, function (status, filename, original_filename, identifier, currentTestChunk, numberOfChunks) {
+                        current.post(ctx.req, function (status, filename, original_filename, identifier, currentTestChunk, numberOfChunks) {
 
-                        if (!_.str.endsWith(internalPath, '/'))
-                            internalPath += '/';
+                            if (!_.str.endsWith(internalPath, '/'))
+                                internalPath += '/';
 
-                        var s = fs.createWriteStream(internalPath + filename);
+                            var s = fs.createWriteStream(internalPath + filename);
 
-                        if (status === 'done') {
-                            current.write(identifier, s, {
-                                end: true,
-                                onDone: function () {
+                            if (status === 'done') {
+                                current.write(identifier, s, {
+                                    end: true,
+                                    onDone: function () {
 
-                                    current.clean(identifier, {
-                                        onDone: function () {
-                                            s.end();
-                                            s.close();
-                                        }
-                                    });
-                                    ctx.res.end();
-                                }
-                            });
-                        }
-                        else {
-                            ctx.res.end();
-                        }
+                                        current.clean(identifier, {
+                                            onDone: function () {
+                                                s.end();
+                                                s.close();
+                                            }
+                                        });
+                                        ctx.res.end();
+                                    }
+                                });
+                            }
+                            else {
+                                ctx.res.end();
+                            }
 
-                    });
+                        });
+                    }
                 }
                 else {
                     current.get(ctx, ctx.req, function (status, filename, original_filename, identifier) {

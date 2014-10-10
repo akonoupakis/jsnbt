@@ -29,29 +29,45 @@ module.exports = function () {
             try {
                 var resolved = nodeService.getByUrl(ctx.uri.url);
                 if (resolved) {
+                    var restricted = true;
+                    _.each(resolved.permissions, function (role) {
+                        if (auth.isInRole(ctx.req.session.user, role)) {
+                            restricted = false;
+                        }
+                    });
+                           
+                    if (restricted) {
+                        error.render(ctx, 401, 'Access denied');
+                    }
+                    else {
+                        var session = app.session.start(ctx.req, ctx.res);
+                        session.set('language', resolved.language);
 
-                    var session = app.session.start(ctx.req, ctx.res);
-                    session.set('language', resolved.language);
+                        ctx.node = resolved;
 
-                    ctx.node = resolved;
+                        // check permissions!
+                        //if (!ctx.req.session.user) {
+                        //    error.render(ctx, 401);
+                        //}
 
-                    //if (resolved.ref) {
+                        //if (resolved.ref) {
 
-                    //    var nextIndex = 0;
-                    //    var nextInternal = function () {
-                    //        nextIndex++;
-                    //        var router = addonRouters[nextIndex];
-                    //        router.route(ctx, nextInternal);
-                    //    };
+                        //    var nextIndex = 0;
+                        //    var nextInternal = function () {
+                        //        nextIndex++;
+                        //        var router = addonRouters[nextIndex];
+                        //        router.route(ctx, nextInternal);
+                        //    };
 
-                    //    var first = _.first(addonRouters);
-                    //    first.route(ctx, nextInternal);
-                    //}
-                    //else {
+                        //    var first = _.first(addonRouters);
+                        //    first.route(ctx, nextInternal);
+                        //}
+                        //else {
                         ctx.uri.scheme = resolved.secure === true ? 'https' : 'http';
                         _.extend(ctx.meta, resolved.meta);
                         view.render(ctx, resolved.view);
-                    //}
+                        //}
+                    }
                 }
                 else {
                     next();
