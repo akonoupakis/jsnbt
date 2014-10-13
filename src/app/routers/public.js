@@ -48,7 +48,7 @@ module.exports = function () {
 
                         ctx.node = resolved.node || {};
                         ctx.pointer = resolved.pointer || {};
-                        ctx.language = resolved.language || 'en';
+                        ctx.language = jsnbt.localization ? resolved.language || 'en' : jsnbt.locale;
                         ctx.view = resolved.view || '';
                         ctx.meta = resolved.node.meta || {};
                         ctx.uri.scheme = resolved.node.secure === true ? 'https' : 'http';
@@ -71,9 +71,9 @@ module.exports = function () {
                 }
                 else {
                     if (jsnbt.localization) {
-                        var languages = dpdSync.call(app.dpd.languages.get, {});
+                        var languages = jsnbt.languages;
 
-                        var matched = _.filter(languages, function (x) { return _.str.startsWith(ctx.uri.path, x.code); });
+                        var matched = _.filter(languages, function (x) { return _.str.startsWith(ctx.uri.path, '/' + x.code + '/'); });
                         if (matched.length === 0) {
                             var defaultLanguage = _.first(dpdSync.call(app.dpd.languages.get, { active: true, "default": true }));
                             if (defaultLanguage) {

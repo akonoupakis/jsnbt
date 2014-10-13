@@ -54,206 +54,6 @@ var getDefaultLanguage = function () {
     return defaultLanguage;
 };
 
-var getNonLocalizedNodeUrl = function (url) {
-
-};
-
-var getLocalizedNodeUrl = function (url) {
-    var self = this;
-
-    var resolved = {
-        node: undefined,
-        pointer: undefined
-    };
-
-    var uri = parseUri(url);
-    uri.path = uri.path.toLowerCase();
-    
-
-    var languagePart = '';
-    var urlPart = '';
-
-    var defaultLanguage = getDefaultLanguage();
-    var activeLanguages = getActiveLanguages();
-
-    if (uri.path === '/') {
-        languagePart = defaultLanguage;
-        urlPart = uri.path;
-
-        var settingNode = _.first(dpdSync.call(app.dpd.settings.get, { domain: 'core' }));
-        if (settingNode && settingNode.data && settingNode.data.homepage) {
-            var resolved = _.first(dpdSync.call(app.dpd.nodeurls.get, { nodeId: settingNode.data.homepage, language: defaultLanguage }));
-            if (resolved) {
-                urlPart = resolved.url;
-            }
-        }
-    }
-    else {
-        if (activeLanguages.length > 1) {
-            var parts = _.str.trim(uri.path, '/').split('/');
-            var firstPart = _.first(parts);
-            if (activeLanguages.indexOf(firstPart.toLowerCase()) != -1) {
-                languagePart = firstPart.toLowerCase();
-                urlPart = '/' + parts.slice(1).join('/');
-            }
-        }
-        //else {
-        //    languagePart = 'en';
-        //    urlPart = urlPart;
-        //}
-    }
-
-    var fullUrlPart = urlPart + (uri.query !== '' ? '?' + uri.query : '');
-    
-    var matchedNodeUrls = dpdSync.call(app.dpd.nodeurls.get, { url: urlPart, domain: 'core' });
-
-    var matchedNodeUrl = _.first(_.filter(matchedNodeUrls, function (x) { return x.language === languagePart; }));
-    if (matchedNodeUrl === undefined) {
-        var matchedNodeUrl = _.first(_.filter(matchedNodeUrls, function (x) { return x.language === 'en' && x.localization.enabled === false; }));
-    }
-    
-    if (matchedNodeUrl) {
-        if (matchedNodeUrl.entity === 'pointer') {
-            var pointedNodeUrls = dpdSync.call(app.dpd.nodeurls.get, { nodeId: matchedNodeUrl.pointer.nodeId, domain: matchedNodeUrl.pointer.domain });
-            var pointedNodeUrl = _.first(_.filter(pointedNodeUrls, function (x) { return x.language === matchedNodeUrl.language; }));
-            if (pointedNodeUrl === undefined) {
-                var pointedNodeUrl = _.first(_.filter(pointedNodeUrls, function (x) { return x.language === 'en' && x.localization.enabled === false; }));
-            }
-            
-            if (pointedNodeUrl) {
-                return {
-                    node: pointedNodeUrl,
-                    pointer: matchedNodeUrl,
-                    view: pointedNodeUrl.view,
-                    language: pointedNodeUrl.language
-                };
-            }
-            else {
-                return {
-                    node: matchedNodeUrl,
-                    view: matchedNodeUrl.view,
-                    language: matchedNodeUrl.language
-                };
-            }
-        }
-        else {
-            return {
-                node: matchedNodeUrl,
-                view: matchedNodeUrl.view,
-                language: matchedNodeUrl.language
-            };
-        }
-    }
-    else {
-        var pointerNodes = dpdSync.call(app.dpd.nodeurls.get, {
-            domain: 'core',
-            entity: 'pointer',
-            language: languagePart
-        });
-        if (pointerNodes.length > 0) {
-            var sortedPointerNodes = _.sortBy(pointerNodes, function (pointerNode) { return Math.sin(pointerNode.url.length); });
-
-            var matchedPointerNode = _.first(_.filter(pointerNodes, function (x) { return _.str.startsWith(urlPart, x.url + '/'); }));
-            
-            if (matchedPointerNode) {
-                var matchedPointedNode = _.first(dpdSync.call(app.dpd.nodeurls.get, { nodeId: matchedPointerNode.pointer.nodeId, language: languagePart, domain: matchedPointerNode.pointer.domain }));
-
-                if (matchedPointedNode) {
-                    for (var p = 0; p < app.packages.length; p++) {
-                        var pack = app.packages[p];
-
-                        if (typeof (pack.route) === 'function' && typeof (pack.resolve) === 'function') {
-                            var addonNode = pack.resolve(matchedPointerNode, matchedPointedNode, fullUrlPart);
-                            if (addonNode) {
-                                return {
-                                    node: addonNode,
-                                    pointer: matchedPointerNode,
-                                    view: addonNode.view,
-                                    language: addonNode.language
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return undefined;
-    }
-
-    //resolved.node = matchedNodeUrl;
-    /*
-    if (fullyMatched) {
-        if (fullyMatched.pointer) {
-            var pointedNode = _.first(dpdSync.call(app.dpd.nodeurls.get, { nodeId: fullyMatched.data.nodeId, language: languagePart, domain: fullyMatched.data.domain, active: true }));
-            if (!pointedNode)
-                throw new Error('pointed not found for nodeId: ' + fullyMatched.id);
-
-            for (var i = 0; i < routers.length; i++) {
-                var fmRouter = routers[i];
-                var fmAddonNode = fmRouter.resolve(fullyMatched, pointedNode, fullUrlPart);
-                if (fmAddonNode) {
-
-                    node = getFinalizedNode(fullyMatched, fmAddonNode);
-                    break;
-                }
-            }
-        }
-        else {
-            node = getFinalizedNode(fullyMatched);
-        }
-    }
-    else {
-        var pointerNodes = dpdSync.call(app.dpd.nodeurls.get, {
-            domain: 'core',
-            entity: 'pointer',
-            language: languagePart
-        });
-        if (pointerNodes.length > 0) {
-            var sortedPointerNodes = _.sortBy(pointerNodes, function (pointerNode) { return Math.sin(pointerNode.url.length); });
-
-            var matchedPointerNode = null;
-
-            for (var s = 0; s < sortedPointerNodes.length; s++) {
-                var pointerNode = sortedPointerNodes[s];
-
-                var starts = _.str.startsWith(urlPart, pointerNode.url + '/');
-                if (starts) {
-                    matchedPointerNode = pointerNode;
-                    break;
-                }
-            }
-
-            if (matchedPointerNode) {
-                var matchedPointedNode = _.first(dpdSync.call(app.dpd.nodeurls.get, { nodeId: matchedPointerNode.data.nodeId, language: languagePart, domain: matchedPointerNode.data.domain, active: true }));
-
-                if (!matchedPointedNode)
-                    throw new Error('pointed not found for nodeId: ' + matchedPointerNode.id);
-
-                for (var ii = 0; ii < routers.length; ii++) {
-                    var router = routers[ii];
-                    var addonNode = router.resolve(matchedPointerNode, matchedPointedNode, fullUrlPart);
-                    if (addonNode) {
-
-                        node = getFinalizedNode(matchedPointerNode, addonNode);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    if (node)
-        node.fullUrl = url;
-    */
-
-
-    return {
-        node: undefined,
-        pointer: undefined
-    };
-};
-
 module.exports = {
 
     getHierarchy: function (node) {
@@ -346,12 +146,130 @@ module.exports = {
         if (!url)
             throw new Error('url is required');
 
-        if (jsnbt.localization) {
-            return getLocalizedNodeUrl(url);
+        var self = this;
+
+        var resolved = {
+            node: undefined,
+            pointer: undefined
+        };
+
+        var uri = parseUri(url);
+        uri.path = uri.path.toLowerCase();
+
+
+        var languagePart = '';
+        var urlPart = '';
+
+        var defaultLanguage = jsnbt.localization ? getDefaultLanguage() : 'en';
+        var activeLanguages = jsnbt.localization ? getActiveLanguages() : ['en'];
+
+        if (uri.path === '/') {
+            languagePart = defaultLanguage;
+            urlPart = uri.path;
+
+            var settingNode = _.first(dpdSync.call(app.dpd.settings.get, { domain: 'core' }));
+            if (settingNode && settingNode.data && settingNode.data.homepage) {
+                var resolved = _.first(dpdSync.call(app.dpd.nodeurls.get, { nodeId: settingNode.data.homepage, language: defaultLanguage }));
+                if (resolved) {
+                    urlPart = resolved.url;
+                }
+            }
         }
         else {
-            return getNonLocalizedNodeUrl(url);
+            if (jsnbt.localization) {
+                if (activeLanguages.length > 1) {
+                    var parts = _.str.trim(uri.path, '/').split('/');
+                    var firstPart = _.first(parts);
+                    if (activeLanguages.indexOf(firstPart.toLowerCase()) != -1) {
+                        languagePart = firstPart.toLowerCase();
+                        urlPart = '/' + parts.slice(1).join('/');
+                    }
+                }
+            }
+            else {
+                languagePart = 'en';
+                urlPart = _.str.rtrim(uri.path, '/');
+            }
         }
+
+        var fullUrlPart = urlPart + (uri.query !== '' ? '?' + uri.query : '');
+
+        var matchedNodeUrls = dpdSync.call(app.dpd.nodeurls.get, { url: urlPart, domain: 'core' });
+
+        var matchedNodeUrl = _.first(_.filter(matchedNodeUrls, function (x) { return x.language === (jsnbt.localization ? languagePart : 'en'); }));
+        if (!jsnbt.localization && matchedNodeUrl === undefined) {
+            var matchedNodeUrl = _.first(_.filter(matchedNodeUrls, function (x) { return x.language === 'en' && x.localization.enabled === false; }));
+        }
+
+        if (matchedNodeUrl) {
+            if (matchedNodeUrl.entity === 'pointer') {
+                var pointedNodeUrls = dpdSync.call(app.dpd.nodeurls.get, { nodeId: matchedNodeUrl.pointer.nodeId, domain: matchedNodeUrl.pointer.domain });
+                var pointedNodeUrl = _.first(_.filter(pointedNodeUrls, function (x) { return x.language === (jsnbt.localization ? matchedNodeUrl.language : 'en'); }));
+                if (!jsnbt.localization && pointedNodeUrl === undefined) {
+                    var pointedNodeUrl = _.first(_.filter(pointedNodeUrls, function (x) { return x.language === 'en' && x.localization.enabled === false; }));
+                }
+
+                if (pointedNodeUrl) {
+                    return {
+                        node: pointedNodeUrl,
+                        pointer: matchedNodeUrl,
+                        view: pointedNodeUrl.view,
+                        language: pointedNodeUrl.language
+                    };
+                }
+                else {
+                    return {
+                        node: matchedNodeUrl,
+                        view: matchedNodeUrl.view,
+                        language: matchedNodeUrl.language
+                    };
+                }
+            }
+            else {
+                return {
+                    node: matchedNodeUrl,
+                    view: matchedNodeUrl.view,
+                    language: matchedNodeUrl.language
+                };
+            }
+        }
+        else {
+            var pointerNodes = dpdSync.call(app.dpd.nodeurls.get, {
+                domain: 'core',
+                entity: 'pointer',
+                language: jsnbt.localization ? languagePart : 'en'
+            });
+            if (pointerNodes.length > 0) {
+                var sortedPointerNodes = _.sortBy(pointerNodes, function (pointerNode) { return Math.sin(pointerNode.url.length); });
+
+                var matchedPointerNode = _.first(_.filter(pointerNodes, function (x) { return _.str.startsWith(urlPart, x.url + '/'); }));
+
+                if (matchedPointerNode) {
+                    var matchedPointedNode = _.first(dpdSync.call(app.dpd.nodeurls.get, { nodeId: matchedPointerNode.pointer.nodeId, language: matchedPointerNode.language, domain: matchedPointerNode.pointer.domain }));
+
+                    if (matchedPointedNode) {
+                        for (var p = 0; p < app.packages.length; p++) {
+                            var pack = app.packages[p];
+
+                            if (typeof (pack.route) === 'function' && typeof (pack.resolve) === 'function') {
+                                var addonNode = pack.resolve(matchedPointerNode, matchedPointedNode, fullUrlPart);
+                                if (addonNode) {
+                                    return {
+                                        node: addonNode,
+                                        pointer: matchedPointerNode,
+                                        view: addonNode.view,
+                                        language: addonNode.language
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return undefined;
+        }
+
     }
 
 };

@@ -4,6 +4,7 @@ var error = require('../error.js');
 var view = require('../view.js');
 var auth = require('../auth.js');
 var node = require('../node.js');
+var jsnbt = require('../jsnbt.js');
 var _ = require('underscore');
 
 module.exports = function () {
@@ -46,7 +47,7 @@ module.exports = function () {
 
                             ctx.node = resolved.node || {};
                             ctx.pointer = resolved.pointer || {};
-                            ctx.language = resolved.language || 'en';
+                            ctx.language = jsnbt.localization ? resolved.language || 'en' : jsnbt.locale;
                             ctx.view = resolved.view || '';
                             ctx.meta = resolved.node.meta || {};
                             ctx.uri.scheme = resolved.node.secure === true ? 'https' : 'http';
