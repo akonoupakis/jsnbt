@@ -1,5 +1,5 @@
 var app = require('../app.js');
-var auth = require('../user.js');
+var auth = require('../auth.js');
 var file = require('../file.js');
 
 module.exports = {

@@ -250,7 +250,6 @@ exports.init = function (env, config, module) {
         }
     }
 
-    this.session = require('session-manager').create({ engine: 'memory' });
     this.cache = require('nodecache');
 
     this.server = deployd({

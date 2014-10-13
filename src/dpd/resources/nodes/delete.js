@@ -1,5 +1,5 @@
 var dpdSync = require('dpd-sync');
-var user = requireApp('user.js');
+var auth = requireApp('auth.js');
 
 var _ = require('underscore');
 
@@ -7,7 +7,7 @@ var self = this;
 
 var processFn = function () {
 
-    if (!internal && !user.isAuthorized(me, 'nodes', 'D'))
+    if (!internal && !auth.isAuthorized(me, 'nodes', 'D'))
         cancel('access denied', 500);
 
     var nodeUrls = dpdSync.call(dpd.nodeurls.get, { nodeId: self.id });

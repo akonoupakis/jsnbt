@@ -1,8 +1,8 @@
-var user = requireApp('user.js');
+var auth = requireApp('auth.js');
 
 var self = this;
 
-if (!internal && !user.isAuthorized(me, 'languages', 'D'))
+if (!internal && !auth.isAuthorized(me, 'languages', 'D'))
     cancel('access denied', 500);
 
 if (this.default)

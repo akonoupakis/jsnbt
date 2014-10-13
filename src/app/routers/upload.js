@@ -1,5 +1,5 @@
 var app = require('../app.js');
-var auth = require('../user.js');
+var auth = require('../auth.js');
 var fs = require('fs');
 var error = require('../error.js');
 var jsnbt = require('../jsnbt.js');

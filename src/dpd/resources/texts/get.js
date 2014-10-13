@@ -1,6 +1,6 @@
-var user = requireApp('user.js');
+var auth = requireApp('auth.js');
 
 var self = this;
 
-if (!internal && !user.isAuthorized(me, 'texts', 'R'))
+if (!internal && !auth.isAuthorized(me, 'texts', 'R'))
     cancel('access denied', 500);

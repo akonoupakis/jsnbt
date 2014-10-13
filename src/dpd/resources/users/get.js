@@ -1,5 +1,5 @@
 var app = requireApp('app.js');
-var user = requireApp('user.js');
+var auth = requireApp('auth.js');
 
 var self = this;
 
@@ -8,7 +8,7 @@ if (app.anyUsers) {
         cancel('Access denied', 500);
     }
     else if (me.id !== self.id) {
-        if (!internal && !user.isAuthorized(me, 'users', 'R'))
+        if (!internal && !auth.isAuthorized(me, 'users', 'R'))
             cancel('Access denied', 500);
     }
 }

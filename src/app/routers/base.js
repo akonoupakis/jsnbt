@@ -2,7 +2,7 @@ var app = require('../app.js');
 var dpdSync = require('dpd-sync');
 var error = require('../error.js');
 var view = require('../view.js');
-var auth = require('../user.js');
+var auth = require('../auth.js');
 var node = require('../node.js');
 var _ = require('underscore');
 

@@ -1,6 +1,6 @@
 var app = requireApp('app.js');
 var dpdSync = require('dpd-sync');
-var user = requireApp('user.js');
+var auth = requireApp('auth.js');
 
 var _ = require('underscore');
 
@@ -27,14 +27,14 @@ var processFn = function () {
             emit('userCreated', self);
     }
     else {
-        if (!internal && !user.isAuthorized(me, 'users', 'C'))
+        if (!internal && !auth.isAuthorized(me, 'users', 'C'))
             cancel('access denied', 500);
         else if (self.roles.length === 0) {
             error('roles', 'at least one role is required');
         }
 
         _.each(self.roles, function (role) {
-            if (!user.isInRole(me, role)) {
+            if (!auth.isInRole(me, role)) {
                 error('roles', 'access denied for role "' + role + '"');
             }
         });

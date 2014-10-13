@@ -1,5 +1,5 @@
 var dpdSync = require('dpd-sync');
-var user = requireApp('user.js');
+var auth = requireApp('auth.js');
 var node = requireApp('node.js');
 
 var _ = require('underscore');
@@ -12,7 +12,7 @@ var processFn = function () {
         delete self.config.computed;
     }
     else {
-        if (!internal && !user.isAuthorized(me, 'nodes', 'U'))
+        if (!internal && !auth.isAuthorized(me, 'nodes', 'U'))
             cancel('access denied', 500);
 
         if (changed('code')) {

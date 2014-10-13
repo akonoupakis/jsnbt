@@ -1,10 +1,10 @@
 var dpdSync = require('dpd-sync');
-var user = requireApp('user.js');
+var auth = requireApp('auth.js');
 
 var self = this;
 
 var processFn = function () {
-    if (!internal && !user.isAuthorized(me, 'languages', 'C'))
+    if (!internal && !auth.isAuthorized(me, 'languages', 'C'))
         cancel('access denied', 500);
 
     var matched = dpdSync.call(dpd.languages.get, { code: self.code });

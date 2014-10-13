@@ -1,4 +1,4 @@
-var user = requireApp('user.js');
+var auth = requireApp('auth.js');
 var _ = require('underscore');
 
 var self = this;
@@ -13,7 +13,7 @@ if (me && me.id == self.id) {
         emit('userUpdated', self);
 }
 else {
-    if (!internal && !user.isAuthorized(me, 'users', 'U'))
+    if (!internal && !auth.isAuthorized(me, 'users', 'U'))
         cancel('access denied', 500);
 
     if (changed('roles') && !_.isEmpty(_.difference(previous.roles, self.roles))) {
@@ -22,7 +22,7 @@ else {
         }
 
         _.each(self.roles, function (role) {
-            if (!user.isInRole(me, role)) {
+            if (!auth.isInRole(me, role)) {
                 error('roles', 'access denied for role "' + role + '"');
             }
         });

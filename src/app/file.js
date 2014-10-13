@@ -1,5 +1,5 @@
 var app = require('./app.js');
-var auth = require('./user.js');
+var auth = require('./auth.js');
 var fs = require('./utils/fs.js');
 var path = require('path');
 var server = require('server-root');
