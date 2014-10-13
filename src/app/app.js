@@ -96,12 +96,6 @@ var jsnbtModule = {
             crud: ['C', 'R', 'U', 'D']
         }]
     }, {
-        collection: 'drafts',
-        permissions: [{
-            role: 'admin',
-            crud: ['C', 'R', 'U', 'D']
-        }]
-    }, {
         collection: 'data',
         permissions: [{
             role: 'public',

@@ -51,8 +51,7 @@ module.exports = function (req, res) {
                 href += '/';
                 return href;
             }
-        },
-        draft: false
+        }
     };
 
     return ctx;

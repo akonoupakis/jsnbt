@@ -4,32 +4,32 @@ var file = require('../file.js');
 
 module.exports = {
     
-    get: function (user, draft, fields) {
+    get: function (user, fields) {
         if (!auth.isInRole(user, 'admin'))
             return null;
 
-        return file.get(user, draft, fields);
+        return file.get(fields);
     },
 
-    delete: function (user, draft, fields) {
+    delete: function (user, fields) {
         if (!auth.isInRole(user, 'admin'))
             return null;
 
-        return file.delete(user, draft, fields);
+        return file.delete(fields);
     },
 
-    create: function (user, draft, fields) {
+    create: function (user, fields) {
         if (!auth.isInRole(user, 'admin'))
             return null;
 
-        return file.create(user, draft, fields);
+        return file.create(fields);
     },
 
-    move: function (user, draft, fields) {
+    move: function (user, fields) {
         if (!auth.isInRole(user, 'admin'))
             return null;
 
-        return file.move(user, draft, fields);
+        return file.move(fields);
     }
 
 };

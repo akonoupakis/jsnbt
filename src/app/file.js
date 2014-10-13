@@ -55,7 +55,7 @@ var getFolderContents = function (rootPath, folderPath, stats) {
 
 module.exports = {
     
-    get: function (user, draft, fields) {
+    get: function (fields) {
         
         var defaults = {
             path: undefined,
@@ -114,7 +114,7 @@ module.exports = {
 
     },
 
-    delete: function (user, draft, fields) {
+    delete: function (fields) {
         
         var defaults = {
             path: undefined
@@ -139,7 +139,7 @@ module.exports = {
 
     },
 
-    create: function (user, draft, fields) {
+    create: function (fields) {
 
         var defaults = {
             path: undefined,
@@ -167,7 +167,7 @@ module.exports = {
 
     },
 
-    move: function (user, draft, fields) {
+    move: function (fields) {
         
         var defaults = {
             from: undefined,

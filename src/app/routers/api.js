@@ -52,7 +52,7 @@ var proceedFn = function (ctx, fields, next) {
 
             if (service !== null && fields.fn) {
                 if (typeof (service[fields.fn]) === 'function') {
-                    var result = service[fields.fn].apply(service[fields.fn], [ctx.req.session.user, fields.preview, fields]);
+                    var result = service[fields.fn].apply(service[fields.fn], [ctx.req.session.user, fields]);
                     ctx.res.writeHead(200, { "Content-Type": "application/json" });
                     ctx.res.write(JSON.stringify({ d: result }, null, '\t'));
                     ctx.res.end();

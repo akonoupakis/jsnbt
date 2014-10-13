@@ -79,9 +79,9 @@
             <div ng-show="tmpl" ng-include="tmpl"></div>
         </div>
 
-        <hr />
+        <hr ng-show="node.entity !== 'pointer'" />
 
-        <div id="page-meta" data-scrollspy="Meta">
+        <div id="page-meta" data-scrollspy="Meta" ng-show="node.entity !== 'pointer'">
             <div id="page-meta-title" class="row" data-scrollspy="Title">
                 <ctrl-text class="col-md-12" ng-model="node.data.localized[language].meta.title" ng-required="true" ng-label="Meta Title"></ctrl-text>
             </div>
