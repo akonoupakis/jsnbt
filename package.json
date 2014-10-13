@@ -1,6 +1,6 @@
 {
   "name": "jsnbt",
-  "version": "1.0.45",
+  "version": "1.0.46",
   "description": "The Jsonbot engine",
   "keywords": [
     "jsnbt",
@@ -49,7 +49,7 @@
     "q": "~0.9",
     "bower": "~1.2.7",
     "less": "~1.3.3",
-	"cookies": ">= 0.3.0"
+    "cookies": ">= 0.3.0"
   },
   "devDependencies": {
     "grunt": "*",
