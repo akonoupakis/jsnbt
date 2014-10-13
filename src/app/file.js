@@ -163,6 +163,7 @@ module.exports = {
             fs.create(path.join(fullPath, opts.name));
             return true;
         }
+
         return false;
 
     },
@@ -188,7 +189,7 @@ module.exports = {
 
         var fullPath = path.join(server.getPath(app.root), 'public', root, normalize(opts.from));
         var fullNewPath = path.join(server.getPath(app.root), 'public', root, normalize(opts.to));
-        if (fs.existsSync(fullPath)) {
+        if (fs.existsSync(fullPath) && !fs.existsSync(fullNewPath)) {
             fs.renameSync(fullPath, fullNewPath);
             return true;
         }
