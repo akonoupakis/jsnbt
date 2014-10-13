@@ -78,6 +78,18 @@
                     return deferred.promise;
                 },
 
+                discard: function () {
+                    var deferred = $q.defer();
+
+                    this.set().then(function (response) {
+                        deferred.resolve();
+                    }, function (error) {
+                        deferred.reject(error);
+                    });
+
+                    return deferred.promise;
+                },
+
                 validate: function () {
                     var deferred = $q.defer();
 
@@ -119,7 +131,7 @@
             };
 
             $scope.discard = function () {
-                fn.set().then(function () {
+                fn.discard().then(function () {
                 }, function (ex) {
                     logger.error(ex);
                 });

@@ -23,7 +23,6 @@
                             <button title="Create child" class="btn btn-default btn-sm glyphicon glyphicon-plus-sign" ng-disabled="!fn.canCreate(node)" ng-click="fn.create(node)"></button>
                             <button title="Edit" class="btn btn-default btn-sm glyphicon glyphicon-edit" ng-disabled="!fn.canEdit(node)" ng-click="fn.edit(node)"></button>
                             <button title="Delete" class="btn btn-default btn-sm glyphicon glyphicon-remove" ng-disabled="!fn.canDelete(node)" ng-click="fn.delete(node)"></button>
-                            <button title="Publish" ng-class="{'btn-primary': fn.canPublish(node), 'btn-default': !fn.canPublish(node)}" class="btn btn-sm glyphicon glyphicon-ok-circle" ng-disabled="!fn.canPublish(node)" ng-click="fn.publish(node)"></button>
                             <button title="Open" class="btn btn-default btn-sm glyphicon glyphicon-circle-arrow-right" ng-disabled="!fn.canOpen(node)" ng-click="fn.open(node)"></button>
                         </ctrl-tree-node-buttons>
                     </ctrl-tree-node>

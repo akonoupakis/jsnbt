@@ -1,6 +1,6 @@
 var app = require('../app.js');
 var auth = require('../user.js');
-var fileRepository = require('../repo/file.js');
+var file = require('../file.js');
 
 module.exports = {
     
@@ -8,28 +8,28 @@ module.exports = {
         if (!auth.isInRole(user, 'admin'))
             return null;
 
-        return fileRepository.get(user, draft, fields);
+        return file.get(user, draft, fields);
     },
 
     delete: function (user, draft, fields) {
         if (!auth.isInRole(user, 'admin'))
             return null;
 
-        return fileRepository.delete(user, draft, fields);
+        return file.delete(user, draft, fields);
     },
 
     create: function (user, draft, fields) {
         if (!auth.isInRole(user, 'admin'))
             return null;
 
-        return fileRepository.create(user, draft, fields);
+        return file.create(user, draft, fields);
     },
 
     move: function (user, draft, fields) {
         if (!auth.isInRole(user, 'admin'))
             return null;
 
-        return fileRepository.move(user, draft, fields);
+        return file.move(user, draft, fields);
     }
 
 };

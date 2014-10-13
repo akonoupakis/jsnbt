@@ -40,23 +40,14 @@
                                 return getData(fn, query, start + limit, limit, selected);
                             }
                         };
-                        var resultIds = _.pluck(results, 'id');
-                        dpd.drafts.get({ refId: { $in: resultIds }, user: $session.user.id }, function (draftResults, draftError) {
-                            if (draftError)
-                                deferred.reject(draftError);
-                            else
-                            {
-                                $(results).each(function (r, result) {
-                                    var drafts = _.filter(draftResults, function (x) { return x.refId === result.id; });
-                                    result.$parent = data;
-                                    result.selected = selected !== undefined && selected.indexOf(result.id) !== -1;
-                                    result.draft = drafts.length > 0;
-                                    data.items.push(result);
-                                });
 
-                                deferred.resolve(data);
-                            }
+                        $(results).each(function (r, result) {
+                            result.$parent = data;
+                            result.selected = selected !== undefined && selected.indexOf(result.id) !== -1;
+                            data.items.push(result);
                         });
+
+                        deferred.resolve(data);
                     }
                 }];
                 fn.apply(fn, params);

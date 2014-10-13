@@ -58,27 +58,7 @@
 
                 return deferred.promise;
             };
-
-            var getDraftNodes = function (ids) {
-                var deferred = $q.defer();
-
-                dpd.drafts.get({
-                    refId: {
-                        $in: ids
-                    },
-                    collection: 'nodes',
-                    user: $session.user.id
-                }, function (results, error) {
-                    if (error)
-                        deferred.reject(error);
-                    else {
-                        deferred.resolve(results);
-                    }
-                });
-
-                return deferred.promise;
-            };
-
+            
             var getPointedNodes = function (ids) {
                 var deferred = $q.defer();
 
@@ -147,7 +127,7 @@
                     return [];
             };
             
-            var getPatchedNodes = function (options, nodes, draftNodes, expandedNodeIds, root) {
+            var getPatchedNodes = function (options, nodes, expandedNodeIds, root) {
                 var results = [];
 
                 var filteredNodes = _.filter(nodes, function (x) { return x.parent === options.parentId && x.domain === options.domain; });
@@ -172,13 +152,7 @@
                     var nodeDomain = result.entity === 'pointer' ? result.pointer.domain : result.domain;
                     var nodeParentId = result.entity === 'pointer' ? result.pointer.nodeId : result.id;
                     var childCount = _.filter(nodes, function (x) { return x.parent === nodeParentId && x.domain === nodeDomain && options.restricted.indexOf(x.id) === -1 && options.entities.indexOf(x.entity) !== -1; }).length;
-
-                    var draft = _.find(draftNodes, function (x) { return x.refId === result.id; });
-                    if (draft) {
-                        result.draft = true;
-                        result.draftId = draft.id;
-                    }
-
+                    
                     if (result.entity === 'pointer') {
                         var pointedNode = _.first(_.filter(nodes, function (x) {
                             return x.id === result.pointer.nodeId;
@@ -209,7 +183,7 @@
                             parentId: nodeParentId
                         });
                         
-                        result.children = getPatchedNodes(patchedOpts, nodes, draftNodes, expandedNodeIds);
+                        result.children = getPatchedNodes(patchedOpts, nodes, expandedNodeIds);
                         if (result.children.length === result.childCount)
                             result.collapsed = false;
                     }
@@ -365,12 +339,8 @@
                                                 nodes.push(node);
                                         });
 
-                                        getDraftNodes(resultIds).then(function (draftNodes) {
-                                            var patchedNodes = getPatchedNodes(opts, nodes, draftNodes, expandedNodeIds, isRoot);
-                                            deferred.resolve(patchedNodes);
-                                        }, function (draftNodesError) {
-                                            deferred.reject(draftNodesError);
-                                        });
+                                        var patchedNodes = getPatchedNodes(opts, nodes, expandedNodeIds, isRoot);
+                                        deferred.resolve(patchedNodes);
                                     }, function (childNodesError) {
                                         deferred.reject(childNodesError);
                                     });

@@ -16,12 +16,6 @@ var processFn = function () {
         dpdSync.call(dpd.nodeurls.del, { id: { $in: deleteNodeUrlIds } });
     }
 
-    var drafts = dpdSync.call(dpd.drafts.get, { refId: self.id });
-    if (drafts.length > 0) {
-        var deleteDraftIds = _.pluck(drafts, 'id');
-        dpdSync.call(dpd.drafts.del, { id: { $in: deleteDraftIds } });
-    }
-
     if (!internal)
         emit('nodeDeleted', self);
 

@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('NodeController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $session, $q, $queue, $data, ScrollSpyService, $fn, LocationService, AuthService, DraftService, DATA_EVENTS, FORM_EVENTS) {
+        .controller('NodeController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $session, $q, $queue, $data, ScrollSpyService, $fn, LocationService, AuthService, DATA_EVENTS, FORM_EVENTS) {
 
             var logger = $logger.create('NodeController');
 
@@ -35,7 +35,7 @@
                 code: true
             };
 
-            $scope.published = false;
+            $scope.published = true;
 
             $scope.tmpl = null;
 
@@ -51,28 +51,20 @@
 
                     $data.nodes.get($scope.id).then(function (result) {
 
-                        var setInternal = function (published, data, node) {
-                            $scope.name = data.name;
-                            $scope.node = data;
-                            $scope.localized = (data.localization || {}).enabled;
+                        $scope.name = result.name;
+                        $scope.node = result;
+                        $scope.localized = (result.localization || {}).enabled;
 
-                            $scope.parentOptions.restricted = [$scope.id];
+                        $scope.parentOptions.restricted = [$scope.id];
 
-                            $scope.valid = true;
-                            $scope.published = published;
+                        $scope.valid = true;
+                        $scope.published = true;
 
-                            $scope.roles = data.permissions.roles;
-                            $scope.draftRoles = data.permissions.roles;
+                        $scope.roles = result.permissions.roles;
+                        $scope.draftRoles = result.permissions.roles;
 
-                            deferred.resolve(data);
-                        };
-
-                        DraftService.get('nodes', $scope.id).then(function (draftResult) {
-                            setInternal(draftResult === undefined, draftResult || result, result);
-                        }, function (draftError) {
-                            deferred.reject(draftError);
-                        });
-
+                        deferred.resolve(result);
+                        
                     }, function (error) {
                         deferred.reject(error);
                     });
@@ -97,25 +89,21 @@
 
                         var setLocInternal = function (hierarchy) {
                             $data.nodes.get({ id: { $in: hierarchy } }).then(function (results) {
-                                DraftService.patch('nodes', results).then(function (patchedResults) {
 
-                                    $(hierarchy).each(function (i, item) {
-                                        var resultNode = _.first(_.filter(patchedResults, function (x) { return x.id === item; }));
-                                        if (resultNode) {
-                                            breadcrumb.push({
-                                                name: resultNode ? resultNode.name : '-',
-                                                url: currentUrl + '/' + item,
-                                                active: i === (hierarchy.length - 1)
-                                            });
-                                        }
-                                    });
-
-                                    $scope.current.setBreadcrumb(breadcrumb);
-                                    deferred.resolve(breadcrumb);
-
-                                }, function (patchedError) {
-                                    deferred.reject(patchedError);
+                                $(hierarchy).each(function (i, item) {
+                                    var resultNode = _.first(_.filter(results, function (x) { return x.id === item; }));
+                                    if (resultNode) {
+                                        breadcrumb.push({
+                                            name: resultNode ? resultNode.name : '-',
+                                            url: currentUrl + '/' + item,
+                                            active: i === (hierarchy.length - 1)
+                                        });
+                                    }
                                 });
+
+                                $scope.current.setBreadcrumb(breadcrumb);
+                                deferred.resolve(breadcrumb);
+
                             }, function (error) {
                                 deferred.reject(error);
                             });
@@ -200,28 +188,24 @@
 
                         var hierarchyNodeIds = _.filter($scope.node.hierarchy, function (x) { return x !== $scope.id; });
                         $data.nodes.get({ id: { $in: hierarchyNodeIds } }).then(function (nodes) {
-                            DraftService.patch('nodes', nodes).then(function (patchedNodes) {
 
-                                var roles = [];
+                            var roles = [];
 
-                                $($scope.node.hierarchy).each(function (i, item) {
-                                    var matchedNode = _.first(_.filter(patchedNodes, function (x) { return x.id === item; }));
-                                    if (matchedNode) {
-                                        if (!matchedNode.permissions.inherits) {
-                                            roles = matchedNode.permissions.roles.slice(0);
-                                        }
+                            $($scope.node.hierarchy).each(function (i, item) {
+                                var matchedNode = _.first(_.filter(nodes, function (x) { return x.id === item; }));
+                                if (matchedNode) {
+                                    if (!matchedNode.permissions.inherits) {
+                                        roles = matchedNode.permissions.roles.slice(0);
                                     }
-                                    else {
-                                        return false;
-                                    }
-                                });
-                                
-                                $scope.roles = roles;
-                                deferred.resolve(roles);
-
-                            }, function (patchedError) {
-                                deferred.reject(patchedError);
+                                }
+                                else {
+                                    return false;
+                                }
                             });
+                                
+                            $scope.roles = roles;
+                            deferred.resolve(roles);
+
                         }, function (error) {
                             deferred.reject(error);
                         });
@@ -328,49 +312,42 @@
 
                     if ($scope.node && $scope.node.parent && $scope.node.parent !== '') {
                         $data.nodes.get({ id: $scope.node.parent }).then(function (parentResult) {
-                            
-                            DraftService.patch('nodes', [parentResult]).then(function (parentResults) {
-                                var nodeIds = _.first(parentResults).hierarchy;
 
-                                if (nodeIds.length > 0) {
-                                    $data.nodes.get({ id: { $in: nodeIds } }).then(function (results) {
-                                        DraftService.patch('nodes', results).then(function (patchedResults) {
-                                            var newSeoNodes = [];
+                            var nodeIds = parentResult.hierarchy;
 
-                                            $(nodeIds).each(function (n, nodeId) {
-                                                var result = _.find(patchedResults, function (x) { return x.id === nodeId; });
-                                                if (result) {
-                                                    var newSeoNode = {};
+                            if (nodeIds.length > 0) {
+                                $data.nodes.get({ id: { $in: nodeIds } }).then(function (results) {
+                                    var newSeoNodes = [];
 
-                                                    $($scope.application.languages).each(function (l, lang) {
-                                                        if (result.data.localized[lang.code])
-                                                            newSeoNode[lang.code] = result.data.localized[lang.code].seoName;
-                                                    });
+                                    $(nodeIds).each(function (n, nodeId) {
+                                        var result = _.find(results, function (x) { return x.id === nodeId; });
+                                        if (result) {
+                                            var newSeoNode = {};
 
-                                                    newSeoNodes.push(newSeoNode);
-                                                }
-                                                else {
-                                                    newSeoNodes.push({});
-                                                }
+                                            $($scope.application.languages).each(function (l, lang) {
+                                                if (result.data.localized[lang.code])
+                                                    newSeoNode[lang.code] = result.data.localized[lang.code].seoName;
                                             });
 
-                                            $scope.seoNames = newSeoNodes;
-                                            deferred.resolve(newSeoNodes);
-
-                                        }, function (patchedError) {
-                                            deferred.reject(patchedError);
-                                        });
-                                    }, function (error) {
-                                        deferred.reject(error);
+                                            newSeoNodes.push(newSeoNode);
+                                        }
+                                        else {
+                                            newSeoNodes.push({});
+                                        }
                                     });
-                                }
-                                else {
-                                    $scope.seoNames = [];
-                                    deferred.resolve([]);
-                                }
-                            }, function (parentsError) {
-                                deferred.reject(parentsError);
-                            });
+
+                                    $scope.seoNames = newSeoNodes;
+                                    deferred.resolve(newSeoNodes);
+
+                                }, function (error) {
+                                    deferred.reject(error);
+                                });
+                            }
+                            else {
+                                $scope.seoNames = [];
+                                deferred.resolve([]);
+                            }
+
                         }, function (parentError) {
                             deferred.reject(parentError);
                         });
@@ -385,21 +362,7 @@
                 save: function () {
                     var deferred = $q.defer();
 
-                    $queue.enqueue('NodeController:' + $scope.id + ':save', function () {
-                        var d = $q.defer();
-
-                        var draftNode = {};
-                        $.extend(true, draftNode, $scope.node);
-                        if (!draftNode.permissions.inherits)
-                            draftNode.permissions.roles = $scope.roles;
-
-                        DraftService.set('nodes', $scope.id, draftNode).then(function (response) {
-                            d.resolve(response);
-                        }, function (error) {
-                            d.reject(error);
-                        });
-                        return d.promise;
-                    });
+                    $scope.published = false;
 
                     deferred.resolve();
 
@@ -409,8 +372,8 @@
                 discard: function () {
                     var deferred = $q.defer();
 
-                    DraftService.clear('nodes', $scope.id).then(function (response) {
-                        deferred.resolve(response);
+                    this.set().then(function (response) {
+                        deferred.resolve();
                     }, function (error) {
                         deferred.reject(error);
                     });
@@ -557,12 +520,7 @@
                             
                             $data.nodes.put($scope.id, publishNode).then(function (result) {
                                 $scope.name = result.name;
-
-                                DraftService.clear('nodes', $scope.id).then(function (delResponse) {
-                                    deferred.resolve(true);
-                                }, function (delError) {
-                                    deferred.reject(delError);
-                                });
+                                deferred.resolve(true);
                             }, function (error) {
                                 deferred.reject(error);
                             });
@@ -608,18 +566,11 @@
 
             $scope.discard = function () {
                 fn.discard().then(function () {
-                    fn.set().then(function () { }, function (setError) {
-                        logger.error(setError);
-                    });
                 }, function (ex) {
                     logger.error(ex);
                 });
             };
-
-            $scope.preview = function () {
-                window.open('../jsnbt-preview/' + $scope.language + '-' + $scope.id);
-            };
-
+            
             $scope.publish = function () {
                 fn.publish().then(function (success) {
                     $scope.published = success;

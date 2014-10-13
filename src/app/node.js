@@ -265,6 +265,9 @@ module.exports = {
     },
 
     materialize: function (node) {
+        if (!node.published)
+            return;
+
         var existingNodeUrls = dpdSync.call(app.dpd.nodeurls.get, { nodeId: node.id });
 
         var currentLanguages = [];

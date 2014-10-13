@@ -109,15 +109,7 @@
                         throw ex;
                     });
                 },
-
-                canPublish: function (node) {
-                    return node.draft || !node.published;
-                },
-
-                publish: function (node) {
-                    $location.next(node.editUrl);
-                },
-
+                
                 canOpen: function (node) {
                     return node.viewUrl && node.viewUrl !== '';
                 },

@@ -13,7 +13,4 @@ if (!internal) {
     hide('permissions');
     hide('secure');
     hide('view');
-
-    //console.log('getting', self.id);
-    self.test = 'test';
 }

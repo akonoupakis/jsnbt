@@ -11,7 +11,6 @@ _.str = require('underscore.string');
 var stardardRouterNames = [
 
     './routers/base.js',
-    './routers/preview.js',
     './routers/api.js',
     './routers/jsnbt.js',
     './routers/package.js',

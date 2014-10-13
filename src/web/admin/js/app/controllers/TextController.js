@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('TextController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $queue, $q, $data, ScrollSpyService, LocationService, DraftService, FORM_EVENTS) {
+        .controller('TextController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $queue, $q, $data, ScrollSpyService, LocationService, FORM_EVENTS) {
            
             var logger = $logger.create('TextController');
 
@@ -20,7 +20,7 @@
                 key: true
             };
 
-            $scope.published = false;
+            $scope.published = true;
 
 
             var fn = {
@@ -30,23 +30,15 @@
 
                     $data.texts.get($scope.id).then(function (result) {
 
-                        var setInternal = function (published, data) {
-                            $scope.name = data.key;
-                            $scope.text = data;
+                        $scope.name = result.key;
+                        $scope.text = result;
 
-                            $scope.languages = $scope.application.languages;
+                        $scope.languages = $scope.application.languages;
 
-                            $scope.valid = true;
-                            $scope.published = published;
+                        $scope.valid = true;
+                        $scope.published = true;
 
-                            deferred.resolve();
-                        };
-
-                        DraftService.get('texts', $scope.id).then(function (draftResult) {
-                            setInternal(draftResult === undefined, draftResult || result);
-                        }, function (draftError) {
-                            deferred.reject(draftError);
-                        });
+                        deferred.resolve();
 
                     }, function (error) {
                         deferred.reject(error);
@@ -85,15 +77,7 @@
                 save: function () {
                     var deferred = $q.defer();
 
-                    $queue.enqueue('TextController:' + $scope.id + ':save', function () {
-                        var d = $q.defer();
-                        DraftService.set('texts', $scope.id, $scope.text).then(function (response) {
-                            d.resolve(response);
-                        }, function (error) {
-                            d.reject(error);
-                        });
-                        return d.promise;
-                    });
+                    $scope.published = false;
                     
                     deferred.resolve();
 
@@ -103,8 +87,8 @@
                 discard: function () {
                     var deferred = $q.defer();
 
-                    DraftService.clear('texts', $scope.id).then(function (response) {
-                        deferred.resolve(response);
+                    this.set().then(function (response) {
+                        deferred.resolve();
                     }, function (error) {
                         deferred.reject(error);
                     });
@@ -156,15 +140,9 @@
                             deferred.resolve(false);
                         }
                         else {
-                            $scope.text.published = true;
                             $data.texts.put($scope.id, $scope.text).then(function (result) {
                                 $scope.name = result.key;
-
-                                DraftService.clear('texts', $scope.id).then(function (delResponse) {                                    
-                                    deferred.resolve(true);
-                                }, function (delError) {
-                                    deferred.reject(delError);
-                                });
+                                deferred.resolve(true);
                             }, function (error) {
                                 deferred.reject(error);
                             });
@@ -192,9 +170,6 @@
 
             $scope.discard = function () {
                 fn.discard().then(function () {
-                    fn.set().then(function () { }, function (setError) {
-                        logger.error(setError);
-                    });
                 }, function (ex) {
                     logger.error(ex);
                 });
