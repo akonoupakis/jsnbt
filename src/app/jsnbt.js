@@ -113,7 +113,7 @@ module.exports = {
             var fileName = moduleList.spec.substring(0, moduleList.spec.lastIndexOf('.'));
             fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
 
-            var moduleListDomain = moduleList.addon ? moduleList.domain : 'core';
+            var moduleListDomain = module.addon ? module.domain : 'core';
 
             var matchedList = _.first(_.filter(self.lists, function (x) { return x.id === fileName && x.domain == moduleListDomain; }));
             if (matchedList) {

@@ -10,7 +10,6 @@ exports.root = null;
 exports.path = null;
 exports.dbg = false;
 
-exports.session = null;
 exports.cache = null;
 exports.logger = null;
 exports.server = null;
@@ -128,8 +127,9 @@ var jsnbtModule = {
             role: 'sa',
             crud: ['C', 'R', 'U', 'D']
         }]
-    }],
+    }] //,
 
+    /*
     lists: [{
         name: 'Sample 01',
         spec: '/tmpl/spec/list/sample1.html',
@@ -145,8 +145,9 @@ var jsnbtModule = {
         name: 'Sample 02',
         spec: '/tmpl/spec/list/sample2.html',
         localized: false
-    }],
+    }]
 
+    */
 };
 
 exports.init = function (env, config, module) {
