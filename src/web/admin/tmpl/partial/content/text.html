@@ -25,7 +25,7 @@
 
         <div id="page-text-value" data-scrollspy="Value">
             <div ng-repeat="language in languages" class="row" id="page-text-value-{{language.code}}" data-scrollspy="{{language.name}}">
-                <ctrl-text-area class="col-md-12" ng-model="text.value[language.code]" ng-required="true" ng-label="{{language.name}}"></ctrl-text-area>
+                <ctrl-text-area class="col-md-12" ng-model="text.value[language.code]" ng-required="true" ng-label="{{application.localization.enabled ? language.name : 'Value'}}"></ctrl-text-area>
             </div>
         </div>
 

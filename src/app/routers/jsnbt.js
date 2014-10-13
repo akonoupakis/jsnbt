@@ -16,7 +16,6 @@ module.exports = function () {
                         ctx.res.writeHead(200, { "Content-Type": "application/javascript" });
 
                         var jsnbtValue = ctx.uri.first === 'jsnbt.js' ? jsnbt.getClientData('public') : jsnbt.getClientData('admin');
-                        jsnbtValue.languages = jsnbt.getLanguages();
                         ctx.res.write('var jsnbt = ' + json.stringify(jsnbtValue));
                         ctx.res.end();
                     }

@@ -220,8 +220,8 @@ exports.init = function (env, config, module) {
             if (module.domain)
                 jsnbt.registerModule(module.domain, module);
 
-            if (module.localization !== undefined) {
-                jsnbt.setLocalization(module.localization);
+            if (module.locale !== undefined) {
+                jsnbt.setLocale(module.locale);
             }
 
             this.packages.push(module);

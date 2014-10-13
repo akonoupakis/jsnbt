@@ -33,8 +33,8 @@
                         $scope.name = result.key;
                         $scope.text = result;
 
-                        $scope.languages = $scope.application.languages;
-
+                        $scope.languages = $scope.application.localization.enabled ? $scope.application.languages : _.filter($scope.application.languages, function (x) { return x.code === 'en'; });
+                        
                         $scope.valid = true;
                         $scope.published = true;
 

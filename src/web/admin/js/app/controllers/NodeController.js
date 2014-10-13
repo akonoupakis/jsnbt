@@ -53,7 +53,7 @@
 
                         $scope.name = result.name;
                         $scope.node = result;
-                        $scope.localized = (result.localization || {}).enabled;
+                        $scope.localized = (result.localization || {}).enabled && $scope.application.localization.enabled;
 
                         $scope.parentOptions.restricted = [$scope.id];
 
@@ -324,7 +324,7 @@
                                         if (result) {
                                             var newSeoNode = {};
 
-                                            $($scope.application.languages).each(function (l, lang) {
+                                            $($scope.application.localization.enabled ? $scope.application.languages: ['en']).each(function (l, lang) {
                                                 if (result.data.localized[lang.code])
                                                     newSeoNode[lang.code] = result.data.localized[lang.code].seoName;
                                             });

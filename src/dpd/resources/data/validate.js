@@ -14,7 +14,7 @@ if (_.filter(knownLists, function (x) { return x === self.domain; }).length === 
     error('list', 'not a known list');
 }
 
-var knownLanguageCodes = _.pluck(jsnbt.getLanguages(), 'code');
+var knownLanguageCodes = _.pluck(jsnbt.languages, 'code');
 
 var knownList = _.first(_.filter(jsnbt.lists, function (x) { return x.id === self.list; }));
 

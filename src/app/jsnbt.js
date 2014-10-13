@@ -33,8 +33,23 @@ var getViews = function () {
 };
 
 module.exports = {
+    
+    languages: [
+        { name: 'Greek', code: 'el' },
+        { name: 'English', code: 'en' },
+        { name: 'Deutsch', code: 'de' },
+        { name: 'Spanish', code: 'es' },
+        { name: 'French', code: 'fr' },
+        { name: 'Italian', code: 'it' },
+        { name: 'Russian', code: 'ru' },
+        { name: 'Chinese', code: 'zh' },
+        { name: 'Romanian', code: 'ro' },
+        { name: 'Bulgarian', code: 'bg' }
+    ],
 
     localization: true,
+
+    locale: '',
 
     configurations: {},
 
@@ -52,8 +67,13 @@ module.exports = {
     
     addons: [],
 
-    setLocalization: function (value) {
-        this.localization = value === true ? true : false;
+    setLocale: function (code) {
+        var language = _.first(_.filter(this.languages, function (x) { return x.code === code; }));
+        if (language)
+        {
+            this.localization = false;
+            this.locale = language.code;
+        }
     },
 
     registerModule: function (name, module) {
@@ -183,9 +203,15 @@ module.exports = {
             }
         });
 
+        result.localization = {
+            enabled: self.localization,
+            locale: self.locale
+        };
+
         if (site === 'admin') {
 
             result.version = getVersion();
+            
             result.views = getViews();
             result.addons = self.addons;
             result.entities = self.entities;
@@ -202,22 +228,9 @@ module.exports = {
             result.sections = self.sections;
         }
 
-        return result;
-    },
+        result.languages = self.languages;
 
-    getLanguages: function () {
-        return [
-            { name: 'Greek', code: 'el' },
-            { name: 'English', code: 'en' },
-            { name: 'Deutsch', code: 'de' },
-            { name: 'Spanish', code: 'es' },
-            { name: 'French', code: 'fr' },
-            { name: 'Italian', code: 'it' },
-            { name: 'Russian', code: 'ru' },
-            { name: 'Chinese', code: 'zh' },
-            { name: 'Romanian', code: 'ro' },
-            { name: 'Bulgarian', code: 'bg' }
-        ];
+        return result;
     }
 
 };

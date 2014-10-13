@@ -25,17 +25,23 @@
             when('/content', {
                 templateUrl: 'tmpl/partial/content.html',
                 controller: 'ContentController'
-            }).
-            when('/content/languages', {
-                templateUrl: 'tmpl/partial/content/languages.html',
-                controller: 'LanguagesController',
-                section: 'languages'
-            }).
-            when('/content/languages/:id', {
-                templateUrl: 'tmpl/partial/content/language.html',
-                controller: 'LanguageController',
-                section: 'languages'
-            }).
+            });
+
+        if (jsnbt.localization.enabled) {
+            $routeProvider.
+                when('/content/languages', {
+                    templateUrl: 'tmpl/partial/content/languages.html',
+                    controller: 'LanguagesController',
+                    section: 'languages'
+                }).
+                when('/content/languages/:id', {
+                    templateUrl: 'tmpl/partial/content/language.html',
+                    controller: 'LanguageController',
+                    section: 'languages'
+                });
+        }
+
+        $routeProvider.
             when('/content/nodes', {
                 templateUrl: 'tmpl/partial/content/nodes.html',
                 controller: 'NodesController',

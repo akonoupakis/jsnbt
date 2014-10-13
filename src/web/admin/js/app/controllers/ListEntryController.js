@@ -31,10 +31,13 @@
 
                         $scope.name = result.name;
                         $scope.item = result;
-                        $scope.localized = (result.localization || {}).enabled;
+                        $scope.localized = (result.localization || {}).enabled && $scope.application.localization.enabled;
 
                         $scope.languages = $scope.application.languages;
-                        $scope.language = result.localization.enabled ? ($scope.defaults.language ? $scope.defaults.language : _.first($scope.application.languages).code) : result.localization.language;
+                        $scope.language = $scope.application.localization.enabled ? (result.localization.enabled ? (
+                                $scope.defaults.language ? $scope.defaults.language : _.first($scope.application.languages).code
+                            ) : result.localization.language) 
+                        : 'en';
 
                         $scope.valid = true;
 

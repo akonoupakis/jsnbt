@@ -12,7 +12,7 @@
 
         <div class="row">
             <ul class="content-thumbs">
-                <li ng-show="isAuthorized('languages')">
+                <li ng-show="isAuthorized('languages') && application.localization.enabled">
                     <a href="javascript:;" ng-click="goto('languages')">
                         <img src="img/content/languages.png" style="height: 128px" />
                     </a>

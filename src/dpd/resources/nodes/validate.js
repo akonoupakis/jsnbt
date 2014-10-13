@@ -4,7 +4,7 @@ var _ = require('underscore');
 
 var self = this;
 
-var knownLanguageCodes = _.pluck(jsnbt.getLanguages(), 'code');
+var knownLanguageCodes = _.pluck(jsnbt.languages, 'code');
 
 var knownEntity = _.first(_.filter(jsnbt.entities, function (x) { return x.name === self.entity; }));
 if (!knownEntity) {
