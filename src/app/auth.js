@@ -100,7 +100,20 @@ var isUserDataAuthorized = function (user, section, permission) {
 
 exports.isInRole = function (user, role) {
     var roles = getUserRoles(user);
-    return roles.indexOf(role) !== -1;
+
+    if (typeof (role) === 'string') {
+        return roles.indexOf(role) !== -1;
+    }
+    else {
+        var result = false;
+        _.each(roles, function (r) {
+            if (role.indexOf(r) !== -1) {
+                result = true;
+                return false;
+            }
+        });
+        return result;
+    }
 };
 
 exports.isAuthorized = function (user, section, permission) {

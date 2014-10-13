@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('AppController', function ($scope, $http, DpdService) {
+        .controller('AppController', function ($scope) {
 
             $scope.user = null;
             $scope.language = null;

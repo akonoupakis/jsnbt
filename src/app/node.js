@@ -239,11 +239,12 @@ module.exports = {
                 entity: 'pointer',
                 language: jsnbt.localization ? languagePart : 'en'
             });
+            
             if (pointerNodes.length > 0) {
                 var sortedPointerNodes = _.sortBy(pointerNodes, function (pointerNode) { return Math.sin(pointerNode.url.length); });
 
                 var matchedPointerNode = _.first(_.filter(pointerNodes, function (x) { return _.str.startsWith(urlPart, x.url + '/'); }));
-
+        
                 if (matchedPointerNode) {
                     var matchedPointedNode = _.first(dpdSync.call(app.dpd.nodeurls.get, { nodeId: matchedPointerNode.pointer.nodeId, language: matchedPointerNode.language, domain: matchedPointerNode.pointer.domain }));
 
@@ -261,6 +262,18 @@ module.exports = {
                                         language: addonNode.language
                                     }
                                 }
+                            }
+                        }
+
+                        var defaultUrlMatch = fullUrlPart.indexOf('?') != -1 ? fullUrlPart.substring(0, fullUrlPart.indexOf('?')) : fullUrlPart;
+                        var defaultStrippedUrl = matchedPointedNode.url + defaultUrlMatch.substring(matchedPointerNode.url.length);
+                        var defaultMatchedNode = _.first(dpdSync.call(app.dpd.nodeurls.get, { url: defaultStrippedUrl, language: matchedPointerNode.language, domain: matchedPointedNode.domain }));
+                        if (defaultMatchedNode) {
+                            return {
+                                node: defaultMatchedNode,
+                                pointer: matchedPointerNode,
+                                view: defaultMatchedNode.view,
+                                language: defaultMatchedNode.language
                             }
                         }
                     }

@@ -19,7 +19,10 @@ module.exports = function () {
 
     addonRouters.push({
         route: function (ctx, next) {
-            error.render(ctx, 404);
+            if (ctx.node)
+                view.render(ctx);
+            else
+                error.render(ctx, 404);
         }
     });
 
@@ -31,20 +34,39 @@ module.exports = function () {
 
                     var resolved = node.getNodeUrl(ctx.uri.url);
                     if (resolved) {
-                        //var restricted = true;
-                        //_.each(resolved.node.permissions, function (role) {
-                        //    if (auth.isInRole(ctx.req.session.user, role)) {
-                        //        restricted = false;
-                        //    }
-                        //});
+                        var restricted = false;
 
-                        //if (restricted) {
-                        //    error.render(ctx, 401, 'Access denied');
-                        //}
-                        //else {
-                            //var session = app.session.start(ctx.req, ctx.res);
-                            //session.set('language', resolved.language);
+                        if (resolved.pointer) {
+                            if (!auth.isInRole(ctx.req.session.user, resolved.pointer.permissions)) {
+                                restricted = true;
+                            }
+                        }
 
+                        if (!restricted && resolved.node) {
+                            if (!auth.isInRole(ctx.req.session.user, resolved.node.permissions)) {
+                                restricted = true;
+                            }
+                        }
+
+                        if (restricted) {
+                            var settingNode = _.first(dpdSync.call(app.dpd.settings.get, { domain: 'core' }));
+                            if (settingNode && settingNode.data && settingNode.data.restricted && settingNode.data.loginpage) {
+                                var resolvedLogin = _.first(dpdSync.call(app.dpd.nodeurls.get, { nodeId: settingNode.data.loginpage, language: resolved.node.language }));
+                                if (resolvedLogin) {
+                                    var loginUrl = (jsnbt.localization ? '/' + resolvedLogin.language : '') + resolvedLogin.url;
+                                    ctx.res.writeHead(302, { "Location": loginUrl });
+                                    ctx.res.end();
+                                }
+                                else {
+                                    error.render(ctx, 401, 'Access denied');
+                                }
+                            }
+                            else {
+                                restricted = false;
+                            }
+                        }
+
+                        if (!restricted) {
                             ctx.node = resolved.node || {};
                             ctx.pointer = resolved.pointer || {};
                             ctx.language = jsnbt.localization ? resolved.language || 'en' : jsnbt.locale;
@@ -63,10 +85,10 @@ module.exports = function () {
                                 var first = _.first(addonRouters);
                                 first.route(ctx, nextInternal);
                             }
-                            else {    
+                            else {
                                 view.render(ctx);
                             }
-                        //}
+                        }
                     }
                     else {
                         next();
