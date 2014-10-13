@@ -97,13 +97,21 @@
 			"id": "data",
 			"order": 12
 		},
+			"localization": {
+			"name": "localization",
+			"type": "object",
+			"typeLabel": "object",
+			"required": true,
+			"id": "localization",
+			"order": 13
+		},
 		"meta": {
 			"name": "meta",
 			"type": "object",
 			"typeLabel": "object",
 			"required": false,
 			"id": "meta",
-			"order": 13
+			"order": 14
 		},
 		"permissions": {
 			"name": "permissions",
@@ -111,7 +119,7 @@
 			"typeLabel": "array",
 			"required": true,
 			"id": "permissions",
-			"order": 14
+			"order": 15
 		}
 	}
 }

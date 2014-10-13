@@ -28,7 +28,7 @@ var jsnbtModule = {
     }, {
         name: 'pointer',
         allowed: [],
-        localized: false
+        localized: true
     }],
 
     roles: [{
@@ -197,11 +197,9 @@ exports.init = function (env, config, module) {
     var errorFn = this.logger.error;
     this.logger.error = function (err) {
         this.debug(arguments.callee.caller.toString());
+        errorFn(err.toString());
 
-        throw err;
-        //errorFn(err.toString());
-
-        //fs.createWriteStream('error.log', { 'flags': 'a' }).write(moment().format() + ' ' + err.toString() + "\n");
+        fs.createWriteStream('error.log', { 'flags': 'a' }).write(moment().format() + ' ' + err.toString() + "\n");
     };
 
     var fatalFn = this.logger.fatal;
@@ -219,7 +217,13 @@ exports.init = function (env, config, module) {
             if (typeof (module.init) == 'function')
                 module.init(this);
 
-            jsnbt.registerModule(module.domain, module);
+            if (module.domain)
+                jsnbt.registerModule(module.domain, module);
+
+            if (module.localization !== undefined) {
+                jsnbt.setLocalization(module.localization);
+            }
+
             this.packages.push(module);
         }
         catch (err) {

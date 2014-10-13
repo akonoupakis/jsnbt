@@ -250,7 +250,7 @@
                 setTmpl: function () {
                     var deferred = $q.defer();
 
-                    if ($scope.node && $scope.node.entity === 'page') {
+                    if ($scope.node && $scope.node.entity !== 'pointer') {
                         var spec = _.find($scope.views, function (x) { return x.tmpl === $scope.node.view; });
                         if (spec)
                             $scope.tmpl = spec.spec;

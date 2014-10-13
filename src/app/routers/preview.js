@@ -1,4 +1,5 @@
 var app = require('../app.js');
+var auth = require('../user.js');
 var dpdSync = require('dpd-sync');
 var error = require('../error.js');
 var view = require('../view.js');
@@ -9,7 +10,7 @@ module.exports = function () {
         sync: true,
         route: function (ctx, next) {
             if (ctx.uri.first === 'jsnbt-preview') {
-                if (!ctx.req.session.user) {
+                if (!auth.isInRole(ctx.req.session.user, 'admin')) {
                     error.render(ctx, 401);
                 }
                 else if (ctx.req.method !== 'GET') {

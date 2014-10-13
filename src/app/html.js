@@ -8,9 +8,10 @@ exports.parse = function (ctx, tmpl, model) {
 
     var mdl = {
         baseHref: ctx.uri.getBaseHref(),
-        language: 'en',
+        language: ctx.language || 'en',
+        view: ctx.view,
         node: ctx.node,
-        draft: ctx.draft,
+        pointer: ctx.pointer,        
         meta: {
             title: '',
             keywords: '',
@@ -21,14 +22,13 @@ exports.parse = function (ctx, tmpl, model) {
     _.extend(mdl.meta, ctx.meta);
     _.extend(mdl, model);
 
+    mdl.nodeId = (mdl.node || {}).nodeId;
+    mdl.pointerId = (mdl.pointer || {}).nodeId;
+
     var isAdmin = ctx.uri.first === 'admin';
 
     if (isAdmin) {
         mdl.baseHref += 'admin/';
-    }
-    else {
-        var session = app.session.start(ctx.req, ctx.res);
-        mdl.language = session.get('language');
     }
 
     mdl.js = {};

@@ -12,7 +12,28 @@
             
             $scope.localizedUrls = {};
 
+
+            
+
             if ($('head > meta[name="page"]').length > 0) {
+                dpd.nodeurls.get({
+                    nodeId: $('head > meta[name="page"]').prop('content'),
+                    language: $('html').prop('lang')
+                }, function (results, error) {
+                    console.log('page', $('head > meta[name="page"]').prop('content'), _.first(results));
+                });
+
+            }
+
+            if ($('head > meta[name="pointer"]').length > 0) {
+                dpd.nodeurls.get({
+                    nodeId: $('head > meta[name="pointer"]').prop('content'),
+                    language: $('html').prop('lang')
+                }, function (results, error) {
+                    console.log('pointer', $('head > meta[name="pointer"]').prop('content'), _.first(results));
+                });
+
+                /*
                 var url = 'jsnbt-api/core/node';
                 console.log($('head > meta[name="page"]').prop('content'));
                 $http.post(url, {
@@ -28,18 +49,19 @@
                     }
                 });
 
-                //$http.post(url, {
-                //    fn: 'getPage',
-                //    parentId: $('head > meta[name="page"]').prop('content'),
-                //    language: $('html').prop('lang'),
-                //    preview: $('head > meta[name="draft"]').prop('content') == 'true'
-                //}).then(function (data) {
-                //    if (data.status === 200) {
-                //        console.log('res', data.data.d);
-                //    } else {
-                //        console.log('err', data);
-                //    }
-                //});
+                $http.post(url, {
+                    fn: 'getPage',
+                    parentId: $('head > meta[name="page"]').prop('content'),
+                    language: $('html').prop('lang'),
+                    preview: $('head > meta[name="draft"]').prop('content') == 'true'
+                }).then(function (data) {
+                    if (data.status === 200) {
+                        console.log('res', data.data.d);
+                    } else {
+                        console.log('err', data);
+                    }
+                });
+                */
             }
 
             //LanguageService.getCurrent().then(function (result) {

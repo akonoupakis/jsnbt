@@ -27,12 +27,12 @@ module.exports = function () {
                             ctx.res.writeHead(302, { "Location": ctx.req.url.replace(/\/admin#/, '/admin/#') });
 
                         ctx.res.writeHead(302, { "Location": "/admin/" });
-
                         ctx.res.end();
                     }
                     else {
                         if (viewPath !== null) {
-                            view.render(ctx, viewPath);
+                            ctx.view = viewPath;
+                            view.render(ctx);
                         }
                         else {
                             next();

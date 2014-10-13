@@ -5,13 +5,13 @@ var _ = require('underscore');
 
 _.str = require('underscore.string');
 
-exports.render = function (ctx, view) {
-    var tmplFilePath = '../' + app.root + '/public' + view;
+exports.render = function (ctx) {
+    var tmplFilePath = '../' + app.root + '/public' + ctx.view;
     if (fs.existsSync(tmplFilePath)) {
         var tmplContent = fs.readFileSync(tmplFilePath, 'utf-8');
         ctx.res.writeHead(200, { "Content-Type": "text/html" });
 
-        tmplContent = html.parse(ctx, tmplContent, {});
+        tmplContent = html.parse(ctx, tmplContent);
 
         ctx.res.write(tmplContent);
     }

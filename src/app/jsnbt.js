@@ -34,6 +34,8 @@ var getViews = function () {
 
 module.exports = {
 
+    localization: true,
+
     configurations: {},
 
     entities: [],
@@ -49,6 +51,10 @@ module.exports = {
     modules: [],
     
     addons: [],
+
+    setLocalization: function (value) {
+        this.localization = value === true ? true : false;
+    },
 
     registerModule: function (name, module) {
         
