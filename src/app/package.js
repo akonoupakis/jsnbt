@@ -125,6 +125,19 @@ module.exports = {
                             targetConfig.properties = targetProperties;
                             fs.writeFileSync(targetFile, JSON.stringify(targetConfig, null, '\t'), 'utf-8');
                         }
+
+                        var resourceContents = fs.readdirSync(resourcesFolder + '/' + resourceName);
+                        _.each(resourceContents, function (resourceContentFile) {
+                            if (_.str.endsWith(resourceContentFile, '.js')) {
+                                var targetFile = server.getPath(folder + '/resources/' + resourceName + '/' + resourceContentFile);
+                                if (!fs.existsSync(targetFile)) {
+                                    fs.writeFileSync(targetFile, fs.readFileSync(resourcesFolder + '/' + resourceName + '/' + resourceContentFile), 'utf-8');
+                                }
+                                else {
+                                    fs.appendFileSync(targetFile, fs.readFileSync(resourcesFolder + '/' + resourceName + '/' + resourceContentFile), 'utf-8');
+                                }
+                            }
+                        });
                     }
                 }
             }
