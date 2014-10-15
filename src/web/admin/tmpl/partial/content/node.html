@@ -77,6 +77,8 @@
             </div>
 
             <div ng-show="tmpl" ng-include="tmpl"></div>
+
+            <div ng-repeat="tmplItem in tmpls" ng-include="tmplItem"></div>
         </div>
 
         <hr ng-show="node.entity !== 'pointer'" />

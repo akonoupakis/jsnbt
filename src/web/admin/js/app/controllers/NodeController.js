@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('NodeController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $session, $q, $queue, $data, ScrollSpyService, $fn, LocationService, AuthService, DATA_EVENTS, FORM_EVENTS) {
+        .controller('NodeController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $session, $q, $queue, $data, $route, ScrollSpyService, $fn, LocationService, AuthService, DATA_EVENTS, FORM_EVENTS) {
 
             var logger = $logger.create('NodeController');
 
@@ -38,6 +38,19 @@
             $scope.published = true;
 
             $scope.tmpl = null;
+            
+            $scope.tmpls = [];
+
+            if ($route.current.$$route.tmpl) {
+                if (typeof ($route.current.$$route.tmpl) === 'string') {
+                    $scope.tmpls.push($route.current.$$route.tmpl);
+                }
+                else {
+                    $($route.current.$$route.tmpl).each(function (i, item) {
+                        $scope.tmpls.push(item);
+                    });
+                }
+            }
 
             $scope.parentOptions = {
                 restricted: [],
