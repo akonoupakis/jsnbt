@@ -33,6 +33,7 @@
                     });
 
                     scope.$watch('ngFn', function (newValue, prevValue) {
+                     
                         scope.fn = newValue;
                     });
                 },
@@ -50,13 +51,13 @@
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl-grid-header');
 
-                    scope.data = scope.$$prevSibling.ngModel;
+                    scope.data = scope.$parent.ngModel;
 
-                    scope.$$prevSibling.$watch('ngModel', function (newValue, prevValue) {
+                    scope.$parent.$watch('ngModel', function (newValue, prevValue) {
                         scope.data = newValue;
                     });
 
-                    scope.$$prevSibling.$watch('ngFn', function (newValue, prevValue) {
+                    scope.$parent.$watch('ngFn', function (newValue, prevValue) {
                         scope.fn = newValue;
                     });
                 }
@@ -160,9 +161,9 @@
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl-grid-footer');
 
-                    scope.data = scope.$$prevSibling.ngModel;
+                    scope.data = scope.$parent.ngModel;
 
-                    scope.$$prevSibling.$watch('ngModel', function (newValue, prevValue) {
+                    scope.$parent.$watch('ngModel', function (newValue, prevValue) {
                         scope.data = newValue;
                     });
                 }
@@ -212,21 +213,21 @@
        })
       .directive('ctrlGridEmpty', function () {
 
-        return {
-            restrict: 'E',
-            replace: true,
-            transclude: true,
-            template: '<div ng-show="data.items.length === 0"><span ng-transclude /></div>',
-            link: function (scope, element, attrs) {
-                element.addClass('ctrl-grid-empty');
+          return {
+              restrict: 'E',
+              replace: true,
+              transclude: true,
+              template: '<div ng-show="data.items.length === 0"><span ng-transclude /></div>',
+              link: function (scope, element, attrs) {
+                  element.addClass('ctrl-grid-empty');
 
-                scope.data = scope.$parent.data;
+                  scope.data = scope.$parent.data;
 
-                scope.$parent.$watch('data', function (newValue, prevValue) {
-                    scope.data = newValue;
-                });
-            }
-        };
+                  scope.$parent.$watch('data', function (newValue, prevValue) {
+                      scope.data = newValue;
+                  });
+              }
+          };
 
-    });
+      });
 })();
