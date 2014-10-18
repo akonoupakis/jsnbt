@@ -47,6 +47,11 @@ module.exports = {
         { name: 'Bulgarian', code: 'bg' }
     ],
 
+    countries: [
+        { name: 'Greece', code: 'GR' },
+        { name: 'United Kingdom', code: 'GB' }
+    ],
+
     localization: true,
 
     locale: '',
@@ -229,6 +234,7 @@ module.exports = {
         }
 
         result.languages = self.languages;
+        result.countries = self.countries;
 
         return result;
     }

@@ -571,7 +571,7 @@
                 var targetNode = $data.nodes.get($scope.node.pointer.nodeId).then(function (node) {
                     $location.next($fn.invoke($scope.node.pointer.domain, 'getEditUrl', [node]));
                 }, function (ex) {
-                    throw ex;
+                    
                 });
             };
 
