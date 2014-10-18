@@ -35,13 +35,7 @@ module.exports = function () {
                     var resolved = node.getNodeUrl(ctx.uri.url);
                     if (resolved) {
                         var restricted = false;
-
-                        if (resolved.pointer) {
-                            if (!auth.isInRole(ctx.req.session.user, resolved.pointer.permissions)) {
-                                restricted = true;
-                            }
-                        }
-
+                        
                         if (!restricted && resolved.node) {
                             if (!auth.isInRole(ctx.req.session.user, resolved.node.permissions)) {
                                 restricted = true;
