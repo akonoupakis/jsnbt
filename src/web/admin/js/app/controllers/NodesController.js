@@ -41,7 +41,7 @@
                     }).then(function (result) {
                         if (!!result && result !== '') {
                             $data.nodes.post($data.create('nodes', {
-                                domain: (node || {}).domain || 'core',
+                                domain: 'core',
                                 name: result,
                                 entity: 'page',
                                 parent: parent,
