@@ -112,7 +112,7 @@
                 controller: 'SettingsController',
                 section: 'settings',
                 domain: 'core',
-                tmpl: 'tmpl/partial/settings/settings.html'
+                tmpl: 'tmpl/spec/settings.html'
             }).
             when('/test', {
                 templateUrl: 'tmpl/partial/test.html',

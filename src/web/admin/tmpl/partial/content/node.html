@@ -67,13 +67,13 @@
         <div id="page-addon" data-scrollspy="Addon" ng-show="node.entity === 'pointer'">
             <div class="row">
                 <ctrl-select class="col-md-6" ng-model="node.pointer.domain" ng-required="true" ng-enabled="node.entity === 'pointer'" ng-label="Addon" ng-default="true" ng-options="addons" ng-name-field="name" ng-value-field="domain"></ctrl-select>
-                <ctrl-node class="col-md-6" ng-model="node.pointer.nodeId" ng-domain="node.pointer.domain" ng-required="false" ng-enabled="node.entity === 'pointer'" ng-label="Pointee"></ctrl-node>
+                <ctrl-node class="col-md-6" ng-model="node.pointer.nodeId" ng-domain="node.pointer.domain" ng-required="node.pointer.domain && node.entity === 'pointer'" ng-enabled="node.entity === 'pointer'" ng-label="Pointee"></ctrl-node>
             </div>
         </div>
         
         <div id="page-content" data-scrollspy="Content" ng-show="node.entity !== 'pointer'">
             <div class="row" id="page-template" data-scrollspy="Template">
-                <ctrl-select class="col-md-12" ng-model="node.view" ng-required="true" ng-label="Template" ng-options="views" ng-default="true" ng-value-field="tmpl" ng-name-field="tmpl" ng-enabled="node.entity !== 'pointer'"></ctrl-select>
+                <ctrl-select class="col-md-12" ng-model="node.view" ng-required="true" ng-options="views" ng-default="true" ng-value-field="tmpl" ng-name-field="tmpl" ng-enabled="node.entity !== 'pointer'" ng-label="Template"></ctrl-select>
             </div>
 
             <div ng-show="tmpl" ng-include="tmpl"></div>
@@ -85,13 +85,13 @@
 
         <div id="page-meta" data-scrollspy="Meta" ng-show="node.entity !== 'pointer'">
             <div id="page-meta-title" class="row" data-scrollspy="Title">
-                <ctrl-text class="col-md-12" ng-model="node.data.localized[language].meta.title" ng-required="true" ng-label="Meta Title"></ctrl-text>
+                <ctrl-text class="col-md-12" ng-model="node.data.localized[language].meta.title" ng-required="true" ng-enabled="node.entity !== 'pointer'" ng-label="Meta Title"></ctrl-text>
             </div>
             <div id="page-meta-description" class="row" data-scrollspy="Description">
-                <ctrl-text-area class="col-md-12" ng-rows="4" ng-model="node.data.localized[language].meta.description" ng-required="false" ng-label="Meta Description"></ctrl-text-area>
+                <ctrl-text-area class="col-md-12" ng-rows="4" ng-model="node.data.localized[language].meta.description" ng-required="false" ng-enabled="node.entity !== 'pointer'" ng-label="Meta Description"></ctrl-text-area>
             </div>
             <div id="page-meta-keywords" class="row" data-scrollspy="Keywords">
-                <ctrl-text-area class="col-md-12" ng-rows="4" ng-model="node.data.localized[language].meta.keywords" ng-required="false" ng-label="Meta Keywords"></ctrl-text-area>
+                <ctrl-text-area class="col-md-12" ng-rows="4" ng-model="node.data.localized[language].meta.keywords" ng-required="false" ng-enabled="node.entity !== 'pointer'" ng-label="Meta Keywords"></ctrl-text-area>
             </div>
         </div>
 
