@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .factory('TreeNodeService', function ($q, $cacheFactory, $fn, $session, FileService) {
+        .factory('TreeNodeService', function ($q, $cacheFactory, FileService) {
             var TreeNodeService = {};
             
             var cache = $cacheFactory('NestableCache');
@@ -187,9 +187,6 @@
                         if (result.children.length === result.childCount)
                             result.collapsed = false;
                     }
-
-                    result.editUrl = $fn.invoke(nodeDomain, 'url.getEditUrl', [result]);
-                    result.viewUrl = $fn.invoke(nodeDomain, 'url.getViewUrl', [result]);
 
                     result.expand = function () {
                         var resultItem = this;

@@ -108,7 +108,7 @@
                         if (!scope.ngDomain || scope.ngDomain === '')
                             return;
 
-                        var invoked = $fn.invoke(scope.ngDomain, 'node.selectMany', [scope.ngDomain, scope.ngModel, scope.ngOptions], true);
+                        var invoked = $fn.invoke(scope.ngDomain, 'selectNodes', [scope.ngDomain, scope.ngModel, scope.ngOptions], true);
                         
                         if (invoked) {
                             invoked.then(function (selectedNodeIds) {

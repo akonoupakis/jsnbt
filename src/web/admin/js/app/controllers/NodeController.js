@@ -573,7 +573,7 @@
                     $location.previous($rootScope.location.previous);
                 }
                 else {
-                    $location.previous($fn.invoke($scope.node.domain, 'url.getBackUrl', [$scope.node]));
+                    $location.previous($fn.invoke($scope.node.domain, 'getBackUrl', [$scope.node]));
                 }
             };
 
