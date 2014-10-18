@@ -67,8 +67,13 @@
         <div id="page-addon" data-scrollspy="Addon" ng-show="node.entity === 'pointer'">
             <div class="row">
                 <ctrl-select class="col-md-6" ng-model="node.pointer.domain" ng-required="true" ng-enabled="node.entity === 'pointer'" ng-label="Addon" ng-default="true" ng-options="addons" ng-name-field="name" ng-value-field="domain"></ctrl-select>
-                <ctrl-node class="col-md-6" ng-model="node.pointer.nodeId" ng-domain="node.pointer.domain" ng-required="node.pointer.domain && node.entity === 'pointer'" ng-enabled="node.entity === 'pointer'" ng-label="Pointee"></ctrl-node>
+                <ctrl-node class="col-md-5" ng-model="node.pointer.nodeId" ng-domain="node.pointer.domain" ng-required="node.pointer.domain && node.entity === 'pointer'" ng-enabled="node.entity === 'pointer'" ng-label="Pointee"></ctrl-node>
+                <div class="col-md-1">
+                    <button type="button" ng-disabled="!node.pointer.domain || !node.pointer.nodeId" class="btn" ng-click="editPointee()" style="position: relative; top: 25px">Edit</button>
+                </div>
             </div>
+
+            <hr />
         </div>
         
         <div id="page-content" data-scrollspy="Content" ng-show="node.entity !== 'pointer'">
@@ -79,10 +84,10 @@
             <div ng-show="tmpl" ng-include="tmpl"></div>
 
             <div ng-repeat="tmplItem in tmpls" ng-include="tmplItem"></div>
+
+            <hr />
         </div>
-
-        <hr ng-show="node.entity !== 'pointer'" />
-
+        
         <div id="page-meta" data-scrollspy="Meta" ng-show="node.entity !== 'pointer'">
             <div id="page-meta-title" class="row" data-scrollspy="Title">
                 <ctrl-text class="col-md-12" ng-model="node.data.localized[language].meta.title" ng-required="true" ng-enabled="node.entity !== 'pointer'" ng-label="Meta Title"></ctrl-text>
@@ -93,18 +98,18 @@
             <div id="page-meta-keywords" class="row" data-scrollspy="Keywords">
                 <ctrl-text-area class="col-md-12" ng-rows="4" ng-model="node.data.localized[language].meta.keywords" ng-required="false" ng-enabled="node.entity !== 'pointer'" ng-label="Meta Keywords"></ctrl-text-area>
             </div>
+
+            <hr />
         </div>
-
-        <hr />
-
-        <div id="page-permissions" data-scrollspy="Permissions">
+        
+        <div id="page-permissions" data-scrollspy="Permissions" ng-show="node.entity !== 'pointer'">
             <div class="row">
-                <ctrl-check class="col-md-4" ng-model="node.permissions.inherits" ng-label="Inherits from parent"></ctrl-check>
-                <ctrl-check-list class="col-md-8" ng-model="roles" ng-options="roleOptions" ng-required="true" ng-enabled="!node.permissions.inherits" ng-label="Permissions"></ctrl-check-list>
+                <ctrl-check class="col-md-4" ng-model="node.permissions.inherits" ng-enabled="node.entity !== 'pointer'" ng-label="Inherits from parent"></ctrl-check>
+                <ctrl-check-list class="col-md-8" ng-model="roles" ng-options="roleOptions" ng-required="true" ng-enabled="node.entity !== 'pointer' && !node.permissions.inherits" ng-label="Permissions"></ctrl-check-list>
             </div>
-        </div>
 
-        <hr />
+            <hr />
+        </div>
 
     </section>
 
