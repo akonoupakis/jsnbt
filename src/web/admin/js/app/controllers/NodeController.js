@@ -39,18 +39,20 @@
 
             $scope.tmpl = null;
             
-            $scope.tmpls = [];
+            var tmpls = [];
 
             if ($route.current.$$route.tmpl) {
                 if (typeof ($route.current.$$route.tmpl) === 'string') {
-                    $scope.tmpls.push($route.current.$$route.tmpl);
+                    tmpls.push($route.current.$$route.tmpl);
                 }
                 else {
                     $($route.current.$$route.tmpl).each(function (i, item) {
-                        $scope.tmpls.push(item);
+                        tmpls.push(item);
                     });
                 }
             }
+
+            $scope.tmpls = tmpls;
 
             $scope.parentOptions = {
                 restricted: [],
