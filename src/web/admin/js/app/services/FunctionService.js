@@ -88,7 +88,7 @@
 
             FunctionService.node = {
 
-                select: function (selected, options) {
+                select: function (domain, selected, options) {
                     var deferred = $q.defer();
 
                     ModalService.open({
@@ -96,7 +96,7 @@
                         controller: 'NodeSelectorController',
                         selected: selected,
                         template: 'tmpl/partial/modal/nodeSelector.html',
-                        domain: 'core',
+                        domain: domain,
                         mode: 'single',
                         options: options
                     }).then(function (result) {
@@ -106,7 +106,7 @@
                     return deferred.promise;
                 },
 
-                selectMany: function (selected, options) {
+                selectMany: function (domain, selected, options) {
                     var deferred = $q.defer();
 
                     ModalService.open({
@@ -114,7 +114,7 @@
                         controller: 'NodeSelectorController',
                         selected: selected,
                         template: 'tmpl/partial/modal/nodeSelector.html',
-                        domain: 'core',
+                        domain: domain,
                         mode: 'multiple',
                         options: options
                     }).then(function (results) {
