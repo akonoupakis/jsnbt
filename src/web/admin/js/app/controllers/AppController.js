@@ -23,6 +23,8 @@
             $scope.application.languages = [];
             $scope.application.localization = jsnbt.localization;
 
+            $scope.defaults.countries = jsnbt.countries;
+
             $scope.defaults.languages = [];
             $scope.defaults.language = null;
 

@@ -1,4 +1,5 @@
 var app = require('./app.js');
+var jsnbt = require('./jsnbt.js');
 var fs = require('./utils/fs.js');
 var _ = require('underscore');
 
@@ -32,6 +33,10 @@ exports.parse = function (ctx, tmpl, model) {
     }
 
     mdl.js = {};
+
+    if (isAdmin) {
+        mdl.scripts = jsnbt.scripts;
+    }
 
     var appFiles = [];
     findJsFiles('../' + app.root + '/public/' + (isAdmin ? 'admin/' : '') + 'js/app/', appFiles, isAdmin);

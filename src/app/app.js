@@ -20,6 +20,10 @@ exports.packages = [];
 
 var jsnbtModule = {
 
+    //scripts: [
+    //   'http://maps.google.com/maps/api/js?sensor=true'
+    //],
+
     entities: [{
         name: 'page',
         allowed: ['page', 'pointer'],

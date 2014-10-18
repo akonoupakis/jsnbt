@@ -56,6 +56,8 @@ module.exports = {
 
     locale: '',
 
+    scripts: [],
+
     configurations: {},
 
     entities: [],
@@ -101,6 +103,12 @@ module.exports = {
             _.extend(resultObj, obj);
             return resultObj
         }
+
+        var moduleScripts = module.scripts || [];
+        _.each(moduleScripts, function (moduleScript) {
+            if (self.scripts.indexOf(moduleScript) === -1)
+                self.scripts.push(moduleScript);
+        });
 
         var moduleEntities = module.entities || [];
         _.each(moduleEntities, function (moduleEntity) {
