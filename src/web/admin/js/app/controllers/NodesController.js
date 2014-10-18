@@ -65,7 +65,7 @@
 
             $scope.create = function () {
                 fn.create('').then(function (result) {
-                    $location.next($fn.invoke(node.domain, 'getEditUrl', [result]));
+                    $location.next($fn.invoke(result.domain, 'getEditUrl', [result]));
                 }, function (ex) {
                     logger.error(ex);
                 });
