@@ -105,6 +105,11 @@ module.exports = {
                             permissions = hierarchyNode.permissions.roles.slice(0);
                     });
 
+                    var nodeUrlData = {};
+                    _.extend(nodeUrlData, node.data);
+                    _.extend(nodeUrlData, localizedData['content'] || {});
+                    delete nodeUrlData.localized;
+
                     var nodeUrl = {
                         nodeId: node.id,
                         language: lang,
@@ -116,7 +121,7 @@ module.exports = {
                         hierarchy: node.hierarchy,
                         view: node.view,
                         pointer: node.entity === 'pointer' ? node.pointer : {},
-                        data: node.entity !== 'pointer' ? localizedData['content'] || {} : {},
+                        data: nodeUrlData,
                         meta: localizedData.meta,
                         localization: node.localization,
                         permissions: permissions
@@ -177,7 +182,7 @@ module.exports = {
         }
         else {
             if (jsnbt.localization) {
-                if (activeLanguages.length > 1) {
+                if (activeLanguages.length > 0) {
                     var parts = _.str.trim(uri.path, '/').split('/');
                     var firstPart = _.first(parts);
                     if (activeLanguages.indexOf(firstPart.toLowerCase()) != -1) {
