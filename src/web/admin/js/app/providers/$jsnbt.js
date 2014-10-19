@@ -4,21 +4,21 @@
     "use strict";
 
     angular.module("jsnbt")
-        .provider("$session", function () {
+        .provider("$jsnbt", function () {
             var settings = {};
 
             return {
+
                 setSettings: function (value) {
                     settings = value;
                 },
-                $get: function ($q, $http) {
 
-                    var Session = {};
-                    
-                    Session.user = undefined;
+                $get: function () {
 
-                    return Session;
+                    return settings;
+
                 }
+
             };
         });
 })();

@@ -15,8 +15,10 @@
     modules.push('ui.tinymce');
     
     angular.module('jsnbt', modules)
-    .config(function ($routeProvider, flowFactoryProvider) {
+    .config(function ($routeProvider, $jsnbtProvider, flowFactoryProvider) {
         
+        $jsnbtProvider.setSettings(jsnbt);
+
         $routeProvider.
             when('/', {
                 templateUrl: 'tmpl/partial/dashboard.html',
@@ -134,7 +136,7 @@
     })
     .run(function ($rootScope, $location, $route, $timeout, $fn, FunctionService, AuthService, AUTH_EVENTS, ROUTE_EVENTS) {
         $fn.register('core', FunctionService);
-
+        
         $rootScope.initiated = $rootScope.initiated || false;
         $rootScope.users = 0;
         
