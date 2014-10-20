@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('NodeController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $session, $q, $queue, $data, $route, ScrollSpyService, $fn, LocationService, AuthService, DATA_EVENTS, FORM_EVENTS) {
+        .controller('NodeController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $q, $queue, $data, $route, ScrollSpyService, $fn, LocationService, AuthService, DATA_EVENTS, FORM_EVENTS) {
 
             var logger = $logger.create('NodeController');
 
