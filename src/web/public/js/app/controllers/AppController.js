@@ -18,6 +18,8 @@
                     language: $('html').prop('lang')
                 }, function (results, error) {
                     console.log('page', $('head > meta[name="page"]').prop('content'), _.first(results));
+                    $scope.page = _.first(results);
+                    $scope.$apply();
                 });
 
             }
@@ -28,6 +30,8 @@
                     language: $('html').prop('lang')
                 }, function (results, error) {
                     console.log('pointer', $('head > meta[name="pointer"]').prop('content'), _.first(results));
+                    $scope.pointer = _.first(results);
+                    $scope.$apply();
                 });
             }
 
