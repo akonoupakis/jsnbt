@@ -19,7 +19,6 @@
             $scope.seoNames = [];
             
             $scope.siblingSeoNames = [];
-            $scope.restNodeCodes = [];
 
             $scope.types = [];
             $scope.languages = [];
@@ -31,8 +30,7 @@
 
             $scope.valid = true;
             $scope.validation = {
-                seo: true,
-                code: true
+                seo: true
             };
 
             $scope.published = true;
@@ -68,7 +66,10 @@
 
                         $scope.name = result.name;
                         $scope.node = result;
-                        $scope.localized = (result.localization || {}).enabled && $scope.application.localization.enabled;
+
+                        var entity = _.first(_.filter(jsnbt.entities, function (x) { return x.name === result.entity; }));
+
+                        $scope.localized = $scope.application.localization.enabled && (entity.localized === undefined || entity.localized === true);
 
                         $scope.parentOptions.restricted = [$scope.id];
 
@@ -340,8 +341,8 @@
                                             var newSeoNode = {};
 
                                             $($scope.application.localization.enabled ? $scope.application.languages: ['en']).each(function (l, lang) {
-                                                if (result.data.localized[lang.code])
-                                                    newSeoNode[lang.code] = result.data.localized[lang.code].seoName;
+                                                if (result.url[lang.code])
+                                                    newSeoNode[lang.code] = result.url[lang.code];
                                             });
 
                                             newSeoNodes.push(newSeoNode);
@@ -407,31 +408,14 @@
 
                         $data.nodes.get({ parent: $scope.node.parent, domain: $scope.node.domain, id: { $nin: [$scope.id] } }).then(function (siblingsResponse) {
                                                
-                            $scope.siblingSeoNames = _.pluck(_.pluck(_.pluck(_.pluck(_.filter(siblingsResponse, function (x) { return x.data && x.data.localized && x.data.localized[lang]; }), 'data'), 'localized'), lang), 'seoName');
+                            $scope.siblingSeoNames = _.pluck(_.pluck(_.filter(siblingsResponse, function (x) { return x.url[lang]; }), 'url'), lang);
 
-                            $scope.validation.seo = ($scope.node.data.localized[lang] || {}).seoName !== '' && $scope.siblingSeoNames.indexOf(($scope.node.data.localized[lang] || {}).seoName) === -1;
+                            $scope.validation.seo = $scope.node.url[lang] && $scope.siblingSeoNames.indexOf($scope.node.url[lang]) === -1;
 
                             if (!$scope.validation.seo)
                                 $scope.valid = false;
 
-                            $data.nodes.get({ id: { $nin: [$scope.id] }, domain: $scope.node.domain, $fields: { code: true } }).then(function (nodesResponse) {
-
-                                $scope.restNodeCodes = _.pluck(nodesResponse, 'code');
-
-                                $scope.validation.code = true;
-                                if ($scope.node.code !== undefined && $scope.node.code !== '')
-                                    if ($scope.restNodeCodes.indexOf($scope.node.code) !== -1) {
-                                        $scope.validation.code = false;
-                                    }
-                                
-                                if (!$scope.validation.code)
-                                    $scope.valid = false;
-
-                                deferredInternal.resolve($scope.valid);
-
-                            }, function (nodesError) {
-                                deferredInternal.reject(nodesError);
-                            });
+                            deferredInternal.resolve($scope.valid);
 
                         }, function (siblingsError) {
                             deferredInternal.reject(siblingsError);
@@ -442,7 +426,6 @@
 
                     $scope.valid = true;
                     $scope.validation.seo = true;
-                    $scope.validation.code = true;
                     $scope.$broadcast(FORM_EVENTS.initiateValidation);
 
                     if (!$scope.valid) {
@@ -553,18 +536,6 @@
 
                 valid = $scope.siblingSeoNames.indexOf(value) === -1;
                 $scope.validation.seo = valid;
-
-                return valid;
-            };
-
-            $scope.validateCode = function (value) {
-                var valid = true;
-
-                if (value && value !== '') {
-                    if ($scope.restNodeCodes.indexOf(value) !== -1) {
-                        $scope.validation.code = false;
-                    }
-                }
 
                 return valid;
             };

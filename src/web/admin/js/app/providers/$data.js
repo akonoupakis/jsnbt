@@ -126,22 +126,13 @@
                 lastName: undefined,
                 roles: []
             });
-
-            $data.register('drafts', {
-                refId: '',
-                collection: '',
-                user: '',
-                data: {},
-                timestamp: new Date().getTime()
-            });
-
+            
             $data.register('nodes', {
-                domain: 'core',
                 name: '',
+                domain: 'core',                
                 entity: 'page',
                 parent: '',
-                hierarchy: [],
-                config: {},
+                published: false,
                 localization: {
                     enabled: true,
                     language: ''
@@ -149,13 +140,17 @@
                 data: {
                     localized: {}
                 },
+                url: {},
+                active: {},
+                meta: {},
                 createdOn: new Date().getTime(),
                 modifiedOn: new Date().getTime(),
                 permissions: {
                     inherits: true,
                     roles: []
-                },
-                published: false
+                },                
+                hierarchy: [],
+                config: {}
             });
 
             $data.register('languages', {
@@ -190,11 +185,6 @@
             $data.register('settings', {
                 domain: '',
                 data: {}
-            });
-
-            $data.register('tests', {
-                key: '',
-                value: {}
             });
 
         });

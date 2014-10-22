@@ -5,16 +5,8 @@
 			"name": "name",
 			"type": "string",
 			"typeLabel": "string",
-			"required": false,
+			"required": true,
 			"id": "name",
-			"order": 0
-		},
-		"code": {
-			"name": "code",
-			"type": "string",
-			"typeLabel": "string",
-			"required": false,
-			"id": "code",
 			"order": 0
 		},
 		"domain": {
@@ -41,21 +33,13 @@
 			"id": "parent",
 			"order": 3
 		},
-		"secure": {
-			"name": "secure",
+		"published": {
+			"name": "published",
 			"type": "boolean",
 			"typeLabel": "boolean",
 			"required": false,
-			"id": "secure",
-			"order": 5
-		},
-		"icon": {
-			"name": "icon",
-			"type": "string",
-			"typeLabel": "string",
-			"required": false,
-			"id": "icon",
-			"order": 6
+			"id": "published",
+			"order": 4
 		},
 		"createdOn": {
 			"name": "createdOn",
@@ -63,7 +47,7 @@
 			"typeLabel": "number",
 			"required": true,
 			"id": "createdOn",
-			"order": 7
+			"order": 5
 		},
 		"modifiedOn": {
 			"name": "modifiedOn",
@@ -71,15 +55,7 @@
 			"typeLabel": "number",
 			"required": true,
 			"id": "modifiedOn",
-			"order": 8
-		},
-		"hierarchy": {
-			"name": "hierarchy",
-			"type": "array",
-			"typeLabel": "array",
-			"required": true,
-			"id": "hierarchy",
-			"order": 9
+			"order": 6
 		},
 		"view": {
 			"name": "view",
@@ -87,7 +63,7 @@
 			"typeLabel": "string",
 			"required": false,
 			"id": "view",
-			"order": 10
+			"order": 7
 		},
 		"pointer": {
 			"name": "pointer",
@@ -95,15 +71,7 @@
 			"typeLabel": "object",
 			"required": false,
 			"id": "pointer",
-			"order": 11
-		},
-		"localization": {
-			"name": "localization",
-			"type": "object",
-			"typeLabel": "object",
-			"required": true,
-			"id": "localization",
-			"order": 5
+			"order": 8
 		},
 		"data": {
 			"name": "data",
@@ -111,7 +79,31 @@
 			"typeLabel": "object",
 			"required": true,
 			"id": "data",
+			"order": 10
+		},
+		"url": {
+			"name": "url",
+			"type": "object",
+			"typeLabel": "object",
+			"required": true,
+			"id": "url",
+			"order": 11
+		},
+		"active": {
+			"name": "active",
+			"type": "object",
+			"typeLabel": "object",
+			"required": true,
+			"id": "active",
 			"order": 12
+		},
+		"meta": {
+			"name": "meta",
+			"type": "object",
+			"typeLabel": "object",
+			"required": true,
+			"id": "meta",
+			"order": 13
 		},
 		"permissions": {
 			"name": "permissions",
@@ -119,7 +111,15 @@
 			"typeLabel": "object",
 			"required": true,
 			"id": "permissions",
-			"order": 13
+			"order": 14
+		},
+		"hierarchy": {
+			"name": "hierarchy",
+			"type": "array",
+			"typeLabel": "array",
+			"required": true,
+			"id": "hierarchy",
+			"order": 15
 		},
 		"config": {
 			"name": "config",
@@ -127,15 +127,7 @@
 			"typeLabel": "object",
 			"required": true,
 			"id": "config",
-			"order": 14
-		},
-		"published": {
-			"name": "published",
-			"type": "boolean",
-			"typeLabel": "boolean",
-			"required": false,
-			"id": "published",
-			"order": 15
+			"order": 16
 		}
 	}
 }

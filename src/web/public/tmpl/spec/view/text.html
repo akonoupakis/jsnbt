@@ -1,16 +1,6 @@
 ﻿<div class="row" id="page-content-header" data-scrollspy="Header">
-    <div class="col-md-12">
-        <div class="form-group">
-            <label for="txtPageHeader">Header</label>
-            <input type="text" class="form-control" id="txtPageHeader" ng-model="node.data.localized[language].content.header" ng-change="save()" />
-        </div>
-    </div>
+    <ctrl-text class="col-md-12" ng-model="node.data.localized[language].title" ng-required="true" ng-label="Header"></ctrl-text>
 </div>
 <div class="row" id="page-content-body" data-scrollspy="Body">
-    <div class="col-md-12">
-        <div class="form-group">
-            <label for="txtPageBody">Body</label>
-            <textarea class="form-control" id="txtPageBody" rows="4" ng-model="node.data.localized[language].content.body" ng-change="save()"></textarea>
-        </div>
-    </div>
+    <ctrl-text-area class="col-md-12" ng-model="node.data.localized[language].body" ng-required="true" ng-label="Body"></ctrl-text-area>
 </div>      

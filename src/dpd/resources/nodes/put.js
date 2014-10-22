@@ -8,21 +8,19 @@ var self = this;
 var mee = this;
 
 var processFn = function () {
-    if (self.config.computed) {
-        delete self.config.computed;
+    if (internal) {
+        //delete self.config.computed;
+
+        console.log('internal put');
+        if (changed('hierarchy') && !_.isEmpty(_.difference(previous.hierarchy, self.hierarchy))) {
+            console.log('in!', self.hierarchy);
+            processChildren(self);
+        }
     }
     else {
-        if (!internal && !auth.isAuthorized(me, 'nodes', 'U'))
+        if (!auth.isAuthorized(me, 'nodes', 'U'))
             cancel('access denied', 500);
-
-        if (changed('code')) {
-            if (matchedCode && matchedCode !== '') {
-                var matchedCode = dpdSync.call(dpd.nodes.get, { code: self.code, domain: self.domain, id: { $nin: [self.id] } });
-                if (matchedCode.length > 0)
-                    cancel('node code already exists', 400);
-            }
-        }
-
+        
         self.modifiedOn = new Date().getTime();
 
         var hierarchyChange = false;
@@ -33,56 +31,75 @@ var processFn = function () {
             cascadeProcess = true;
         }
 
-        for (var lang in self.data.localized) {
-            if (previous.data.localized[lang]) {
-                if (previous.data.localized[lang].seoName !== self.data.localized[lang.seoName]) {
-                    cascadeProcess = true;
-                }
-            }
-        }
+        //var seoNamesChanged = false;
+        //for (var lang in self.url) {
+        //    if (self.url[lang] !== previous.url[lang]) {
+        //        seoNamesChanged = true;
+        //    }
+        //}
 
-        if (changed('permissions.inherits') || (changed('permissions.roles') && !_.isEmpty(_.difference(previous.permissions.roles, self.permissions.roles)))) {
-            cascadeProcess = true;
-        }
+        //if (seoNamesChanged) {
+        //    var siblingNodes = dpdSync.call(dpd.nodes.get, { parent: self.parent, domain: self.domain, id: { $nin: [self.id] } });
+        //    for (var lang in self.url) {
+        //        var siblingSeoNames = _.pluck(_.pluck(_.filter(siblingNodes, function (x) { return x.url[lang]; }), 'url'), lang);
+        //        if (siblingSeoNames.indexOf(self.url[lang]) === -1) {
+        //            cancel('seo name already exists', 400);
+        //        }
+        //    }
+        //}
+
+        //for (var lang in self.data.localized) {
+        //    if (previous.data.localized[lang]) {
+        //        if (previous.data.localized[lang].seoName !== self.data.localized[lang.seoName]) {
+        //            cascadeProcess = true;
+        //        }
+        //    }
+        //}
+
+        //if (changed('permissions.inherits') || (changed('permissions.roles') && !_.isEmpty(_.difference(previous.permissions.roles, self.permissions.roles)))) {
+        //    cascadeProcess = true;
+        //}
 
 
         if (hierarchyChange) {
-            self.hierarchy = node.getHierarchy(self).slice(0);
-            self.config.computed = true;
-            dpd.nodes.put(self.id, self);
+            var hierarchy = node.getHierarchy(self).slice(0);
+            //self.config.computed = true;
+            console.log('h', hierarchy);
+            dpd.nodes.put(self.id, { hierarchy: hierarchy }, function (result, err) {
+                if (err)
+                    console.log(err);
+            });
+          //  processChildren([self]);
         }
 
-        node.materialize(self);
+        //node.materialize(self);
 
-        if (cascadeProcess) {
-            processChildren(self);
-        }
+        //if (cascadeProcess) {
+        //    
+        //}
 
-        if (!internal)
-            emit('nodeUpdated', self);
+        emit('nodeUpdated', self);
     }
 };
 
 var processChildren = function (nodeObj) {
+    
     dpd.nodes.get({ domain: nodeObj.domain, parent: nodeObj.id }, function (results, error) {
         if (error) {
             throw error;
         }
         else {
-            _.each(results, function (result) { 
-                var newHierarchy = nodeObj.hierarchy.slice(0);
-                newHierarchy.push(result.id);
-
-                result.hierarchy = newHierarchy;
-                result.config.computed = true;
-
-                dpd.nodes.put(result.id, result);
-
-                dpdSync.wrap(node.materialize, result);
-                processChildren(result);
+            _.each(results, function (nodeResult) {
+                    var newHierarchy = nodeObj.hierarchy.slice(0);
+                    newHierarchy.push(nodeResult.id);
+                    dpd.nodes.put(nodeResult.id, { hierarchy: newHierarchy }, function (result, err) {
+                        if (err)
+                            console.log(err);
+                    });
             });
         }
     });
+
 };
 
 dpdSync.wrap(processFn);
