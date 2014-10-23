@@ -86,7 +86,9 @@ if (internal) {
     if (this.config.saving) {
         delete this.config.saving;
 
-        processChildren(this.domain, this.hierarchy);
+        if (!this.config.new) {
+            processChildren(this.domain, this.hierarchy);
+        }
     }
 }
 else {

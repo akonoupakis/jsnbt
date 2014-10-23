@@ -21,15 +21,16 @@ var processFn = function () {
             var siblingSeoNames = _.pluck(_.pluck(_.filter(siblingNodes, function (x) { return x.url[lang]; }), 'url'), lang);
             if (siblingSeoNames.indexOf(self.url[lang]) === -1) {
                 cancel('seo name already exists', 400);
-            }            
-        }        
+            }
+        }
     }
 
     self.createdOn = new Date().getTime();
     self.modifiedOn = new Date().getTime();
 
     self.hierarchy = node.getHierarchy(self).slice(0);
-    self.config.computed = true;
+    self.config.saving = true;
+    self.config.new = true;
     dpd.nodes.put(self.id, self);
     
     if (!internal)
