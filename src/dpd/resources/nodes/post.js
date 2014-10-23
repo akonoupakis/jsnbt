@@ -32,8 +32,6 @@ var processFn = function () {
     self.config.computed = true;
     dpd.nodes.put(self.id, self);
     
-     // node.materialize(self);
-
     if (!internal)
         emit('nodeCreated', self);
 };

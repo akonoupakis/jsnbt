@@ -14,11 +14,9 @@ var processFn = function () {
     self.modifiedOn = new Date().getTime();
 
     var hierarchyChange = false;
-    var cascadeProcess = false;
 
     if (changed('parent') && self.parent !== previous.parent) {
         hierarchyChange = true;
-        cascadeProcess = true;
     }
 
     //var seoNamesChanged = false;
@@ -45,12 +43,7 @@ var processFn = function () {
     //        }
     //    }
     //}
-
-    //if (changed('permissions.inherits') || (changed('permissions.roles') && !_.isEmpty(_.difference(previous.permissions.roles, self.permissions.roles)))) {
-    //    cascadeProcess = true;
-    //}
-
-
+    
     if (hierarchyChange) {
         var hierarchy = node.getHierarchy(self).slice(0);
         self.hierarchy = hierarchy.slice(0);
@@ -59,14 +52,7 @@ var processFn = function () {
             if (err)
                 throw err;
         });
-        //  processChildren([self]);
     }
-
-    //node.materialize(self);
-
-    //if (cascadeProcess) {
-    //    
-    //}
 
     emit('nodeUpdated', self);
 };
