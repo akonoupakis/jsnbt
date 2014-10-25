@@ -54,46 +54,44 @@ var getDefaultLanguage = function () {
     return defaultLanguage;
 };
 
-var resolvePointerUrl = function (language, seoNodes, foundNodes, matchedNode, urlPath, url) {
-    var pointedNode = dpdSync.call(app.dpd.nodes.get, { id: matchedNode.pointer.nodeId, domain: matchedNode.pointer.domain });
+var resolvePointerUrl = function (returnObj, seoNodes, urlPath, url) {
+    var pointedNode = dpdSync.call(app.dpd.nodes.get, { id: returnObj.pointer.pointer.nodeId, domain: returnObj.pointer.pointer.domain });
     if (!pointedNode)
         return;
 
-    var pack = _.first(_.filter(app.packages, function (x) { return x.domain === pointedNode.domain && typeof (x.resolve) === 'function'; }));
-    if (pack) {
-        var addonNode = pack.resolve({
-            pointer: matchedNode,
-            pointed: pointedNode,
-            nodes: foundNodes,
-            url: url
-        });
-        if (addonNode) {
-            return {
-                node: addonNode,
-                pointer: matchedNode,
-                view: addonNode.view,
-                language: language
-            }
-        }
-    }
+    //var pack = _.first(_.filter(app.packages, function (x) { return x.domain === pointedNode.domain && typeof (x.resolve) === 'function'; }));
+    //if (pack) {
+    //    var addonNode = pack.resolve({
+    //        pointer: matchedNode,
+    //        pointed: pointedNode,
+    //        nodes: foundNodes,
+    //        url: url
+    //    });
+    //    if (addonNode) {
+    //        return {
+    //            node: addonNode,
+    //            pointer: matchedNode,
+    //            view: addonNode.view,
+    //            language: language
+    //        }
+    //    }
+    //}
 
     var pointedSeoNames = _.str.trim(urlPath, '/') !== '' ? _.str.trim(urlPath, '/').split('/') : [];
     if (pointedSeoNames.length === 0) {
-        return {
-            node: pointedNode,
-            pointer: matchedNode,
-            view: pointedNode.view,
-            language: language
-        };
+        returnObj.page = pointedNode;
+        returnObj.view = pointedNode.view;
+        returnObj.nodes = _.union(returnObj.nodes, pointedNode);
+        return returnObj;
     }
 
     var pointedLoopParentId = pointedNode.id;
-    var pointedFoundNodes = [];
+    var pointedFoundNodes = [pointedNode];
     var pointedFoundAllMatches = true;
 
     _.each(pointedSeoNames, function (pointedSeoName) {
         var matchedPointedSeoNode = _.first(_.filter(seoNodes, function (x) {
-            return x.url[jsnbt.localization ? language : 'en'].toLowerCase() === pointedSeoName.toLowerCase() &&
+            return x.url[jsnbt.localization ? returnObj.language : 'en'].toLowerCase() === pointedSeoName.toLowerCase() &&
                 x.parent === pointedLoopParentId &&
                 x.domain === pointedNode.domain;
         }));
@@ -110,12 +108,10 @@ var resolvePointerUrl = function (language, seoNodes, foundNodes, matchedNode, u
     if (pointedFoundAllMatches) {
         var targetMatchedNode = _.last(pointedFoundNodes);
         if (targetMatchedNode) {
-            return {
-                node: targetMatchedNode,
-                pointer: matchedNode,
-                view: targetMatchedNode.view,
-                language: language
-            };
+            returnObj.page = targetMatchedNode;
+            returnObj.view = targetMatchedNode.view;
+            returnObj.nodes = _.union(returnObj.nodes, pointedFoundNodes);
+            return returnObj;
         }
     }
 };
@@ -152,13 +148,37 @@ module.exports = {
         if (!url)
             throw new Error('url is required');
 
-        var self = this;
+        var returnObj = {
+            page: undefined,
+            pointer: undefined,
+            nodes: [],
+            language: undefined,
+            view: undefined,
+            isActive: function () {
+                var rSelf = this;
+                return _.every(rSelf.nodes, function (x) { return x.active[rSelf.language] === true; });
+            },
+            isPublished: function () {
+                var rSelf = this;
+                return _.every(rSelf.nodes, function (x) { return x.published === true; });
+            },
+            getPermissions: function () {
+                var rSelf = this;
+                
+                var rRoles = ['public'];
 
-        var resolved = {
-            node: undefined,
-            pointer: undefined
+                _.each(rSelf.nodes, function (rnode) {
+                    if (!rnode.permissions.inherits) {
+                        rRoles = rnode.permissions.roles.slice(0);
+                    }
+                });
+
+                return rRoles;
+            }
         };
 
+        var self = this;
+        
         var uri = parseUri(url);
         uri.path = uri.path.toLowerCase();
 
@@ -174,13 +194,23 @@ module.exports = {
 
             var settingNode = _.first(dpdSync.call(app.dpd.settings.get, { domain: 'core' }));
             if (settingNode && settingNode.data && settingNode.data.homepage) {
+
                 var resolved = dpdSync.call(app.dpd.nodes.get, settingNode.data.homepage);
                 if (resolved) {
-                    return {
-                        node: resolved,
-                        language: defaultLanguage,
-                        view: resolved.view
-                    };
+                    var resolvedHierarchy = dpdSync.call(app.dpd.nodes.get, { hierarchy: resolved.hierarchy });
+                    var resolvedNodes = [];
+                    _.each(resolved.hierarchy, function (rh) {
+                        var resolvedNode = _.first(_.filter(resolvedHierarchy, function (x) { return x.id === rh; }));
+                        if (resolvedNode)
+                            resolvedNodes.push(resolvedNode);
+                    });
+
+                    returnObj.page = resolved;
+                    returnObj.nodes = resolvedNodes;
+                    returnObj.language = defaultLanguage;
+                    returnObj.view = resolved.view;
+
+                    return returnObj;
                 }
             }
         }
@@ -241,14 +271,17 @@ module.exports = {
        
         if (matchedNode) {
             if (matchedNode.entity === 'pointer') {
-                return resolvePointerUrl(languagePart, urlSeoNodes, foundNodes, matchedNode, '/', '/' + (uri.query !== '' ? '?' + uri.query : ''));
+                returnObj.language = languagePart;
+                returnObj.nodes = foundNodes;
+                returnObj.pointer = matchedNode;
+                return resolvePointerUrl(returnObj, urlSeoNodes, '/', '/' + (uri.query !== '' ? '?' + uri.query : ''));
             }
             else {
-                return {
-                    node: matchedNode,
-                    view: matchedNode.view,
-                    language: languagePart
-                };
+                returnObj.page = matchedNode;
+                returnObj.nodes = foundNodes;
+                returnObj.language = languagePart;
+                returnObj.view = matchedNode.view;
+                return returnObj;
             }
         }
         else {
@@ -260,8 +293,51 @@ module.exports = {
 
                 var fullUrlPart = trimmedUrl + (uri.query !== '' ? '?' + uri.query : '');
 
-                return resolvePointerUrl(languagePart, urlSeoNodes, foundNodes, pointerNode, trimmedUrl, fullUrlPart);
+                returnObj.language = languagePart;
+                returnObj.nodes = foundNodes;
+                returnObj.pointer = pointerNode;
+                return resolvePointerUrl(returnObj, urlSeoNodes, trimmedUrl, fullUrlPart);
             }
+        }
+    },
+
+    getUrl: function (node) {
+        var hierarchyNodes = dpdSync.call(app.dpd.nodes.get, { id: { $in: node.hierarchy } });
+
+        var resolved = {};
+
+        for (var langItem in node.url) {
+
+            var langUrl = '';
+            var fullyResolved = true;
+            if (_.filter(jsnbt.languages, function (x) { return x.code === langItem; }).length > 0) {
+                _.each(hierarchyNodes, function (hnode) {
+                    if (hnode.url[langItem]) {
+                        langUrl += '/' + hnode.url[langItem];
+                    }
+                    else {
+                        langUrl = '';
+                        fullyResolved = false;
+                        return false;
+                    }
+                });
+            }
+
+            if (langUrl !== '' && fullyResolved) {
+                resolved[langItem] = langUrl;
+            }
+        }
+
+        return resolved;
+    },
+
+    isLocalized: function (entity) {
+        var jsnbtEntity = _.first(_.filter(jsnbt.entities, function (x) { return x.name === entity; }));
+        if (jsnbtEntity) {
+            return jsnbtEntity.localized === undefined || jsnbtEntity.localized === true;
+        }
+        else {
+            return false;
         }
     }
 };

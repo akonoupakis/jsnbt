@@ -86,12 +86,6 @@ var jsnbtModule = {
     }, {
         collection: 'nodes',
         permissions: [{
-            role: 'admin',
-            crud: ['C', 'R', 'U', 'D']
-        }]
-    }, {
-        collection: 'nodeurls',
-        permissions: [{
             role: 'public',
             crud: ['R']
         }, {
@@ -221,6 +215,10 @@ exports.init = function (env, config, module) {
 
             if (module.locale !== undefined) {
                 jsnbt.setLocale(module.locale);
+            }
+
+            if (module.restricted !== undefined) {
+                jsnbt.setRestricted(module.restricted);
             }
 
             this.packages.push(module);

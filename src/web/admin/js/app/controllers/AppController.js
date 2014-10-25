@@ -22,6 +22,7 @@
             $scope.application.version = jsnbt.version;
             $scope.application.languages = [];
             $scope.application.localization = jsnbt.localization;
+            $scope.application.restricted = jsnbt.restricted;
 
             $scope.defaults.countries = jsnbt.countries;
 

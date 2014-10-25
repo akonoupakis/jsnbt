@@ -101,10 +101,10 @@
             <hr />
         </div>
         
-        <div id="page-permissions" data-scrollspy="Permissions" ng-show="node.entity !== 'pointer'">
+        <div id="page-permissions" data-scrollspy="Permissions" ng-show="application.restricted">
             <div class="row">
-                <ctrl-check class="col-md-4" ng-model="node.permissions.inherits" ng-enabled="node.entity !== 'pointer'" ng-label="Inherits from parent"></ctrl-check>
-                <ctrl-check-list class="col-md-8" ng-model="roles" ng-options="roleOptions" ng-required="true" ng-enabled="node.entity !== 'pointer' && !node.permissions.inherits" ng-label="Permissions"></ctrl-check-list>
+                <ctrl-check class="col-md-4" ng-model="node.permissions.inherits" ng-enabled="application.restricted" ng-label="Inherits from parent"></ctrl-check>
+                <ctrl-check-list class="col-md-8" ng-model="roles" ng-options="roleOptions" ng-required="true" ng-enabled="application.restricted && !node.permissions.inherits" ng-label="Permissions"></ctrl-check-list>
             </div>
 
             <hr />

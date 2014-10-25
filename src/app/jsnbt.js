@@ -56,6 +56,8 @@ module.exports = {
 
     locale: '',
 
+    restricted: true,
+
     scripts: [],
 
     configurations: {},
@@ -81,6 +83,10 @@ module.exports = {
             this.localization = false;
             this.locale = language.code;
         }
+    },
+
+    setRestricted: function (value) {
+        this.restricted = value;
     },
 
     registerModule: function (name, module) {
@@ -228,8 +234,10 @@ module.exports = {
             result.views = getViews();
             result.addons = self.addons;
             result.entities = self.entities;
-            result.lists = [];
 
+            result.restricted = self.restricted;
+
+            result.lists = [];
             _.each(self.lists, function (list) {
                 var newList = {};
                 _.extend(newList, list);
