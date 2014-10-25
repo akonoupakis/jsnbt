@@ -304,7 +304,54 @@ module.exports = {
     getUrl: function (node) {
         var hierarchyNodes = dpdSync.call(app.dpd.nodes.get, { id: { $in: node.hierarchy } });
 
+        var orderedHierarchyNodes = [];
+        var allHierarchyNodes = true;
+
+        _.each(node.hierarchy, function (x) {
+            var hNode = _.first(_.filter(hierarchyNodes, function (x) { return x.id === x; }));
+            if (hNode)
+                orderedHierarchyNodes.push(hNode);
+            else {
+                allHierarchyNodes = false;
+                return false;
+            }
+        });
+
         var resolved = {};
+
+        if (allHierarchyNodes) {
+            for (var langItem in node.url) {
+
+                var langUrl = '';
+                var fullyResolved = true;
+                if (_.filter(jsnbt.languages, function (x) { return x.code === langItem; }).length > 0) {
+                    _.each(orderedHierarchyNodes, function (hnode) {
+                        if (hnode.url[langItem]) {
+                            langUrl += '/' + hnode.url[langItem];
+                        }
+                        else {
+                            langUrl = '';
+                            fullyResolved = false;
+                            return false;
+                        }
+                    });
+                }
+
+                if (langUrl !== '' && fullyResolved) {
+                    resolved[langItem] = langUrl;
+                }
+            }
+        }
+
+        return resolved;
+    },
+
+    getHierarchyUrl: function (hierarchyNodes) {
+        var self = this;
+
+        var resolved = {};
+        
+        var node = _.last(hierarchyNodes);
 
         for (var langItem in node.url) {
 
@@ -324,7 +371,14 @@ module.exports = {
             }
 
             if (langUrl !== '' && fullyResolved) {
-                resolved[langItem] = langUrl;
+
+                var resolvedLangUrl = '';
+                if (node.domain === 'core' && jsnbt.localization && self.isLocalized(node.entity)) {
+                    resolvedLangUrl += '/' + langItem;
+                }
+
+                resolvedLangUrl += langUrl;
+                resolved[langItem] = resolvedLangUrl;
             }
         }
 
