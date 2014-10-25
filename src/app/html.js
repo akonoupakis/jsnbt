@@ -23,8 +23,8 @@ exports.parse = function (ctx, tmpl, model) {
     _.extend(mdl.meta, ctx.meta);
     _.extend(mdl, model);
 
-    mdl.nodeId = (mdl.node || {}).nodeId;
-    mdl.pointerId = (mdl.pointer || {}).nodeId;
+    mdl.nodeId = (mdl.node || {}).id;
+    mdl.pointerId = (mdl.pointer || {}).id;
 
     var isAdmin = ctx.uri.first === 'admin';
 

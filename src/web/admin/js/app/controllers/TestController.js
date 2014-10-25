@@ -13,19 +13,27 @@
             var userId = 1;
             $scope.click = function () {
                 
-                $data.users.post({
-                    username: 'test' + userId + '@test.com',
-                    password: 'asdasd',
-                    firstName: 'Alpha',
-                    lastName: 'Vita',
-                    roles: ['public']
-                }).then(function (results) {
-                    console.log('result', results);
-                    userId++;
-                }, function (error) {
-                    console.log('error', error);
-                    userId++;
-                });
+                //$data.users.post({
+                //    username: 'test' + userId + '@test.com',
+                //    password: 'asdasd',
+                //    firstName: 'Alpha',
+                //    lastName: 'Vita',
+                //    roles: ['public']
+                //}).then(function (results) {
+                //    console.log('result', results);
+                //    userId++;
+                //}, function (error) {
+                //    console.log('error', error);
+                //    userId++;
+                //});
+
+                $data.nodes.post($data.create('nodes', {
+                    name: 'test',
+                    entity: 'product-category',
+                    domain: 'eshop',
+                    parent: '',
+
+                }));
 
             };
           

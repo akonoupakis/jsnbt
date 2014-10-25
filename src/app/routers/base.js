@@ -31,33 +31,32 @@ module.exports = function () {
         route: function (ctx, next) {
             if (ctx.uri.path === '/') {
                 try {
-
-                    var resolved = node.getNodeUrl(ctx.uri.url);
+                    var resolved = node.resolveUrl(ctx.uri.url);
                     if (resolved) {
                         var restricted = false;
                         
                         if (!restricted && resolved.node) {
-                            if (!auth.isInRole(ctx.req.session.user, resolved.node.permissions)) {
-                                restricted = true;
-                            }
+                            //if (!auth.isInRole(ctx.req.session.user, resolved.node.permissions)) {
+                            //    restricted = true;
+                            //}
                         }
 
                         if (restricted) {
-                            var settingNode = _.first(dpdSync.call(app.dpd.settings.get, { domain: 'core' }));
-                            if (settingNode && settingNode.data && settingNode.data.restricted && settingNode.data.loginpage) {
-                                var resolvedLogin = _.first(dpdSync.call(app.dpd.nodeurls.get, { nodeId: settingNode.data.loginpage, language: resolved.node.language }));
-                                if (resolvedLogin) {
-                                    var loginUrl = (jsnbt.localization ? '/' + resolvedLogin.language : '') + resolvedLogin.url;
-                                    ctx.res.writeHead(302, { "Location": loginUrl });
-                                    ctx.res.end();
-                                }
-                                else {
-                                    error.render(ctx, 401, 'Access denied');
-                                }
-                            }
-                            else {
-                                restricted = false;
-                            }
+                            //var settingNode = _.first(dpdSync.call(app.dpd.settings.get, { domain: 'core' }));
+                            //if (settingNode && settingNode.data && settingNode.data.restricted && settingNode.data.loginpage) {
+                            //    var resolvedLogin = _.first(dpdSync.call(app.dpd.nodeurls.get, { nodeId: settingNode.data.loginpage, language: resolved.node.language }));
+                            //    if (resolvedLogin) {
+                            //        var loginUrl = (jsnbt.localization ? '/' + resolvedLogin.language : '') + resolvedLogin.url;
+                            //        ctx.res.writeHead(302, { "Location": loginUrl });
+                            //        ctx.res.end();
+                            //    }
+                            //    else {
+                            //        error.render(ctx, 401, 'Access denied');
+                            //    }
+                            //}
+                            //else {
+                            //    restricted = false;
+                            //}
                         }
 
                         if (!restricted) {
