@@ -1,4 +1,5 @@
 var app = require('./app.js');
+var cache = require('./cache.js');
 var jsnbt = require('./jsnbt.js');
 var parseUri = require('parseUri');
 var _ = require('underscore');
@@ -214,10 +215,6 @@ module.exports = function(dpd) {
     
     return {
 
-        cache: {
-
-        },
-
         getHierarchy: function (node, cb) {
 
             resolveHierarchy([node], node, cb);
@@ -354,8 +351,8 @@ module.exports = function(dpd) {
 
             if (parentHierarchy.length > 0) {
                 var parentCacheKey = parentHierarchy.join('.');
-                if (self.cache[parentCacheKey]) {
-                    var cachedUrl = self.cache[parentCacheKey];
+                if (cache.url[parentCacheKey]) {
+                    var cachedUrl = cache.url[parentCacheKey];
 
                     var newUrl = {};
                     _.extend(newUrl, node.url);
@@ -434,7 +431,7 @@ module.exports = function(dpd) {
                                         delete newUrl[langItem];
                                 }
 
-                                self.cache[parentCacheKey] = parentUrl;
+                                cache.url[parentCacheKey] = parentUrl;
 
                                 cb(newUrl)
                             }

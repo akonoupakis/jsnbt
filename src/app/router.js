@@ -79,6 +79,7 @@ module.exports = function () {
                         } else {
                             ctx.req.cookies.set('sid', session.sid);
                             ctx.req.session = session;
+                            ctx.session = session;
                             ctx.dpd = require('deployd/lib/internal-client').build(app.server, session, ctx.req.stack);
                             ctx.req.dpd = ctx.dpd;
 

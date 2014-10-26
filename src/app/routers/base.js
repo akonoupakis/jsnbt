@@ -1,6 +1,4 @@
 var app = require('../app.js');
-var error = require('../error.js');
-var view = require('../view.js');
 var auth = require('../auth.js');
 var jsnbt = require('../jsnbt.js');
 var _ = require('underscore');
@@ -18,9 +16,9 @@ module.exports = function () {
     addonRouters.push({
         route: function (ctx, next) {
             if (ctx.node)
-                view.render(ctx);
+                ctx.render();
             else
-                error.render(ctx, 404);
+                ctx.error(404);
         }
     });
 
@@ -43,32 +41,31 @@ module.exports = function () {
                             if (restricted) {
                                 ctx.dpd.settings.get({ domain: 'core' }, function (settingNodes, settingNodesError) {
                                     if (settingNodesError) {
-                                        error.render(ctx, 500, settingNodesError.toString());
+                                        ctx.error(500, settingNodesError);
                                     }
                                     else {
                                         var settingNode = _.first(settingNodes);
                                         if (settingNode && settingNode.data && settingNode.data.restricted && settingNode.data.loginpage) {
                                             ctx.dpd.nodes.get(settingNode.data.loginpage, function (loginNode, loginNodeError) {
                                                 if (loginNodeError) {
-                                                    error.render(ctx, 500, loginNodeError.toString());
+                                                    ctx.error(500, loginNodeError);
                                                 }
                                                 else {
                                                     node.buildUrl(loginNode, function (loginUrlResult) {
                                                         var loginUrl = loginUrlResult[resolved.language];
 
                                                         if (loginUrl !== '') {
-                                                            ctx.res.writeHead(302, { "Location": loginUrl });
-                                                            ctx.res.end();
+                                                            ctx.redirect(loginUrl);
                                                         }
                                                         else {
-                                                            error.render(ctx, 401, 'Access denied');
+                                                            ctx.error(401, 'Access denied');
                                                         }
                                                     });
                                                 }
                                             });
                                         }
                                         else {
-                                            error.render(ctx, 401, 'Access denied');
+                                            ctx.error(401, 'Access denied');
                                         }
                                     }
                                 });
@@ -93,7 +90,7 @@ module.exports = function () {
                                     first.route(ctx, nextInternal);
                                 }
                                 else {
-                                    view.render(ctx);
+                                    ctx.render();
                                 }
                             }
                         }
@@ -104,7 +101,7 @@ module.exports = function () {
                 }
                 catch (err) {
                     app.logger.error(err);
-                    error.render(ctx, 500, err.toString());
+                    ctx.error(500, err.toString());
                 }
             }
             else {

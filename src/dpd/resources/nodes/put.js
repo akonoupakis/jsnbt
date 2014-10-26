@@ -1,5 +1,6 @@
 var auth = requireApp('auth.js');
 var node = requireApp('node.js')(dpd);
+var cache = requireApp('cache.js');
 
 var _ = require('underscore');
 
@@ -43,35 +44,33 @@ else {
         hierarchyChange = true;
     }
 
-    //var seoNamesChanged = false;
-    //for (var lang in self.url) {
-    //    if (self.url[lang] !== previous.url[lang]) {
-    //        seoNamesChanged = true;
-    //    }
-    //}
+    var seoNamesChanged = false;
+    for (var lang in self.url) {
+        if (self.url[lang] !== previous.url[lang]) {
+            seoNamesChanged = true;
+        }
+    }
 
-    //if (seoNamesChanged) {
+
+    if (seoNamesChanged) {
     //    var siblingNodes = (dpd.nodes.get, { parent: self.parent, domain: self.domain, id: { $nin: [self.id] } });
     //    for (var lang in self.url) {
     //        var siblingSeoNames = _.pluck(_.pluck(_.filter(siblingNodes, function (x) { return x.url[lang]; }), 'url'), lang);
     //        if (siblingSeoNames.indexOf(self.url[lang]) === -1) {
     //            cancel('seo name already exists', 400);
     //        }
-    //    }
-    //}
+        //    }
 
-    //for (var lang in self.data.localized) {
-    //    if (previous.data.localized[lang]) {
-    //        if (previous.data.localized[lang].seoName !== self.data.localized[lang.seoName]) {
-    //            cascadeProcess = true;
-    //        }
-    //    }
-    //}
+        cache.purge(self.id);
+    }
 
     if (hierarchyChange) {
         node.getHierarchy(self, function (hierarchyNodes) {
             var hierarchyNodeIds = _.pluck(hierarchyNodes, 'id');
             self.hierarchy = hierarchyNodeIds;
+
+            cache.purge(self.id);
+
             processChildren(self.domain, self.hierarchy);
         });
     }

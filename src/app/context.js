@@ -1,4 +1,6 @@
 var app = require('./app.js');
+var error = require('./error.js');
+var view = require('./view.js');
 var parseUri = require('parseUri');
 var _ = require('underscore');
 
@@ -51,6 +53,16 @@ module.exports = function (req, res) {
                 href += '/';
                 return href;
             }
+        },
+        error: function (err, stack) {
+            error.render(this, err, stack);
+        },
+        render: function () {
+            view.render(this);
+        },
+        redirect: function (url) {
+            this.res.writeHead(302, { "Location": url });
+            this.res.end();
         }
     };
 
