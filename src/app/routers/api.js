@@ -1,12 +1,10 @@
 var app = require('../app.js');
-var dpdSync = require('dpd-sync');
 var error = require('../error.js');
 var formidable = require('formidable');
 
 module.exports = function () {
 
     return {
-        sync: true,
         route: function (ctx, next) {
             if (ctx.uri.first === 'jsnbt-api') {
                 if (ctx.req.method !== 'POST') {
@@ -26,7 +24,7 @@ module.exports = function () {
                             ctx.res.end();
                         }
                         else {
-                            dpdSync.wrap(proceedFn, ctx, fields, next);
+                            proceedFn(ctx, fields, next);
                         }
                     });
                 }

@@ -1,4 +1,3 @@
-var dpdSync = require('dpd-sync');
 var auth = requireApp('auth.js');
 
 var _ = require('underscore');

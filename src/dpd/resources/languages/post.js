@@ -1,18 +1,17 @@
-var dpdSync = require('dpd-sync');
 var auth = requireApp('auth.js');
 
 var self = this;
 
-var processFn = function () {
-    if (!internal && !auth.isAuthorized(me, 'languages', 'C'))
-        cancel('access denied', 500);
+if (!internal && !auth.isAuthorized(me, 'languages', 'C'))
+    cancel('access denied', 500);
 
-    var matched = dpdSync.call(dpd.languages.get, { code: self.code });
-    if(matched.length > 0)
-        cancel('language code already exists', 400);
+dpd.languages.get({ code: self.code }, function (matched, matchedError) {
+    if (matchedError)
+        throw matchedError;
+    else
+        if (matched.length > 0)
+            cancel('language code already exists', 400);
+});
 
-    if (!internal)
-        emit('languageCreated', self);
-};
-
-dpdSync.wrap(processFn);
+if (!internal)
+    emit('languageCreated', self);

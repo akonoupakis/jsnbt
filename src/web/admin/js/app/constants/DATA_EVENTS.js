@@ -10,10 +10,6 @@
             dataUpdated: 'dataUpdated',
             dataDeleted: 'dataDeleted',
 
-            draftCreated: 'draftCreated',
-            draftUpdated: 'draftUpdated',
-            draftDeleted: 'draftDeleted',
-
             languageCreated: 'languageCreated',
             languageUpdated: 'languageUpdated',
             languageDeleted: 'languageDeleted',

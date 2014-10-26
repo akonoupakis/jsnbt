@@ -1,5 +1,4 @@
 var deployd = require('deployd');
-var dpdSync = require('dpd-sync');
 var jsnbt = require('./jsnbt.js');
 var pack = require('./package.js');
 var fs = require('./utils/fs.js');
@@ -13,8 +12,6 @@ exports.dbg = false;
 exports.cache = null;
 exports.logger = null;
 exports.server = null;
-
-exports.dpd = null;
 
 exports.packages = [];
 
@@ -264,7 +261,6 @@ exports.init = function (env, config, module) {
             },
             listening: function () {
                 self.logger.info('server is listening on ' + config.host + ':' + config.port);
-                self.dpd = require('deployd/lib/internal-client').build(self.server);
             },
             "request:error": function (err, req, res) {
                 self.logger.error(req.method, req.url, err.stack || err);

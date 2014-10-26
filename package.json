@@ -36,7 +36,6 @@
   "dependencies": {
     "deployd": "git://github.com/akonoupakis/deployd",
     "formidable": "~1.0.15",
-    "dpd-sync": "*",
     "server-root": "*",
     "underscore": "1.6.0",
     "underscore.string": "2.3.3",

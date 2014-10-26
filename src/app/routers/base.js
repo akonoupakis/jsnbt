@@ -1,9 +1,7 @@
 var app = require('../app.js');
-var dpdSync = require('dpd-sync');
 var error = require('../error.js');
 var view = require('../view.js');
 var auth = require('../auth.js');
-var node = require('../node.js');
 var jsnbt = require('../jsnbt.js');
 var _ = require('underscore');
 
@@ -27,81 +25,82 @@ module.exports = function () {
     });
 
     return {
-        sync: true,
         route: function (ctx, next) {
             if (ctx.uri.path === '/') {
                 try {
-                    var resolved = node.resolveUrl(ctx.uri.url);
-                    if (resolved && resolved.page && resolved.isActive() && resolved.isPublished()) {
-                        var restricted = false;
-                        
-                        if (!restricted && jsnbt.restricted) {
-                            if (!auth.isInRole(ctx.req.session.user, resolved.getPermissions())) {
-                                restricted = true;
+                    var node = require('../node.js')(ctx.dpd);
+
+                    node.resolveUrl(ctx.uri.url, function (resolved) {
+                        if (resolved && resolved.page && resolved.isActive() && resolved.isPublished()) {
+                            var restricted = false;
+
+                            if (!restricted && jsnbt.restricted) {
+                                if (!auth.isInRole(ctx.req.session.user, resolved.getPermissions())) {
+                                    restricted = true;
+                                }
                             }
-                        }
 
-                        if (restricted) {
-                            var settingNode = _.first(dpdSync.call(app.dpd.settings.get, { domain: 'core' }));
-                            if (settingNode && settingNode.data && settingNode.data.restricted && settingNode.data.loginpage) {
-                                var resolvedLogin = dpdSync.call(app.dpd.nodes.get, settingNode.data.loginpage);
-                                if (resolvedLogin) {
-                                    var loginUrlResult = node.getUrl(resolvedLogin);
+                            if (restricted) {
+                                ctx.dpd.settings.get({ domain: 'core' }, function (settingNodes, settingNodesError) {
+                                    if (settingNodesError) {
+                                        error.render(ctx, 500, settingNodesError.toString());
+                                    }
+                                    else {
+                                        var settingNode = _.first(settingNodes);
+                                        if (settingNode && settingNode.data && settingNode.data.restricted && settingNode.data.loginpage) {
+                                            ctx.dpd.nodes.get(settingNode.data.loginpage, function (loginNode, loginNodeError) {
+                                                if (loginNodeError) {
+                                                    error.render(ctx, 500, loginNodeError.toString());
+                                                }
+                                                else {
+                                                    node.buildUrl(loginNode, function (loginUrlResult) {
+                                                        var loginUrl = loginUrlResult[resolved.language];
 
-                                    var loginUrl = '';
-                                    if (jsnbt.localization && node.isLocalized(resolvedLogin.entity)) {
-                                        if (loginUrlResult[resolved.language]) {
-                                            loginUrl += '/' + resolved.language;
-                                            loginUrl += loginUrlResult[resolved.language];
+                                                        if (loginUrl !== '') {
+                                                            ctx.res.writeHead(302, { "Location": loginUrl });
+                                                            ctx.res.end();
+                                                        }
+                                                        else {
+                                                            error.render(ctx, 401, 'Access denied');
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }
+                                        else {
+                                            error.render(ctx, 401, 'Access denied');
                                         }
                                     }
-                                    else {
-                                        loginUrl += loginUrlResult['en'];
-                                    }
-
-                                    if (loginUrl !== '') {
-                                        ctx.res.writeHead(302, { "Location": loginUrl });
-                                        ctx.res.end();
-                                    }
-                                    else {
-                                        error.render(ctx, 401, 'Access denied');
-                                    }
-                                }
-                                else {
-                                    error.render(ctx, 401, 'Access denied');
-                                }
+                                });
                             }
                             else {
-                                error.render(ctx, 401, 'Access denied');
+                                ctx.node = resolved.page || {};
+                                ctx.pointer = resolved.pointer || {};
+                                ctx.language = jsnbt.localization ? resolved.language || 'en' : jsnbt.locale;
+                                ctx.view = resolved.view || '';
+                                ctx.meta = resolved.page.meta || {};
+                                ctx.uri.scheme = resolved.page.secure === true ? 'https' : 'http';
+
+                                if (resolved.pointer) {
+                                    var nextIndex = 0;
+                                    var nextInternal = function () {
+                                        nextIndex++;
+                                        var router = addonRouters[nextIndex];
+                                        router.route(ctx, nextInternal);
+                                    };
+
+                                    var first = _.first(addonRouters);
+                                    first.route(ctx, nextInternal);
+                                }
+                                else {
+                                    view.render(ctx);
+                                }
                             }
                         }
                         else {
-                            ctx.node = resolved.page || {};
-                            ctx.pointer = resolved.pointer || {};
-                            ctx.language = jsnbt.localization ? resolved.language || 'en' : jsnbt.locale;
-                            ctx.view = resolved.view || '';
-                            ctx.meta = resolved.page.meta || {};
-                            ctx.uri.scheme = resolved.page.secure === true ? 'https' : 'http';
-
-                            if (resolved.pointer) {
-                                var nextIndex = 0;
-                                var nextInternal = function () {
-                                    nextIndex++;
-                                    var router = addonRouters[nextIndex];
-                                    router.route(ctx, nextInternal);
-                                };
-
-                                var first = _.first(addonRouters);
-                                first.route(ctx, nextInternal);
-                            }
-                            else {
-                                view.render(ctx);
-                            }
+                            next();
                         }
-                    }
-                    else {
-                        next();
-                    }                    
+                    });
                 }
                 catch (err) {
                     app.logger.error(err);

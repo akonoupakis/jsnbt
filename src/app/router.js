@@ -1,5 +1,4 @@
 var app = require('./app.js');
-var dpdSync = require('dpd-sync');
 var fs = require('fs');
 var error = require('./error.js');
 var pack = require('./package.js');
@@ -80,16 +79,18 @@ module.exports = function () {
                         } else {
                             ctx.req.cookies.set('sid', session.sid);
                             ctx.req.session = session;
+                            ctx.dpd = require('deployd/lib/internal-client').build(app.server, session, ctx.req.stack);
+                            ctx.req.dpd = ctx.dpd;
 
                             var nextIndex = 0;
                             var next = function () {
                                 nextIndex++;
                                 var router = routers[nextIndex];
-                                if (router.sync === true) { dpdSync.wrap(router.route, ctx, next); } else { router.route(ctx, next); }
+                                router.route(ctx, next);
                             };
 
                             var first = _.first(routers);
-                            if (first.sync === true) { dpdSync.wrap(first.route, ctx, next); } else { first.route(ctx, next); }
+                            first.route(ctx, next);
                         }
                     });
                 }

@@ -2,9 +2,7 @@ var app = require('../app.js');
 var auth = require('../auth.js');
 var error = require('../error.js');
 var view = require('../view.js');
-var node = require('../node.js');
 var jsnbt = require('../jsnbt.js');
-var dpdSync = require('dpd-sync');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
@@ -29,96 +27,107 @@ module.exports = function () {
     });
     
     return {
-        sync: true,
         route: function (ctx, next) {
             if (ctx.uri.path !== '/') {
                 try {
-                    var resolved = node.resolveUrl(ctx.uri.url);
-                    if (resolved && resolved.page && resolved.isActive() && resolved.isPublished()) {
+                    var node = require('../node.js')(ctx.dpd);
+                    node.resolveUrl(ctx.uri.url, function (resolved) {
+                        if (resolved && resolved.page && resolved.isActive() && resolved.isPublished()) {
 
-                        var restricted = false;
+                            var restricted = false;
 
-                        if (!restricted && jsnbt.restricted) {
-                            if (!auth.isInRole(ctx.req.session.user, resolved.getPermissions())) {
-                                restricted = true;
+                            if (!restricted && jsnbt.restricted) {
+                                if (!auth.isInRole(ctx.req.session.user, resolved.getPermissions())) {
+                                    restricted = true;
+                                }
                             }
-                        }
 
-                        if (restricted) {
-                            var settingNode = _.first(dpdSync.call(app.dpd.settings.get, { domain: 'core' }));
-                            if (settingNode && settingNode.data && settingNode.data.restricted && settingNode.data.loginpage) {
-                                var resolvedLogin = dpdSync.call(app.dpd.nodes.get, settingNode.data.loginpage);
-                                if (resolvedLogin) {
-                                    var loginUrlResult = node.getUrl(resolvedLogin);
+                            if (restricted) {
 
-                                    var loginUrl = '';
-                                    if (jsnbt.localization && node.isLocalized(resolvedLogin.entity)) {
-                                        if (loginUrlResult[resolved.language]) {
-                                            loginUrl += '/' + resolved.language;
-                                            loginUrl += loginUrlResult[resolved.language];
+                                ctx.dpd.settings.get({ domain: 'core' }, function (settingNodes, settingNodesError) {
+                                    if (settingNodesError) {
+                                        error.render(ctx, 500, settingNodesError.toString());
+                                    }
+                                    else {
+                                        var settingNode = _.first(settingNodes);
+                                        if (settingNode && settingNode.data && settingNode.data.restricted && settingNode.data.loginpage) {
+                                            ctx.dpd.nodes.get(settingNode.data.loginpage, function (loginNode, loginNodeError) {
+                                                if (loginNodeError) {
+                                                    error.render(ctx, 500, loginNodeError.toString());
+                                                }
+                                                else {
+                                                    node.buildUrl(loginNode, function (loginUrlResult) {
+                                                        var loginUrl = loginUrlResult[resolved.language];
+
+                                                        if (loginUrl !== '') {
+                                                            ctx.res.writeHead(302, { "Location": loginUrl + '?returnUrl=' + encodeURIComponent(ctx.uri.url) });
+                                                            ctx.res.end();
+                                                        }
+                                                        else {
+                                                            error.render(ctx, 401, 'Access denied');
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }
+                                        else {
+                                            error.render(ctx, 401, 'Access denied');
                                         }
                                     }
-                                    else {
-                                        loginUrl += loginUrlResult['en'];
-                                    }
-
-                                    if (loginUrl !== '') {
-                                        ctx.res.writeHead(302, { "Location": loginUrl + '?returnUrl=' + encodeURIComponent(ctx.uri.url) });
-                                        ctx.res.end();
-                                    }
-                                    else {
-                                        error.render(ctx, 401, 'Access denied');
-                                    }
-                                }
-                                else {
-                                    error.render(ctx, 401, 'Access denied');
-                                }
+                                });
                             }
                             else {
-                                error.render(ctx, 401, 'Access denied');
+                                ctx.node = resolved.page || {};
+                                ctx.pointer = resolved.pointer || {};
+                                ctx.language = jsnbt.localization ? resolved.language || 'en' : jsnbt.locale;
+                                ctx.view = resolved.view || '';
+                                ctx.meta = resolved.page.meta || {};
+                                ctx.uri.scheme = resolved.page.secure === true ? 'https' : 'http';
+
+                                if (resolved.pointer) {
+                                    var nextIndex = 0;
+                                    var nextInternal = function () {
+                                        nextIndex++;
+                                        var router = addonRouters[nextIndex];
+                                        router.route(ctx, nextInternal);
+                                    };
+
+                                    var first = _.first(addonRouters);
+                                    first.route(ctx, nextInternal);
+                                }
+                                else {
+                                    view.render(ctx);
+                                }
                             }
                         }
                         else {
-                            ctx.node = resolved.page || {};
-                            ctx.pointer = resolved.pointer || {};
-                            ctx.language = jsnbt.localization ? resolved.language || 'en' : jsnbt.locale;
-                            ctx.view = resolved.view || '';
-                            ctx.meta = resolved.page.meta || {};
-                            ctx.uri.scheme = resolved.page.secure === true ? 'https' : 'http';
+                            if (jsnbt.localization) {
+                                var languages = jsnbt.languages;
 
-                            if (resolved.pointer) {
-                                var nextIndex = 0;
-                                var nextInternal = function () {
-                                    nextIndex++;
-                                    var router = addonRouters[nextIndex];
-                                    router.route(ctx, nextInternal);
-                                };
-
-                                var first = _.first(addonRouters);
-                                first.route(ctx, nextInternal);
-                            }
-                            else {
-                                view.render(ctx);
-                            }
-                        }
-                    }
-                    else {
-                        if (jsnbt.localization) {
-                            var languages = jsnbt.languages;
-
-                            var matched = _.filter(languages, function (x) { return _.str.startsWith(ctx.uri.path, '/' + x.code + '/'); });
-                            if (matched.length === 0) {
-                                var defaultLanguage = _.first(dpdSync.call(app.dpd.languages.get, { active: true, "default": true }));
-                                if (defaultLanguage) {
-                                    var newUrl = '/' + defaultLanguage.code + ctx.uri.path;
-                                    var newUrlResolved = node.resolveUrl(newUrl);
-                                    if (newUrlResolved) {
-                                        ctx.res.writeHead(302, { "Location": newUrl });
-                                        ctx.res.end();
-                                    }
-                                    else {
-                                        next();
-                                    }
+                                var matched = _.filter(languages, function (x) { return _.str.startsWith(ctx.uri.path, '/' + x.code + '/'); });
+                                if (matched.length === 0) {
+                                    ctx.dpd.languages.get({ active: true, "default": true }, function (defaultLanguages, defaultLanguagesError) {
+                                        if (defaultLanguagesError) {
+                                            error.render(ctx, 500, defaultLanguagesError.toString());
+                                        }
+                                        else {
+                                            var defaultLanguage = _.first(defaultLanguages);
+                                            if (defaultLanguage) {
+                                                var newUrl = '/' + defaultLanguage.code + ctx.uri.path;
+                                                var newUrlResolved = node.resolveUrl(newUrl);
+                                                if (newUrlResolved) {
+                                                    ctx.res.writeHead(302, { "Location": newUrl });
+                                                    ctx.res.end();
+                                                }
+                                                else {
+                                                    next();
+                                                }
+                                            }
+                                            else {
+                                                next();
+                                            }
+                                        }
+                                    });
                                 }
                                 else {
                                     next();
@@ -128,10 +137,7 @@ module.exports = function () {
                                 next();
                             }
                         }
-                        else {
-                            next();
-                        }
-                    }
+                    });
                 }
                 catch (err) {
                     app.logger.error(err);

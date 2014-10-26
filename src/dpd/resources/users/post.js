@@ -1,19 +1,25 @@
 var app = requireApp('app.js');
-var dpdSync = require('dpd-sync');
 var auth = requireApp('auth.js');
 
 var _ = require('underscore');
 
 var self = this;
 
-var processFn = function () {
-
-    if (app.anyUsers === undefined) {
-        var users = dpdSync.call(dpd.users.get, {});
-        app.anyUsers = users.length > 0;
+var anyUsers = function (cb) {
+    if (app.anyUsers !== undefined) {
+        cb(app.anyUsers);
     }
+    else {
+        dpd.users.get({}, function (users) {
+            app.anyUsers = users.length > 0;
+            cb(app.anyUsers);
+        });
+    }
+};
 
-    if (!app.anyUsers) {
+anyUsers(function (anyUsersResult) {
+
+    if (!anyUsersResult) {
         if (self.roles.length === 0) {
             error('roles', 'at least one role is required');
         }
@@ -43,6 +49,4 @@ var processFn = function () {
             emit('userCreated', self);
     }
 
-};
-
-dpdSync.wrap(processFn);
+});
