@@ -120,14 +120,6 @@
 			"required": true,
 			"id": "hierarchy",
 			"order": 15
-		},
-		"config": {
-			"name": "config",
-			"type": "object",
-			"typeLabel": "object",
-			"required": true,
-			"id": "config",
-			"order": 16
 		}
 	}
 }
