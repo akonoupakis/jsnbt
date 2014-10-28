@@ -11,6 +11,7 @@
             $scope.id = $routeParams.id;
             $scope.name = undefined;
             $scope.node = undefined;
+            $scope.entity = undefined;
             
             $scope.roleOptions = [];
             $scope.roles = [];
@@ -616,6 +617,30 @@
                 });
             });
             
+            $scope.$watch('node.entity', function (newValue) {
+                if (!$scope.node)
+                    return;
+
+                var defaults = {
+                    treeNode: true,
+                    localized: true,
+                    parent: true,
+                    seo: true,
+                    meta: true,
+                    permissions: true
+                };
+
+                var entity = {};
+                $.extend(true, entity, defaults);
+
+                var knownEntity = _.first(_.filter(jsnbt.entities, function (x) { return x.name === newValue; }));
+                
+                if (knownEntity)
+                    $.extend(true, entity, knownEntity);
+
+                $scope.entity = knownEntity;
+            });
+
             $scope.$watch('node.parent', function () {
                 if (!$scope.node)
                     return;

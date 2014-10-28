@@ -24,11 +24,21 @@ var jsnbtModule = {
     entities: [{
         name: 'page',
         allowed: ['page', 'pointer'],
-        localized: true
+        treeNode: true,
+        localized: true,
+        parent: true,
+        seo: true,
+        meta: true,
+        permissions: true
     }, {
         name: 'pointer',
         allowed: [],
-        localized: true
+        treeNode: true,
+        localized: true,
+        parent: true,
+        seo: true,
+        meta: false,
+        permissions: true
     }],
 
     roles: [{

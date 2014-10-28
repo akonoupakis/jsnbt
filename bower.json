@@ -17,6 +17,7 @@
     "angular": "~1.3.0",
     "angular-route": "~1.3.0",
     "angular-animate": "~1.3.0",
+	"angular-sanitize": "~1.3.0",
     "underscore": "~1.7.0",
     "underscore.string": "~2.3.2",
 	"bootstrap": "~3.2.0",
@@ -37,7 +38,7 @@
         {
           "src": "jquery/dist/jquery.js",
           "dest": [
-            "js/lib/1-jquery.js",
+            "js/lib/a-jquery.js",
             "admin/js/lib/a-jquery.js"
           ]
         }
@@ -48,7 +49,7 @@
         {
           "src": "angular/angular.js",
           "dest": [
-            "js/lib/2-angular.js",
+            "js/lib/b-angular.js",
             "admin/js/lib/b-angular.js"
           ]
         }
@@ -70,6 +71,17 @@
           "src": "angular-animate/angular-animate.js",
           "dest": [
             "admin/js/lib/angular-lib/angular.animate.js"
+          ]
+        }
+      ]
+    },
+	"angular-sanitize": {
+      "files": [
+        {
+          "src": "angular-sanitize/angular-sanitize.js",
+          "dest": [
+            "js/lib/angular-lib/angular.sanitize.js",
+			"admin/js/lib/angular-lib/angular.sanitize.js"
           ]
         }
       ]
@@ -248,9 +260,44 @@
             "admin/css/lib/tinymce/skins/lightgray/content.min.css"
           ]
         }, {
+          "src": "tinymce/skins/lightgray/fonts/icomoon.eot",
+          "dest": [
+            "admin/css/lib/tinymce/skins/lightgray/fonts/icomoon.eot"
+          ]
+        }, {
           "src": "tinymce/skins/lightgray/fonts/icomoon.svg",
           "dest": [
             "admin/css/lib/tinymce/skins/lightgray/fonts/icomoon.svg"
+          ]
+        }, {
+          "src": "tinymce/skins/lightgray/fonts/icomoon.ttf",
+          "dest": [
+            "admin/css/lib/tinymce/skins/lightgray/fonts/icomoon.ttf"
+          ]
+        }, {
+          "src": "tinymce/skins/lightgray/fonts/icomoon.woff",
+          "dest": [
+            "admin/css/lib/tinymce/skins/lightgray/fonts/icomoon.woff"
+          ]
+        }, {
+          "src": "tinymce/skins/lightgray/fonts/icomoon-small.eot",
+          "dest": [
+            "admin/css/lib/tinymce/skins/lightgray/fonts/icomoon-small.eot"
+          ]
+        }, {
+          "src": "tinymce/skins/lightgray/fonts/icomoon-small.svg",
+          "dest": [
+            "admin/css/lib/tinymce/skins/lightgray/fonts/icomoon-small.svg"
+          ]
+        }, {
+          "src": "tinymce/skins/lightgray/fonts/icomoon-small.ttf",
+          "dest": [
+            "admin/css/lib/tinymce/skins/lightgray/fonts/icomoon-small.ttf"
+          ]
+        }, {
+          "src": "tinymce/skins/lightgray/fonts/icomoon-small.woff",
+          "dest": [
+            "admin/css/lib/tinymce/skins/lightgray/fonts/icomoon-small.woff"
           ]
         }
 	  ]
