@@ -66,6 +66,10 @@
                                 if (initiated)
                                     scope.valid = isValid();
                             }, function (error) {
+                                
+                                if (initiated)
+                                    scope.valid = isValid();
+
                                 throw error;
                             });
                         }

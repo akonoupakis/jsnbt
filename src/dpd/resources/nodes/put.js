@@ -29,8 +29,11 @@ var processChildren = function (domain, hierarchy) {
     }
 };
 
+var entity = requireApp('entity.js')(self.entity);
+
 if (internal) {
-    processChildren(this.domain, this.hierarchy);
+    if (entity.hasProperty('parent'))
+        processChildren(this.domain, this.hierarchy);
 }
 else {
     if (!auth.isAuthorized(me, 'nodes', 'U'))
@@ -39,27 +42,26 @@ else {
     self.modifiedOn = new Date().getTime();
 
     var hierarchyChange = false;
-
-    if (changed('parent') && self.parent !== previous.parent) {
+    
+    if (entity.hasProperty('parent') && changed('parent') && self.parent !== previous.parent) {
         hierarchyChange = true;
     }
 
     var seoNamesChanged = false;
-    for (var lang in self.url) {
-        if (self.url[lang] !== previous.url[lang]) {
-            seoNamesChanged = true;
+    if (entity.hasProperty('seo')) {
+        for (var lang in self.url) {
+            if (self.url[lang] !== previous.url[lang]) {
+                seoNamesChanged = true;
+            }
         }
-    }
 
-
-    if (seoNamesChanged) {
-    //    var siblingNodes = (dpd.nodes.get, { parent: self.parent, domain: self.domain, id: { $nin: [self.id] } });
-    //    for (var lang in self.url) {
-    //        var siblingSeoNames = _.pluck(_.pluck(_.filter(siblingNodes, function (x) { return x.url[lang]; }), 'url'), lang);
-    //        if (siblingSeoNames.indexOf(self.url[lang]) === -1) {
-    //            cancel('seo name already exists', 400);
-    //        }
-        //    }
+        var siblingNodes = (dpd.nodes.get, { parent: self.parent, domain: self.domain, id: { $nin: [self.id] } });
+        for (var lang in self.url) {
+            var siblingSeoNames = _.pluck(_.pluck(_.filter(siblingNodes, function (x) { return x.url[lang]; }), 'url'), lang);
+            if (siblingSeoNames.indexOf(self.url[lang]) === -1) {
+                cancel('seo name already exists', 400);
+            }
+        }
 
         cache.purge(self.id);
     }

@@ -30,20 +30,20 @@
                     </ctrl-grid-footer>
                     <ctrl-grid-body>
                         <ctrl-grid-column>
-                            {{ data.code }}
+                            {{ row.code }}
                         </ctrl-grid-column>
                         <ctrl-grid-column>
-                            {{ data.name }}
+                            {{ row.name }}
                         </ctrl-grid-column>
                         <ctrl-grid-column>
-                            <input type="checkbox" ng-disabled="true" ng-checked="data.active" />
+                            <input type="checkbox" ng-disabled="true" ng-checked="row.active" />
                         </ctrl-grid-column>
                         <ctrl-grid-column>
-                            <input type="checkbox" ng-disabled="data.default || !data.active" ng-checked="data.default" ng-click="fn.setDefault(data)" />
+                            <input type="checkbox" ng-disabled="row.default || !row.active" ng-checked="row.default" ng-click="fn.setDefault(row)" />
                         </ctrl-grid-column>
                         <ctrl-grid-buttons-column>
-                            <button class="btn btn-default glyphicon glyphicon-edit btn-sm" ng-click="fn.edit(data)" />
-                            <button class="btn btn-default glyphicon glyphicon-remove btn-sm" ng-disabled="data.default" ng-click="fn.delete(data)" />
+                            <button class="btn btn-default glyphicon glyphicon-edit btn-sm" ng-click="fn.edit(row)" />
+                            <button class="btn btn-default glyphicon glyphicon-remove btn-sm" ng-disabled="row.default" ng-click="fn.delete(row)" />
                         </ctrl-grid-buttons-column>
                     </ctrl-grid-body>
                 </ctrl-grid>

@@ -1,12 +1,17 @@
 var app = require('./app.js');
 var cache = require('./cache.js');
 var jsnbt = require('./jsnbt.js');
+var entity = require('./entity.js');
 var parseUri = require('parseUri');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
 
 module.exports = function(dpd) {
+
+    var getEntity = function (name) {
+        return entity(name);
+    };
 
     var resolveHierarchy = function (nodes, node, cb) {
         if (node.parent && node.parent !== '') {
@@ -410,7 +415,7 @@ module.exports = function(dpd) {
 
                                     if (langUrl !== '' && fullyResolved) {
                                         var resolvedLangUrl = '';
-                                        if (lastNode.domain === 'core' && jsnbt.localization && self.isLocalized(lastNode.entity)) {
+                                        if (lastNode.domain === 'core' && jsnbt.localization && getEntity(lastNode.entity).isLocalized()) {
                                             resolvedLangUrl += '/' + langItem;
                                         }
 
@@ -448,7 +453,7 @@ module.exports = function(dpd) {
                 for (var langItem in node.url) {
                     var seoName = node.url[langItem];
                     var resolvedLangUrl = '';
-                    if (node.domain === 'core' && jsnbt.localization && self.isLocalized(node.entity)) {
+                    if (node.domain === 'core' && jsnbt.localization && getEntity(node.entity).isLocalized()) {
                         resolvedLangUrl += '/' + langItem;
                     }
                     resolvedLangUrl += '/' + seoName;
@@ -457,17 +462,8 @@ module.exports = function(dpd) {
 
                 cb(newUrl);
             }
-        },
-
-        isLocalized: function (entity) {
-            var jsnbtEntity = _.first(_.filter(jsnbt.entities, function (x) { return x.name === entity; }));
-            if (jsnbtEntity) {
-                return jsnbtEntity.localized === undefined || jsnbtEntity.localized === true;
-            }
-            else {
-                return false;
-            }
         }
+
     };
 
 };

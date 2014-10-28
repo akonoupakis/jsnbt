@@ -17,15 +17,17 @@
 
         <hr />
 
-        <div class="row" id="page-name" data-scrollspy="Name">
-            <ctrl-text class="col-md-12" ng-model="node.name" ng-required="true" ng-auto-focus="true" ng-label="Name"></ctrl-text>
+        <div id="page-name" data-scrollspy="Name" ng-show="entity.properties.name">
+            <div class="row">
+                <ctrl-text class="col-md-12" ng-model="node.name" ng-enabled="entity.properties.name" ng-required="true" ng-auto-focus="true" ng-label="Name"></ctrl-text>
+            </div>
+
+            <hr />
         </div>
 
-        <hr />
-
-        <div id="page-parent" data-scrollspy="Parent" ng-show="entity.parent">
+        <div id="page-parent" data-scrollspy="Parent" ng-show="entity.properties.parent">
             <div class="row">
-                <ctrl-node class="col-md-12" ng-model="node.parent" ng-domain="node.domain" ng-enabled="entity.parent" ng-required="false" ng-options="parentOptions" ng-label="Parent"></ctrl-node>
+                <ctrl-node class="col-md-12" ng-model="node.parent" ng-domain="node.domain" ng-enabled="entity.properties.parent" ng-required="false" ng-options="parentOptions" ng-label="Parent"></ctrl-node>
             </div>
 
             <hr />
@@ -53,12 +55,12 @@
         </div>
 
         <div class="row breadcrumb-form-row" id="page-seo" data-scrollspy="Url">
-            <div class="col-md-10" ng-show="entity.seo">
+            <div class="col-md-10" ng-show="entity.properties.seo">
                 <label for="txtSeoName">Url</label>
                 <ol class="breadcrumb">
                     <li ng-repeat="item in seoNames"><span>{{item[language]}}</span></li>
                     <li class="active">
-                        <ctrl-text ng-model="node.url[language]" ng-required="true" ng-enabled="entity.seo" ng-validate="validateSeo" ng-valid="validation.seo" ng-characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_"></ctrl-text>
+                        <ctrl-text ng-model="node.url[language]" ng-required="true" ng-enabled="entity.properties.seo" ng-validate="validateSeo" ng-valid="validation.seo" ng-characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_"></ctrl-text>
                         <span ng-show="!validation.seo">(name is taken)</span>
                     </li>
                 </ol>
@@ -82,8 +84,8 @@
         </div>
 
         <div id="page-content" data-scrollspy="Content" ng-show="node.entity !== 'pointer'">
-            <div class="row" id="page-template" data-scrollspy="Template">
-                <ctrl-select class="col-md-12" ng-model="node.view" ng-required="true" ng-options="views" ng-default="true" ng-value-field="tmpl" ng-name-field="tmpl" ng-enabled="node.entity !== 'pointer'" ng-label="Template"></ctrl-select>
+            <div class="row" id="page-template" data-scrollspy="Template" ng-show="entity.properties.template">
+                <ctrl-select class="col-md-12" ng-model="node.view" ng-enabled="entity.properties.template" ng-required="true" ng-options="views" ng-default="true" ng-value-field="tmpl" ng-name-field="tmpl" ng-enabled="node.entity !== 'pointer'" ng-label="Template"></ctrl-select>
             </div>
 
             <div ng-show="tmpl" ng-include="tmpl"></div>
@@ -93,24 +95,24 @@
             <hr />
         </div>
 
-        <div id="page-meta" data-scrollspy="Meta" ng-show="entity.meta">
+        <div id="page-meta" data-scrollspy="Meta" ng-show="entity.properties.meta">
             <div id="page-meta-title" class="row" data-scrollspy="Title">
-                <ctrl-text class="col-md-12" ng-model="node.meta[language].title" ng-required="true" ng-enabled="entity.meta" ng-label="Meta Title"></ctrl-text>
+                <ctrl-text class="col-md-12" ng-model="node.meta[language].title" ng-required="true" ng-enabled="entity.properties.meta" ng-label="Meta Title"></ctrl-text>
             </div>
             <div id="page-meta-description" class="row" data-scrollspy="Description">
-                <ctrl-text-area class="col-md-12" ng-rows="4" ng-model="node.meta[language].description" ng-required="false" ng-enabled="entity.meta" ng-label="Meta Description"></ctrl-text-area>
+                <ctrl-text-area class="col-md-12" ng-rows="4" ng-model="node.meta[language].description" ng-required="false" ng-enabled="entity.properties.meta" ng-label="Meta Description"></ctrl-text-area>
             </div>
             <div id="page-meta-keywords" class="row" data-scrollspy="Keywords">
-                <ctrl-text-area class="col-md-12" ng-rows="4" ng-model="node.meta[language].keywords" ng-required="false" ng-enabled="entity.meta" ng-label="Meta Keywords"></ctrl-text-area>
+                <ctrl-text-area class="col-md-12" ng-rows="4" ng-model="node.meta[language].keywords" ng-required="false" ng-enabled="entity.properties.meta" ng-label="Meta Keywords"></ctrl-text-area>
             </div>
 
             <hr />
         </div>
 
-        <div id="page-permissions" data-scrollspy="Permissions" ng-show="application.restricted && entity.permissions">
+        <div id="page-permissions" data-scrollspy="Permissions" ng-show="application.restricted && entity.properties.permissions">
             <div class="row">
-                <ctrl-check class="col-md-4" ng-model="node.permissions.inherits" ng-enabled="application.restricted && entity.permissions" ng-label="Inherits from parent"></ctrl-check>
-                <ctrl-check-list class="col-md-8" ng-model="roles" ng-options="roleOptions" ng-required="true" ng-enabled="application.restricted && entity.permissions && !node.permissions.inherits" ng-label="Permissions"></ctrl-check-list>
+                <ctrl-check class="col-md-4" ng-model="node.permissions.inherits" ng-enabled="application.restricted && entity.properties.permissions" ng-label="Inherits from parent"></ctrl-check>
+                <ctrl-check-list class="col-md-8" ng-model="roles" ng-options="roleOptions" ng-required="true" ng-enabled="application.restricted && entity.properties.permissions && !node.permissions.inherits" ng-label="Permissions"></ctrl-check-list>
             </div>
 
             <hr />

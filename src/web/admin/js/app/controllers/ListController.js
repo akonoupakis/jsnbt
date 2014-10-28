@@ -89,6 +89,9 @@
                                 deferred.reject(ex);
                             });
                         }
+                        else {
+                            deferred.reject();
+                        }
                     });
 
                     return deferred.promise;
@@ -136,7 +139,7 @@
                 },
 
                 delete: function (item) {
-                    fn.delete(item).then(function () {
+                    fn.delete(item).then(function (response) {
                         $scope.data.items = _.filter($scope.data.items, function (x) { return x.id !== item.id; });
                     }, function (ex) {
                         logger.error(ex);

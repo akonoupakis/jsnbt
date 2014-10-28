@@ -26,19 +26,29 @@ var jsnbtModule = {
         allowed: ['page', 'pointer'],
         treeNode: true,
         localized: true,
-        parent: true,
-        seo: true,
-        meta: true,
-        permissions: true
+
+        properties: {
+            name: true,
+            parent: true,
+            template: true,
+            seo: true,
+            meta: true,
+            permissions: true
+        }
     }, {
         name: 'pointer',
         allowed: [],
         treeNode: true,
         localized: true,
-        parent: true,
-        seo: true,
-        meta: false,
-        permissions: true
+
+        properties: {
+            name: true,
+            parent: true,
+            template: true,
+            seo: true,
+            meta: false,
+            permissions: true
+        }
     }],
 
     roles: [{

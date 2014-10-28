@@ -93,8 +93,8 @@
                     var deferred = $q.defer();
 
                     var breadcrumb = LocationService.getBreadcrumb();
-                    if (breadcrumb[0].name === 'addons') {
-                        breadcrumb = breadcrumb.slice(0, 3);
+                    if ($route.current.$$route.location && $route.current.$$route.location.offset) {
+                        breadcrumb = breadcrumb.slice(0, $route.current.$$route.location.offset);
                     }
                     else
                         breadcrumb = breadcrumb.slice(0, breadcrumb.length - 1);
@@ -111,7 +111,7 @@
                                     var resultNode = _.first(_.filter(results, function (x) { return x.id === item; }));
                                     if (resultNode) {
                                         breadcrumb.push({
-                                            name: resultNode ? resultNode.name : '-',
+                                            name: resultNode ? (resultNode.data.localized.en && resultNode.data.localized.en.title ? resultNode.data.localized.en.title : resultNode.name) : '-',
                                             url: currentUrl + '/' + item,
                                             active: i === (hierarchy.length - 1)
                                         });
@@ -407,20 +407,25 @@
 
                         var deferredInternal = $q.defer();
 
-                        $data.nodes.get({ parent: $scope.node.parent, domain: $scope.node.domain, id: { $nin: [$scope.id] } }).then(function (siblingsResponse) {
-                                               
-                            $scope.siblingSeoNames = _.pluck(_.pluck(_.filter(siblingsResponse, function (x) { return x.url[lang]; }), 'url'), lang);
+                        if ($scope.entity.seo) {
+                            $data.nodes.get({ parent: $scope.node.parent, domain: $scope.node.domain, id: { $nin: [$scope.id] } }).then(function (siblingsResponse) {
 
-                            $scope.validation.seo = $scope.node.url[lang] && $scope.siblingSeoNames.indexOf($scope.node.url[lang]) === -1;
+                                $scope.siblingSeoNames = _.pluck(_.pluck(_.filter(siblingsResponse, function (x) { return x.url[lang]; }), 'url'), lang);
 
-                            if (!$scope.validation.seo)
-                                $scope.valid = false;
+                                $scope.validation.seo = $scope.node.url[lang] && $scope.siblingSeoNames.indexOf($scope.node.url[lang]) === -1;
 
+                                if (!$scope.validation.seo)
+                                    $scope.valid = false;
+
+                                deferredInternal.resolve($scope.valid);
+
+                            }, function (siblingsError) {
+                                deferredInternal.reject(siblingsError);
+                            });
+                        }
+                        else {
                             deferredInternal.resolve($scope.valid);
-
-                        }, function (siblingsError) {
-                            deferredInternal.reject(siblingsError);
-                        });
+                        }
 
                         return deferredInternal.promise;
                     };
@@ -535,8 +540,10 @@
             $scope.validateSeo = function (value) {
                 var valid = true;
 
-                valid = $scope.siblingSeoNames.indexOf(value) === -1;
-                $scope.validation.seo = valid;
+                if ($scope.entity.seo) {
+                    valid = $scope.siblingSeoNames.indexOf(value) === -1;
+                    $scope.validation.seo = valid;
+                }
 
                 return valid;
             };
