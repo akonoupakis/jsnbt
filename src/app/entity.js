@@ -29,6 +29,12 @@ module.exports = function(name) {
 
             return entity.properties[property] === undefined || entity.properties[property] === true;
 
+        },
+
+        isSeoNamed: function () {
+
+            return this.hasProperty('seo');
+
         }
 
     }

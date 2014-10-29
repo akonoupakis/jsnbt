@@ -31,7 +31,7 @@ module.exports = function () {
                     var node = require('../node.js')(ctx.dpd);
                     
                     node.resolveUrl(ctx.uri.url, function (resolved) {
-                        console.log(resolved);
+
                         if (resolved && resolved.page && resolved.isActive() && resolved.isPublished()) {
                           
                             var restricted = false;

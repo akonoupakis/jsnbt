@@ -189,7 +189,7 @@ module.exports = function(dpd) {
                 }
                 else {
                     var pointerNode = _.last(_.filter(foundNodes, function (x) { return x.entity === 'pointer' }));
-                    console.log('pp', pointerNode);
+
                     if (pointerNode) {
                         var trimmedUrl = url.length > buildUrl.length ? url.substring(buildUrl.length) : '';
                         if (trimmedUrl === '')
@@ -386,10 +386,15 @@ module.exports = function(dpd) {
 
                             if (allHierarchyNodes) {
                                 var parentUrl = {};
+                                var firstNode = _.first(hierarchyNodes);
+
                                 var lastNode = _.last(hierarchyNodes);
 
                                 _.extend(parentUrl, lastNode.url);
-                                for (var langItem in node.url) {
+
+                                var urlKeys = getEntity(node.entity).isSeoNamed() ? node.url : lastNode.url;
+                                
+                                for (var langItem in urlKeys) {
                                     var langUrl = '';
                                     var fullyResolved = true;
                                     if (_.filter(jsnbt.languages, function (x) { return x.code === langItem; }).length > 0) {
@@ -419,18 +424,30 @@ module.exports = function(dpd) {
                                     }
                                 }
 
-                                var newUrl = {};
-                                _.extend(newUrl, node.url);
-                                for (var langItem in node.url) {
-                                    if (parentUrl[langItem])
-                                        newUrl[langItem] = parentUrl[langItem] + '/' + node.url[langItem];
-                                    else
-                                        delete newUrl[langItem];
-                                }
-
+                                var newUrl = {};                                
                                 cache.url[parentCacheKey] = parentUrl;
 
-                                cb(newUrl)
+                                var pack = _.first(_.filter(app.packages, function (x) { return x.domain === firstNode.domain && typeof (x.build) === 'function'; }));
+                                if (pack) {
+                                    _.extend(newUrl, parentUrl);
+                                    
+                                    pack.build({
+                                        nodes: hierarchyNodes,
+                                        node: node,
+                                        url: newUrl
+                                    }, cb);
+                                }
+                                else {
+                                    _.extend(newUrl, node.url);
+                                    for (var langItem in node.url) {
+                                        if (parentUrl[langItem])
+                                            newUrl[langItem] = parentUrl[langItem] + '/' + node.url[langItem];
+                                        else
+                                            delete newUrl[langItem];
+                                    }
+
+                                    cb(newUrl);
+                                }
                             }
                             else {
                                 cb({});
@@ -440,19 +457,30 @@ module.exports = function(dpd) {
                 }
             }
             else {
-                var newUrl = {};
-                _.extend(newUrl, node.url);
-                for (var langItem in node.url) {
-                    var seoName = node.url[langItem];
-                    var resolvedLangUrl = '';
-                    if (node.domain === 'core' && jsnbt.localization && getEntity(node.entity).isLocalized()) {
-                        resolvedLangUrl += '/' + langItem;
-                    }
-                    resolvedLangUrl += '/' + seoName;
-                    newUrl[langItem] = resolvedLangUrl;
-                }
 
-                cb(newUrl);
+                var pack = _.first(_.filter(app.packages, function (x) { return x.domain === node.domain && typeof (x.build) === 'function'; }));
+                if (pack) {
+                    pack.build({
+                        nodes: [],
+                        node: node,
+                        url: {}
+                    }, cb);
+                }
+                else {
+                    var newUrl = {};
+                    _.extend(newUrl, node.url);
+                    for (var langItem in node.url) {
+                        var seoName = node.url[langItem];
+                        var resolvedLangUrl = '';
+                        if (node.domain === 'core' && jsnbt.localization && getEntity(node.entity).isLocalized()) {
+                            resolvedLangUrl += '/' + langItem;
+                        }
+                        resolvedLangUrl += '/' + seoName;
+                        newUrl[langItem] = resolvedLangUrl;
+                    }
+
+                    cb(newUrl);
+                }
             }
         }
 

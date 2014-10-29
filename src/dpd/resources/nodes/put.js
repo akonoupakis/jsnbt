@@ -62,7 +62,7 @@ else {
                 else {
                     for (var lang in self.url) {
                         var siblingSeoNames = _.pluck(_.pluck(_.filter(siblingNodes, function (x) { return x.url[lang]; }), 'url'), lang);
-                        if (siblingSeoNames.indexOf(self.url[lang]) === -1) {
+                        if (siblingSeoNames.indexOf(self.url[lang]) !== -1) {
                             cancel('seo name already exists', 400);
                         }
                     }
