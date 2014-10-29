@@ -5,6 +5,10 @@
 	Getting its name from our well-known json objects, 
 	working with NodeJs and MongoDB, 
 	jsnbt could grow to be a fast driven CMS for any purpose.
+
+	upon install, reroute to /admin to create your first time user.
+	create the available languages and content nodes (system urls)
+
 	
 ## quick start
 
