@@ -18,8 +18,9 @@
             <div class="col-md-12">
                 <ctrl-tree ng-model="nodes[0].children" ng-domain="domain" ng-fn="treeFn">
                     <ctrl-tree-node>
-                        <ctrl-tree-node-content>{{ node.name }} <button title="Open" class="btn btn-default btn-sm glyphicon glyphicon-circle-arrow-right" ng-show="fn.canOpen(node)" ng-click="fn.open(node)"></button></ctrl-tree-node-content>
+                        <ctrl-tree-node-content>{{ node.name }}</ctrl-tree-node-content>
                         <ctrl-tree-node-buttons>
+                            <button title="Open" class="btn btn-link" ng-show="fn.canOpen(node)" ng-click="fn.open(node)">open</button>
                             <button title="Create child" class="btn btn-default btn-sm glyphicon glyphicon-plus-sign" ng-disabled="!fn.canCreate(node)" ng-click="fn.create(node)"></button>
                             <button title="Edit" class="btn btn-default btn-sm glyphicon glyphicon-edit" ng-disabled="!fn.canEdit(node)" ng-click="fn.edit(node)"></button>
                             <button title="Delete" class="btn btn-default btn-sm glyphicon glyphicon-remove" ng-disabled="!fn.canDelete(node)" ng-click="fn.delete(node)"></button>

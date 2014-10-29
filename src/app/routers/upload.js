@@ -263,7 +263,6 @@ var flow = function (temporaryFolder) {
 
             var chunkFilename = getChunkFilename(number, identifier);
 
-            //console.log('removing pipeChunkRm ', number, 'chunkFilename', chunkFilename);
             fs.exists(chunkFilename, function (exists) {
                 if (exists) {
 

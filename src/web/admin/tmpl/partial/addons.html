@@ -23,13 +23,13 @@
                     </ctrl-grid-footer>
                     <ctrl-grid-body>
                         <ctrl-grid-column>
-                            {{ data.name }}
+                            {{ row.name }}
                         </ctrl-grid-column>
                         <ctrl-grid-column>
-                            {{ data.version }}
+                            {{ row.version }}
                         </ctrl-grid-column>
                         <ctrl-grid-buttons-column>
-                            <button class="btn btn-default glyphicon glyphicon-circle-arrow-right" ng-click="fn.edit(data)" />
+                            <button class="btn btn-default glyphicon glyphicon-circle-arrow-right" ng-click="fn.edit(row)" />
                         </ctrl-grid-buttons-column>
                     </ctrl-grid-body>              
                 </ctrl-grid>

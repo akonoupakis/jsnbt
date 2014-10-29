@@ -27,11 +27,11 @@
                     </ctrl-grid-footer>
                     <ctrl-grid-body>
                         <ctrl-grid-column>
-                            {{ data.key }}
+                            {{ row.key }}
                         </ctrl-grid-column>
                         <ctrl-grid-buttons-column>
-                            <button class="btn btn-default glyphicon glyphicon-edit btn-sm" ng-click="fn.edit(data)" />
-                            <button class="btn btn-default glyphicon glyphicon-remove btn-sm" ng-click="fn.delete(data)" />
+                            <button class="btn btn-default glyphicon glyphicon-edit btn-sm" ng-click="fn.edit(row)" />
+                            <button class="btn btn-default glyphicon glyphicon-remove btn-sm" ng-click="fn.delete(row)" />
                         </ctrl-grid-buttons-column>
                     </ctrl-grid-body>
                 </ctrl-grid>

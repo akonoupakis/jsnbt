@@ -27,13 +27,13 @@
                     </ctrl-grid-footer>
                     <ctrl-grid-body>
                         <ctrl-grid-column>
-                            {{ data.firstName }} {{ data.lastName }}
+                            {{ row.firstName }} {{ row.lastName }}
                         </ctrl-grid-column>
                         <ctrl-grid-column>
-                            {{ data.username }}
+                            {{ row.username }}
                         </ctrl-grid-column>
                         <ctrl-grid-buttons-column>
-                            <button class="btn btn-default glyphicon glyphicon-edit" ng-click="fn.edit(data)" />
+                            <button class="btn btn-default glyphicon glyphicon-edit" ng-click="fn.edit(row)" />
                         </ctrl-grid-buttons-column>
                     </ctrl-grid-body>
                 </ctrl-grid>

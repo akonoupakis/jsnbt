@@ -5,8 +5,6 @@ var self = this;
 
 if (me && me.id == self.id) {
     if (changed('roles') && !_.isEmpty(_.difference(previous.roles, self.roles))) {
-        console.log('prev', previous.roles);
-        console.log('self', self.roles);
         error('roles', 'cannot assign own roles');
     }
     if (!internal)

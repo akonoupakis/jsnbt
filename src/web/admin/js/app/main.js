@@ -7,6 +7,7 @@
     var modules = jsnbt.modules.slice(0);
     modules.push('ngRoute');
     modules.push('ngAnimate');
+    modules.push('ngSanitize');
     modules.push('mgcrea.ngStrap');
     modules.push('ui.bootstrap');
     modules.push('ui.sortable');

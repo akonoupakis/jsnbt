@@ -1,7 +1,7 @@
 {
   "name": "jsnbt",
-  "version": "1.0.65",
-  "description": "The Jsonbot engine npm package",
+  "version": "1.0.68",
+  "description": "The Jsonbot engine",
   "keywords": [
     "jsnbt",
     "jsonbot"
@@ -11,7 +11,7 @@
     "email": "konoupakis@gmail.com",
     "url": ""
   },
-  "readme": "The Jsonbot CMS engine npm package",
+  "readme": "null",
   "repository": {
     "type": "git",
     "url": "https://github.com/akonoupakis/jsnbt.git"
