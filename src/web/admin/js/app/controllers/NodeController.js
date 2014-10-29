@@ -65,8 +65,14 @@
 
                     $data.nodes.get($scope.id).then(function (result) {
 
-                        $scope.name = result.name;
                         $scope.node = result;
+
+                        if ($route.current.$$route.name && result.data.localized['en'] && result.data.localized['en'][$route.current.$$route.name]) {
+                            $scope.name = result.data.localized['en'][$route.current.$$route.name];
+                        }
+                        else {
+                            $scope.name = result.name;
+                        }
 
                         var entity = _.first(_.filter(jsnbt.entities, function (x) { return x.name === result.entity; }));
 
@@ -110,8 +116,15 @@
                                 $(hierarchy).each(function (i, item) {
                                     var resultNode = _.first(_.filter(results, function (x) { return x.id === item; }));
                                     if (resultNode) {
+
+                                        var nameValue = resultNode.name;
+
+                                        if ($route.current.$$route.name && resultNode.data.localized['en'] && resultNode.data.localized['en'][$route.current.$$route.name]) {
+                                            nameValue = resultNode.data.localized['en'][$route.current.$$route.name];
+                                        }
+
                                         breadcrumb.push({
-                                            name: resultNode ? (resultNode.data.localized.en && resultNode.data.localized.en.title ? resultNode.data.localized.en.title : resultNode.name) : '-',
+                                            name: nameValue,
                                             url: currentUrl + '/' + item,
                                             active: i === (hierarchy.length - 1)
                                         });

@@ -55,12 +55,19 @@ else {
             }
         }
 
-        var siblingNodes = (dpd.nodes.get, { parent: self.parent, domain: self.domain, id: { $nin: [self.id] } });
-        for (var lang in self.url) {
-            var siblingSeoNames = _.pluck(_.pluck(_.filter(siblingNodes, function (x) { return x.url[lang]; }), 'url'), lang);
-            if (siblingSeoNames.indexOf(self.url[lang]) === -1) {
-                cancel('seo name already exists', 400);
-            }
+        if (seoNamesChanged) {
+            dpd.nodes.get({ parent: self.parent, domain: self.domain, id: { $nin: [self.id] } }, function (siblingNodes, siblingNodesError) {
+                if (siblingNodesError)
+                    throw siblingNodesError;
+                else {
+                    for (var lang in self.url) {
+                        var siblingSeoNames = _.pluck(_.pluck(_.filter(siblingNodes, function (x) { return x.url[lang]; }), 'url'), lang);
+                        if (siblingSeoNames.indexOf(self.url[lang]) === -1) {
+                            cancel('seo name already exists', 400);
+                        }
+                    }
+                }
+            });
         }
 
         cache.purge(self.id);

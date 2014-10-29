@@ -34,10 +34,8 @@ exports.parse = function (ctx, tmpl, model) {
 
     mdl.js = {};
 
-    if (isAdmin) {
-        mdl.scripts = jsnbt.scripts;
-    }
-
+    mdl.scripts = isAdmin ? jsnbt.scripts.admin : jsnbt.scripts.public;
+    
     var appFiles = [];
     findJsFiles('../' + app.root + '/public/' + (isAdmin ? 'admin/' : '') + 'js/app/', appFiles, isAdmin);
     mdl.js.app = appFiles;

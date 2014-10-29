@@ -44,7 +44,7 @@ var jsnbtModule = {
         properties: {
             name: true,
             parent: true,
-            template: true,
+            template: false,
             seo: true,
             meta: false,
             permissions: true

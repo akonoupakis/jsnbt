@@ -58,7 +58,10 @@ module.exports = {
 
     restricted: true,
 
-    scripts: [],
+    scripts: {
+        admin: [],
+        public: []
+    },
 
     configurations: {},
 
@@ -110,11 +113,35 @@ module.exports = {
             return resultObj
         }
 
-        var moduleScripts = module.scripts || [];
-        _.each(moduleScripts, function (moduleScript) {
-            if (self.scripts.indexOf(moduleScript) === -1)
-                self.scripts.push(moduleScript);
-        });
+        if (module.scripts) {
+            var moduleAdminScripts = module.scripts.admin || [];
+            _.each(moduleAdminScripts, function (moduleScript) {
+                if (self.scripts.admin.indexOf(moduleScript) === -1)
+                    self.scripts.admin.push(moduleScript);
+            });
+
+            var modulePublicScripts = module.scripts.admin || [];
+            _.each(modulePublicScripts, function (moduleScript) {
+                if (self.scripts.public.indexOf(moduleScript) === -1)
+                    self.scripts.public.push(moduleScript);
+            });
+        }
+
+        var entityDefaults = {
+            name: '',
+            allowed: [],
+            treeNode: true,
+            localized: true,
+
+            properties: {
+                name: true,
+                parent: true,
+                template: true,
+                seo: true,
+                meta: true,
+                permissions: true
+            }
+        };
 
         var moduleEntities = module.entities || [];
         _.each(moduleEntities, function (moduleEntity) {
@@ -123,7 +150,9 @@ module.exports = {
                 _.extend(matchedEntity, moduleEntity);
             }
             else {
-                self.entities.push(clone(moduleEntity));
+                var newEntity = clone(entityDefaults);
+                _.extend(newEntity, moduleEntity);
+                self.entities.push(newEntity);
             }            
         });
 
