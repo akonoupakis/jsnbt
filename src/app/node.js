@@ -77,66 +77,57 @@ module.exports = function(dpd) {
             else if (!pointedNode)
                 throw new Error('pointed node not found');
             else {
-                //var pack = _.first(_.filter(app.packages, function (x) { return x.domain === pointedNode.domain && typeof (x.resolve) === 'function'; }));
-                //if (pack) {
-                //    var addonNode = pack.resolve({
-                //        pointer: matchedNode,
-                //        pointed: pointedNode,
-                //        nodes: foundNodes,
-                //        url: url
-                //    });
-                //    if (addonNode) {
-                //        return {
-                //            node: addonNode,
-                //            pointer: matchedNode,
-                //            view: addonNode.view,
-                //            language: language
-                //        }
-                //    }
-                //}
-
                 var pointedSeoNames = _.str.trim(urlPath, '/') !== '' ? _.str.trim(urlPath, '/').split('/') : [];
-                if (pointedSeoNames.length === 0) {
-                    returnObj.page = pointedNode;
-                    returnObj.view = pointedNode.view;
-                    returnObj.nodes = _.union(returnObj.nodes, pointedNode);
-                    cb(returnObj);
+                var pack = _.first(_.filter(app.packages, function (x) { return x.domain === pointedNode.domain && typeof (x.resolve) === 'function'; }));
+                if (pack) {
+                    returnObj.seoNames = pointedSeoNames;
+                    returnObj.pointed = pointedNode;
+                    returnObj.dpd = dpd;
+                    pack.resolve(returnObj, cb);
                 }
                 else {
-                    var pointedLoopParentId = pointedNode.id;
-                    var pointedFoundNodes = [pointedNode];
-                    var pointedFoundAllMatches = true;
+                    if (pointedSeoNames.length === 0) {
+                        returnObj.page = pointedNode;
+                        returnObj.view = pointedNode.view;
+                        returnObj.nodes = _.union(returnObj.nodes, pointedNode);
+                        cb(returnObj);
+                    }
+                    else {
+                        var pointedLoopParentId = pointedNode.id;
+                        var pointedFoundNodes = [pointedNode];
+                        var pointedFoundAllMatches = true;
 
-                    _.each(pointedSeoNames, function (pointedSeoName) {
-                        var matchedPointedSeoNode = _.first(_.filter(seoNodes, function (x) {
-                            return x.url[jsnbt.localization ? returnObj.language : 'en'].toLowerCase() === pointedSeoName.toLowerCase() &&
-                                x.parent === pointedLoopParentId &&
-                                x.domain === pointedNode.domain;
-                        }));
-                        if (matchedPointedSeoNode) {
-                            pointedFoundNodes.push(matchedPointedSeoNode);
-                            pointedLoopParentId = matchedPointedSeoNode.id;
-                        }
-                        else {
-                            pointedFoundAllMatches = false;
-                            return false;
-                        }
-                    });
+                        _.each(pointedSeoNames, function (pointedSeoName) {
+                            var matchedPointedSeoNode = _.first(_.filter(seoNodes, function (x) {
+                                return x.url[jsnbt.localization ? returnObj.language : 'en'].toLowerCase() === pointedSeoName.toLowerCase() &&
+                                    x.parent === pointedLoopParentId &&
+                                    x.domain === pointedNode.domain;
+                            }));
+                            if (matchedPointedSeoNode) {
+                                pointedFoundNodes.push(matchedPointedSeoNode);
+                                pointedLoopParentId = matchedPointedSeoNode.id;
+                            }
+                            else {
+                                pointedFoundAllMatches = false;
+                                return false;
+                            }
+                        });
 
-                    if (pointedFoundAllMatches) {
-                        var targetMatchedNode = _.last(pointedFoundNodes);
-                        if (targetMatchedNode) {
-                            returnObj.page = targetMatchedNode;
-                            returnObj.view = targetMatchedNode.view;
-                            returnObj.nodes = _.union(returnObj.nodes, pointedFoundNodes);
-                            cb(returnObj);
+                        if (pointedFoundAllMatches) {
+                            var targetMatchedNode = _.last(pointedFoundNodes);
+                            if (targetMatchedNode) {
+                                returnObj.page = targetMatchedNode;
+                                returnObj.view = targetMatchedNode.view;
+                                returnObj.nodes = _.union(returnObj.nodes, pointedFoundNodes);
+                                cb(returnObj);
+                            }
+                            else {
+                                cb();
+                            }
                         }
                         else {
                             cb();
                         }
-                    }
-                    else {
-                        cb();
                     }
                 }
             }
@@ -197,8 +188,9 @@ module.exports = function(dpd) {
                     }
                 }
                 else {
-                    var pointerNode = _.last(foundNodes);
-                    if (pointerNode && pointerNode.entity === 'pointer') {
+                    var pointerNode = _.last(_.filter(foundNodes, function (x) { return x.entity === 'pointer' }));
+                    console.log('pp', pointerNode);
+                    if (pointerNode) {
                         var trimmedUrl = url.length > buildUrl.length ? url.substring(buildUrl.length) : '';
                         if (trimmedUrl === '')
                             trimmedUrl = '/';

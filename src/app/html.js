@@ -6,7 +6,6 @@ var _ = require('underscore');
 _.str = require('underscore.string');
 
 exports.parse = function (ctx, tmpl, model) {
-
     var mdl = {
         baseHref: ctx.uri.getBaseHref(),
         language: ctx.language || 'en',

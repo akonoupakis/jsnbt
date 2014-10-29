@@ -20,7 +20,7 @@ module.exports = function () {
             if (ctx.node)
                 ctx.render();
             else
-                ctx.error(ctx, 404);
+                ctx.error(404);
         }
     });
     
@@ -29,9 +29,11 @@ module.exports = function () {
             if (ctx.uri.path !== '/') {
                 try {
                     var node = require('../node.js')(ctx.dpd);
+                    
                     node.resolveUrl(ctx.uri.url, function (resolved) {
+                        console.log(resolved);
                         if (resolved && resolved.page && resolved.isActive() && resolved.isPublished()) {
-
+                          
                             var restricted = false;
 
                             if (!restricted && jsnbt.restricted) {
@@ -39,7 +41,7 @@ module.exports = function () {
                                     restricted = true;
                                 }
                             }
-
+                            
                             if (restricted) {
 
                                 ctx.dpd.settings.get({ domain: 'core' }, function (settingNodes, settingNodesError) {
@@ -74,7 +76,9 @@ module.exports = function () {
                                 });
                             }
                             else {
+                                
                                 ctx.node = resolved.page || {};
+
                                 ctx.pointer = resolved.pointer || {};
                                 ctx.language = jsnbt.localization ? resolved.language || 'en' : jsnbt.locale;
                                 ctx.view = resolved.view || '';
