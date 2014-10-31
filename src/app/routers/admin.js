@@ -18,6 +18,8 @@ module.exports = function () {
                         var location = ctx.uri.parts[1];
                         if (location === 'index.html')
                             viewPath = '/admin/index.html';
+                        else if (location === 'logging')
+                            viewPath = '/admin/tmpl/partial/blank.html';
                     }
 
                     if (ctx.req.url.toLowerCase() === '/admin' || _.str.startsWith(ctx.req.url.toLowerCase(), '/admin#')) {
