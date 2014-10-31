@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('ListEntryController', function ($scope, $rootScope, $routeParams, $location, $timeout, $q, $logger, $queue, $data, ScrollSpyService, LocationService, FORM_EVENTS) {
+        .controller('ListEntryController', function ($scope, $rootScope, $routeParams, $location, $timeout, $q, $logger, $queue, $data, $jsnbt, ScrollSpyService, LocationService, FORM_EVENTS) {
            
             var logger = $logger.create('ListEntryController');
 
@@ -72,7 +72,7 @@
                 setTmpl: function () {
                     var deferred = $q.defer();
 
-                    var list = _.first(_.filter(jsnbt.lists, function (x) { return x.id === $routeParams.list && x.domain === $routeParams.domain; }));
+                    var list = _.first(_.filter($jsnbt.lists, function (x) { return x.id === $routeParams.list && x.domain === $routeParams.domain; }));
                     $scope.tmpl = list ? list.spec : null;
 
                     deferred.resolve();

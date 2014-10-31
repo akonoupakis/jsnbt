@@ -12,7 +12,7 @@
                 setSettings: function (value) {
                     settings = value;
                 },
-                $get: function ($q) {
+                $get: function ($q, $jsnbt) {
                     var Function = {};
 
                     var findFn = function (obj, fn) {
@@ -35,7 +35,7 @@
                     };
 
                     var getFn = function (domain, fn, cascade) {
-                        var addon = _.first(_.filter(jsnbt.addons, function (x) { return x.domain === domain; }));
+                        var addon = _.first(_.filter($jsnbt.addons, function (x) { return x.domain === domain; }));
                         var loopObject;
                         var coreDomain = 'core';
                         if (angular.providers[domain]) {

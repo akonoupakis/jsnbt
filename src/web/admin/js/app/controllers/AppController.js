@@ -19,12 +19,12 @@
             $scope.current.restoreFn = undefined;
             $scope.current.breadcrumb = [];
 
-            $scope.application.version = jsnbt.version;
+            $scope.application.version = $jsnbt.version;
             $scope.application.languages = [];
-            $scope.application.localization = jsnbt.localization;
-            $scope.application.restricted = jsnbt.restricted;
+            $scope.application.localization = $jsnbt.localization;
+            $scope.application.restricted = $jsnbt.restricted;
 
-            $scope.defaults.countries = jsnbt.countries;
+            $scope.defaults.countries = $jsnbt.countries;
 
             $scope.defaults.languages = [];
             $scope.defaults.language = null;
@@ -47,7 +47,7 @@
                 setDefaultLanguages: function () {
                     var deferred = $q.defer();
 
-                    var results = jsnbt.languages;
+                    var results = $jsnbt.languages;
 
                     $scope.defaults.languages = results;
 

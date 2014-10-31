@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('UserController', function ($scope, $routeParams, $location, $timeout, $q, $logger, $data, ScrollSpyService, LocationService, AuthService, FORM_EVENTS) {
+        .controller('UserController', function ($scope, $routeParams, $location, $timeout, $q, $logger, $data, $jsnbt, ScrollSpyService, LocationService, AuthService, FORM_EVENTS) {
            
             var logger = $logger.create('UserController');
 
@@ -50,7 +50,7 @@
 
                     var allowEdit = true;
 
-                    $(jsnbt.roles).each(function (r, role) {
+                    $($jsnbt.roles).each(function (r, role) {
                         var newRole = {};
                         $.extend(true, newRole, role);
                         newRole.value = newRole.name;

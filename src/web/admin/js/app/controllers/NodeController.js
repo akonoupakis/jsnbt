@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('NodeController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $q, $queue, $data, $route, ScrollSpyService, $fn, LocationService, AuthService, DATA_EVENTS, FORM_EVENTS) {
+        .controller('NodeController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $q, $queue, $data, $route, $jsnbt, ScrollSpyService, $fn, LocationService, AuthService, DATA_EVENTS, FORM_EVENTS) {
 
             var logger = $logger.create('NodeController');
 
@@ -74,7 +74,7 @@
                             $scope.name = result.name;
                         }
 
-                        var entity = _.first(_.filter(jsnbt.entities, function (x) { return x.name === result.entity; }));
+                        var entity = _.first(_.filter($jsnbt.entities, function (x) { return x.name === result.entity; }));
 
                         $scope.localized = $scope.application.localization.enabled && (entity.localized === undefined || entity.localized === true);
 
@@ -192,7 +192,7 @@
 
                     var allRoles = [];
                     
-                    $(jsnbt.roles).each(function (r, role) {
+                    $($jsnbt.roles).each(function (r, role) {
                         if (!AuthService.isInRole({ roles: [role.name] }, 'admin')) {
                             var newRole = {};
                             $.extend(true, newRole, role);
@@ -252,7 +252,7 @@
                 setParentEntities: function () {
                     var deferred = $q.defer();
 
-                    var parentEntities = _.pluck(_.filter(jsnbt.entities, function (x) { return x.allowed && x.allowed.indexOf($scope.node.entity) !== -1; }), 'name');
+                    var parentEntities = _.pluck(_.filter($jsnbt.entities, function (x) { return x.allowed && x.allowed.indexOf($scope.node.entity) !== -1; }), 'name');
 
                     $scope.parentOptions.entities = parentEntities;
 
@@ -283,7 +283,7 @@
 
                     var types = [];
                     types.push({ value: 'page', name: 'CMS Page' });
-                    if (jsnbt.addons.length > 0)
+                    if ($jsnbt.addons.length > 0)
                         types.push({ value: 'pointer', name: 'Addon Pointer' });
 
                     $scope.types = types;
@@ -297,7 +297,7 @@
                     var deferred = $q.defer();
 
                     var templates = [];
-                    $(jsnbt.templates).each(function (t, template) {
+                    $($jsnbt.templates).each(function (t, template) {
                         var tmpl = {};
                         $.extend(true, tmpl, template);
 
@@ -328,7 +328,7 @@
                     var deferred = $q.defer();
 
                     var addons = [];
-                    $(jsnbt.addons).each(function (a, addon) {
+                    $($jsnbt.addons).each(function (a, addon) {
                         addons.push({
                             name: addon.name,
                             domain: addon.domain
@@ -654,7 +654,7 @@
                     var entity = {};
                     $.extend(true, entity, defaults);
 
-                    var knownEntity = _.first(_.filter(jsnbt.entities, function (x) { return x.name === newValue; }));
+                    var knownEntity = _.first(_.filter($jsnbt.entities, function (x) { return x.name === newValue; }));
 
                     if (knownEntity)
                         $.extend(true, entity, knownEntity);

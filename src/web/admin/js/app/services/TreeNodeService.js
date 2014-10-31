@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .factory('TreeNodeService', function ($q, $cacheFactory, FileService) {
+        .factory('TreeNodeService', function ($q, $jsnbt, $cacheFactory, FileService) {
             var TreeNodeService = {};
             
             var cache = $cacheFactory('NestableCache');
@@ -263,7 +263,7 @@
                 $.extend(true, opts, optionsDefault, options);
                 
                 if (!options.entities)
-                    opts.entities = _.pluck(_.filter(jsnbt.entities, function (x) { return x.treeNode !== false; }), 'name');
+                    opts.entities = _.pluck(_.filter($jsnbt.entities, function (x) { return x.treeNode !== false; }), 'name');
                 
                 var isRoot = root !== undefined ? root : true;
 
