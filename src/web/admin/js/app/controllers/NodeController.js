@@ -435,21 +435,26 @@
 
                         var deferredInternal = $q.defer();
 
-                        if ($scope.entity.seo) {
-                            $data.nodes.get({ parent: $scope.node.parent, domain: $scope.node.domain, id: { $nin: [$scope.id] } }).then(function (siblingsResponse) {
+                        if ($scope.node.active[lang]) {
+                            if ($scope.entity.seo) {
+                                $data.nodes.get({ parent: $scope.node.parent, domain: $scope.node.domain, id: { $nin: [$scope.id] } }).then(function (siblingsResponse) {
 
-                                $scope.siblingSeoNames = _.pluck(_.pluck(_.filter(siblingsResponse, function (x) { return x.seo[lang]; }), 'seo'), lang);
+                                    $scope.siblingSeoNames = _.pluck(_.pluck(_.filter(siblingsResponse, function (x) { return x.seo[lang]; }), 'seo'), lang);
 
-                                $scope.validation.seo = $scope.node.seo[lang] && $scope.siblingSeoNames.indexOf($scope.node.seo[lang]) === -1;
+                                    $scope.validation.seo = $scope.node.seo[lang] && $scope.siblingSeoNames.indexOf($scope.node.seo[lang]) === -1;
 
-                                if (!$scope.validation.seo)
-                                    $scope.valid = false;
+                                    if (!$scope.validation.seo)
+                                        $scope.valid = false;
 
+                                    deferredInternal.resolve($scope.valid);
+
+                                }, function (siblingsError) {
+                                    deferredInternal.reject(siblingsError);
+                                });
+                            }
+                            else {
                                 deferredInternal.resolve($scope.valid);
-
-                            }, function (siblingsError) {
-                                deferredInternal.reject(siblingsError);
-                            });
+                            }
                         }
                         else {
                             deferredInternal.resolve($scope.valid);
@@ -460,6 +465,7 @@
 
                     $scope.valid = true;
                     $scope.validation.seo = true;
+
                     $scope.$broadcast(FORM_EVENTS.initiateValidation);
 
                     if (!$scope.valid) {
@@ -496,7 +502,7 @@
                                     };
 
                                     var currentLanguage = $scope.language;
-                                    var restLanguages = _.filter($scope.languages, function (x) { return x.active && x.code !== currentLanguage; });
+                                    var restLanguages = _.filter($scope.languages, function (x) { return x.active && x.code !== currentLanguage && $scope.node.active[x.code]; });
                                     if (restLanguages.length > 0) {
                                         var nextIndex = 0;
                                         var next = function () {
