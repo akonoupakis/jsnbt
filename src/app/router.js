@@ -1,6 +1,7 @@
 var app = require('./app.js');
 var fs = require('fs');
 var jsnbt = require('./jsnbt.js');
+var auth = require('./auth.js');
 var error = require('./error.js');
 var pack = require('./package.js');
 var cookies = require('cookies');
@@ -46,6 +47,8 @@ module.exports = function () {
             notFoundPaths = _.union(notFoundPaths, templatePaths);
             notFoundPaths = _.union(notFoundPaths, ['/error/', '/admin/error/']);
 
+            var templateSpecPaths = _.pluck(_.filter(jsnbt.templates, function (x) { return x.spec !== undefined; }), 'spec');
+       
             var forbiddedPathPrefixes = [];
 
             var forbidRequest = false;
@@ -57,8 +60,7 @@ module.exports = function () {
             }
 
             if (forbidRequest) {
-                req._routed = true;
-                error.render(ctx, 403);
+                ctx.error(403);
             }
             else {
                 var foundUrl = _.filter(notFoundPaths, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length === 0;
@@ -74,9 +76,12 @@ module.exports = function () {
                         }
                     }
 
+                    //if (_.filter(templateSpecPaths, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length > 0) {
+                    //    processRequest = true;
+                    //}
+                    
                     if (processRequest) {
                         req._routed = true;
-
                         ctx.req.cookies = new cookies(ctx.req, ctx.res);
 
                         app.server.sessions.createSession(ctx.req.cookies.get('sid'), function (err, session) {
@@ -89,15 +94,22 @@ module.exports = function () {
                                 ctx.dpd = require('deployd/lib/internal-client').build(app.server, session, ctx.req.stack);
                                 ctx.req.dpd = ctx.dpd;
 
-                                var nextIndex = 0;
-                                var next = function () {
-                                    nextIndex++;
-                                    var router = routers[nextIndex];
-                                    router.route(ctx, next);
-                                };
+                                //if (_.filter(templateSpecPaths, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length > 0) {
+                                //    if (!(session.user && auth.isInRole(session.user, 'admin'))) {
+                                //        ctx.error(404);
+                                //    }
+                                //}
+                                //else {
+                                    var nextIndex = 0;
+                                    var next = function () {
+                                        nextIndex++;
+                                        var router = routers[nextIndex];
+                                        router.route(ctx, next);
+                                    };
 
-                                var first = _.first(routers);
-                                first.route(ctx, next);
+                                    var first = _.first(routers);
+                                    first.route(ctx, next);
+                                //}
                             }
                         });
                     }
