@@ -35,6 +35,7 @@ module.exports = function (req, res) {
             description: '',
             keywords: ''
         },
+        template: '',
         uri: {
             url: uri.relative,
             scheme: uri.protocol,

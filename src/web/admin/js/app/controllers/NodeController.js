@@ -23,7 +23,7 @@
 
             $scope.types = [];
             $scope.languages = [];
-            $scope.views = [];
+            $scope.templates = [];
             $scope.addons = [];
 
             $scope.localized = false;
@@ -265,7 +265,7 @@
                     var deferred = $q.defer();
 
                     if ($scope.node && $scope.node.entity !== 'pointer') {
-                        var spec = _.find($scope.views, function (x) { return x.tmpl === $scope.node.view; });
+                        var spec = _.find($scope.templates, function (x) { return x.tmpl === $scope.node.template; });
                         if (spec)
                             $scope.tmpl = spec.spec;
                         else {
@@ -296,7 +296,7 @@
                 setViews: function () {
                     var deferred = $q.defer();
 
-                    var views = [];
+                    var templates = [];
                     $(jsnbt.templates).each(function (t, template) {
                         var tmpl = {};
                         $.extend(true, tmpl, template);
@@ -305,21 +305,21 @@
 
                         if (tmpl.restricted) {
                             if (tmpl.restricted.indexOf($scope.node.entity) !== -1) {
-                                views.push(tmpl);
+                                templates.push(tmpl);
                             }
                         }                        
                         else {
-                            views.push(tmpl);
+                            templates.push(tmpl);
                         }
                     });
 
-                    $scope.views = views;
+                    $scope.templates = templates;
 
-                    if (_.filter($scope.views, function (x) { return x.path === $scope.node.view; }).length === 0) {
-                        $scope.node.view = '';
+                    if (_.filter($scope.templates, function (x) { return x.path === $scope.node.template; }).length === 0) {
+                        $scope.node.template = '';
                     }
 
-                    deferred.resolve(views);
+                    deferred.resolve(templates);
 
                     return deferred.promise;
                 },
@@ -370,8 +370,8 @@
                                             var newSeoNode = {};
 
                                             $($scope.application.localization.enabled ? $scope.application.languages: ['en']).each(function (l, lang) {
-                                                if (result.url[lang.code])
-                                                    newSeoNode[lang.code] = result.url[lang.code];
+                                                if (result.seo[lang.code])
+                                                    newSeoNode[lang.code] = result.seo[lang.code];
                                             });
 
                                             newSeoNodes.push(newSeoNode);
@@ -438,9 +438,9 @@
                         if ($scope.entity.seo) {
                             $data.nodes.get({ parent: $scope.node.parent, domain: $scope.node.domain, id: { $nin: [$scope.id] } }).then(function (siblingsResponse) {
 
-                                $scope.siblingSeoNames = _.pluck(_.pluck(_.filter(siblingsResponse, function (x) { return x.url[lang]; }), 'url'), lang);
+                                $scope.siblingSeoNames = _.pluck(_.pluck(_.filter(siblingsResponse, function (x) { return x.seo[lang]; }), 'seo'), lang);
 
-                                $scope.validation.seo = $scope.node.url[lang] && $scope.siblingSeoNames.indexOf($scope.node.url[lang]) === -1;
+                                $scope.validation.seo = $scope.node.seo[lang] && $scope.siblingSeoNames.indexOf($scope.node.seo[lang]) === -1;
 
                                 if (!$scope.validation.seo)
                                     $scope.valid = false;
@@ -667,7 +667,7 @@
                 }
             });
 
-            $scope.$watch('node.view', function () {
+            $scope.$watch('node.template', function () {
                 fn.setTmpl().then(function () {
                     fn.setSpy(200);
                 }, function (ex) {

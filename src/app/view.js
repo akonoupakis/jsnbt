@@ -6,11 +6,11 @@ var _ = require('underscore');
 _.str = require('underscore.string');
 
 exports.render = function (ctx) {
-    if (!ctx.view) {
-        ctx.res.write('could not find render view');
+    if (!ctx.template) {
+        ctx.res.write('could not find render template');
     }
     else {
-        var tmplFilePath = '../' + app.root + '/public' + ctx.view;
+        var tmplFilePath = '../' + app.root + '/public' + ctx.template;
         if (fs.existsSync(tmplFilePath)) {
             var tmplContent = fs.readFileSync(tmplFilePath, 'utf-8');
 
@@ -21,7 +21,7 @@ exports.render = function (ctx) {
             ctx.res.write(tmplContent);
         }
         else {
-            ctx.res.write('could not find view file "' + tmplFilePath + '"');
+            ctx.res.write('could not find template file "' + tmplFilePath + '"');
         }
     }
     ctx.res.end();

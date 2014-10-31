@@ -23,11 +23,11 @@ if (entity.isLocalized()) {
 
 if (entity.hasProperty('seo')) {
     var validSeoNameChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_'.split('');
-    for (var lang in self.url) {
-        var currentChars = (self.url[lang] || '').split('');
+    for (var lang in self.seo) {
+        var currentChars = (self.seo[lang] || '').split('');
         _.each(currentChars, function (char) {
             if (validSeoNameChars.indexOf(char) === -1)
-                error('url[' + lang + ']', 'seo name invalid characters');
+                error('seo[' + lang + ']', 'seo name invalid characters');
         });
     }
 }

@@ -31,7 +31,6 @@ module.exports = function () {
                     var node = require('../node.js')(ctx.dpd);
                     
                     node.resolveUrl(ctx.uri.url, function (resolved) {
-
                         if (resolved && resolved.page && resolved.isActive() && resolved.isPublished()) {
                           
                             var restricted = false;
@@ -81,7 +80,7 @@ module.exports = function () {
 
                                 ctx.pointer = resolved.pointer || {};
                                 ctx.language = jsnbt.localization ? resolved.language || 'en' : jsnbt.locale;
-                                ctx.view = resolved.view || '';
+                                ctx.template = resolved.template || '';
                                 ctx.meta = resolved.page.meta || {};
                                 ctx.uri.scheme = resolved.page.secure === true ? 'https' : 'http';
 
@@ -109,7 +108,7 @@ module.exports = function () {
                                 if (matched.length === 0) {
                                     ctx.dpd.languages.get({ active: true, "default": true }, function (defaultLanguages, defaultLanguagesError) {
                                         if (defaultLanguagesError) {
-                                            error.render(ctx, 500, defaultLanguagesError.toString());
+                                            ctx.error(500, defaultLanguagesError);
                                         }
                                         else {
                                             var defaultLanguage = _.first(defaultLanguages);
@@ -117,8 +116,7 @@ module.exports = function () {
                                                 var newUrl = '/' + defaultLanguage.code + ctx.uri.path;
                                                 node.resolveUrl(newUrl, function (newUrlResolved) {
                                                     if (newUrlResolved) {
-                                                        ctx.res.writeHead(302, { "Location": newUrl });
-                                                        ctx.res.end();
+                                                        ctx.redirect(newUrl);
                                                     }
                                                     else {
                                                         next();

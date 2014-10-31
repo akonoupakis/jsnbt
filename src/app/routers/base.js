@@ -74,7 +74,7 @@ module.exports = function () {
                                 ctx.node = resolved.page || {};
                                 ctx.pointer = resolved.pointer || {};
                                 ctx.language = jsnbt.localization ? resolved.language || 'en' : jsnbt.locale;
-                                ctx.view = resolved.view || '';
+                                ctx.template = resolved.template || '';
                                 ctx.meta = resolved.page.meta || {};
                                 ctx.uri.scheme = resolved.page.secure === true ? 'https' : 'http';
 

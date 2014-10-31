@@ -60,7 +60,7 @@
                 <ol class="breadcrumb">
                     <li ng-repeat="item in seoNames"><span>{{item[language]}}</span></li>
                     <li class="active">
-                        <ctrl-text ng-model="node.url[language]" ng-required="true" ng-enabled="entity.properties.seo" ng-validate="validateSeo" ng-valid="validation.seo" ng-characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_"></ctrl-text>
+                        <ctrl-text ng-model="node.seo[language]" ng-required="true" ng-enabled="entity.properties.seo" ng-validate="validateSeo" ng-valid="validation.seo" ng-characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_"></ctrl-text>
                         <span ng-show="!validation.seo">(name is taken)</span>
                     </li>
                 </ol>
@@ -85,7 +85,7 @@
 
         <div id="page-content" data-scrollspy="Content" ng-show="node.entity !== 'pointer'">
             <div class="row" id="page-template" data-scrollspy="Template" ng-show="entity.properties.template">
-                <ctrl-select class="col-md-12" ng-model="node.view" ng-enabled="entity.properties.template" ng-required="true" ng-options="views" ng-default="true" ng-value-field="path" ng-name-field="path" ng-label="Template"></ctrl-select>
+                <ctrl-select class="col-md-12" ng-model="node.template" ng-enabled="entity.properties.template" ng-required="true" ng-options="templates" ng-default="true" ng-value-field="path" ng-name-field="path" ng-label="Template"></ctrl-select>
             </div>
 
             <div ng-show="tmpl" ng-include="tmpl"></div>

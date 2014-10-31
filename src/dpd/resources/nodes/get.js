@@ -13,7 +13,7 @@ if (!internal && !auth.isAuthorized(me, 'nodes', 'R')) {
 if (!internal) {
 
     node.buildUrl(self, function (response) {
-        self.link = response;
+        self.url = response;
     });
     
     hide('config');

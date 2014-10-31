@@ -88,7 +88,7 @@ module.exports = function(dpd) {
                 else {
                     if (pointedSeoNames.length === 0) {
                         returnObj.page = pointedNode;
-                        returnObj.view = pointedNode.view;
+                        returnObj.template = pointedNode.template;
                         returnObj.nodes = _.union(returnObj.nodes, pointedNode);
                         cb(returnObj);
                     }
@@ -99,7 +99,7 @@ module.exports = function(dpd) {
 
                         _.each(pointedSeoNames, function (pointedSeoName) {
                             var matchedPointedSeoNode = _.first(_.filter(seoNodes, function (x) {
-                                return x.url[jsnbt.localization ? returnObj.language : 'en'].toLowerCase() === pointedSeoName.toLowerCase() &&
+                                return x.seo[jsnbt.localization ? returnObj.language : 'en'].toLowerCase() === pointedSeoName.toLowerCase() &&
                                     x.parent === pointedLoopParentId &&
                                     x.domain === pointedNode.domain;
                             }));
@@ -117,7 +117,7 @@ module.exports = function(dpd) {
                             var targetMatchedNode = _.last(pointedFoundNodes);
                             if (targetMatchedNode) {
                                 returnObj.page = targetMatchedNode;
-                                returnObj.view = targetMatchedNode.view;
+                                returnObj.template = targetMatchedNode.template;
                                 returnObj.nodes = _.union(returnObj.nodes, pointedFoundNodes);
                                 cb(returnObj);
                             }
@@ -139,7 +139,7 @@ module.exports = function(dpd) {
         var seoNames = _.str.trim(url, '/').split('/');
 
         var seoNamesQuery = {};
-        seoNamesQuery['url.' + (jsnbt.localization ? language : 'en')] = { $in: seoNames };
+        seoNamesQuery['seo.' + (jsnbt.localization ? language : 'en')] = { $in: seoNames };
 
         dpd.nodes.get(seoNamesQuery, function (urlSeoNodes, urlSeoNodesError) {
             if (urlSeoNodesError)
@@ -152,7 +152,7 @@ module.exports = function(dpd) {
 
                 _.each(seoNames, function (seoName) {
                     var matchedSeoNode = _.first(_.filter(urlSeoNodes, function (x) {
-                        return x.url[jsnbt.localization ? language: 'en'].toLowerCase() === seoName.toLowerCase() &&
+                        return x.seo[jsnbt.localization ? language : 'en'].toLowerCase() === seoName.toLowerCase() &&
                             x.parent === loopParentId &&
                             x.domain === 'core';
                     }));
@@ -183,7 +183,7 @@ module.exports = function(dpd) {
                         returnObj.page = matchedNode;
                         returnObj.nodes = foundNodes;
                         returnObj.language = language;
-                        returnObj.view = matchedNode.view;
+                        returnObj.template = matchedNode.template;
                         cb(returnObj);
                     }
                 }
@@ -224,7 +224,7 @@ module.exports = function(dpd) {
                 pointer: undefined,
                 nodes: [],
                 language: undefined,
-                view: undefined,
+                template: undefined,
                 isActive: function () {
                     var rSelf = this;
                     return _.every(rSelf.nodes, function (x) { return x.active[rSelf.language] === true; });
@@ -289,7 +289,7 @@ module.exports = function(dpd) {
                                                 returnObj.page = resolvedNode;
                                                 returnObj.nodes = resolvedNodes;
                                                 returnObj.language = defaultLanguage;
-                                                returnObj.view = resolvedNode.view;
+                                                returnObj.template = resolvedNode.template;
 
                                                 cb(returnObj);
                                             }
@@ -352,9 +352,9 @@ module.exports = function(dpd) {
                     var cachedUrl = cache.url[parentCacheKey];
 
                     var newUrl = {};
-                    _.extend(newUrl, node.url);
-                    for (var langItem in node.url) {
-                        var seoName = node.url[langItem];
+                    _.extend(newUrl, node.seo);
+                    for (var langItem in node.seo) {
+                        var seoName = node.seo[langItem];
                         if (cachedUrl[langItem]) {
                             newUrl[langItem] = cachedUrl[langItem] + '/' + seoName
                         }
@@ -390,17 +390,17 @@ module.exports = function(dpd) {
 
                                 var lastNode = _.last(hierarchyNodes);
 
-                                _.extend(parentUrl, lastNode.url);
+                                _.extend(parentUrl, lastNode.seo);
 
-                                var urlKeys = getEntity(node.entity).isSeoNamed() ? node.url : lastNode.url;
+                                var urlKeys = getEntity(node.entity).isSeoNamed() ? node.seo : lastNode.seo;
                                 
                                 for (var langItem in urlKeys) {
                                     var langUrl = '';
                                     var fullyResolved = true;
                                     if (_.filter(jsnbt.languages, function (x) { return x.code === langItem; }).length > 0) {
                                         _.each(hierarchyNodes, function (hnode) {
-                                            if (hnode.url[langItem]) {
-                                                langUrl += '/' + hnode.url[langItem];
+                                            if (hnode.seo[langItem]) {
+                                                langUrl += '/' + hnode.seo[langItem];
                                             }
                                             else {
                                                 langUrl = '';
@@ -438,10 +438,10 @@ module.exports = function(dpd) {
                                     }, cb);
                                 }
                                 else {
-                                    _.extend(newUrl, node.url);
-                                    for (var langItem in node.url) {
+                                    _.extend(newUrl, node.seo);
+                                    for (var langItem in node.seo) {
                                         if (parentUrl[langItem])
-                                            newUrl[langItem] = parentUrl[langItem] + '/' + node.url[langItem];
+                                            newUrl[langItem] = parentUrl[langItem] + '/' + node.seo[langItem];
                                         else
                                             delete newUrl[langItem];
                                     }
@@ -468,9 +468,9 @@ module.exports = function(dpd) {
                 }
                 else {
                     var newUrl = {};
-                    _.extend(newUrl, node.url);
-                    for (var langItem in node.url) {
-                        var seoName = node.url[langItem];
+                    _.extend(newUrl, node.seo);
+                    for (var langItem in node.seo) {
+                        var seoName = node.seo[langItem];
                         var resolvedLangUrl = '';
                         if (node.domain === 'core' && jsnbt.localization && getEntity(node.entity).isLocalized()) {
                             resolvedLangUrl += '/' + langItem;

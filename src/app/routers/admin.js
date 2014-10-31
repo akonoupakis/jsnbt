@@ -28,7 +28,7 @@ module.exports = function () {
                     }
                     else {
                         if (viewPath !== null) {
-                            ctx.view = viewPath;
+                            ctx.template = viewPath;
                             view.render(ctx);
                         }
                         else {

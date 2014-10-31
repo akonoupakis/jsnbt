@@ -133,14 +133,10 @@
                 entity: 'page',
                 parent: '',
                 published: false,
-                localization: {
-                    enabled: true,
-                    language: ''
-                },
                 data: {
                     localized: {}
                 },
-                url: {},
+                seo: {},
                 active: {},
                 meta: {},
                 createdOn: new Date().getTime(),
@@ -149,8 +145,7 @@
                     inherits: true,
                     roles: []
                 },                
-                hierarchy: [],
-                config: {}
+                hierarchy: []
             });
 
             $data.register('languages', {

@@ -49,8 +49,8 @@ else {
 
     var seoNamesChanged = false;
     if (entity.hasProperty('seo')) {
-        for (var lang in self.url) {
-            if (self.url[lang] !== previous.url[lang]) {
+        for (var lang in self.seo) {
+            if (self.seo[lang] !== previous.seo[lang]) {
                 seoNamesChanged = true;
             }
         }
@@ -60,9 +60,9 @@ else {
                 if (siblingNodesError)
                     throw siblingNodesError;
                 else {
-                    for (var lang in self.url) {
-                        var siblingSeoNames = _.pluck(_.pluck(_.filter(siblingNodes, function (x) { return x.url[lang]; }), 'url'), lang);
-                        if (siblingSeoNames.indexOf(self.url[lang]) !== -1) {
+                    for (var lang in self.seo) {
+                        var siblingSeoNames = _.pluck(_.pluck(_.filter(siblingNodes, function (x) { return x.seo[lang]; }), 'seo'), lang);
+                        if (siblingSeoNames.indexOf(self.seo[lang]) !== -1) {
                             cancel('seo name already exists', 400);
                         }
                     }
