@@ -184,8 +184,7 @@
                    scope.loading = false;
                    scope.more = function () {
                        if (!scope.ended && typeof (scope.$parent.data.more) === 'function' && !scope.loading) {
-                           scope.loading = true;
-                           scope.$parent.$$prevSibling.loading = true;
+                           scope.$parent.$parent.loading = true;
                            scope.$parent.data.more().then(function (response) {
                                if (response.items.length > 0) {
                                    scope.$parent.data.more = response.more;
@@ -197,11 +196,9 @@
                                else {
                                    scope.ended = true;
                                }
-                               scope.$parent.$$prevSibling.loading = false;
-                               scope.loading = false;
+                               scope.$parent.$parent.loading = false;
                            }, function (error) {
-                               scope.$parent.$$prevSibling.loading = false;
-                               scope.loading = false;
+                                scope.$parent.$parent.loading = false;
                                throw error;
                            });
                        }
