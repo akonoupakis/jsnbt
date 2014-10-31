@@ -11,27 +11,6 @@ var getVersion = function () {
     return versionInfo.version;
 };
 
-var getViews = function () {
-
-    var views = [];
-
-    var templateDir = '../' + app.root + '/public/tmpl/view';
-    var templateSpecDir = '../' + app.root + '/public/tmpl/spec/view';
-
-    if (fs.existsSync(templateDir)) {
-        var filesInternal = fs.readdirSync(templateDir);
-        filesInternal.forEach(function (file) {
-            var fileSpecPath = templateSpecDir + '/' + file;
-            views.push({
-                tmpl: '/tmpl/view/' + file,
-                spec: fs.existsSync(fileSpecPath) ? '../tmpl/spec/view/' + file : undefined
-            });
-        });
-    }
-
-    return views;
-};
-
 module.exports = {
     
     languages: [
@@ -78,6 +57,8 @@ module.exports = {
     modules: [],
     
     addons: [],
+
+    templates: [],
 
     setLocale: function (code) {
         var language = _.first(_.filter(this.languages, function (x) { return x.code === code; }));
@@ -212,6 +193,17 @@ module.exports = {
                 self.data.push(clone(moduleDatum));
             }
         });
+
+        var moduleTemplates = module.templates || [];
+        _.each(moduleTemplates, function (moduleTemplate) {
+            var matchedTemplate = _.first(_.filter(self.templates, function (x) { return x.path === moduleTemplate.path; }));
+            if (matchedTemplate) {
+                _.extend(matchedTemplate, moduleTemplate);
+            }
+            else {
+                self.templates.push(clone(moduleTemplate));
+            }
+        });
     },
 
     registerConfig: function (name, config) {
@@ -260,9 +252,10 @@ module.exports = {
 
             result.version = getVersion();
             
-            result.views = getViews();
             result.addons = self.addons;
             result.entities = self.entities;
+
+            result.templates = self.templates;
 
             result.restricted = self.restricted;
 

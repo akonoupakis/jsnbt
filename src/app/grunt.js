@@ -21,7 +21,7 @@ module.exports = function (grunt) {
 		{
 		    expand: true,
 		    cwd: 'src/web/public/',
-		    src: ['img/**', 'js/**', 'font/**', 'css/**', 'tmpl/partial/**', 'tmpl/spec/**', 'files/**'],
+		    src: ['img/**', 'js/**', 'font/**', 'css/**', 'tmpl/**', 'files/**'],
 		    dest: folder + '/public/'
 		},
 		{
@@ -35,39 +35,82 @@ module.exports = function (grunt) {
     };
 
     var getFilesToPreprocess = function (folder, site) {
+        var results = [];
 
         var files = [];
 
-        var paths = [];
+        var addFile = function (internalFilePath) {
+            if (fs.existsSync(server.getPath(internalFilePath))) {
+                files.push(internalFilePath);
+            }
+        };
 
         var addPath = function (internalPath) {
             if (fs.existsSync(server.getPath(internalPath))) {
-                paths.push(internalPath);
+                var pathFiles = fs.readdirSync(server.getPath(internalPath));
+                _.each(pathFiles, function (packFile) {
+                    addFile(internalPath + '/' + packFile);
+                });
             }
         };
 
         if (site === undefined || site === 'admin') {
-            addPath('src/web/admin/tmpl/error');
-            addPath('src/web/admin/tmpl/view');
+            addPath('src/web/admin/error');
+            addFile('src/web/admin/index.html');
         }
 
         if (site === undefined || site === 'public') {
-            addPath('src/web/public/tmpl/error');
-            addPath('src/web/public/tmpl/view');
+            addPath('src/web/public/error');
+
+            var packInfoPath = server.getPath('package.json');
+            if (fs.existsSync(packInfoPath)) {
+                var packInfo = require(packInfoPath);
+                if (packInfo.main) {
+                    var packIndexPath = server.getPath(packInfo.main);
+                    if (fs.existsSync(packIndexPath)) {
+                        var packObject = require(packIndexPath);
+                        if (packObject && packObject.templates) {
+                            _.each(packObject.templates, function (packTemplate) {
+                                addFile('src/web/public/' + _.str.ltrim(packTemplate.path, '/'));
+                            });
+                        }
+                    }
+                }
+            }
         }
 
         if (fs.existsSync(server.getPath('src/pck'))) {
             var packages = fs.readdirSync(server.getPath('src/pck'));
             _.each(packages, function (packageItem) {
-                if (site === undefined || site === 'admin') {
-                    addPath('src/pck/' + packageItem + '/web/admin/tmpl/error');
-                    addPath('src/pck/' + packageItem + '/web/admin/tmpl/view');
+
+                if (fs.lstatSync(server.getPath('src/pck/' + packageItem)).isDirectory()) {
+                    if (site === undefined || site === 'admin') {
+                        addPath('src/pck/' + packageItem + '/web/admin/error');
+                        addFile('src/pck/' + packageItem + '/web/admin/index.html');
+                    }
+
+                    if (site === undefined || site === 'public') {
+                        addPath('src/pck/' + packageItem + '/web/public/error');
+
+                        var nodeModulePackagePath = server.getPath('node_modules/' + packageItem + '/package.json');
+                        if (fs.existsSync(nodeModulePackagePath)) {
+                            var nodeModulePackage = require(nodeModulePackagePath);
+
+                            if (nodeModulePackage.main) {
+                                var nodeModuleIndexPath = server.getPath('node_modules/' + packageItem + '/' + nodeModulePackage.main);
+                                if (fs.existsSync(nodeModuleIndexPath)) {
+                                    var nodeModuleIndex = require(nodeModuleIndexPath);
+                                    if (nodeModuleIndex && nodeModuleIndex.templates) {
+                                        _.each(nodeModuleIndex.templates, function (packTemplate) {
+                                            addFile('src/pck/' + packageItem + '/web/public/' + _.str.ltrim(packTemplate.path, '/'));
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
 
-                if (site === undefined || site === 'public') {
-                    addPath('src/pck/' + packageItem + '/web/public/tmpl/error');
-                    addPath('src/pck/' + packageItem + '/web/public/tmpl/view');
-                }
             });
         }
 
@@ -75,26 +118,25 @@ module.exports = function (grunt) {
             return text.replace(/\\/g, '/');
         };
 
-        _.each(paths, function (pathItem) {
-            var adminErrorFiles = fs.readdirSync(server.getPath(pathItem));
-            _.each(adminErrorFiles, function (adminErrorFile) {
-                var destPath = pathItem;
+        _.each(files, function (pathItem) {
+            var destPath = null;
 
-                if (destPath.indexOf('web/admin/') !== -1) {
-                    destPath = 'admin/' + destPath.substring(destPath.indexOf('web/admin/') + 'web/admin/'.length);
-                }
-                else if (destPath.indexOf('web/public/') !== -1) {
-                    destPath = destPath.substring(destPath.indexOf('web/public/') + 'web/public/'.length);
-                }
+            if (pathItem.indexOf('web/admin/') !== -1) {
+                destPath = 'admin/' + pathItem.substring(pathItem.indexOf('web/admin/') + 'web/admin/'.length);
+            }
+            else if (pathItem.indexOf('web/public/') !== -1) {
+                destPath = pathItem.substring(pathItem.indexOf('web/public/') + 'web/public/'.length);
+            }
 
-                files.push({
-                    src: './' + denormalize(path.join(pathItem, adminErrorFile)),
-                    dest: './' + denormalize(path.join(folder, '/', 'public', '/', destPath, adminErrorFile))
+            if (destPath !== null) {
+                results.push({
+                    src: './' + denormalize(pathItem),
+                    dest: './' + denormalize(path.join(folder, '/', 'public', '/', destPath))
                 });
-            });
+            }
         });
 
-        return files;
+        return results;
     };
 
     var getFilesToLess = function (folder, site) {

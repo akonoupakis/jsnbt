@@ -297,12 +297,27 @@
                     var deferred = $q.defer();
 
                     var views = [];
-                    $(jsnbt.views).each(function (t, template) {
+                    $(jsnbt.templates).each(function (t, template) {
                         var tmpl = {};
                         $.extend(true, tmpl, template);
-                        views.push(tmpl);
+
+                        var include = false;
+
+                        if (tmpl.restricted) {
+                            if (tmpl.restricted.indexOf($scope.node.entity) !== -1) {
+                                views.push(tmpl);
+                            }
+                        }                        
+                        else {
+                            views.push(tmpl);
+                        }
                     });
+
                     $scope.views = views;
+
+                    if (_.filter($scope.views, function (x) { return x.path === $scope.node.view; }).length === 0) {
+                        $scope.node.view = '';
+                    }
 
                     deferred.resolve(views);
 
@@ -614,7 +629,7 @@
                 });
             });
 
-            $scope.$watch('node.entity', function () {
+            $scope.$watch('node.entity', function (newValue) {
                 if ($scope.node) {
 
                     fn.setParentEntities().then(function () {
@@ -626,6 +641,29 @@
                     }, function (ex) {
                         logger.error(ex);
                     });
+
+                    var defaults = {
+                        treeNode: true,
+                        localized: true,
+                        parent: true,
+                        seo: true,
+                        meta: true,
+                        permissions: true
+                    };
+
+                    var entity = {};
+                    $.extend(true, entity, defaults);
+
+                    var knownEntity = _.first(_.filter(jsnbt.entities, function (x) { return x.name === newValue; }));
+
+                    if (knownEntity)
+                        $.extend(true, entity, knownEntity);
+
+                    $scope.entity = knownEntity;
+
+                    fn.setViews().then(function (response) { }, function (ex) {
+                        logger.error(ex);
+                    });
                 }
             });
 
@@ -635,30 +673,6 @@
                 }, function (ex) {
                     logger.error(ex);
                 });
-            });
-            
-            $scope.$watch('node.entity', function (newValue) {
-                if (!$scope.node)
-                    return;
-
-                var defaults = {
-                    treeNode: true,
-                    localized: true,
-                    parent: true,
-                    seo: true,
-                    meta: true,
-                    permissions: true
-                };
-
-                var entity = {};
-                $.extend(true, entity, defaults);
-
-                var knownEntity = _.first(_.filter(jsnbt.entities, function (x) { return x.name === newValue; }));
-                
-                if (knownEntity)
-                    $.extend(true, entity, knownEntity);
-
-                $scope.entity = knownEntity;
             });
 
             $scope.$watch('node.parent', function () {
@@ -722,21 +736,13 @@
                         fn.setLanguages().then(function (languagesResponse) {
                             fn.setLanguage().then(function (languageResponse) {
                                 fn.setTypes().then(function (typesResponse) {
-                                    fn.setViews().then(function (viewsResponse) {
-                                        fn.set().then(function (setResponse) {
-                                            fn.setSelectedRoles().then(function (selRolesResponse) {
-                                                fn.setTmpl().then(function (tmplResponse) {
-                                                }, function (tmplError) {
-                                                    logger.error(tmplError);
-                                                });
-                                            }, function (selRolesError) {
-                                                logger.error(selRolesError);
-                                            });                                               
-                                        }, function (setError) {
-                                            logger.error(setError);
-                                        });
-                                    }, function (viewsError) {
-                                        logger.error(viewsError);
+                                    fn.set().then(function (setResponse) {
+                                        fn.setSelectedRoles().then(function (selRolesResponse) {
+                                        }, function (selRolesError) {
+                                            logger.error(selRolesError);
+                                        });                                               
+                                    }, function (setError) {
+                                        logger.error(setError);
                                     });
                                 }, function (typesError) {
                                     logger.error(typesError);

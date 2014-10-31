@@ -55,12 +55,15 @@ module.exports = function (req, res) {
             }
         },
         error: function (err, stack) {
+            this.req._routed = true;
             error.render(this, err, stack);
         },
         render: function () {
+            this.req._routed = true;
             view.render(this);
         },
         redirect: function (url) {
+            this.req._routed = true;
             this.res.writeHead(302, { "Location": url });
             this.res.end();
         }

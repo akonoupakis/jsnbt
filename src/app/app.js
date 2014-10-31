@@ -124,7 +124,29 @@ var jsnbtModule = {
             role: 'sa',
             crud: ['C', 'R', 'U', 'D']
         }]
-    }] //,
+    }],
+
+    templates: [{
+        path: '/tmpl/index.html',
+        restricted: ['page']
+    }, {
+        path: '/tmpl/login.html',
+        restricted: ['page']
+    }, {
+        path: '/tmpl/text.html',
+        spec: '/tmpl/spec/page/text.html'
+    }, {
+        path: '/tmpl/nodes.html',
+        spec: '/tmpl/spec/page/nodes.html'
+    }, {
+        path: '/tmpl/data.html',
+        spec: '/tmpl/spec/page/data.html'
+    }, {
+        path: '/tmpl/files.html',
+        spec: '/tmpl/spec/page/files.html'
+    }]
+
+    //,
 
     /*
     lists: [{
@@ -146,6 +168,8 @@ var jsnbtModule = {
 
     */
 };
+
+exports.templates = jsnbtModule.templates;
 
 exports.init = function (env, config, module) {
     var self = this;

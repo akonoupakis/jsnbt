@@ -85,7 +85,7 @@
 
         <div id="page-content" data-scrollspy="Content" ng-show="node.entity !== 'pointer'">
             <div class="row" id="page-template" data-scrollspy="Template" ng-show="entity.properties.template">
-                <ctrl-select class="col-md-12" ng-model="node.view" ng-enabled="entity.properties.template" ng-required="true" ng-options="views" ng-default="true" ng-value-field="tmpl" ng-name-field="tmpl" ng-enabled="node.entity !== 'pointer'" ng-label="Template"></ctrl-select>
+                <ctrl-select class="col-md-12" ng-model="node.view" ng-enabled="entity.properties.template" ng-required="true" ng-options="views" ng-default="true" ng-value-field="path" ng-name-field="path" ng-label="Template"></ctrl-select>
             </div>
 
             <div ng-show="tmpl" ng-include="tmpl"></div>
