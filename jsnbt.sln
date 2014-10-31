@@ -28,6 +28,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{E473F1C8-7
 	ProjectSection(SolutionItems) = preProject
 		ABOUT.md = ABOUT.md
 		bower.json = bower.json
+		CHANGELOG.md = CHANGELOG.md
 		config.js = config.js
 		CONTRIBUTING.md = CONTRIBUTING.md
 		gruntfile.js = gruntfile.js
