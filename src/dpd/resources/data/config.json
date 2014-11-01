@@ -33,12 +33,12 @@
 			"id": "localization",
 			"order": 5
 		},
-		"data": {
-			"name": "data",
+		"content": {
+			"name": "content",
 			"type": "object",
 			"typeLabel": "object",
 			"required": true,
-			"id": "data",
+			"id": "content",
 			"order": 3
 		},
 		"createdOn": {

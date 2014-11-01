@@ -23,14 +23,14 @@
             $scope.flat = function (node) {
                 var newObj = {};
                 node = node || {};
-                if (node.data && node.data.localized && node.data.localized[$scope.language])
-                    $.extend(true, newObj, node.data.localized[$scope.language]);
+                if (node.content && node.content.localized && node.content.localized[$scope.language])
+                    $.extend(true, newObj, node.content.localized[$scope.language]);
 
-                if (node.data && node.data.localized)
-                    delete node.data.localized;
+                if (node.content && node.content.localized)
+                    delete node.content.localized;
 
-                if (node.data)
-                    $.extend(true, newObj, node.data);
+                if (node.content)
+                    $.extend(true, newObj, node.content);
 
                 return newObj;
             }

@@ -73,12 +73,12 @@
 			"id": "pointer",
 			"order": 8
 		},
-		"data": {
-			"name": "data",
+		"content": {
+			"name": "content",
 			"type": "object",
 			"typeLabel": "object",
 			"required": true,
-			"id": "data",
+			"id": "content",
 			"order": 10
 		},
 		"seo": {
