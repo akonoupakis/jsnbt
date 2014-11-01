@@ -18,6 +18,8 @@
 
 	MongoDB : http://nodejs.org/download/
 
+	GraphicsMagick : http://www.graphicsmagick.org/download.html
+
 	bower : npm install -g bower
 	grunt : npm install -g grunt-cli
 

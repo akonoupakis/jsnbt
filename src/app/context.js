@@ -2,6 +2,7 @@ var app = require('./app.js');
 var error = require('./error.js');
 var view = require('./view.js');
 var parseUri = require('parseUri');
+var json = require('./utils/json.js');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
@@ -66,6 +67,11 @@ module.exports = function (req, res) {
         redirect: function (url) {
             this.req._routed = true;
             this.res.writeHead(302, { "Location": url });
+            this.res.end();
+        },
+        write: function (jsonObj) {
+            this.res.writeHead(200, { "Content-Type": "application/json" });
+            this.res.write(json.stringify(jsonObj));
             this.res.end();
         }
     };

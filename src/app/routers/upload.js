@@ -22,7 +22,7 @@ module.exports = function () {
                 if (ctx.req.method === 'POST') {
 
                     if (!auth.isInRole(ctx.req.session.user, 'admin')) {
-                        ctx.res.writeHead(400, { "Content-Type": "application/text" });
+                        ctx.res.writeHead(401, { "Content-Type": "application/text" });
                         ctx.res.write(401);
                         ctx.res.end();
                     }
@@ -64,7 +64,6 @@ module.exports = function () {
                         ctx.res.end();
                     });
                 }
-                
             }
             else {
                 next();

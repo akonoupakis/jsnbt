@@ -58,14 +58,14 @@ module.exports = function () {
                                                             ctx.redirect(loginUrl);
                                                         }
                                                         else {
-                                                            ctx.error(401, 'Access denied');
+                                                            ctx.error(401);
                                                         }
                                                     });
                                                 }
                                             });
                                         }
                                         else {
-                                            ctx.error(401, 'Access denied');
+                                            ctx.error(401);
                                         }
                                     }
                                 });
@@ -101,7 +101,7 @@ module.exports = function () {
                 }
                 catch (err) {
                     app.logger.error(err);
-                    ctx.error(500, err.toString());
+                    ctx.error(500, err);
                 }
             }
             else {

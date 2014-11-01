@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="<%= language %>" ng-controller="AppController">
+<html lang="<%= language %>">
 <head>
     <base href="<%= baseHref %>" />
     <meta charset="utf-8" />
@@ -37,7 +37,7 @@
     <script type="text/javascript" src="js/init.min.js"></script>
     <!-- @endif -->
 </head>
-<body>
+<body ng-controller="AppController">
     jsnbt index page
 
     <p>page id: {{page.id}}</p>
@@ -45,12 +45,7 @@
     <p>test header text: {{pageData.header}}</p>
     <p>test body text: {{pageData.body}}</p>
 
-
-    <!--<p>
-        links:
-        <ul>
-            <li ng-repeat="item in languages"><a href="{{localizedUrls[item]}}">{{item}}</a></li>
-        </ul>
-    </p>-->
+    <img src="files/img/g.png" />
+    <img src="files/img/g.png?type=normal1" />
 </body>
 </html>

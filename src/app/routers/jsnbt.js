@@ -1,5 +1,4 @@
 var app = require('../app.js');
-var error = require('../error.js');
 var jsnbt = require('../jsnbt.js');
 var json = require('../utils/json.js');
 
@@ -9,7 +8,7 @@ module.exports = function () {
         route: function (ctx, next) {
             if (ctx.uri.path === '/jsnbt.js' || ctx.uri.path === '/admin/jsnbt.js') {
                 if (ctx.req.method !== 'GET') {
-                    error.render(ctx, 405);
+                    ctx.error(405);
                 }
                 else {
                     try {
@@ -21,7 +20,7 @@ module.exports = function () {
                     }
                     catch (err) {
                         app.logger.error(err);
-                        error.render(ctx, 500, err.toString());
+                        ctx.error(500, err);
                     }
                 }
             }

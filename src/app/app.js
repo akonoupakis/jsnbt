@@ -21,6 +21,21 @@ var jsnbtModule = {
     //   'http://maps.google.com/maps/api/js?sensor=true'
     //],
 
+    images: [{
+        name: 'normal1',
+        options: {
+            width: 200,
+            height: 100,
+            cropwidth: 128,
+            cropheight: 128,
+            x: 0,
+            y: 0,
+            quality: undefined,
+            gravity: undefined,
+            fill: undefined
+        }
+    }],
+
     entities: [{
         name: 'page',
         allowed: ['page', 'pointer'],
@@ -269,9 +284,7 @@ exports.init = function (env, config, module) {
             }
         }
     }
-
-    this.cache = require('nodecache');
-
+    
     this.server = deployd({
         port: config.port,
         env: config.env === 'prod' ? 'production' : 'development',

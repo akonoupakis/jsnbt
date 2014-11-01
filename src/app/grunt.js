@@ -21,13 +21,13 @@ module.exports = function (grunt) {
 		{
 		    expand: true,
 		    cwd: 'src/web/public/',
-		    src: ['img/**', 'js/**', 'font/**', 'css/**', 'tmpl/**', 'files/**'],
+		    src: ['img/**', 'js/**', 'font/**', 'css/**', 'tmpl/**', 'files/**', 'error/**', 'tmp/**'],
 		    dest: folder + '/public/'
 		},
 		{
 		    expand: true,
 		    cwd: 'src/web/admin/',
-		    src: ['img/**', 'js/**', 'font/**', 'css/**', 'tmpl/partial/**', 'tmpl/spec/**'],
+		    src: ['img/**', 'js/**', 'font/**', 'css/**', 'tmpl/**', 'error/**'],
 		    dest: folder + '/public/admin/'
 		}];
 
@@ -388,6 +388,7 @@ module.exports = function (grunt) {
     fs.create('./src/web/public/js');
     fs.create('./src/web/public/js/app');
     fs.create('./src/web/public/js/lib');
+    fs.create('./src/web/public/tmp');
     fs.create('./src/web/public/tmpl');
     fs.create('./src/web/public/tmpl/error');
     fs.create('./src/web/public/tmpl/partial');
@@ -496,7 +497,7 @@ module.exports = function (grunt) {
                 expand: true,
                 onlyIf: 'newer',
                 cwd: 'src/web/admin/tmpl/',
-                src: ['partial/**', 'spec/**'],
+                src: ['**'],
                 dest: 'dev/public/admin/tmpl/'
             }]
         },
@@ -532,7 +533,7 @@ module.exports = function (grunt) {
                 expand: true,
                 onlyIf: 'newer',
                 cwd: 'src/web/public/tmpl/',
-                src: ['partial/**', 'spec/**'],
+                src: ['**'],
                 dest: 'dev/public/tmpl/'
             }]
         },
@@ -700,8 +701,8 @@ module.exports = function (grunt) {
         },
         dev: {
             files: [
-                'src/web/admin/js/**', 'src/web/admin/css/**', 'src/web/admin/tmpl/spec/**', 'src/web/admin/tmpl/partial/**', 'src/web/admin/tmpl/view/**', 'src/web/admin/tmpl/error/**',
-                'src/web/public/js/**', 'src/web/public/css/**', 'src/web/public/tmpl/spec/**', 'src/web/public/tmpl/partial/**', 'src/web/public/tmpl/view/**', 'src/web/public/tmpl/error/**',
+                'src/web/admin/js/**', 'src/web/admin/css/**', 'src/web/admin/tmpl/**',
+                'src/web/public/js/**', 'src/web/public/css/**', 'src/web/public/tmpl/**'
             ],
             tasks: [
                 //'jshint',

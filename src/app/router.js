@@ -1,5 +1,6 @@
 var app = require('./app.js');
 var fs = require('fs');
+var path = require('path');
 var jsnbt = require('./jsnbt.js');
 var auth = require('./auth.js');
 var error = require('./error.js');
@@ -13,6 +14,7 @@ var stardardRouterNames = [
 
     './routers/base.js',
     './routers/api.js',
+    './routers/image.js',
     './routers/jsnbt.js',
     './routers/package.js',
     './routers/upload.js',
@@ -40,12 +42,12 @@ module.exports = function () {
             var ctx = require('./context.js')(req, res);
             var ignoredPaths = ['dashboard', 'dpd.js', '__resources', 'socket.io', 'favicon.ico', 'app-offline.htm', 'dpd'];
 
-            var ignoredPathPrefixes = ['/css/', '/font/', '/img/', '/js/', '/tmpl/', '/admin/css/', '/admin/font/', '/admin/img/', '/admin/js/', '/admin/tmpl/'];
+            var ignoredPathPrefixes = ['/css/', '/font/', '/img/', '/js/', '/tmpl/', '/tmp/', '/files/', '/admin/css/', '/admin/font/', '/admin/img/', '/admin/js/', '/admin/tmpl/'];
 
             var notFoundPaths = [];
             var templatePaths = _.pluck(jsnbt.templates, 'path');
             notFoundPaths = _.union(notFoundPaths, templatePaths);
-            notFoundPaths = _.union(notFoundPaths, ['/error/', '/admin/error/']);
+            notFoundPaths = _.union(notFoundPaths, ['/tmp/', '/error/', '/admin/error/']);
 
             var templateSpecPaths = _.pluck(_.filter(jsnbt.templates, function (x) { return x.spec !== undefined; }), 'spec');
        
@@ -79,6 +81,15 @@ module.exports = function () {
                     //if (_.filter(templateSpecPaths, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length > 0) {
                     //    processRequest = true;
                     //}
+                    
+                    if (!processRequest && ctx.uri.first === 'files' && ctx.uri.query.type) {
+                        var imageType = _.first(_.filter(jsnbt.images, function (x) { return x.name === ctx.uri.query.type; }));
+                        if (imageType) {
+                            var imageFileExtension = path.extname(ctx.uri.path).toLowerCase();
+                            if (['.png', '.jpg', 'jpeg', 'gif', 'tiff'].indexOf(imageFileExtension) !== -1)
+                                processRequest = true;
+                        }
+                    }
                     
                     if (processRequest) {
                         req._routed = true;

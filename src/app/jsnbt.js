@@ -60,6 +60,8 @@ module.exports = {
 
     templates: [],
 
+    images: [],
+
     setLocale: function (code) {
         var language = _.first(_.filter(this.languages, function (x) { return x.code === code; }));
         if (language)
@@ -202,6 +204,17 @@ module.exports = {
             }
             else {
                 self.templates.push(clone(moduleTemplate));
+            }
+        });
+
+        var moduleImages = module.images || [];
+        _.each(moduleImages, function (moduleImage) {
+            var matchedImage = _.first(_.filter(self.images, function (x) { return x.path === moduleImage.path; }));
+            if (matchedImage) {
+                _.extend(matchedImage, moduleImage);
+            }
+            else {
+                self.images.push(clone(moduleImage));
             }
         });
     },

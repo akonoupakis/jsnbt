@@ -141,7 +141,7 @@ module.exports = function () {
                 }
                 catch (err) {
                     app.logger.error(err);
-                    ctx.error(500, err.toString());
+                    ctx.error(500, err);
                 }
             }
             else {

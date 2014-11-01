@@ -1,4 +1,4 @@
-var view = require('../view.js');
+var app = require('../app.js');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
@@ -31,7 +31,7 @@ module.exports = function () {
                     else {
                         if (viewPath !== null) {
                             ctx.template = viewPath;
-                            view.render(ctx);
+                            ctx.render();
                         }
                         else {
                             next();
@@ -40,7 +40,7 @@ module.exports = function () {
                 }
                 catch (err) {
                     app.logger.error(err);
-                    error.render(ctx, 500, err.toString());
+                    ctx.error(500, err);
                 }
             }
             else {
