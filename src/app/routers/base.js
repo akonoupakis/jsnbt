@@ -36,12 +36,21 @@ module.exports = function () {
                         if (resolved && resolved.page && resolved.isActive() && resolved.isPublished()) {
                             var restricted = false;
 
-                            // console.log(ctx.req.headers["user-agent"]);
-                            // if ($http_user_agent ~* (googlebot|yahoo|baiduspider|bingbot|yandexbot|teoma)) {
-
                             var prerender = false;
-                            if (ctx.uri.query.prerender)
-                                prerender = true;
+                            if (ctx.req.headers["user-agent"]) {
+                                var userAgent = ctx.req.headers["user-agent"];
+                                var searchbots = ['google', 'googlebot', 'yahoo', 'baiduspider', 'bingbot', 'yandexbot', 'teoma'];
+                                _.each(searchbots, function (searchbot) {
+                                    if (userAgent.toLowerCase().indexOf(searchbot) !== -1) {
+                                        prerender = true;
+                                        return false;
+                                    }
+                                });
+                            }
+
+                            if (!prerender)
+                                if (ctx.uri.query.prerender)
+                                    prerender = true;
 
                             if (!restricted && jsnbt.restricted) {
                                 if (!auth.isInRole(ctx.req.session.user, resolved.getPermissions())) {

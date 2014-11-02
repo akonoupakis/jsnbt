@@ -1,6 +1,8 @@
 var app = require('../app.js');
 var auth = require('../auth.js');
 var jsnbt = require('../jsnbt.js');
+var crawler = require('../crawler.js');
+var jsuri = require('jsuri');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
@@ -24,10 +26,6 @@ module.exports = function () {
         }
     });
     
-    var isSearchBot = function (req) {
-        return false;
-    }
-
     return {
         route: function (ctx, next) {
             if (ctx.uri.path !== '/') {
@@ -39,7 +37,21 @@ module.exports = function () {
                           
                             var restricted = false;
 
-                            var searchbot = isSearchBot(ctx.req);
+                            var prerender = false;
+                            if (ctx.req.headers["user-agent"]) {
+                                var userAgent = ctx.req.headers["user-agent"];
+                                var searchbots = ['google', 'googlebot', 'yahoo', 'baiduspider', 'bingbot', 'yandexbot', 'teoma'];
+                                _.each(searchbots, function (searchbot) {
+                                    if (userAgent.toLowerCase().indexOf(searchbot) !== -1) {
+                                        prerender = true;
+                                        return false;
+                                    }
+                                });
+                            }
+
+                            if (!prerender)
+                                if (ctx.uri.query.prerender)
+                                    prerender = true;
 
                             if (!restricted && jsnbt.restricted) {
                                 if (!auth.isInRole(ctx.req.session.user, resolved.getPermissions())) {
@@ -48,7 +60,7 @@ module.exports = function () {
                             }
                             
                             if (restricted) {
-                                if (searchbot) {
+                                if (prerender) {
                                     ctx.error(401);
                                 }
                                 else {
@@ -85,8 +97,24 @@ module.exports = function () {
                                 }
                             }
                             else {
-                                if (searchbot) {
-                                    ctx.error(401);
+                                if (prerender) {
+                                    var targetUrl = _.str.rtrim(ctx.uri.getBaseHref(), '/') + ctx.uri.url;
+                                    if (ctx.uri.query.prerender) {
+                                        targetUrl = new jsuri(targetUrl).deleteQueryParam('prerender').toString();
+                                    }
+
+                                    console.log(targetUrl);
+
+                                    crawler.crawl(targetUrl, function (crawlErr, crawlData) {
+                                        if (crawlErr) {
+                                            ctx.error(500, crawlErr);
+                                        }
+                                        else {
+                                            ctx.res.writeHead(200, { "Content-Type": "text/html" });
+                                            ctx.res.write(crawlData);
+                                            ctx.res.end();
+                                        }
+                                    });
                                 }
                                 else {
                                     ctx.node = resolved.page || {};
