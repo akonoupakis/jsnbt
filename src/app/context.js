@@ -35,6 +35,15 @@ module.exports = function (req, res) {
             description: '',
             keywords: ''
         },
+        robots: {
+            noindex: false,
+            nofollow: false,
+            noarchive: false,
+            nosnipet: false,
+            noodp: false,
+            notranslate: false,
+            noimageindex: false
+        },
         template: '',
         uri: {
             url: uri.relative,
@@ -58,10 +67,6 @@ module.exports = function (req, res) {
                 }
                 href += '/';
                 return href;
-            },
-            toString: function () {
-                console.log(123);
-                return uri.toString();
             }
         },
         error: function (err, stack) {

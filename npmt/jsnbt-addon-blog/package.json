@@ -1,0 +1,53 @@
+{
+  "name": "jsnbt-addon-blog",
+  "version": "1.0.1",
+  "description": "A blogs addon for the jsnbt cms",
+  "keywords": [
+    "jsnbt",
+    "jsonbot",
+    "jsnbt location"
+  ],
+  "readme": "null",
+  "repository": {
+    "type": "mercurial",
+    "url": "https://bitbucket.org/akonoupakis/jsnbt-addon-blog"
+  },
+  "bugs": {
+    "url": "https://bitbucket.org/akonoupakis/jsnbt-addon-blog/issues",
+    "email": "konoupakis@gmail.com"
+  },
+  "author": {
+    "name": "Apostolis Konoupakis",
+    "email": "konoupakis@gmail.com",
+    "url": ""
+  },
+  "config": {},
+  "main": "src/app/index.js",
+  "files": [
+    "src/app/**",
+    "src/dpd/**",
+    "src/web/admin/**",
+    "src/web/public/js/app/addons/eshop/main.js",
+    "scripts/**",
+    "bower.json"
+  ],
+  "scripts": {
+    "install": "node scripts/install.js",
+    "postuninstall": "node scripts/uninstall.js"
+  },
+  "dependencies": {
+    "jsnbt": "*"
+  },
+  "devDependencies": {
+    "grunt": "*",
+    "grunt-contrib-clean": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-contrib-less": "*",
+    "grunt-contrib-cssmin": "*",
+    "grunt-contrib-copy": "*",
+    "grunt-preprocess": "*",
+    "grunt-env": "*"
+  }
+}

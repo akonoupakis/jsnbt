@@ -4,8 +4,8 @@
     <base href="<%= baseHref %>" />
     <meta charset="utf-8" />
 
-    <meta name="robots" content="noindex, nofollow, notranslate">
-
+    <% if(robots !== '') { %><meta name="robots" content="<%= robots %>">
+    <% } %>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!--meta-->
@@ -16,19 +16,16 @@
     <!-- @if NODE_ENV='DEVELOPMENT' -->
     <link rel="stylesheet" href="css/style.css" />
 
-    <% _.each(scripts, function(file) { %>
-    <script type="text/javascript" src="<%= file %>"></script>
+    <% _.each(scripts, function(file) { %><script type="text/javascript" src="<%= file %>"></script>
     <% }); %>
 
-    <% _.each(js.lib, function(file) { %>
-    <script type="text/javascript" src="<%= file %>"></script>
+    <% _.each(js.lib, function(file) { %><script type="text/javascript" src="<%= file %>"></script>
     <% }); %>
 
     <script type="text/javascript" src="../dpd.js"></script>
     <script type="text/javascript" src="jsnbt.js"></script>
 
-    <% _.each(js.app, function(file) { %>
-    <script type="text/javascript" src="<%= file %>"></script>
+    <% _.each(js.app, function(file) { %><script type="text/javascript" src="<%= file %>"></script>
     <% }); %>
     <script type="text/javascript" src="js/init.js"></script>
     <!-- @endif -->

@@ -4,6 +4,9 @@
     <base href="<%= baseHref %>" />
     <meta charset="utf-8" />
 
+    <% if(robots !== '') { %><meta name="robots" content="<%= robots %>">
+    <% } %>
+
     <!--meta-->
     <title><%= meta.title %></title>
     <meta name="keywords" content="<%= meta.keywords %>" />

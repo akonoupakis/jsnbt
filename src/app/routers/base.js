@@ -119,6 +119,18 @@ module.exports = function () {
                                     ctx.meta = resolved.page.meta || {};
                                     ctx.uri.scheme = resolved.page.secure === true ? 'https' : 'http';
 
+                                    if (_.filter(resolved.getPermissions(), function (x) { return x !== 'public' }).length > 0) {
+                                        ctx.robots.noindex = true;
+                                        ctx.robots.nofollow = true;
+                                    }
+                                    else {
+                                        var robots = resolved.getRobots();
+                                        _.each(robots, function (robot) {
+                                            if (ctx.robots[robot] !== undefined)
+                                                ctx.robots[robot] = true;
+                                        });
+                                    }
+
                                     if (resolved.pointer) {
                                         var nextIndex = 0;
                                         var nextInternal = function () {

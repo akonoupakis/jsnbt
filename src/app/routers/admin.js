@@ -31,6 +31,10 @@ module.exports = function () {
                     else {
                         if (viewPath !== null) {
                             ctx.template = viewPath;
+
+                            ctx.robots.noindex = true;
+                            ctx.robots.nofollow = true;
+
                             ctx.render();
                         }
                         else {

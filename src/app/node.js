@@ -245,6 +245,9 @@ module.exports = function(dpd) {
                     });
 
                     return rRoles;
+                },
+                getRobots: function () {
+                    return [];
                 }
             };
 

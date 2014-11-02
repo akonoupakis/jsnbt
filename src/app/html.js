@@ -16,7 +16,8 @@ exports.parse = function (ctx, tmpl, model) {
             title: '',
             keywords: '',
             description: ''
-        }
+        },
+        robots: ''
     };
 
     _.extend(mdl.meta, ctx.meta);
@@ -30,6 +31,15 @@ exports.parse = function (ctx, tmpl, model) {
     if (isAdmin) {
         mdl.baseHref += 'admin/';
     }
+
+    var robotNames = [];
+    for (var robotName in ctx.robots) {
+        if (ctx.robots[robotName] === true)
+            robotNames.push(robotName);
+    }
+
+    if (robotNames.length > 0)
+        mdl.robots = robotNames.join(',');
 
     mdl.js = {};
 
