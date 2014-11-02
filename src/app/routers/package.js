@@ -17,7 +17,9 @@ module.exports = function () {
                 }
                 else {
                     try {
-                        ctx.write(jsnbt.getConfiguration(ctx.uri.last));
+                        ctx.res.writeHead(200, { "Content-Type": "application/json" });
+                        ctx.res.write(JSON.stringify(jsnbt.getConfiguration(ctx.uri.last), null, app.dbg ? '\t' : ''));
+                        ctx.res.end();
                     }
                     catch (err) {
                         app.logger.error(err);

@@ -1,6 +1,5 @@
 var app = require('../app.js');
 var jsnbt = require('../jsnbt.js');
-var json = require('../utils/json.js');
 
 module.exports = function () {
 
@@ -15,7 +14,7 @@ module.exports = function () {
                         ctx.res.writeHead(200, { "Content-Type": "application/javascript" });
 
                         var jsnbtValue = ctx.uri.first === 'jsnbt.js' ? jsnbt.getClientData('public') : jsnbt.getClientData('admin');
-                        ctx.res.write('var jsnbt = ' + json.stringify(jsnbtValue));
+                        ctx.res.write('var jsnbt = ' + JSON.stringify(jsnbtValue, null, app.dbg ? '\t' : ''));
                         ctx.res.end();
                     }
                     catch (err) {

@@ -97,10 +97,7 @@ module.exports = function () {
                             }
                             else {
                                 if (prerender) {
-                                    var targetUrl = _.str.rtrim(ctx.uri.getBaseHref(), '/') + ctx.uri.url;
-                                    if (ctx.uri.query.prerender) {
-                                        targetUrl = new jsuri(targetUrl).deleteQueryParam('prerender').toString();
-                                    }
+                                    var targetUrl = new jsuri(_.str.rtrim(ctx.uri.getBaseHref(), '/') + ctx.uri.url).deleteQueryParam('prerender').toString();
                                     
                                     crawler.crawl(targetUrl, function (crawlErr, crawlData) {
                                         if (crawlErr) {

@@ -35,7 +35,9 @@ module.exports = function () {
                                     if (service !== null && fields.fn) {
                                         if (typeof (service[fields.fn]) === 'function') {
                                             var result = service[fields.fn].apply(service[fields.fn], [ctx.req.session.user, fields]);
-                                            ctx.write({ d: result });
+                                            ctx.res.writeHead(200, { "Content-Type": "application/json" });
+                                            ctx.res.write(JSON.stringify({ d: result }, null, app.dbg ? '\t' : ''));
+                                            ctx.res.end();
                                         }
                                         else {
                                             ctx.res.writeHead(404, { "Content-Type": "application/json" });

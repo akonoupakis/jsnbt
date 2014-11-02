@@ -2,14 +2,13 @@ var app = require('./app.js');
 var error = require('./error.js');
 var view = require('./view.js');
 var parseUri = require('parseUri');
-var json = require('./utils/json.js');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
 
 module.exports = function (req, res) {
     var uri = new parseUri('http://' + app.config.host + ':' + app.config.port + req.url);
-
+    
     if (!_.str.endsWith(uri.path, '/'))
         uri.path += '/';
 
@@ -59,6 +58,10 @@ module.exports = function (req, res) {
                 }
                 href += '/';
                 return href;
+            },
+            toString: function () {
+                console.log(123);
+                return uri.toString();
             }
         },
         error: function (err, stack) {
@@ -72,11 +75,6 @@ module.exports = function (req, res) {
         redirect: function (url, mode) {
             this.req._routed = true;
             this.res.writeHead(mode || 302, { "Location": url });
-            this.res.end();
-        },
-        write: function (jsonObj) {
-            this.res.writeHead(200, { "Content-Type": "application/json" });
-            this.res.write(json.stringify(jsonObj));
             this.res.end();
         }
     };
