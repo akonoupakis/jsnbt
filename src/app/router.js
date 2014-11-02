@@ -5,13 +5,13 @@ var jsnbt = require('./jsnbt.js');
 var auth = require('./auth.js');
 var error = require('./error.js');
 var pack = require('./package.js');
+var server = require('server-root');
 var cookies = require('cookies');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
 
 var stardardRouterNames = [
-
     './routers/base.js',
     './routers/api.js',
     './routers/image.js',
@@ -49,8 +49,11 @@ module.exports = function () {
             notFoundPaths = _.union(notFoundPaths, templatePaths);
             notFoundPaths = _.union(notFoundPaths, ['/tmp/', '/error/', '/admin/error/']);
 
-            var templateSpecPaths = _.pluck(_.filter(jsnbt.templates, function (x) { return x.spec !== undefined; }), 'spec');
-       
+            var specPaths = _.union(
+                _.pluck(_.filter(jsnbt.templates, function (x) { return x.spec !== undefined; }), 'spec'),
+                _.pluck(_.filter(jsnbt.lists, function (x) { return x.spec !== undefined; }), 'spec')
+            );
+
             var forbiddedPathPrefixes = [];
 
             var forbidRequest = false;
@@ -78,9 +81,9 @@ module.exports = function () {
                         }
                     }
 
-                    //if (_.filter(templateSpecPaths, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length > 0) {
-                    //    processRequest = true;
-                    //}
+                    if (_.filter(specPaths, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length > 0) {
+                        processRequest = true;
+                    }
                     
                     if (!processRequest && ctx.uri.first === 'files' && ctx.uri.query.type) {
                         var imageType = _.first(_.filter(jsnbt.images, function (x) { return x.name === ctx.uri.query.type; }));
@@ -105,12 +108,24 @@ module.exports = function () {
                                 ctx.dpd = require('deployd/lib/internal-client').build(app.server, session, ctx.req.stack);
                                 ctx.req.dpd = ctx.dpd;
 
-                                //if (_.filter(templateSpecPaths, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length > 0) {
-                                //    if (!(session.user && auth.isInRole(session.user, 'admin'))) {
-                                //        ctx.error(404);
-                                //    }
-                                //}
-                                //else {
+                                if (_.filter(specPaths, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length > 0) {
+                                    if (!(session.user && auth.isInRole(session.user, 'admin'))) {
+                                        ctx.error(404);
+                                    }
+                                    else {
+                                        var specContents = fs.readFile(server.getPath(app.root + '/public' + ctx.uri.path), function (readErr, readResults) {
+                                            if (readErr) {
+                                                ctx.error(500, readErr);
+                                            }
+                                            else {
+                                                ctx.res.writeHead(200, { 'Content-Type': 'text/html' });
+                                                ctx.res.write(readResults);
+                                                ctx.res.end();
+                                            }
+                                        });
+                                    }
+                                }
+                                else {
                                     var nextIndex = 0;
                                     var next = function () {
                                         nextIndex++;
@@ -120,7 +135,7 @@ module.exports = function () {
 
                                     var first = _.first(routers);
                                     first.route(ctx, next);
-                                //}
+                                }
                             }
                         });
                     }

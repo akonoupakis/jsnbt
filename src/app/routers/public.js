@@ -52,7 +52,8 @@ module.exports = function () {
 
                             if (!prerender)
                                 if (ctx.uri.query.prerender)
-                                    prerender = true;
+                                    if (auth.isInRole(ctx.req.session.user, 'admin')) 
+                                        prerender = true;
 
                             if (!restricted && jsnbt.restricted) {
                                 if (!auth.isInRole(ctx.req.session.user, resolved.getPermissions())) {

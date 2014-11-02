@@ -159,11 +159,8 @@ var jsnbtModule = {
     }, {
         path: '/tmpl/files.html',
         spec: '/tmpl/spec/page/files.html'
-    }]
+    }],
 
-    //,
-
-    /*
     lists: [{
         name: 'Sample 01',
         spec: '/tmpl/spec/list/sample1.html',
@@ -180,8 +177,6 @@ var jsnbtModule = {
         spec: '/tmpl/spec/list/sample2.html',
         localized: false
     }]
-
-    */
 };
 
 exports.templates = jsnbtModule.templates;
