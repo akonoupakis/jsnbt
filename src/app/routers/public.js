@@ -24,6 +24,10 @@ module.exports = function () {
         }
     });
     
+    var isSearchBot = function (req) {
+        return false;
+    }
+
     return {
         route: function (ctx, next) {
             if (ctx.uri.path !== '/') {
@@ -35,6 +39,8 @@ module.exports = function () {
                           
                             var restricted = false;
 
+                            var searchbot = isSearchBot(ctx.req);
+
                             if (!restricted && jsnbt.restricted) {
                                 if (!auth.isInRole(ctx.req.session.user, resolved.getPermissions())) {
                                     restricted = true;
@@ -42,61 +48,69 @@ module.exports = function () {
                             }
                             
                             if (restricted) {
-
-                                ctx.dpd.settings.get({ domain: 'core' }, function (settingNodes, settingNodesError) {
-                                    if (settingNodesError) {
-                                        ctx.error(500, settingNodesError);
-                                    }
-                                    else {
-                                        var settingNode = _.first(settingNodes);
-                                        if (settingNode && settingNode.data && settingNode.data.restricted && settingNode.data.loginpage) {
-                                            ctx.dpd.nodes.get(settingNode.data.loginpage, function (loginNode, loginNodeError) {
-                                                if (loginNodeError) {
-                                                    ctx.error(500, loginNodeError);
-                                                }
-                                                else {
-                                                    node.buildUrl(loginNode, function (loginUrlResult) {
-                                                        var loginUrl = loginUrlResult[resolved.language];
-
-                                                        if (loginUrl !== '') {
-                                                            ctx.redirect(loginUrl + '?returnUrl=' + encodeURIComponent(ctx.uri.url));
-                                                        }
-                                                        else {
-                                                            ctx.error(401, 'Access denied');
-                                                        }
-                                                    });
-                                                }
-                                            });
-                                        }
-                                        else {
-                                            ctx.error(401, 'Access denied');
-                                        }
-                                    }
-                                });
-                            }
-                            else {
-                                
-                                ctx.node = resolved.page || {};
-
-                                ctx.pointer = resolved.pointer || {};
-                                ctx.language = jsnbt.localization ? resolved.language || 'en' : jsnbt.locale;
-                                ctx.template = resolved.template || '';
-                                ctx.meta = resolved.page.meta || {};
-                                ctx.uri.scheme = resolved.page.secure === true ? 'https' : 'http';
-
-                                if (resolved.pointer) {
-                                    var nextIndex = 0;
-                                    var nextInternal = function () {
-                                        nextIndex++;
-                                        var router = addonRouters[nextIndex];
-                                        router.route(ctx, nextInternal);
-                                    };
-
-                                    var first = _.first(addonRouters);
-                                    first.route(ctx, nextInternal);
+                                if (searchbot) {
+                                    ctx.error(401);
                                 }
                                 else {
-                                    ctx.render();
+                                    ctx.dpd.settings.get({ domain: 'core' }, function (settingNodes, settingNodesError) {
+                                        if (settingNodesError) {
+                                            ctx.error(500, settingNodesError);
+                                        }
+                                        else {
+                                            var settingNode = _.first(settingNodes);
+                                            if (settingNode && settingNode.data && settingNode.data.restricted && settingNode.data.loginpage) {
+                                                ctx.dpd.nodes.get(settingNode.data.loginpage, function (loginNode, loginNodeError) {
+                                                    if (loginNodeError) {
+                                                        ctx.error(500, loginNodeError);
+                                                    }
+                                                    else {
+                                                        node.buildUrl(loginNode, function (loginUrlResult) {
+                                                            var loginUrl = loginUrlResult[resolved.language];
+
+                                                            if (loginUrl !== '') {
+                                                                ctx.redirect(loginUrl + '?returnUrl=' + encodeURIComponent(ctx.uri.url));
+                                                            }
+                                                            else {
+                                                                ctx.error(401, 'Access denied');
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                            else {
+                                                ctx.error(401, 'Access denied');
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                            else {
+                                if (searchbot) {
+                                    ctx.error(401);
+                                }
+                                else {
+                                    ctx.node = resolved.page || {};
+
+                                    ctx.pointer = resolved.pointer || {};
+                                    ctx.language = jsnbt.localization ? resolved.language || 'en' : jsnbt.locale;
+                                    ctx.template = resolved.template || '';
+                                    ctx.meta = resolved.page.meta || {};
+                                    ctx.uri.scheme = resolved.page.secure === true ? 'https' : 'http';
+
+                                    if (resolved.pointer) {
+                                        var nextIndex = 0;
+                                        var nextInternal = function () {
+                                            nextIndex++;
+                                            var router = addonRouters[nextIndex];
+                                            router.route(ctx, nextInternal);
+                                        };
+
+                                        var first = _.first(addonRouters);
+                                        first.route(ctx, nextInternal);
+                                    }
+                                    else {
+                                        ctx.render();
+                                    }
                                 }
                             }
                         }
@@ -116,7 +130,7 @@ module.exports = function () {
                                                 var newUrl = '/' + defaultLanguage.code + ctx.uri.path;
                                                 node.resolveUrl(newUrl, function (newUrlResolved) {
                                                     if (newUrlResolved) {
-                                                        ctx.redirect(newUrl);
+                                                        ctx.redirect(newUrl, 301);
                                                     }
                                                     else {
                                                         next();

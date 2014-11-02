@@ -51,7 +51,12 @@ module.exports = function (req, res) {
                 var href = this.scheme;
                 href += '://';
                 href += this.host;
-                href += (this.port != 80) ? ':' + this.port : '';
+                if (this.scheme === 'https') {
+                    href += (this.port != 433) ? ':' + this.port : '';
+                }
+                else {
+                    href += (this.port != 80) ? ':' + this.port : '';
+                }
                 href += '/';
                 return href;
             }
@@ -64,9 +69,9 @@ module.exports = function (req, res) {
             this.req._routed = true;
             view.render(this);
         },
-        redirect: function (url) {
+        redirect: function (url, mode) {
             this.req._routed = true;
-            this.res.writeHead(302, { "Location": url });
+            this.res.writeHead(mode || 302, { "Location": url });
             this.res.end();
         },
         write: function (jsonObj) {
