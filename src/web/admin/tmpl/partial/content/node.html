@@ -111,8 +111,17 @@
 
         <div id="page-permissions" data-scrollspy="Permissions" ng-show="application.restricted && entity.properties.permissions">
             <div class="row">
-                <ctrl-check class="col-md-4" ng-model="node.permissions.inherits" ng-enabled="application.restricted && entity.properties.permissions" ng-label="Inherits from parent"></ctrl-check>
-                <ctrl-check-list class="col-md-8" ng-model="roles" ng-options="roleOptions" ng-required="true" ng-enabled="application.restricted && entity.properties.permissions && !node.permissions.inherits" ng-label="Permissions"></ctrl-check-list>
+                <ctrl-check class="col-md-4" ng-model="node.roles.inherits" ng-enabled="application.restricted && entity.properties.permissions" ng-label="Inherits from parent"></ctrl-check>
+                <ctrl-check-list class="col-md-8" ng-model="roles" ng-options="roleOptions" ng-required="true" ng-enabled="application.restricted && entity.properties.permissions && !node.roles.inherits" ng-label="Permissions"></ctrl-check-list>
+            </div>
+
+            <hr />
+        </div>
+
+        <div id="page-robots" data-scrollspy="Robots" ng-show="application.restricted && entity.properties.robots"> 
+            <div class="row">
+                <ctrl-check class="col-md-4" ng-model="node.robots.inherits" ng-enabled="application.restricted && entity.properties.robots" ng-label="Inherits from parent"></ctrl-check>
+                <ctrl-check-list class="col-md-8" ng-model="robots" ng-options="robotOptions" ng-required="true" ng-enabled="application.restricted && entity.properties.robots && !node.robots.inherits" ng-label="Robots"></ctrl-check-list>
             </div>
 
             <hr />

@@ -105,13 +105,21 @@
 			"id": "meta",
 			"order": 13
 		},
-		"permissions": {
-			"name": "permissions",
+		"roles": {
+			"name": "roles",
 			"type": "object",
 			"typeLabel": "object",
 			"required": true,
-			"id": "permissions",
+			"id": "roles",
 			"order": 14
+		},
+		"robots": {
+			"name": "robots",
+			"type": "object",
+			"typeLabel": "object",
+			"required": true,
+			"id": "robots",
+			"order": 15
 		},
 		"hierarchy": {
 			"name": "hierarchy",
@@ -119,7 +127,7 @@
 			"typeLabel": "array",
 			"required": true,
 			"id": "hierarchy",
-			"order": 15
+			"order": 16
 		}
 	}
 }

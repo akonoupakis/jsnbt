@@ -141,9 +141,13 @@
                 meta: {},
                 createdOn: new Date().getTime(),
                 modifiedOn: new Date().getTime(),
-                permissions: {
+                roles: {
                     inherits: true,
-                    roles: []
+                    values: []
+                },
+                robots: {
+                    inherits: true,
+                    values: []
                 },                
                 hierarchy: []
             });

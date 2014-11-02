@@ -159,24 +159,24 @@ var jsnbtModule = {
     }, {
         path: '/tmpl/files.html',
         spec: '/tmpl/spec/page/files.html'
-    }],
+    }]//,
 
-    lists: [{
-        name: 'Sample 01',
-        spec: '/tmpl/spec/list/sample1.html',
-        localized: true,
-        permissions: [{
-            role: 'public',
-            crud: ['R']
-        }, {
-            role: 'admin',
-            crud: ['C', 'R', 'U', 'D']
-        }]
-    }, {
-        name: 'Sample 02',
-        spec: '/tmpl/spec/list/sample2.html',
-        localized: false
-    }]
+    //lists: [{
+    //    name: 'Sample 01',
+    //    spec: '/tmpl/spec/list/sample1.html',
+    //    localized: true,
+    //    permissions: [{
+    //        role: 'public',
+    //        crud: ['R']
+    //    }, {
+    //        role: 'admin',
+    //        crud: ['C', 'R', 'U', 'D']
+    //    }]
+    //}, {
+    //    name: 'Sample 02',
+    //    spec: '/tmpl/spec/list/sample2.html',
+    //    localized: false
+    //}]
 };
 
 exports.templates = jsnbtModule.templates;

@@ -19,7 +19,7 @@ if (!internal) {
     hide('config');
 
     if (!auth.isInRole(me, 'admin')) {
-        hide('permissions');
+        hide('roles');
     }
 
 }

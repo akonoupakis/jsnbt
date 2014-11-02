@@ -123,7 +123,8 @@ module.exports = {
                 template: true,
                 seo: true,
                 meta: true,
-                permissions: true
+                permissions: true,
+                robots: true
             }
         };
 

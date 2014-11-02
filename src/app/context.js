@@ -40,7 +40,6 @@ module.exports = function (req, res) {
             nofollow: false,
             noarchive: false,
             nosnipet: false,
-            noodp: false,
             notranslate: false,
             noimageindex: false
         },

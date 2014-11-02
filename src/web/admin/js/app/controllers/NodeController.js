@@ -17,6 +17,10 @@
             $scope.roles = [];
             $scope.draftRoles = [];
 
+            $scope.robotOptions = [];
+            $scope.robots = [];
+            $scope.draftRobots = [];
+
             $scope.seoNames = [];
             
             $scope.siblingSeoNames = [];
@@ -83,8 +87,11 @@
                         $scope.valid = true;
                         $scope.published = true;
 
-                        $scope.roles = result.permissions.roles;
-                        $scope.draftRoles = result.permissions.roles;
+                        $scope.roles = result.roles.values;
+                        $scope.draftRoles = result.roles.values;
+
+                        $scope.robots = result.robots.values;
+                        $scope.draftRobots = result.robots.values;
 
                         deferred.resolve(result);
                         
@@ -210,10 +217,46 @@
                     return deferred.promise;
                 },
 
+                setRobots: function () {
+                    var deferred = $q.defer();
+
+                    var robots = [{
+                        name: 'noindex',
+                        value: 'noindex',
+                        description: 'do not index this page'
+                    }, {
+                        name: 'nofollow',
+                        value: 'nofollow',
+                        description: 'do not follow any links'
+                    }, {
+                        name: 'noarchive',
+                        value: 'noarchive',
+                        description: 'do not show a "Cached" link'
+                    }, {
+                        name: 'nosnipet',
+                        value: 'nosnipet',
+                        description: 'do not show a snippet'
+                    }, {
+                        name: 'notranslate',
+                        value: 'notranslate',
+                        description: 'do not offer translation'
+                    }, {
+                        name: 'noimageindex',
+                        value: 'noimageindex',
+                        description: 'do not index images'
+                    }];
+
+                    $scope.robotOptions = robots;
+
+                    deferred.resolve(robots);
+
+                    return deferred.promise;
+                },
+
                 setSelectedRoles: function () {
                     var deferred = $q.defer();
 
-                    if ($scope.node.permissions.inherits) {
+                    if ($scope.node.roles.inherits) {
                         $scope.draftRoles = $scope.roles.slice(0);
 
                         var hierarchyNodeIds = _.filter($scope.node.hierarchy, function (x) { return x !== $scope.id; });
@@ -224,8 +267,8 @@
                             $($scope.node.hierarchy).each(function (i, item) {
                                 var matchedNode = _.first(_.filter(nodes, function (x) { return x.id === item; }));
                                 if (matchedNode) {
-                                    if (!matchedNode.permissions.inherits) {
-                                        roles = matchedNode.permissions.roles.slice(0);
+                                    if (!matchedNode.roles.inherits) {
+                                        roles = matchedNode.roles.values.slice(0);
                                     }
                                 }
                                 else {
@@ -244,6 +287,45 @@
                         var roles = $scope.draftRoles.slice(0);
                         $scope.roles = roles;
                         deferred.resolve(roles);
+                    }
+
+                    return deferred.promise;
+                },
+
+                setSelectedRobots: function () {
+                    var deferred = $q.defer();
+
+                    if ($scope.node.robots.inherits) {
+                        $scope.draftRobots = $scope.robots.slice(0);
+
+                        var hierarchyNodeIds = _.filter($scope.node.hierarchy, function (x) { return x !== $scope.id; });
+                        $data.nodes.get({ id: { $in: hierarchyNodeIds } }).then(function (nodes) {
+
+                            var robots = [];
+
+                            $($scope.node.hierarchy).each(function (i, item) {
+                                var matchedNode = _.first(_.filter(nodes, function (x) { return x.id === item; }));
+                                if (matchedNode) {
+                                    if (!matchedNode.robots.inherits) {
+                                        robots = matchedNode.robots.values.slice(0);
+                                    }
+                                }
+                                else {
+                                    return false;
+                                }
+                            });
+                                
+                            $scope.robots = robots;
+                            deferred.resolve(robots);
+
+                        }, function (error) {
+                            deferred.reject(error);
+                        });
+                    }
+                    else {
+                        var robots = $scope.draftRobots.slice(0);
+                        $scope.robots = robots;
+                        deferred.resolve(robots);
                     }
 
                     return deferred.promise;
@@ -553,8 +635,11 @@
 
                             var publishNode = {};
                             $.extend(true, publishNode, $scope.node);
-                            if (!publishNode.permissions.inherits)
-                                publishNode.permissions.roles = $scope.roles;
+                            if (!publishNode.roles.inherits)
+                                publishNode.roles.values = $scope.roles;
+
+                            if (!publishNode.robots.inherits)
+                                publishNode.robots.values = $scope.robots;
                             
                             $data.nodes.put($scope.id, publishNode).then(function (result) {
                                 $scope.name = result.name;
@@ -702,9 +787,17 @@
                 }
             });
             
-            $scope.$watch('node.permissions.inherits', function (newValue, prevValue) {
+            $scope.$watch('node.roles.inherits', function (newValue, prevValue) {
                 if (newValue !== undefined && prevValue !== undefined) {
                     fn.setSelectedRoles().then(function () { }, function (ex) {
+                        logger.error(ex);
+                    });
+                }
+            });
+
+            $scope.$watch('node.robots.inherits', function (newValue, prevValue) {
+                if (newValue !== undefined && prevValue !== undefined) {
+                    fn.setSelectedRobots().then(function () { }, function (ex) {
                         logger.error(ex);
                     });
                 }
@@ -738,29 +831,37 @@
 
             $timeout(function () {
                 fn.setRoles().then(function (rolesResponse) {
-                    fn.setAddons().then(function (addonsResponse) {
-                        fn.setLanguages().then(function (languagesResponse) {
-                            fn.setLanguage().then(function (languageResponse) {
-                                fn.setTypes().then(function (typesResponse) {
-                                    fn.set().then(function (setResponse) {
-                                        fn.setSelectedRoles().then(function (selRolesResponse) {
-                                        }, function (selRolesError) {
-                                            logger.error(selRolesError);
-                                        });                                               
-                                    }, function (setError) {
-                                        logger.error(setError);
+                    fn.setRobots().then(function (robotsResponse) {
+                        fn.setAddons().then(function (addonsResponse) {
+                            fn.setLanguages().then(function (languagesResponse) {
+                                fn.setLanguage().then(function (languageResponse) {
+                                    fn.setTypes().then(function (typesResponse) {
+                                        fn.set().then(function (setResponse) {
+                                            fn.setSelectedRoles().then(function (selRolesResponse) {
+                                                fn.setSelectedRobots().then(function (selRobotsResponse) {
+                                                }, function (selRobotsError) {
+                                                    logger.error(selRobotsError);
+                                                });
+                                            }, function (selRolesError) {
+                                                logger.error(selRolesError);
+                                            });
+                                        }, function (setError) {
+                                            logger.error(setError);
+                                        });
+                                    }, function (typesError) {
+                                        logger.error(typesError);
                                     });
-                                }, function (typesError) {
-                                    logger.error(typesError);
+                                }, function (languageError) {
+                                    logger.error(languageError);
                                 });
-                            }, function (languageError) {
-                                logger.error(languageError);
+                            }, function (languagesError) {
+                                logger.error(languagesError);
                             });
-                        }, function (languagesError) {
-                            logger.error(languagesError);
+                        }, function (addonsError) {
+                            logger.error(addonsError);
                         });
-                    }, function (addonsError) {
-                        logger.error(addonsError);
+                    }, function (robotsError) {
+                        logger.error(robotsError);
                     });
                 }, function (rolesError) {
                     logger.error(rolesError);

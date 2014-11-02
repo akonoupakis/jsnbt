@@ -240,15 +240,25 @@ module.exports = function(dpd) {
                     var rRoles = ['public'];
 
                     _.each(rSelf.nodes, function (rnode) {
-                        if (!rnode.permissions.inherits) {
-                            rRoles = rnode.permissions.roles.slice(0);
+                        if (!rnode.roles.inherits) {
+                            rRoles = rnode.roles.values.slice(0);
                         }
                     });
 
                     return rRoles;
                 },
                 getRobots: function () {
-                    return [];
+                    var rSelf = this;
+
+                    var rRobots = [];
+
+                    _.each(rSelf.nodes, function (rnode) {
+                        if (!rnode.robots.inherits) {
+                            rRobots = rnode.robots.values.slice(0);
+                        }
+                    });
+
+                    return rRobots;
                 }
             };
 
