@@ -5,6 +5,7 @@ var server = require('server-root');
 var easyimg = require('easyimage');
 var md5 = require('MD5');
 var path = require('path');
+var extend = require('extend');
 
 var _ = require('underscore');
 
@@ -41,7 +42,7 @@ module.exports = function () {
                                     try {
                                         var options = {};
 
-                                        _.extend(options, imageType.options);
+                                        extend(true, options, imageType.options);
 
                                         var fileKey = md5(JSON.stringify({
                                             path: filePath,
@@ -51,7 +52,7 @@ module.exports = function () {
                                         var fileExt = path.extname(targetFilePath);
                                         var destFilePath = server.getPath('dev/public/tmp/' + fileKey + fileExt);
 
-                                        _.extend(options, {
+                                        extend(true, options, {
                                             src: targetFilePath,
                                             dst: destFilePath
                                         });

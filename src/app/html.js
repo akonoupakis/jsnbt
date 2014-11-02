@@ -1,6 +1,7 @@
 var app = require('./app.js');
 var jsnbt = require('./jsnbt.js');
 var fs = require('./utils/fs.js');
+var extend = require('extend');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
@@ -20,8 +21,8 @@ exports.parse = function (ctx, tmpl, model) {
         robots: ''
     };
 
-    _.extend(mdl.meta, ctx.meta);
-    _.extend(mdl, model);
+    extend(true, mdl.meta, ctx.meta);
+    extend(true, mdl, model);
 
     mdl.nodeId = (mdl.node || {}).id;
     mdl.pointerId = (mdl.pointer || {}).id;

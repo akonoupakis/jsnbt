@@ -41,6 +41,7 @@
     "custom-logger": "0.2.1",
     "deployd": "git://github.com/akonoupakis/deployd",
     "easyimage": "^1.0.3",
+    "extend": "^2.0.0",
     "formidable": "~1.0.15",
     "jsuri": "^1.3.0-beta.1",
     "less": "~1.3.3",

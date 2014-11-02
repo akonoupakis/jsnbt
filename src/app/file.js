@@ -3,6 +3,7 @@ var auth = require('./auth.js');
 var fs = require('./utils/fs.js');
 var path = require('path');
 var server = require('server-root');
+var extend = require('extend');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
@@ -63,8 +64,7 @@ module.exports = {
         };
 
         var opts = {};
-        _.extend(opts, defaults);
-        _.extend(opts, fields);
+        extend(true, opts, defaults, fields);
 
         if (!opts.path && !opts.paths)
             throw new Error('path or paths are required');
@@ -121,8 +121,7 @@ module.exports = {
         };
 
         var opts = {};
-        _.extend(opts, defaults);
-        _.extend(opts, fields);
+        extend(true, opts, defaults, fields);
 
         if (!opts.path)
             throw new Error('path is required');
@@ -147,8 +146,7 @@ module.exports = {
         };
 
         var opts = {};
-        _.extend(opts, defaults);
-        _.extend(opts, fields);
+        extend(true, opts, defaults, fields);
 
         if (!opts.path)
             throw new Error('path is required');
@@ -176,8 +174,7 @@ module.exports = {
         };
 
         var opts = {};
-        _.extend(opts, defaults);
-        _.extend(opts, fields);
+        extend(true, opts, defaults, fields);
 
         if (!opts.from)
             throw new Error('from is required');

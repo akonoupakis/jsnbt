@@ -3,6 +3,7 @@ var cache = require('./cache.js');
 var jsnbt = require('./jsnbt.js');
 var entity = require('./entity.js');
 var parseUri = require('parseUri');
+var extend = require('extend');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
@@ -355,7 +356,7 @@ module.exports = function(dpd) {
                     var cachedUrl = cache.url[parentCacheKey];
 
                     var newUrl = {};
-                    _.extend(newUrl, node.seo);
+                    extend(true, newUrl, node.seo);
                     for (var langItem in node.seo) {
                         var seoName = node.seo[langItem];
                         if (cachedUrl[langItem]) {
@@ -393,7 +394,7 @@ module.exports = function(dpd) {
 
                                 var lastNode = _.last(hierarchyNodes);
 
-                                _.extend(parentUrl, lastNode.seo);
+                                extend(true, parentUrl, lastNode.seo);
 
                                 var urlKeys = getEntity(node.entity).isSeoNamed() ? node.seo : lastNode.seo;
                                 
@@ -432,7 +433,7 @@ module.exports = function(dpd) {
 
                                 var pack = _.first(_.filter(app.packages, function (x) { return x.domain === firstNode.domain && typeof (x.build) === 'function'; }));
                                 if (pack) {
-                                    _.extend(newUrl, parentUrl);
+                                    extend(true, newUrl, parentUrl);
                                     
                                     pack.build({
                                         nodes: hierarchyNodes,
@@ -441,7 +442,7 @@ module.exports = function(dpd) {
                                     }, cb);
                                 }
                                 else {
-                                    _.extend(newUrl, node.seo);
+                                    extend(true, newUrl, node.seo);
                                     for (var langItem in node.seo) {
                                         if (parentUrl[langItem])
                                             newUrl[langItem] = parentUrl[langItem] + '/' + node.seo[langItem];
@@ -471,7 +472,7 @@ module.exports = function(dpd) {
                 }
                 else {
                     var newUrl = {};
-                    _.extend(newUrl, node.seo);
+                    extend(true, newUrl, node.seo);
                     for (var langItem in node.seo) {
                         var seoName = node.seo[langItem];
                         var resolvedLangUrl = '';

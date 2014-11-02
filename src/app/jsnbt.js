@@ -2,6 +2,7 @@ var app = require('./app.js');
 var path = require('path');
 var server = require('server-root');
 var fs = require('./utils/fs.js');
+var extend = require('extend');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
@@ -92,7 +93,7 @@ module.exports = {
 
         var clone = function (obj) {
             var resultObj = {};
-            _.extend(resultObj, obj);
+            extend(true, resultObj, obj);
             return resultObj
         }
 
@@ -130,11 +131,11 @@ module.exports = {
         _.each(moduleEntities, function (moduleEntity) {
             var matchedEntity = _.first(_.filter(self.entities, function (x) { return x.name === moduleEntity.name; }));
             if (matchedEntity) {
-                _.extend(matchedEntity, moduleEntity);
+                extend(true, matchedEntity, moduleEntity);
             }
             else {
-                var newEntity = clone(entityDefaults);
-                _.extend(newEntity, moduleEntity);
+                var newEntity = {};
+                extend(true, newEntity, entityDefaults, moduleEntity);
                 self.entities.push(newEntity);
             }            
         });
@@ -148,7 +149,7 @@ module.exports = {
 
             var matchedList = _.first(_.filter(self.lists, function (x) { return x.id === fileName && x.domain == moduleListDomain; }));
             if (matchedList) {
-                _.extend(matchedList, moduleList);
+                extend(true, matchedList, moduleList);
             }
             else {
                 var newListSpec = {
@@ -156,7 +157,7 @@ module.exports = {
                     localized: true
                 };
 
-                _.extend(newListSpec, moduleList);
+                extend(true, newListSpec, moduleList);
                 newListSpec.id = fileName;
 
                 self.lists.push(newListSpec);
@@ -167,7 +168,7 @@ module.exports = {
         _.each(moduleRoles, function (moduleRole) {
             var matchedRole = _.first(_.filter(self.roles, function (x) { return x.name === moduleRole.name; }));
             if (matchedRole) {
-                _.extend(matchedRole, moduleRole);
+                extend(true, matchedRole, moduleRole);
             }
             else {
                 self.roles.push(clone(moduleRole));
@@ -178,7 +179,7 @@ module.exports = {
         _.each(moduleSections, function (moduleSection) {
             var matchedSection = _.first(_.filter(self.sections, function (x) { return x.name === moduleSection.name; }));
             if (matchedSection) {
-                _.extend(matchedSection, moduleSection);
+                extend(true, matchedSection, moduleSection);
             }
             else {
                 self.sections.push(clone(moduleSection));
@@ -189,7 +190,7 @@ module.exports = {
         _.each(moduleData, function (moduleDatum) {
             var matchedDatum = _.first(_.filter(self.data, function (x) { return x.collection === moduleDatum.collection; }));
             if (matchedDatum) {
-                _.extend(matchedDatum, moduleDatum);
+                extend(true, matchedDatum, moduleDatum);
             }
             else {
                 self.data.push(clone(moduleDatum));
@@ -200,7 +201,7 @@ module.exports = {
         _.each(moduleTemplates, function (moduleTemplate) {
             var matchedTemplate = _.first(_.filter(self.templates, function (x) { return x.path === moduleTemplate.path; }));
             if (matchedTemplate) {
-                _.extend(matchedTemplate, moduleTemplate);
+                extend(true, matchedTemplate, moduleTemplate);
             }
             else {
                 self.templates.push(clone(moduleTemplate));
@@ -211,7 +212,7 @@ module.exports = {
         _.each(moduleImages, function (moduleImage) {
             var matchedImage = _.first(_.filter(self.images, function (x) { return x.path === moduleImage.path; }));
             if (matchedImage) {
-                _.extend(matchedImage, moduleImage);
+                extend(true, matchedImage, moduleImage);
             }
             else {
                 self.images.push(clone(moduleImage));
@@ -275,7 +276,7 @@ module.exports = {
             result.lists = [];
             _.each(self.lists, function (list) {
                 var newList = {};
-                _.extend(newList, list);
+                extend(true, newList, list);
                 delete newList.permissions;
                 result.lists.push(newList);
             });
