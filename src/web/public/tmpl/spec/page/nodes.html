@@ -1,34 +1,20 @@
 ﻿<div class="row" id="page-content-related" data-scrollspy="Nodes">
-    <ctrl-node class="col-md-6" ng-model="node.content.contentNodeId" ng-domain="'core'" ng-options="{ entities: ['page', 'link'] }" ng-required="false" ng-label="Core Node"></ctrl-node>
-    <ctrl-node class="col-md-6" ng-model="node.content.eshopNodeId" ng-domain="'eshop'" ng-required="false" ng-label="EShop Node"></ctrl-node>
-</div>      
-<div class="row" id="page-content-relatedDisabled" data-scrollspy="Nodes Disabled">
-    <ctrl-node class="col-md-6" ng-model="node.content.contentNodeIdDisabled" ng-domain="'core'" ng-options="{ entities: ['page', 'link'] }" ng-enabled="false" ng-required="false" ng-label="Core Node Disabled"></ctrl-node>
-    <ctrl-node class="col-md-6" ng-model="node.content.eshopNodeIdDisabled" ng-domain="'eshop'" ng-enabled="false" ng-required="false" ng-label="EShop Node Disabled"></ctrl-node>
+    <ctrl-node class="col-md-6" ng-enabled="node.active[language]" ng-model="node.content.contentNodeId" ng-domain="'core'" ng-options="{ entities: ['page', 'link'] }" ng-required="false" ng-label="Core Node"></ctrl-node>
+    <ctrl-node class="col-md-6" ng-enabled="node.active[language]" ng-model="node.content.eshopNodeId" ng-domain="'eshop'" ng-required="false" ng-label="EShop Node"></ctrl-node>
 </div>      
 <div class="row" id="page-content-related2" data-scrollspy="Nodes Required">
-    <ctrl-node class="col-md-6" ng-model="node.content.contentNodeId2" ng-domain="'core'" ng-options="{ entities: ['page', 'link'] }" ng-required="true" ng-label="Core Node Required"></ctrl-node>
-    <ctrl-node class="col-md-6" ng-model="node.content.eshopNodeId2" ng-domain="'eshop'" ng-required="true" ng-label="EShop Node Required"></ctrl-node>
-</div>      
-<div class="row" id="page-content-related2Disabled" data-scrollspy="Nodes Required Disabled">
-    <ctrl-node class="col-md-6" ng-model="node.content.contentNodeId2Disabled" ng-domain="'core'" ng-options="{ entities: ['page', 'link'] }" ng-enabled="false" ng-required="true" ng-label="Core Node Required Disabled"></ctrl-node>
-    <ctrl-node class="col-md-6" ng-model="node.content.eshopNodeId2Disabled" ng-domain="'eshop'" ng-enabled="false" ng-required="true" ng-label="EShop Node Required Disabled"></ctrl-node>
+    <ctrl-node class="col-md-6" ng-enabled="node.active[language]" ng-model="node.content.contentNodeId2" ng-domain="'core'" ng-options="{ entities: ['page', 'link'] }" ng-required="true" ng-label="Core Node Required"></ctrl-node>
+    <ctrl-node class="col-md-6" ng-enabled="node.active[language]" ng-model="node.content.eshopNodeId2" ng-domain="'eshop'" ng-required="true" ng-label="EShop Node Required"></ctrl-node>
 </div>      
 <div class="row" id="page-content-related3" data-scrollspy="Core NodeList">
-    <ctrl-node-list class="col-md-12" ng-model="node.content.contentNodeIds" ng-domain="'core'" ng-options="{ entities: ['page', 'link'] }" ng-required="false" ng-label="Core NodeList"></ctrl-node-list>
-</div>      
-<div class="row" id="page-content-related3Disabled" data-scrollspy="Core NodeList Disabled">
-    <ctrl-node-list class="col-md-12" ng-model="node.content.contentNodeIdsDis" ng-domain="'core'" ng-options="{ entities: ['page', 'link'] }" ng-required="false" ng-enabled="false" ng-label="Core NodeList Disabled"></ctrl-node-list>
+    <ctrl-node-list class="col-md-12" ng-enabled="node.active[language]" ng-model="node.content.contentNodeIds" ng-domain="'core'" ng-options="{ entities: ['page', 'link'] }" ng-required="false" ng-label="Core NodeList"></ctrl-node-list>
 </div>
 <div class="row" id="page-content-related35" data-scrollspy="Core NodeList Required">
-    <ctrl-node-list class="col-md-12" ng-model="node.content.contentNodeIds3" ng-domain="'core'" ng-options="{ entities: ['page', 'link'] }" ng-required="true" ng-label="Core NodeList Required"></ctrl-node-list>
-</div>      
-<div class="row" id="page-content-related35Disabled" data-scrollspy="Core NodeList Required Disabled">
-    <ctrl-node-list class="col-md-12" ng-model="node.content.contentNodeIds3Dis" ng-domain="'core'" ng-options="{ entities: ['page', 'link'] }" ng-required="true" ng-enabled="false" ng-label="Core NodeList Required Disabled"></ctrl-node-list>
+    <ctrl-node-list class="col-md-12" ng-enabled="node.active[language]" ng-model="node.content.contentNodeIds3" ng-domain="'core'" ng-options="{ entities: ['page', 'link'] }" ng-required="true" ng-label="Core NodeList Required"></ctrl-node-list>
 </div>      
 <div class="row" id="page-content-related4" data-scrollspy="EShop NodeList">
-    <ctrl-node-list class="col-md-12" ng-model="node.content.contentNodeIds2" ng-domain="'eshop'" ng-required="false" ng-label="EShop NodeList"></ctrl-node-list>
+    <ctrl-node-list class="col-md-12" ng-enabled="node.active[language]" ng-model="node.content.contentNodeIds2" ng-domain="'eshop'" ng-required="false" ng-label="EShop NodeList"></ctrl-node-list>
 </div>      
 <div class="row" id="page-content-related45" data-scrollspy="EShop NodeList Required">
-    <ctrl-node-list class="col-md-12" ng-model="node.content.contentNodeIds4" ng-domain="'eshop'" ng-required="true" ng-label="EShop NodeList Required"></ctrl-node-list>
+    <ctrl-node-list class="col-md-12" ng-enabled="node.active[language]" ng-model="node.content.contentNodeIds4" ng-domain="'eshop'" ng-required="true" ng-label="EShop NodeList Required"></ctrl-node-list>
 </div>      
