@@ -133,7 +133,7 @@
                 entity: 'page',
                 parent: '',
                 published: false,
-                data: {
+                content: {
                     localized: {}
                 },
                 seo: {},
@@ -159,11 +159,7 @@
                 domain: '',
                 list: '',
                 name: '',
-                localization: {
-                    enabled: true,
-                    language: ''
-                },
-                data: {
+                content: {
                     localized: {}
                 },
                 createdOn: new Date().getTime(),

@@ -25,14 +25,6 @@
 			"id": "name",
 			"order": 2
 		},
-		"localization": {
-			"name": "localization",
-			"type": "object",
-			"typeLabel": "object",
-			"required": true,
-			"id": "localization",
-			"order": 5
-		},
 		"content": {
 			"name": "content",
 			"type": "object",

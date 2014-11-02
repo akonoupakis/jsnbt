@@ -31,13 +31,12 @@
 
                         $scope.name = result.name;
                         $scope.item = result;
-                        $scope.localized = (result.localization || {}).enabled && $scope.application.localization.enabled;
+
+                        var list = _.first(_.filter($jsnbt.lists, function (x) { return x.id === $routeParams.list && x.domain === $routeParams.domain; }));
+                        $scope.localized = $scope.application.localization.enabled && (list.localized === undefined || list.localized === true);
 
                         $scope.languages = $scope.application.languages;
-                        $scope.language = $scope.application.localization.enabled ? (result.localization.enabled ? (
-                                $scope.defaults.language ? $scope.defaults.language : _.first($scope.application.languages).code
-                            ) : result.localization.language) 
-                        : 'en';
+                        $scope.language = $scope.application.localization.enabled  ? ($scope.defaults.language ? $scope.defaults.language : _.first($scope.application.languages).code) : 'en';
 
                         $scope.valid = true;
 
