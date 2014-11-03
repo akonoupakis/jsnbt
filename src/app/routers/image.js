@@ -74,7 +74,7 @@ module.exports = function () {
                                                 });
                                             }
                                             else {
-                                                easyimg.resize(options).then(function (image) {
+                                                easyimg.rescrop(options).then(function (image) {
                                                     fs.readFile(destFilePath, function (readErr, img) {
                                                         if (readErr) {
                                                             ctx.error(500, readErr);

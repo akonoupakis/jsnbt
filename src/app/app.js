@@ -24,15 +24,14 @@ var jsnbtModule = {
     images: [{
         name: 'admin-explorer-thumb',
         options: {
-            width: 64,
-            height: 64,
-            cropwidth: 64,
-            cropheight: 64,
+            width: 60,
+            height: 60,
+            cropwidth: 60,
+            cropheight: 60,
             x: 0,
             y: 0,
-            quality: undefined,
-            gravity: undefined,
-            fill: undefined
+            gravity: 'center',
+            fill: true
         }
     }, {
         name: 'normal1',
