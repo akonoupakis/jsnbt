@@ -1,6 +1,6 @@
 ﻿<div ng-class="{ invalid: enabled && !valid }">
     <div class="form-group" ng-class="{ 'has-error': enabled && !valid, 'has-feedback': enabled && !valid }">
-        <label ng-show="ngLabel" class="control-label" for="txt{{id}}">{{ngLabel}}</label>
+        <label ng-show="ngLabel" class="control-label" for="txt{{id}}">{{ngLabel}}<small ng-show="ngTip">({{ngTip}})</small></label>
         <div class="form-control-feedback-container">
             <textarea class="form-control" rows="{{ngRows}}" id="txt{{id}}" ng-model="ngModel" ng-disabled="!enabled" ng-change="changed()"></textarea>
             <span ng-show="enabled && !valid" class="glyphicon glyphicon-remove form-control-feedback"></span>

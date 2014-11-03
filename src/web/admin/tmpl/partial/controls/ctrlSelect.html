@@ -1,6 +1,6 @@
 ﻿<div ng-class="{ invalid: enabled && !valid }">
     <div class="form-group" ng-class="{ 'has-error': enabled && !valid, 'has-feedback': enabled && !valid }">
-        <label ng-show="ngLabel" class="control-label" for="ddl{{id}}">{{ngLabel}}</label>
+        <label ng-show="ngLabel" class="control-label" for="ddl{{id}}">{{ngLabel}}<small ng-show="ngTip">({{ngTip}})</small></label>
         <div class="form-control-feedback-container">
             <select class="form-control" id="ddl{{id}}" ng-model="ngModel" ng-change="changed()" ng-disabled="!enabled">
                 <option ng-show="ngDefault" value="" ng-selected="!ngModel || notFound">Please select</option>

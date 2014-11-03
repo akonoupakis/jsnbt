@@ -16,7 +16,8 @@
                     ngEntities: '=',
                     ngEnabled: '=',
                     ngRequired: '=',
-                    ngLabel: '@'
+                    ngLabel: '@',
+                    ngTip: '@'
                 },
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl');

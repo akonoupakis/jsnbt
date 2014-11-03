@@ -27,13 +27,13 @@
 
         <div id="page-parent" data-scrollspy="Parent" ng-show="entity.properties.parent">
             <div class="row">
-                <ctrl-node class="col-md-12" ng-model="node.parent" ng-domain="node.domain" ng-enabled="entity.properties.parent" ng-required="false" ng-options="parentOptions" ng-label="Parent"></ctrl-node>
+                <ctrl-node class="col-md-12" ng-model="node.parent" ng-domain="node.domain" ng-enabled="entity.properties.parent" ng-required="false" ng-options="parentOptions" ng-label="Parent" ng-tip="leave blank for root"></ctrl-node>
             </div>
 
             <hr />
         </div>
 
-        <div id="page-type" ng-show="node.domain === 'core' && types.length > 1" data-scrollspy="Type">
+        <div id="page-type" ng-show="node.domain === 'core' && types.length &gt; 1" data-scrollspy="Type">
             <div class="row">
                 <ctrl-select class="col-md-12" ng-model="node.entity" ng-required="true" ng-label="Type" ng-options="types" ng-enabled="node.domain === 'core'"></ctrl-select>
             </div>
@@ -111,8 +111,8 @@
 
         <div id="page-permissions" data-scrollspy="Permissions" ng-show="application.restricted && entity.properties.permissions">
             <div class="row">
-                <ctrl-check class="col-md-4" ng-model="node.roles.inherits" ng-enabled="application.restricted && entity.properties.permissions" ng-label="Inherits from parent"></ctrl-check>
                 <ctrl-check-list class="col-md-8" ng-model="roles" ng-options="roleOptions" ng-required="true" ng-enabled="application.restricted && entity.properties.permissions && !node.roles.inherits" ng-label="Permissions"></ctrl-check-list>
+                <ctrl-check class="col-md-4" ng-model="node.roles.inherits" ng-enabled="application.restricted && entity.properties.permissions" ng-label="Inherits from parent"></ctrl-check>                
             </div>
 
             <hr />
@@ -120,8 +120,8 @@
 
         <div id="page-robots" data-scrollspy="Robots" ng-show="application.restricted && entity.properties.robots"> 
             <div class="row">
-                <ctrl-check class="col-md-4" ng-model="node.robots.inherits" ng-enabled="application.restricted && entity.properties.robots" ng-label="Inherits from parent"></ctrl-check>
                 <ctrl-check-list class="col-md-8" ng-model="robots" ng-options="robotOptions" ng-required="true" ng-enabled="application.restricted && entity.properties.robots && !node.robots.inherits" ng-label="Robots"></ctrl-check-list>
+                <ctrl-check class="col-md-4" ng-model="node.robots.inherits" ng-enabled="application.restricted && entity.properties.robots" ng-label="Inherits from parent"></ctrl-check>
             </div>
 
             <hr />

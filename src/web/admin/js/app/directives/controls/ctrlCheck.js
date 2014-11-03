@@ -13,7 +13,8 @@
                 scope: {
                     ngModel: '=',
                     ngEnabled: '=',
-                    ngLabel: '@'
+                    ngLabel: '@',
+                    ngTip: '@'
                 },
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl');

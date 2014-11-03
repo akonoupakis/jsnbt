@@ -1,6 +1,6 @@
 ﻿<div ng-class="{ 'ng-required': ngRequired, invalid: enabled && !valid }">
     <div class="form-group" ng-class="{ 'has-error': enabled && !valid, 'has-feedback': enabled && !valid }">
-        <label ng-show="ngLabel" class="control-label">{{ngLabel}}</label>
+        <label ng-show="ngLabel" class="control-label">{{ngLabel}}<small ng-show="ngTip">({{ngTip}})</small></label>
 
         <ul class="ctrl-node-list-contents sortable-group" ui-sortable="sortableOptions" ng-model="value">
             <li ng-repeat="item in value">
