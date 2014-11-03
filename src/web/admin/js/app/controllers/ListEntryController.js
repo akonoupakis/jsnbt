@@ -210,8 +210,7 @@
             };
                         
             $scope.discard = function () {
-                fn.discard().then(function () {
-                }, function (ex) {
+                fn.discard().catch(function (ex) {
                     logger.error(ex);
                 });
             };
@@ -228,13 +227,13 @@
             };
 
             $scope.$watch('name', function (newValue, prevValue) {
-                fn.setLocation().then(function () { }, function (ex) {
+                fn.setLocation().catch(function (ex) {
                     logger.error(ex);
                 });
             });
 
             $scope.$watch('tmpl', function (newValue, prevValue) {
-                fn.setSpy(200).then(function () { }, function (ex) {
+                fn.setSpy(200).catch(function (ex) {
                     logger.error(ex);
                 });
             });
@@ -259,7 +258,7 @@
      
             $timeout(function () {
                 fn.set().then(function () {
-                    fn.setTmpl().then(function () {}, function (ex) {
+                    fn.setTmpl().catch(function (ex) {
                         logger.error(ex);
                     });
                 }, function (ex) {

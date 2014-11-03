@@ -169,8 +169,7 @@
             };
 
             $scope.discard = function () {
-                fn.discard().then(function () {
-                }, function (ex) {
+                fn.discard().catch(function (ex) {
                     logger.error(ex);
                 });
             };
@@ -187,7 +186,7 @@
             };
 
             $scope.$watch('name', function (newValue, prevValue) {
-                fn.setLocation().then(function () { }, function (ex) {
+                fn.setLocation().catch(function (ex) {
                     logger.error(ex);
                 });
             });
@@ -212,7 +211,9 @@
 
             $timeout(function () {
                 fn.set().then(function () {
-                    fn.setSpy(200);
+                    fn.setSpy(200).catch(function (spyEx) {
+                        logger.error(spyEx);
+                    });
                 }, function (ex) {
                     logger.error(ex);
                 });

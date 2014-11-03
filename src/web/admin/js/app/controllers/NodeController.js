@@ -211,7 +211,7 @@
                     });
                     
                     $scope.roleOptions = allRoles;
-
+                    
                     deferred.resolve(allRoles);
 
                     return deferred.promise;
@@ -219,7 +219,7 @@
 
                 setRobots: function () {
                     var deferred = $q.defer();
-
+      
                     var robots = [{
                         name: 'noindex',
                         value: 'noindex',
@@ -253,35 +253,52 @@
                     return deferred.promise;
                 },
 
-                setSelectedRoles: function () {
+                getHierarchyNodes: function () {
+                    var deferred = $q.defer();
+
+                    var hierarchyNodeIds = _.filter($scope.node.hierarchy, function (x) { return x !== $scope.id; });
+                    $data.nodes.get({ id: { $in: hierarchyNodeIds } }).then(function (nodes) {
+
+                        var hierarchyNodes = [];
+
+                        $($scope.node.hierarchy).each(function (i, item) {
+                            var matchedNode = _.first(_.filter(nodes, function (x) { return x.id === item; }));
+                            if (matchedNode) {
+                                hierarchyNodes.push(matchedNode);
+                            }
+                        });
+
+                        deferred.resolve(hierarchyNodes);
+
+                    }, function (error) {
+                        deferred.reject(error);
+                    });
+
+                    return deferred.promise;
+                },
+
+                setSelectedRoles: function (hierarchyNodes) {
                     var deferred = $q.defer();
 
                     if ($scope.node.roles.inherits) {
                         $scope.draftRoles = $scope.roles.slice(0);
 
-                        var hierarchyNodeIds = _.filter($scope.node.hierarchy, function (x) { return x !== $scope.id; });
-                        $data.nodes.get({ id: { $in: hierarchyNodeIds } }).then(function (nodes) {
+                        var roles = [];
 
-                            var roles = [];
-
-                            $($scope.node.hierarchy).each(function (i, item) {
-                                var matchedNode = _.first(_.filter(nodes, function (x) { return x.id === item; }));
-                                if (matchedNode) {
-                                    if (!matchedNode.roles.inherits) {
-                                        roles = matchedNode.roles.values.slice(0);
-                                    }
+                        $($scope.node.hierarchy).each(function (i, item) {
+                            var matchedNode = _.first(_.filter(hierarchyNodes, function (x) { return x.id === item; }));
+                            if (matchedNode) {
+                                if (!matchedNode.roles.inherits) {
+                                    roles = matchedNode.roles.values.slice(0);
                                 }
-                                else {
-                                    return false;
-                                }
-                            });
-                                
-                            $scope.roles = roles;
-                            deferred.resolve(roles);
-
-                        }, function (error) {
-                            deferred.reject(error);
+                            }
+                            else {
+                                return false;
+                            }
                         });
+                                
+                        $scope.roles = roles;
+                        deferred.resolve(roles);
                     }
                     else {
                         var roles = $scope.draftRoles.slice(0);
@@ -292,35 +309,28 @@
                     return deferred.promise;
                 },
 
-                setSelectedRobots: function () {
+                setSelectedRobots: function (hierarchyNodes) {
                     var deferred = $q.defer();
 
                     if ($scope.node.robots.inherits) {
                         $scope.draftRobots = $scope.robots.slice(0);
 
-                        var hierarchyNodeIds = _.filter($scope.node.hierarchy, function (x) { return x !== $scope.id; });
-                        $data.nodes.get({ id: { $in: hierarchyNodeIds } }).then(function (nodes) {
+                        var robots = [];
 
-                            var robots = [];
-
-                            $($scope.node.hierarchy).each(function (i, item) {
-                                var matchedNode = _.first(_.filter(nodes, function (x) { return x.id === item; }));
-                                if (matchedNode) {
-                                    if (!matchedNode.robots.inherits) {
-                                        robots = matchedNode.robots.values.slice(0);
-                                    }
+                        $($scope.node.hierarchy).each(function (i, item) {
+                            var matchedNode = _.first(_.filter(hierarchyNodes, function (x) { return x.id === item; }));
+                            if (matchedNode) {
+                                if (!matchedNode.robots.inherits) {
+                                    robots = matchedNode.robots.values.slice(0);
                                 }
-                                else {
-                                    return false;
-                                }
-                            });
-                                
-                            $scope.robots = robots;
-                            deferred.resolve(robots);
-
-                        }, function (error) {
-                            deferred.reject(error);
+                            }
+                            else {
+                                return false;
+                            }
                         });
+
+                        $scope.robots = robots;
+                        deferred.resolve(robots);
                     }
                     else {
                         var robots = $scope.draftRobots.slice(0);
@@ -670,9 +680,7 @@
             $scope.editPointee = function () {
                 var targetNode = $data.nodes.get($scope.node.pointer.nodeId).then(function (node) {
                     $location.next($fn.invoke($scope.node.pointer.domain, 'getEditUrl', [node]));
-                }, function (ex) {
-                    
-                });
+                }, function (ex) { });
             };
 
             $scope.back = function () {
@@ -685,8 +693,7 @@
             };
 
             $scope.discard = function () {
-                fn.discard().then(function () {
-                }, function (ex) {
+                fn.discard().catch(function (ex) {
                     logger.error(ex);
                 });
             };
@@ -699,7 +706,7 @@
                         $scope.scroll2error();
                     }
                     else {
-                        fn.setLocation().then(function () { }, function (locEx) {
+                        fn.setLocation().catch(function (locEx) {
                             logger.error(locEx);
                         });
                     }
@@ -709,13 +716,13 @@
             };
             
             $scope.$watch('name', function (newValue, prevValue) {
-                fn.setLocation().then(function () { }, function (ex) {
+                fn.setLocation().catch(function (ex) {
                     logger.error(ex);
                 });
             });
 
             $scope.$watch('tmpl', function (newValue, prevValue) {
-                fn.setSpy(200).then(function () { }, function (ex) {
+                fn.setSpy(200).catch(function (ex) {
                     logger.error(ex);
                 });
             });
@@ -752,7 +759,7 @@
 
                     $scope.entity = knownEntity;
 
-                    fn.setViews().then(function (response) { }, function (ex) {
+                    fn.setViews().catch(function (ex) {
                         logger.error(ex);
                     });
                 }
@@ -760,7 +767,9 @@
 
             $scope.$watch('node.template', function () {
                 fn.setTmpl().then(function () {
-                    fn.setSpy(200);
+                    fn.setSpy(200).catch(function (spyEx) {
+                        logger.error(spyEx);
+                    });
                 }, function (ex) {
                     logger.error(ex);
                 });
@@ -770,7 +779,7 @@
                 if (!$scope.node)
                     return;
 
-                fn.setSeo().then(function () { }, function (ex) {
+                fn.setSeo().catch(function (ex) {
                     logger.error(ex);
                 });
             });
@@ -789,17 +798,39 @@
             
             $scope.$watch('node.roles.inherits', function (newValue, prevValue) {
                 if (newValue !== undefined && prevValue !== undefined) {
-                    fn.setSelectedRoles().then(function () { }, function (ex) {
-                        logger.error(ex);
-                    });
+                    if (newValue === true) {
+                        fn.getHierarchyNodes().then(function (hierarchyNodes) {
+                            fn.setSelectedRoles(hierarchyNodes).catch(function (setEx) {
+                                logger.error(setEx);
+                            });
+                        }, function (ex) {
+                            logger.error(ex);
+                        });
+                    }
+                    else {
+                        fn.setSelectedRoles().catch(function (setEx) {
+                            logger.error(setEx);
+                        });
+                    }
                 }
             });
 
             $scope.$watch('node.robots.inherits', function (newValue, prevValue) {
                 if (newValue !== undefined && prevValue !== undefined) {
-                    fn.setSelectedRobots().then(function () { }, function (ex) {
-                        logger.error(ex);
-                    });
+                    if (newValue === true) {
+                        fn.getHierarchyNodes().then(function (hierarchyNodes) {
+                            fn.setSelectedRobots(hierarchyNodes).catch(function (setEx) {
+                                logger.error(setEx);
+                            });
+                        }, function (ex) {
+                            logger.error(ex);
+                        });
+                    }
+                    else {
+                        fn.setSelectedRobots().catch(function (setEx) {
+                            logger.error(setEx);
+                        });
+                    }
                 }
             });
             
@@ -830,41 +861,19 @@
 
 
             $timeout(function () {
-                fn.setRoles().then(function (rolesResponse) {
-                    fn.setRobots().then(function (robotsResponse) {
-                        fn.setAddons().then(function (addonsResponse) {
-                            fn.setLanguages().then(function (languagesResponse) {
-                                fn.setLanguage().then(function (languageResponse) {
-                                    fn.setTypes().then(function (typesResponse) {
-                                        fn.set().then(function (setResponse) {
-                                            fn.setSelectedRoles().then(function (selRolesResponse) {
-                                                fn.setSelectedRobots().then(function (selRobotsResponse) {
-                                                }, function (selRobotsError) {
-                                                    logger.error(selRobotsError);
-                                                });
-                                            }, function (selRolesError) {
-                                                logger.error(selRolesError);
-                                            });
-                                        }, function (setError) {
-                                            logger.error(setError);
-                                        });
-                                    }, function (typesError) {
-                                        logger.error(typesError);
-                                    });
-                                }, function (languageError) {
-                                    logger.error(languageError);
-                                });
-                            }, function (languagesError) {
-                                logger.error(languagesError);
+                $q.all(fn.setRoles(), fn.setRobots(), fn.setAddons(), fn.setLanguages(), fn.setLanguage(), fn.setTypes()).then(function () {
+                    fn.set().then(function (setResponse) {
+                        fn.getHierarchyNodes().then(function (hierarchyNodes) {
+                            $q.all(fn.setSelectedRoles(hierarchyNodes), fn.setSelectedRobots(hierarchyNodes)).then(function () {
+                            }, function (set2Error) {
+                                logger.error(set2Error);
                             });
-                        }, function (addonsError) {
-                            logger.error(addonsError);
-                        });
-                    }, function (robotsError) {
-                        logger.error(robotsError);
+                        }, function (getError) {
+                            logger.error(getError);
+                        });                        
+                    }, function (setError) {
+                        logger.error(setError);
                     });
-                }, function (rolesError) {
-                    logger.error(rolesError);
                 });
             }, 200);
 
