@@ -26,7 +26,7 @@
                     scope.breadcrumb = [];
                     scope.contents = [];
                     scope.selected = {};
-                    console.log(scope.ngExtensions);
+
                     if (scope.ngSelectable) {
                         if (scope.ngSelectMode === 'single') {
                             if (scope.ngSelected && scope.ngSelected !== '')
@@ -270,7 +270,6 @@
                                     selected.push(name2);
                                 }
                             }
-
 
                             scope.$emit(MODAL_EVENTS.valueSubmitted, selected);
                         }
