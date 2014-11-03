@@ -53,7 +53,7 @@ exports.render = function (ctx, error, stack) {
     errorContent = html.parse(ctx, errorContent, {
         error: error,
         text: text,
-        stack: stack
+        stack: stack || ''
     });
 
     ctx.res.write(errorContent);

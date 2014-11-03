@@ -22,6 +22,19 @@ var jsnbtModule = {
     //],
 
     images: [{
+        name: 'admin-explorer-thumb',
+        options: {
+            width: 64,
+            height: 64,
+            cropWidth: 64,
+            cropHeight: 64,
+            x: 0,
+            y: 0,
+            quality: undefined,
+            gravity: undefined,
+            fill: undefined
+        }
+    }, {
         name: 'normal1',
         options: {
             width: 200,

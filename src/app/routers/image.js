@@ -43,14 +43,13 @@ module.exports = function () {
                                         var options = {};
 
                                         extend(true, options, imageType.options);
-
                                         var fileKey = md5(JSON.stringify({
                                             path: filePath,
                                             options: options
                                         }));
 
                                         var fileExt = path.extname(targetFilePath);
-                                        var destFilePath = server.getPath('dev/public/tmp/' + fileKey + fileExt);
+                                        var destFilePath = server.getPath(app.root + '/public/tmp/' + fileKey + fileExt);
 
                                         extend(true, options, {
                                             src: targetFilePath,

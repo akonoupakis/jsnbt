@@ -27,7 +27,7 @@
     <table class="table table-condensed explorer-files">
         <tr ng-repeat="item in contents" ng-class="{'ng-selected': selected[item.location]}">
             <td class="image" ng-click="select(item)" ng-dblclick="open(item)">
-                <img ng-src="img/explorer/icon/{{item.icon}}.png" />
+                <img ng-src="{{ item.icon === 'image' ? '../' + item.location + '?type=admin-explorer-thumb' : 'img/explorer/icon/' + item.icon + '.png' }}" />
             </td>
             <td class="main" ng-click="select(item)" ng-dblclick="open(item)">
                 <div class="name">{{item.name}}</div>

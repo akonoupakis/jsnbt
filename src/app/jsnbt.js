@@ -211,7 +211,7 @@ module.exports = {
 
         var moduleImages = module.images || [];
         _.each(moduleImages, function (moduleImage) {
-            var matchedImage = _.first(_.filter(self.images, function (x) { return x.path === moduleImage.path; }));
+            var matchedImage = _.first(_.filter(self.images, function (x) { return x.name === moduleImage.name; }));
             if (matchedImage) {
                 extend(true, matchedImage, moduleImage);
             }
@@ -284,6 +284,8 @@ module.exports = {
 
             result.roles = self.roles;
             result.sections = self.sections;
+
+            result.images = self.images;
         }
 
         result.languages = self.languages;
