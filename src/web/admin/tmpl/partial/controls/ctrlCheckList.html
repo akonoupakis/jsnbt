@@ -1,5 +1,5 @@
-﻿<div ng-class="{ invalid: !valid }">
-    <div class="form-group" ng-class="{ 'has-error': !valid, 'has-feedback': !valid }">
+﻿<div ng-class="{ invalid: enabled && !valid }">
+    <div class="form-group" ng-class="{ 'has-error': enabled && !valid, 'has-feedback': enabled && !valid }">
         <label ng-show="ngLabel" class="control-label">{{ ngLabel }}</label>
         <div class="check-options">
             <div class="check-option" ng-repeat="option in ngOptions">
@@ -8,6 +8,6 @@
                 <span class="check-option-description">{{ option[descriptionField] }}</span>
             </div>
         </div>
-        <span ng-show="!valid" class="glyphicon glyphicon-remove form-control-feedback"></span>
+        <span ng-show="enabled && !valid" class="glyphicon glyphicon-remove form-control-feedback"></span>
     </div>
 </div> 
