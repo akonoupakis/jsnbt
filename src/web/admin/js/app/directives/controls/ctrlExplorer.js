@@ -14,7 +14,8 @@
                     ngPath: '@',
                     ngSelectable: '=',
                     ngSelectMode: '=',
-                    ngSelected: '='
+                    ngSelected: '=',
+                    ngExtensions: '='
                 },
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl');
@@ -25,7 +26,7 @@
                     scope.breadcrumb = [];
                     scope.contents = [];
                     scope.selected = {};
-
+                    console.log(scope.ngExtensions);
                     if (scope.ngSelectable) {
                         if (scope.ngSelectMode === 'single') {
                             if (scope.ngSelected && scope.ngSelected !== '')
@@ -100,7 +101,20 @@
                             if (!item.icon)
                                 item.icon = 'blank';
                             
-                            results.push(item);
+                            if (item.type === 'folder') {
+                                results.push(item);
+                            }
+                            else {
+                                if (scope.ngExtensions && scope.ngExtensions.length > 0) {
+                                    if (scope.ngExtensions.indexOf(item.ext) !== -1) {
+                                        results.push(item);
+                                    }
+                                }
+                                else {
+                                    results.push(item);
+                                }
+                            }
+                            
                         });
 
                         return results;

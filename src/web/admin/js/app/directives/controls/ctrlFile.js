@@ -14,7 +14,8 @@
                     ngModel: '=',
                     ngEnabled: '=',
                     ngRequired: '=',
-                    ngLabel: '@'
+                    ngLabel: '@',
+                    ngExtensions: '='
                 },
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl');
@@ -75,7 +76,8 @@
                             controller: 'FileSelectorController',
                             selected: scope.ngModel,
                             mode: 'single',
-                            template: 'tmpl/partial/modal/fileSelector.html'
+                            template: 'tmpl/partial/modal/fileSelector.html',
+                            extensions: scope.ngExtensions || []
                         }).then(function (result) {
                             scope.ngModel = result || '';
                             scope.changed();
