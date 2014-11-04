@@ -38,8 +38,8 @@ var jsnbtModule = {
         options: {
             width: 200,
             height: 100,
-            cropwidth: 128,
-            cropheight: 128,
+            cropwidth: undefined,
+            cropheight: undefined,
             x: 0,
             y: 0,
             quality: undefined,

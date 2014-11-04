@@ -43,7 +43,6 @@
                     else {
                         $scope.page = result;
                         $scope.pageData = $scope.flat(result);
-                        console.log('page', $scope.pageId, $scope.page, $scope.pageData);
                         $scope.$apply();
                     }
                 });
@@ -58,7 +57,6 @@
                     else {
                         $scope.pointer = result;
                         $scope.pointerData = $scope.flat(result);
-                        console.log('pointer', $scope.pointerId, $scope.pointer, $scope.pointerData);
                         $scope.$apply();
                     }
                 });
