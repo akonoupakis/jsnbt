@@ -17,32 +17,36 @@
 	NodeJs : http://nodejs.org/download/
 
 	MongoDB : http://nodejs.org/download/
-
+	
 	GraphicsMagick : http://www.graphicsmagick.org/download.html
+
+	PhantomJs: http://phantomjs.org/download.html
 
 	bower : npm install -g bower
 	grunt : npm install -g grunt-cli
 
-### gruntfile.js
+### bootstrap
 
-	module.exports = function (grunt) {
-		require('jsnbt/src/app/grunt.js')(grunt);
-	};
+	easy way to start you up, 
+	download a copy of the jsnbt-angular-strap from https://github.com/akonoupakis/jsnbt-strap-angular
 
+	change the name to your site's name on package.json and bower.json
+	
+	change the database configuration on config.js for dev and production environments
+	
 
-### install dependencies
+### run
 
-	npm install jsnbt --save
-	npm install grunt --save-dev
-	npm install grunt-env --save-dev
-	npm install grunt-contrib-clean --save-dev
-	npm install grunt-contrib-uglify --save-dev
-	npm install grunt-contrib-jshint --save-dev
-    npm install grunt-contrib-watch --save-dev
-    npm install grunt-contrib-less --save-dev
-	npm install grunt-contrib-cssmin --save-dev
-	npm install grunt-contrib-copy --save-dev
-    npm install grunt-preprocess --save-dev
+	npm install - for grunt dependencies mentioned on package.json
+	npm install jsnbt --save - install the jsnbt and save it to package.json
+
+	grunt dev/prod - prepares the application folder for the web server to serve (you may use "grunt dev update-files" to monitor changes in the filesystem and apply them to the application folder while developing)
+	
+	node server-dev.js (or node server-prod.js) - runs the webserver
+
+	if all worked smoothly, you will be able to se the deployd dashboard at /dashboard and the jsnbt admin at /admin 
+
+	go ahead, create a language, create a page, and start! 
     
 
 ## license
