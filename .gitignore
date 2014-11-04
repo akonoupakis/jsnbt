@@ -11,6 +11,8 @@
 /.grunt/
 /_*
 
+*.sln
+*.cmd
 
 # User-specific files
 *.suo
