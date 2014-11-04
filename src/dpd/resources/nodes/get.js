@@ -12,14 +12,14 @@ if (!internal && !auth.isAuthorized(me, 'nodes', 'R')) {
 
 if (!internal) {
 
-    //node.buildUrl(self, function (response) {
-    //    self.link = response;
-    //});
+    node.buildUrl(self, function (response) {
+        self.url = response;
+    });
     
-    //hide('config');
+    hide('config');
 
-    //if (!auth.isInRole(me, 'admin')) {
-    //    hide('permissions');
-    //}
+    if (!auth.isInRole(me, 'admin')) {
+        hide('roles');
+    }
 
 }

@@ -4,14 +4,14 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('ListController', function ($scope, $rootScope, $routeParams, $location, $logger, $q, $data, PagedDataService, ModalService, LocationService) {
+        .controller('ListController', function ($scope, $rootScope, $routeParams, $location, $logger, $q, $data, $jsnbt, PagedDataService, ModalService, LocationService) {
            
             var logger = $logger.create('ListController');
 
             $scope.name = undefined;
             $scope.data = {};
             
-            $scope.list = _.first(_.filter(jsnbt.lists, function (x) { return x.domain === $routeParams.domain && x.id === $routeParams.list; }));
+            $scope.list = _.first(_.filter($jsnbt.lists, function (x) { return x.domain === $routeParams.domain && x.id === $routeParams.list; }));
             $scope.name = $scope.list.name;
 
 

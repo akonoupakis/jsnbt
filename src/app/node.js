@@ -3,6 +3,7 @@ var cache = require('./cache.js');
 var jsnbt = require('./jsnbt.js');
 var entity = require('./entity.js');
 var parseUri = require('parseUri');
+var extend = require('extend');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
@@ -77,66 +78,57 @@ module.exports = function(dpd) {
             else if (!pointedNode)
                 throw new Error('pointed node not found');
             else {
-                //var pack = _.first(_.filter(app.packages, function (x) { return x.domain === pointedNode.domain && typeof (x.resolve) === 'function'; }));
-                //if (pack) {
-                //    var addonNode = pack.resolve({
-                //        pointer: matchedNode,
-                //        pointed: pointedNode,
-                //        nodes: foundNodes,
-                //        url: url
-                //    });
-                //    if (addonNode) {
-                //        return {
-                //            node: addonNode,
-                //            pointer: matchedNode,
-                //            view: addonNode.view,
-                //            language: language
-                //        }
-                //    }
-                //}
-
                 var pointedSeoNames = _.str.trim(urlPath, '/') !== '' ? _.str.trim(urlPath, '/').split('/') : [];
-                if (pointedSeoNames.length === 0) {
-                    returnObj.page = pointedNode;
-                    returnObj.view = pointedNode.view;
-                    returnObj.nodes = _.union(returnObj.nodes, pointedNode);
-                    cb(returnObj);
+                var pack = _.first(_.filter(app.packages, function (x) { return x.domain === pointedNode.domain && typeof (x.resolve) === 'function'; }));
+                if (pack) {
+                    returnObj.seoNames = pointedSeoNames;
+                    returnObj.pointed = pointedNode;
+                    returnObj.dpd = dpd;
+                    pack.resolve(returnObj, cb);
                 }
                 else {
-                    var pointedLoopParentId = pointedNode.id;
-                    var pointedFoundNodes = [pointedNode];
-                    var pointedFoundAllMatches = true;
+                    if (pointedSeoNames.length === 0) {
+                        returnObj.page = pointedNode;
+                        returnObj.template = pointedNode.template;
+                        returnObj.nodes = _.union(returnObj.nodes, pointedNode);
+                        cb(returnObj);
+                    }
+                    else {
+                        var pointedLoopParentId = pointedNode.id;
+                        var pointedFoundNodes = [pointedNode];
+                        var pointedFoundAllMatches = true;
 
-                    _.each(pointedSeoNames, function (pointedSeoName) {
-                        var matchedPointedSeoNode = _.first(_.filter(seoNodes, function (x) {
-                            return x.url[jsnbt.localization ? returnObj.language : 'en'].toLowerCase() === pointedSeoName.toLowerCase() &&
-                                x.parent === pointedLoopParentId &&
-                                x.domain === pointedNode.domain;
-                        }));
-                        if (matchedPointedSeoNode) {
-                            pointedFoundNodes.push(matchedPointedSeoNode);
-                            pointedLoopParentId = matchedPointedSeoNode.id;
-                        }
-                        else {
-                            pointedFoundAllMatches = false;
-                            return false;
-                        }
-                    });
+                        _.each(pointedSeoNames, function (pointedSeoName) {
+                            var matchedPointedSeoNode = _.first(_.filter(seoNodes, function (x) {
+                                return x.seo[jsnbt.localization ? returnObj.language : 'en'].toLowerCase() === pointedSeoName.toLowerCase() &&
+                                    x.parent === pointedLoopParentId &&
+                                    x.domain === pointedNode.domain;
+                            }));
+                            if (matchedPointedSeoNode) {
+                                pointedFoundNodes.push(matchedPointedSeoNode);
+                                pointedLoopParentId = matchedPointedSeoNode.id;
+                            }
+                            else {
+                                pointedFoundAllMatches = false;
+                                return false;
+                            }
+                        });
 
-                    if (pointedFoundAllMatches) {
-                        var targetMatchedNode = _.last(pointedFoundNodes);
-                        if (targetMatchedNode) {
-                            returnObj.page = targetMatchedNode;
-                            returnObj.view = targetMatchedNode.view;
-                            returnObj.nodes = _.union(returnObj.nodes, pointedFoundNodes);
-                            cb(returnObj);
+                        if (pointedFoundAllMatches) {
+                            var targetMatchedNode = _.last(pointedFoundNodes);
+                            if (targetMatchedNode) {
+                                returnObj.page = targetMatchedNode;
+                                returnObj.template = targetMatchedNode.template;
+                                returnObj.nodes = _.union(returnObj.nodes, pointedFoundNodes);
+                                cb(returnObj);
+                            }
+                            else {
+                                cb();
+                            }
                         }
                         else {
                             cb();
                         }
-                    }
-                    else {
-                        cb();
                     }
                 }
             }
@@ -148,7 +140,7 @@ module.exports = function(dpd) {
         var seoNames = _.str.trim(url, '/').split('/');
 
         var seoNamesQuery = {};
-        seoNamesQuery['url.' + (jsnbt.localization ? language : 'en')] = { $in: seoNames };
+        seoNamesQuery['seo.' + (jsnbt.localization ? language : 'en')] = { $in: seoNames };
 
         dpd.nodes.get(seoNamesQuery, function (urlSeoNodes, urlSeoNodesError) {
             if (urlSeoNodesError)
@@ -161,7 +153,7 @@ module.exports = function(dpd) {
 
                 _.each(seoNames, function (seoName) {
                     var matchedSeoNode = _.first(_.filter(urlSeoNodes, function (x) {
-                        return x.url[jsnbt.localization ? language: 'en'].toLowerCase() === seoName.toLowerCase() &&
+                        return x.seo[jsnbt.localization ? language : 'en'].toLowerCase() === seoName.toLowerCase() &&
                             x.parent === loopParentId &&
                             x.domain === 'core';
                     }));
@@ -192,13 +184,14 @@ module.exports = function(dpd) {
                         returnObj.page = matchedNode;
                         returnObj.nodes = foundNodes;
                         returnObj.language = language;
-                        returnObj.view = matchedNode.view;
+                        returnObj.template = matchedNode.template;
                         cb(returnObj);
                     }
                 }
                 else {
-                    var pointerNode = _.last(foundNodes);
-                    if (pointerNode && pointerNode.entity === 'pointer') {
+                    var pointerNode = _.last(_.filter(foundNodes, function (x) { return x.entity === 'pointer' }));
+
+                    if (pointerNode) {
                         var trimmedUrl = url.length > buildUrl.length ? url.substring(buildUrl.length) : '';
                         if (trimmedUrl === '')
                             trimmedUrl = '/';
@@ -232,7 +225,7 @@ module.exports = function(dpd) {
                 pointer: undefined,
                 nodes: [],
                 language: undefined,
-                view: undefined,
+                template: undefined,
                 isActive: function () {
                     var rSelf = this;
                     return _.every(rSelf.nodes, function (x) { return x.active[rSelf.language] === true; });
@@ -247,12 +240,25 @@ module.exports = function(dpd) {
                     var rRoles = ['public'];
 
                     _.each(rSelf.nodes, function (rnode) {
-                        if (!rnode.permissions.inherits) {
-                            rRoles = rnode.permissions.roles.slice(0);
+                        if (!rnode.roles.inherits) {
+                            rRoles = rnode.roles.values.slice(0);
                         }
                     });
 
                     return rRoles;
+                },
+                getRobots: function () {
+                    var rSelf = this;
+
+                    var rRobots = [];
+
+                    _.each(rSelf.nodes, function (rnode) {
+                        if (!rnode.robots.inherits) {
+                            rRobots = rnode.robots.values.slice(0);
+                        }
+                    });
+
+                    return rRobots;
                 }
             };
 
@@ -297,7 +303,7 @@ module.exports = function(dpd) {
                                                 returnObj.page = resolvedNode;
                                                 returnObj.nodes = resolvedNodes;
                                                 returnObj.language = defaultLanguage;
-                                                returnObj.view = resolvedNode.view;
+                                                returnObj.template = resolvedNode.template;
 
                                                 cb(returnObj);
                                             }
@@ -360,9 +366,9 @@ module.exports = function(dpd) {
                     var cachedUrl = cache.url[parentCacheKey];
 
                     var newUrl = {};
-                    _.extend(newUrl, node.url);
-                    for (var langItem in node.url) {
-                        var seoName = node.url[langItem];
+                    extend(true, newUrl, node.seo);
+                    for (var langItem in node.seo) {
+                        var seoName = node.seo[langItem];
                         if (cachedUrl[langItem]) {
                             newUrl[langItem] = cachedUrl[langItem] + '/' + seoName
                         }
@@ -394,16 +400,21 @@ module.exports = function(dpd) {
 
                             if (allHierarchyNodes) {
                                 var parentUrl = {};
+                                var firstNode = _.first(hierarchyNodes);
+
                                 var lastNode = _.last(hierarchyNodes);
 
-                                _.extend(parentUrl, lastNode.url);
-                                for (var langItem in node.url) {
+                                extend(true, parentUrl, lastNode.seo);
+
+                                var urlKeys = getEntity(node.entity).isSeoNamed() ? node.seo : lastNode.seo;
+                                
+                                for (var langItem in urlKeys) {
                                     var langUrl = '';
                                     var fullyResolved = true;
                                     if (_.filter(jsnbt.languages, function (x) { return x.code === langItem; }).length > 0) {
                                         _.each(hierarchyNodes, function (hnode) {
-                                            if (hnode.url[langItem]) {
-                                                langUrl += '/' + hnode.url[langItem];
+                                            if (hnode.seo[langItem]) {
+                                                langUrl += '/' + hnode.seo[langItem];
                                             }
                                             else {
                                                 langUrl = '';
@@ -427,18 +438,30 @@ module.exports = function(dpd) {
                                     }
                                 }
 
-                                var newUrl = {};
-                                _.extend(newUrl, node.url);
-                                for (var langItem in node.url) {
-                                    if (parentUrl[langItem])
-                                        newUrl[langItem] = parentUrl[langItem] + '/' + node.url[langItem];
-                                    else
-                                        delete newUrl[langItem];
-                                }
-
+                                var newUrl = {};                                
                                 cache.url[parentCacheKey] = parentUrl;
 
-                                cb(newUrl)
+                                var pack = _.first(_.filter(app.packages, function (x) { return x.domain === firstNode.domain && typeof (x.build) === 'function'; }));
+                                if (pack) {
+                                    extend(true, newUrl, parentUrl);
+                                    
+                                    pack.build({
+                                        nodes: hierarchyNodes,
+                                        node: node,
+                                        url: newUrl
+                                    }, cb);
+                                }
+                                else {
+                                    extend(true, newUrl, node.seo);
+                                    for (var langItem in node.seo) {
+                                        if (parentUrl[langItem])
+                                            newUrl[langItem] = parentUrl[langItem] + '/' + node.seo[langItem];
+                                        else
+                                            delete newUrl[langItem];
+                                    }
+
+                                    cb(newUrl);
+                                }
                             }
                             else {
                                 cb({});
@@ -448,19 +471,30 @@ module.exports = function(dpd) {
                 }
             }
             else {
-                var newUrl = {};
-                _.extend(newUrl, node.url);
-                for (var langItem in node.url) {
-                    var seoName = node.url[langItem];
-                    var resolvedLangUrl = '';
-                    if (node.domain === 'core' && jsnbt.localization && getEntity(node.entity).isLocalized()) {
-                        resolvedLangUrl += '/' + langItem;
-                    }
-                    resolvedLangUrl += '/' + seoName;
-                    newUrl[langItem] = resolvedLangUrl;
-                }
 
-                cb(newUrl);
+                var pack = _.first(_.filter(app.packages, function (x) { return x.domain === node.domain && typeof (x.build) === 'function'; }));
+                if (pack) {
+                    pack.build({
+                        nodes: [],
+                        node: node,
+                        url: {}
+                    }, cb);
+                }
+                else {
+                    var newUrl = {};
+                    extend(true, newUrl, node.seo);
+                    for (var langItem in node.seo) {
+                        var seoName = node.seo[langItem];
+                        var resolvedLangUrl = '';
+                        if (node.domain === 'core' && jsnbt.localization && getEntity(node.entity).isLocalized()) {
+                            resolvedLangUrl += '/' + langItem;
+                        }
+                        resolvedLangUrl += '/' + seoName;
+                        newUrl[langItem] = resolvedLangUrl;
+                    }
+
+                    cb(newUrl);
+                }
             }
         }
 

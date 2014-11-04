@@ -2,6 +2,7 @@ var app = require('./app.js');
 var path = require('path');
 var server = require('server-root');
 var fs = require('./utils/fs.js');
+var extend = require('extend');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
@@ -9,27 +10,6 @@ _.str = require('underscore.string');
 var getVersion = function () {
     var versionInfo = fs.existsSync(server.getPath('node_modules/jsnbt/package.json')) ? require(server.getPath('node_modules/jsnbt/package.json')) : require(server.getPath('package.json'));
     return versionInfo.version;
-};
-
-var getViews = function () {
-
-    var views = [];
-
-    var templateDir = '../' + app.root + '/public/tmpl/view';
-    var templateSpecDir = '../' + app.root + '/public/tmpl/spec/view';
-
-    if (fs.existsSync(templateDir)) {
-        var filesInternal = fs.readdirSync(templateDir);
-        filesInternal.forEach(function (file) {
-            var fileSpecPath = templateSpecDir + '/' + file;
-            views.push({
-                tmpl: '/tmpl/view/' + file,
-                spec: fs.existsSync(fileSpecPath) ? '../tmpl/spec/view/' + file : undefined
-            });
-        });
-    }
-
-    return views;
 };
 
 module.exports = {
@@ -58,7 +38,10 @@ module.exports = {
 
     restricted: true,
 
-    scripts: [],
+    scripts: {
+        admin: [],
+        public: []
+    },
 
     configurations: {},
 
@@ -75,6 +58,10 @@ module.exports = {
     modules: [],
     
     addons: [],
+
+    templates: [],
+
+    images: [],
 
     setLocale: function (code) {
         var language = _.first(_.filter(this.languages, function (x) { return x.code === code; }));
@@ -106,24 +93,51 @@ module.exports = {
 
         var clone = function (obj) {
             var resultObj = {};
-            _.extend(resultObj, obj);
+            extend(true, resultObj, obj);
             return resultObj
         }
 
-        var moduleScripts = module.scripts || [];
-        _.each(moduleScripts, function (moduleScript) {
-            if (self.scripts.indexOf(moduleScript) === -1)
-                self.scripts.push(moduleScript);
-        });
+        if (module.scripts) {
+            var moduleAdminScripts = module.scripts.admin || [];
+            _.each(moduleAdminScripts, function (moduleScript) {
+                if (self.scripts.admin.indexOf(moduleScript) === -1)
+                    self.scripts.admin.push(moduleScript);
+            });
+
+            var modulePublicScripts = module.scripts.admin || [];
+            _.each(modulePublicScripts, function (moduleScript) {
+                if (self.scripts.public.indexOf(moduleScript) === -1)
+                    self.scripts.public.push(moduleScript);
+            });
+        }
+
+        var entityDefaults = {
+            name: '',
+            allowed: [],
+            treeNode: true,
+            localized: true,
+
+            properties: {
+                name: true,
+                parent: true,
+                template: true,
+                seo: true,
+                meta: true,
+                permissions: true,
+                robots: true
+            }
+        };
 
         var moduleEntities = module.entities || [];
         _.each(moduleEntities, function (moduleEntity) {
             var matchedEntity = _.first(_.filter(self.entities, function (x) { return x.name === moduleEntity.name; }));
             if (matchedEntity) {
-                _.extend(matchedEntity, moduleEntity);
+                extend(true, matchedEntity, moduleEntity);
             }
             else {
-                self.entities.push(clone(moduleEntity));
+                var newEntity = {};
+                extend(true, newEntity, entityDefaults, moduleEntity);
+                self.entities.push(newEntity);
             }            
         });
 
@@ -136,7 +150,7 @@ module.exports = {
 
             var matchedList = _.first(_.filter(self.lists, function (x) { return x.id === fileName && x.domain == moduleListDomain; }));
             if (matchedList) {
-                _.extend(matchedList, moduleList);
+                extend(true, matchedList, moduleList);
             }
             else {
                 var newListSpec = {
@@ -144,7 +158,7 @@ module.exports = {
                     localized: true
                 };
 
-                _.extend(newListSpec, moduleList);
+                extend(true, newListSpec, moduleList);
                 newListSpec.id = fileName;
 
                 self.lists.push(newListSpec);
@@ -155,7 +169,7 @@ module.exports = {
         _.each(moduleRoles, function (moduleRole) {
             var matchedRole = _.first(_.filter(self.roles, function (x) { return x.name === moduleRole.name; }));
             if (matchedRole) {
-                _.extend(matchedRole, moduleRole);
+                extend(true, matchedRole, moduleRole);
             }
             else {
                 self.roles.push(clone(moduleRole));
@@ -166,7 +180,7 @@ module.exports = {
         _.each(moduleSections, function (moduleSection) {
             var matchedSection = _.first(_.filter(self.sections, function (x) { return x.name === moduleSection.name; }));
             if (matchedSection) {
-                _.extend(matchedSection, moduleSection);
+                extend(true, matchedSection, moduleSection);
             }
             else {
                 self.sections.push(clone(moduleSection));
@@ -177,10 +191,32 @@ module.exports = {
         _.each(moduleData, function (moduleDatum) {
             var matchedDatum = _.first(_.filter(self.data, function (x) { return x.collection === moduleDatum.collection; }));
             if (matchedDatum) {
-                _.extend(matchedDatum, moduleDatum);
+                extend(true, matchedDatum, moduleDatum);
             }
             else {
                 self.data.push(clone(moduleDatum));
+            }
+        });
+
+        var moduleTemplates = module.templates || [];
+        _.each(moduleTemplates, function (moduleTemplate) {
+            var matchedTemplate = _.first(_.filter(self.templates, function (x) { return x.path === moduleTemplate.path; }));
+            if (matchedTemplate) {
+                extend(true, matchedTemplate, moduleTemplate);
+            }
+            else {
+                self.templates.push(clone(moduleTemplate));
+            }
+        });
+
+        var moduleImages = module.images || [];
+        _.each(moduleImages, function (moduleImage) {
+            var matchedImage = _.first(_.filter(self.images, function (x) { return x.name === moduleImage.name; }));
+            if (matchedImage) {
+                extend(true, matchedImage, moduleImage);
+            }
+            else {
+                self.images.push(clone(moduleImage));
             }
         });
     },
@@ -231,22 +267,25 @@ module.exports = {
 
             result.version = getVersion();
             
-            result.views = getViews();
             result.addons = self.addons;
             result.entities = self.entities;
+
+            result.templates = self.templates;
 
             result.restricted = self.restricted;
 
             result.lists = [];
             _.each(self.lists, function (list) {
                 var newList = {};
-                _.extend(newList, list);
+                extend(true, newList, list);
                 delete newList.permissions;
                 result.lists.push(newList);
             });
 
             result.roles = self.roles;
             result.sections = self.sections;
+
+            result.images = self.images;
         }
 
         result.languages = self.languages;

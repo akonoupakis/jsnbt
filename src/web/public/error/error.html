@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html lang="<%= language %>" ng-controller="AppController">
+<head>
+    <base href="<%= baseHref %>" />
+    <meta charset="utf-8" />
+
+    <meta name="robots" content="noindex,nofollow" />
+
+    <!--meta-->
+    <title><%= meta.title %></title>
+    <meta name="keywords" content="<%= meta.keywords %>" />
+    <meta name="description" content="<%= meta.description %>" />
+
+    <!-- @if NODE_ENV='DEVELOPMENT' -->
+    <link rel="stylesheet" href="css/style.css" />
+
+    <% _.each(js.lib, function(file) { %><script type="text/javascript" src="<%= file %>"></script>
+    <% }); %>
+    <script type="text/javascript" src="dpd.js"></script>
+    <script type="text/javascript" src="jsnbt.js"></script>
+
+    <% _.each(js.app, function(file) { %><script type="text/javascript" src="<%= file %>"></script>
+    <% }); %>
+    <script type="text/javascript" src="js/init.js"></script>
+    <!-- @endif -->
+    <!-- @if NODE_ENV='PRODUCTION' -->
+    <link rel="stylesheet" href="css/style.min.css" />
+
+    <script type="text/javascript" src="js/lib.min.js"></script>
+
+    <script type="text/javascript" src="dpd.js"></script>
+    <script type="text/javascript" src="jsnbt.js"></script>
+
+    <script type="text/javascript" src="js/app.min.js"></script>
+
+    <script type="text/javascript" src="js/init.min.js"></script>
+    <!-- @endif -->
+</head>
+<body>
+    <h1><b><%= error %></b> <%= text %></h1>
+    <!-- @if NODE_ENV='DEVELOPMENT' -->
+    <p><%= stack %></p>
+    <!-- @endif -->
+</body>
+</html>

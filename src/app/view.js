@@ -6,17 +6,23 @@ var _ = require('underscore');
 _.str = require('underscore.string');
 
 exports.render = function (ctx) {
-    var tmplFilePath = '../' + app.root + '/public' + ctx.view;
-    if (fs.existsSync(tmplFilePath)) {
-        var tmplContent = fs.readFileSync(tmplFilePath, 'utf-8');
-        ctx.res.writeHead(200, { "Content-Type": "text/html" });
-
-        tmplContent = html.parse(ctx, tmplContent);
-
-        ctx.res.write(tmplContent);
+    if (!ctx.template) {
+        ctx.res.write('could not find render template');
     }
     else {
-        ctx.res.write('could not find view file "' + tmplFilePath + '"');
+        var tmplFilePath = '../' + app.root + '/public' + ctx.template;
+        if (fs.existsSync(tmplFilePath)) {
+            var tmplContent = fs.readFileSync(tmplFilePath, 'utf-8');
+
+            ctx.res.writeHead(200, { "Content-Type": "text/html" });
+
+            tmplContent = html.parse(ctx, tmplContent);
+
+            ctx.res.write(tmplContent);
+        }
+        else {
+            ctx.res.write('could not find template file "' + tmplFilePath + '"');
+        }
     }
     ctx.res.end();
 };

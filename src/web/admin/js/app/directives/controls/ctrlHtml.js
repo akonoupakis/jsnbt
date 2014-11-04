@@ -15,7 +15,8 @@
                     ngEnabled: '=',
                     ngRequired: '=',
                     ngOptions: '=',
-                    ngLabel: '@'
+                    ngLabel: '@',
+                    ngTip: '@'
                 },
                 compile: function (elem, attributes, transclude) {
 

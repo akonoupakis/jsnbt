@@ -20,17 +20,17 @@
             
             $scope.localizedUrls = {};
             
-            var flat = function (node) {
+            $scope.flat = function (node) {
                 var newObj = {};
                 node = node || {};
-                if (node.data && node.data.localized && node.data.localized[$scope.language])
-                    $.extend(true, newObj, node.data.localized[$scope.language]);
+                if (node.content && node.content.localized && node.content.localized[$scope.language])
+                    $.extend(true, newObj, node.content.localized[$scope.language]);
 
-                if (node.data && node.data.localized)
-                    delete node.data.localized;
+                if (node.content && node.content.localized)
+                    delete node.content.localized;
 
-                if (node.data)
-                    $.extend(true, newObj, node.data);
+                if (node.content)
+                    $.extend(true, newObj, node.content);
 
                 return newObj;
             }
@@ -42,8 +42,7 @@
                     }
                     else {
                         $scope.page = result;
-                        $scope.pageData = flat(result);
-                        console.log('page', $scope.pageId, $scope.page, $scope.pageData);
+                        $scope.pageData = $scope.flat(result);
                         $scope.$apply();
                     }
                 });
@@ -57,8 +56,7 @@
                     }
                     else {
                         $scope.pointer = result;
-                        $scope.pointerData = flat(result);
-                        console.log('pointer', $scope.pointerId, $scope.pointer, $scope.pointerData);
+                        $scope.pointerData = $scope.flat(result);
                         $scope.$apply();
                     }
                 });

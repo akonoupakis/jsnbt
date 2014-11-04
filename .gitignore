@@ -5,6 +5,8 @@
 /src/dpd/.dpd/
 /src/dpd/data/
 /src/pck/
+/npm/
+/bower/
 /lib/
 /.grunt/
 /_*

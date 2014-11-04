@@ -15,6 +15,7 @@
                     ngEnabled: '=',
                     ngRequired: '=',
                     ngLabel: '@',
+                    ngTip: '@',
                     ngOptions: '=',
                     ngNameField: '@',
                     ngValueField: '@',
@@ -102,14 +103,14 @@
                         scope.enabled = newValue !== undefined ? newValue : true;
 
                         $(scope.ngOptions).each(function (o, option) {
-                            if ($('.bootstrap-switch-id-chk' + scope.id + option[scope.valueField]).length > 0) {
+                            if ($('.bootstrap-switch-id-chk' + scope.id + option[scope.valueField], element).length > 0) {
                                 var chkField = element.find('#chk' + scope.id + option[scope.valueField]);
 
                                 if (!scope.enabled) {
                                     chkField.bootstrapSwitch('disabled', true);
                                 }
                                 else {
-                                    chkField.bootstrapSwitch('disabled', option[scope.disabledField]);
+                                    chkField.bootstrapSwitch('disabled', option[scope.disabledField] || false);
                                 }
                             }
                         });

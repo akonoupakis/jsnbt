@@ -1,4 +1,4 @@
-var view = require('../view.js');
+var app = require('../app.js');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
@@ -12,27 +12,30 @@ module.exports = function () {
                     var viewPath = null;
 
                     if (ctx.uri.parts.length == 1) {
-                        viewPath = '/admin/tmpl/view/index.html';
+                        viewPath = '/admin/index.html';
                     }
                     else if (ctx.uri.parts.length > 1) {
                         var location = ctx.uri.parts[1];
                         if (location === 'index.html')
-                            viewPath = '/admin/tmpl/view/index.html';
+                            viewPath = '/admin/index.html';
                         else if (location === 'logging')
                             viewPath = '/admin/tmpl/partial/blank.html';
                     }
 
                     if (ctx.req.url.toLowerCase() === '/admin' || _.str.startsWith(ctx.req.url.toLowerCase(), '/admin#')) {
                         if (_.str.startsWith(ctx.req.url.toLowerCase(), '/admin#'))
-                            ctx.res.writeHead(302, { "Location": ctx.req.url.replace(/\/admin#/, '/admin/#') });
+                            ctx.redirect(ctx.req.url.replace(/\/admin#/, '/admin/#'));
 
-                        ctx.res.writeHead(302, { "Location": "/admin/" });
-                        ctx.res.end();
+                        ctx.redirect("/admin/");
                     }
                     else {
                         if (viewPath !== null) {
-                            ctx.view = viewPath;
-                            view.render(ctx);
+                            ctx.template = viewPath;
+
+                            ctx.robots.noindex = true;
+                            ctx.robots.nofollow = true;
+
+                            ctx.render();
                         }
                         else {
                             next();
@@ -41,7 +44,7 @@ module.exports = function () {
                 }
                 catch (err) {
                     app.logger.error(err);
-                    error.render(ctx, 500, err.toString());
+                    ctx.error(500, err);
                 }
             }
             else {

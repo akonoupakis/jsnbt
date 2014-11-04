@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('DataController', function ($scope, $rootScope, $location) {
+        .controller('DataController', function ($scope, $rootScope, $location, $jsnbt) {
            
             $scope.data = {};
             
@@ -18,7 +18,7 @@
             };
 
             $scope.data = {
-                items: _.sortBy(_.filter(jsnbt.lists, function (x) { return x.domain === 'core'; }), 'name')
+                items: _.sortBy(_.filter($jsnbt.lists, function (x) { return x.domain === 'core'; }), 'name')
             };
             
             $scope.gridFn = {

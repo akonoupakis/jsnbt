@@ -8,7 +8,7 @@ _.str = require('underscore.string');
 
 module.exports = function (req, res) {
     var uri = new parseUri('http://' + app.config.host + ':' + app.config.port + req.url);
-
+    
     if (!_.str.endsWith(uri.path, '/'))
         uri.path += '/';
 
@@ -35,6 +35,15 @@ module.exports = function (req, res) {
             description: '',
             keywords: ''
         },
+        robots: {
+            noindex: false,
+            nofollow: false,
+            noarchive: false,
+            nosnipet: false,
+            notranslate: false,
+            noimageindex: false
+        },
+        template: '',
         uri: {
             url: uri.relative,
             scheme: uri.protocol,
@@ -49,19 +58,27 @@ module.exports = function (req, res) {
                 var href = this.scheme;
                 href += '://';
                 href += this.host;
-                href += (this.port != 80) ? ':' + this.port : '';
+                if (this.scheme === 'https') {
+                    href += (this.port != 433) ? ':' + this.port : '';
+                }
+                else {
+                    href += (this.port != 80) ? ':' + this.port : '';
+                }
                 href += '/';
                 return href;
             }
         },
         error: function (err, stack) {
+            this.req._routed = true;
             error.render(this, err, stack);
         },
         render: function () {
+            this.req._routed = true;
             view.render(this);
         },
-        redirect: function (url) {
-            this.res.writeHead(302, { "Location": url });
+        redirect: function (url, mode) {
+            this.req._routed = true;
+            this.res.writeHead(mode || 302, { "Location": url });
             this.res.end();
         }
     };

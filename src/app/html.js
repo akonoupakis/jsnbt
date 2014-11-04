@@ -1,12 +1,12 @@
 var app = require('./app.js');
 var jsnbt = require('./jsnbt.js');
 var fs = require('./utils/fs.js');
+var extend = require('extend');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
 
 exports.parse = function (ctx, tmpl, model) {
-
     var mdl = {
         baseHref: ctx.uri.getBaseHref(),
         language: ctx.language || 'en',
@@ -17,11 +17,12 @@ exports.parse = function (ctx, tmpl, model) {
             title: '',
             keywords: '',
             description: ''
-        }
+        },
+        robots: ''
     };
 
-    _.extend(mdl.meta, ctx.meta);
-    _.extend(mdl, model);
+    extend(true, mdl.meta, ctx.meta);
+    extend(true, mdl, model);
 
     mdl.nodeId = (mdl.node || {}).id;
     mdl.pointerId = (mdl.pointer || {}).id;
@@ -32,12 +33,19 @@ exports.parse = function (ctx, tmpl, model) {
         mdl.baseHref += 'admin/';
     }
 
-    mdl.js = {};
-
-    if (isAdmin) {
-        mdl.scripts = jsnbt.scripts;
+    var robotNames = [];
+    for (var robotName in ctx.robots) {
+        if (ctx.robots[robotName] === true)
+            robotNames.push(robotName);
     }
 
+    if (robotNames.length > 0)
+        mdl.robots = robotNames.join(',');
+
+    mdl.js = {};
+
+    mdl.scripts = isAdmin ? jsnbt.scripts.admin : jsnbt.scripts.public;
+    
     var appFiles = [];
     findJsFiles('../' + app.root + '/public/' + (isAdmin ? 'admin/' : '') + 'js/app/', appFiles, isAdmin);
     mdl.js.app = appFiles;

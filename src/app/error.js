@@ -17,9 +17,9 @@ var errors = {
 };
 
 exports.render = function (ctx, error, stack) {
-    var tmplPath = '../' + app.root + '/public/tmpl/error/';
+    var tmplPath = '../' + app.root + '/public/error/';
     if (ctx.uri.first === 'admin')
-        tmplPath = '../' + app.root + '/public/admin/tmpl/error/';
+        tmplPath = '../' + app.root + '/public/admin/error/';
 
     var tmplFilePath = tmplPath + error + '.html';
     var tmplDefaultFilePath = tmplPath + 'error.html';
@@ -53,7 +53,7 @@ exports.render = function (ctx, error, stack) {
     errorContent = html.parse(ctx, errorContent, {
         error: error,
         text: text,
-        stack: stack
+        stack: stack || ''
     });
 
     ctx.res.write(errorContent);

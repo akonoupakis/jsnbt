@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('AddonsController', function ($scope, $location, $q, $logger) {
+        .controller('AddonsController', function ($scope, $location, $q, $logger, $jsnbt) {
             
             var logger = $logger.create('AddonsController');
 
@@ -17,7 +17,7 @@
                     var deferred = $q.defer();
 
                     var addons = [];
-                    $(jsnbt.addons).each(function (i, item) {
+                    $($jsnbt.addons).each(function (i, item) {
                         var addon = {};
                         $.extend(true, addon, item);
                         addons.push(addon);

@@ -57,12 +57,12 @@
 			"id": "modifiedOn",
 			"order": 6
 		},
-		"view": {
-			"name": "view",
+		"template": {
+			"name": "template",
 			"type": "string",
 			"typeLabel": "string",
 			"required": false,
-			"id": "view",
+			"id": "template",
 			"order": 7
 		},
 		"pointer": {
@@ -73,20 +73,20 @@
 			"id": "pointer",
 			"order": 8
 		},
-		"data": {
-			"name": "data",
+		"content": {
+			"name": "content",
 			"type": "object",
 			"typeLabel": "object",
 			"required": true,
-			"id": "data",
+			"id": "content",
 			"order": 10
 		},
-		"url": {
-			"name": "url",
+		"seo": {
+			"name": "seo",
 			"type": "object",
 			"typeLabel": "object",
 			"required": true,
-			"id": "url",
+			"id": "seo",
 			"order": 11
 		},
 		"active": {
@@ -105,13 +105,21 @@
 			"id": "meta",
 			"order": 13
 		},
-		"permissions": {
-			"name": "permissions",
+		"roles": {
+			"name": "roles",
 			"type": "object",
 			"typeLabel": "object",
 			"required": true,
-			"id": "permissions",
+			"id": "roles",
 			"order": 14
+		},
+		"robots": {
+			"name": "robots",
+			"type": "object",
+			"typeLabel": "object",
+			"required": true,
+			"id": "robots",
+			"order": 15
 		},
 		"hierarchy": {
 			"name": "hierarchy",
@@ -119,7 +127,7 @@
 			"typeLabel": "array",
 			"required": true,
 			"id": "hierarchy",
-			"order": 15
+			"order": 16
 		}
 	}
 }

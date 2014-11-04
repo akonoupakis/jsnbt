@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .factory('TreeNodeService', function ($q, $cacheFactory, FileService) {
+        .factory('TreeNodeService', function ($q, $jsnbt, $cacheFactory, FileService) {
             var TreeNodeService = {};
             
             var cache = $cacheFactory('NestableCache');
@@ -151,7 +151,13 @@
 
                     var nodeDomain = result.entity === 'pointer' ? result.pointer.domain : result.domain;
                     var nodeParentId = result.entity === 'pointer' ? result.pointer.nodeId : result.id;
-                    var childCount = _.filter(nodes, function (x) { return x.parent === nodeParentId && x.domain === nodeDomain && options.restricted.indexOf(x.id) === -1 && options.entities.indexOf(x.entity) !== -1; }).length;
+
+                    var childCount = _.filter(nodes, function (x) {
+                        return (typeof(x.parent) === 'string' ? x.parent : x.parent.id) === nodeParentId &&
+                            x.domain === nodeDomain &&
+                            options.restricted.indexOf(x.id) === -1 &&
+                            options.entities.indexOf(x.entity) !== -1;
+                    }).length;
                     
                     if (result.entity === 'pointer') {
                         var pointedNode = _.first(_.filter(nodes, function (x) {
@@ -163,14 +169,15 @@
                     }
 
                     var parentNode = _.first(_.filter(nodes, function (x) { return x.id === result.parent; }));
-                    if (parentNode)
+                    if (parentNode) {
                         result.parent = parentNode;
+                    }
                     else {
                         result.parent = rootNode;
                         result.parent.children.push(result);
                         result.parent.childCount++;
                     }
-
+                    
                     result.childCount = childCount;
                     result.children = [];
                     result.collapsed = true;
@@ -263,7 +270,7 @@
                 $.extend(true, opts, optionsDefault, options);
                 
                 if (!options.entities)
-                    opts.entities = _.pluck(_.filter(jsnbt.entities, function (x) { return x.treeNode !== false; }), 'name');
+                    opts.entities = _.pluck(_.filter($jsnbt.entities, function (x) { return x.treeNode !== false; }), 'name');
                 
                 var isRoot = root !== undefined ? root : true;
 
@@ -276,6 +283,7 @@
                 }
 
                 var expandedNodeIds = getCachedExpandedNodeIds(opts.identifier) || [];
+
                 $(opts.parentIds).each(function (i, item) {
                     expandedNodeIds.push(item);
                 });
@@ -300,8 +308,9 @@
                         });
 
                         getDomainNodes(opts.domain, newParentIds, opts.entities).then(function (nodes) {
+                            
                             var resultIds = _.pluck(nodes, 'id');
-
+                            
                             var pointedNodeIds = _.pluck(_.pluck(_.filter(nodes, function (x) { return x.entity === 'pointer'; }), 'pointer'), 'nodeId');
                             $(pointedNodeIds).each(function (i, item) {
                                 if (resultIds.indexOf(item) === -1)

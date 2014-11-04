@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('NodeController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $q, $queue, $data, $route, ScrollSpyService, $fn, LocationService, AuthService, DATA_EVENTS, FORM_EVENTS) {
+        .controller('NodeController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $q, $queue, $data, $route, $jsnbt, ScrollSpyService, $fn, LocationService, AuthService, DATA_EVENTS, FORM_EVENTS) {
 
             var logger = $logger.create('NodeController');
 
@@ -17,13 +17,17 @@
             $scope.roles = [];
             $scope.draftRoles = [];
 
+            $scope.robotOptions = [];
+            $scope.robots = [];
+            $scope.draftRobots = [];
+
             $scope.seoNames = [];
             
             $scope.siblingSeoNames = [];
 
             $scope.types = [];
             $scope.languages = [];
-            $scope.views = [];
+            $scope.templates = [];
             $scope.addons = [];
 
             $scope.localized = false;
@@ -65,10 +69,16 @@
 
                     $data.nodes.get($scope.id).then(function (result) {
 
-                        $scope.name = result.name;
                         $scope.node = result;
 
-                        var entity = _.first(_.filter(jsnbt.entities, function (x) { return x.name === result.entity; }));
+                        if ($route.current.$$route.name && result.data.localized['en'] && result.data.localized['en'][$route.current.$$route.name]) {
+                            $scope.name = result.data.localized['en'][$route.current.$$route.name];
+                        }
+                        else {
+                            $scope.name = result.name;
+                        }
+
+                        var entity = _.first(_.filter($jsnbt.entities, function (x) { return x.name === result.entity; }));
 
                         $scope.localized = $scope.application.localization.enabled && (entity.localized === undefined || entity.localized === true);
 
@@ -77,8 +87,11 @@
                         $scope.valid = true;
                         $scope.published = true;
 
-                        $scope.roles = result.permissions.roles;
-                        $scope.draftRoles = result.permissions.roles;
+                        $scope.roles = result.roles.values;
+                        $scope.draftRoles = result.roles.values;
+
+                        $scope.robots = result.robots.values;
+                        $scope.draftRobots = result.robots.values;
 
                         deferred.resolve(result);
                         
@@ -110,8 +123,15 @@
                                 $(hierarchy).each(function (i, item) {
                                     var resultNode = _.first(_.filter(results, function (x) { return x.id === item; }));
                                     if (resultNode) {
+
+                                        var nameValue = resultNode.name;
+
+                                        if ($route.current.$$route.name && resultNode.data.localized['en'] && resultNode.data.localized['en'][$route.current.$$route.name]) {
+                                            nameValue = resultNode.data.localized['en'][$route.current.$$route.name];
+                                        }
+
                                         breadcrumb.push({
-                                            name: resultNode ? (resultNode.data.localized.en && resultNode.data.localized.en.title ? resultNode.data.localized.en.title : resultNode.name) : '-',
+                                            name: nameValue,
                                             url: currentUrl + '/' + item,
                                             active: i === (hierarchy.length - 1)
                                         });
@@ -179,7 +199,7 @@
 
                     var allRoles = [];
                     
-                    $(jsnbt.roles).each(function (r, role) {
+                    $($jsnbt.roles).each(function (r, role) {
                         if (!AuthService.isInRole({ roles: [role.name] }, 'admin')) {
                             var newRole = {};
                             $.extend(true, newRole, role);
@@ -191,41 +211,94 @@
                     });
                     
                     $scope.roleOptions = allRoles;
-
+                    
                     deferred.resolve(allRoles);
 
                     return deferred.promise;
                 },
 
-                setSelectedRoles: function () {
+                setRobots: function () {
+                    var deferred = $q.defer();
+      
+                    var robots = [{
+                        name: 'noindex',
+                        value: 'noindex',
+                        description: 'do not index this page'
+                    }, {
+                        name: 'nofollow',
+                        value: 'nofollow',
+                        description: 'do not follow any links'
+                    }, {
+                        name: 'noarchive',
+                        value: 'noarchive',
+                        description: 'do not show a "Cached" link'
+                    }, {
+                        name: 'nosnipet',
+                        value: 'nosnipet',
+                        description: 'do not show a snippet'
+                    }, {
+                        name: 'notranslate',
+                        value: 'notranslate',
+                        description: 'do not offer translation'
+                    }, {
+                        name: 'noimageindex',
+                        value: 'noimageindex',
+                        description: 'do not index images'
+                    }];
+
+                    $scope.robotOptions = robots;
+
+                    deferred.resolve(robots);
+
+                    return deferred.promise;
+                },
+
+                getHierarchyNodes: function () {
                     var deferred = $q.defer();
 
-                    if ($scope.node.permissions.inherits) {
+                    var hierarchyNodeIds = _.filter($scope.node.hierarchy, function (x) { return x !== $scope.id; });
+                    $data.nodes.get({ id: { $in: hierarchyNodeIds } }).then(function (nodes) {
+
+                        var hierarchyNodes = [];
+
+                        $($scope.node.hierarchy).each(function (i, item) {
+                            var matchedNode = _.first(_.filter(nodes, function (x) { return x.id === item; }));
+                            if (matchedNode) {
+                                hierarchyNodes.push(matchedNode);
+                            }
+                        });
+
+                        deferred.resolve(hierarchyNodes);
+
+                    }, function (error) {
+                        deferred.reject(error);
+                    });
+
+                    return deferred.promise;
+                },
+
+                setSelectedRoles: function (hierarchyNodes) {
+                    var deferred = $q.defer();
+
+                    if ($scope.node.roles.inherits) {
                         $scope.draftRoles = $scope.roles.slice(0);
 
-                        var hierarchyNodeIds = _.filter($scope.node.hierarchy, function (x) { return x !== $scope.id; });
-                        $data.nodes.get({ id: { $in: hierarchyNodeIds } }).then(function (nodes) {
+                        var roles = [];
 
-                            var roles = [];
-
-                            $($scope.node.hierarchy).each(function (i, item) {
-                                var matchedNode = _.first(_.filter(nodes, function (x) { return x.id === item; }));
-                                if (matchedNode) {
-                                    if (!matchedNode.permissions.inherits) {
-                                        roles = matchedNode.permissions.roles.slice(0);
-                                    }
+                        $($scope.node.hierarchy).each(function (i, item) {
+                            var matchedNode = _.first(_.filter(hierarchyNodes, function (x) { return x.id === item; }));
+                            if (matchedNode) {
+                                if (!matchedNode.roles.inherits) {
+                                    roles = matchedNode.roles.values.slice(0);
                                 }
-                                else {
-                                    return false;
-                                }
-                            });
-                                
-                            $scope.roles = roles;
-                            deferred.resolve(roles);
-
-                        }, function (error) {
-                            deferred.reject(error);
+                            }
+                            else {
+                                return false;
+                            }
                         });
+                                
+                        $scope.roles = roles;
+                        deferred.resolve(roles);
                     }
                     else {
                         var roles = $scope.draftRoles.slice(0);
@@ -236,10 +309,42 @@
                     return deferred.promise;
                 },
 
+                setSelectedRobots: function (hierarchyNodes) {
+                    var deferred = $q.defer();
+
+                    if ($scope.node.robots.inherits) {
+                        $scope.draftRobots = $scope.robots.slice(0);
+
+                        var robots = [];
+
+                        $($scope.node.hierarchy).each(function (i, item) {
+                            var matchedNode = _.first(_.filter(hierarchyNodes, function (x) { return x.id === item; }));
+                            if (matchedNode) {
+                                if (!matchedNode.robots.inherits) {
+                                    robots = matchedNode.robots.values.slice(0);
+                                }
+                            }
+                            else {
+                                return false;
+                            }
+                        });
+
+                        $scope.robots = robots;
+                        deferred.resolve(robots);
+                    }
+                    else {
+                        var robots = $scope.draftRobots.slice(0);
+                        $scope.robots = robots;
+                        deferred.resolve(robots);
+                    }
+
+                    return deferred.promise;
+                },
+
                 setParentEntities: function () {
                     var deferred = $q.defer();
 
-                    var parentEntities = _.pluck(_.filter(jsnbt.entities, function (x) { return x.allowed && x.allowed.indexOf($scope.node.entity) !== -1; }), 'name');
+                    var parentEntities = _.pluck(_.filter($jsnbt.entities, function (x) { return x.allowed && x.allowed.indexOf($scope.node.entity) !== -1; }), 'name');
 
                     $scope.parentOptions.entities = parentEntities;
 
@@ -252,7 +357,7 @@
                     var deferred = $q.defer();
 
                     if ($scope.node && $scope.node.entity !== 'pointer') {
-                        var spec = _.find($scope.views, function (x) { return x.tmpl === $scope.node.view; });
+                        var spec = _.find($jsnbt.templates, function (x) { return x.path === $scope.node.template; });
                         if (spec)
                             $scope.tmpl = spec.spec;
                         else {
@@ -270,7 +375,7 @@
 
                     var types = [];
                     types.push({ value: 'page', name: 'CMS Page' });
-                    if (jsnbt.addons.length > 0)
+                    if ($jsnbt.addons.length > 0)
                         types.push({ value: 'pointer', name: 'Addon Pointer' });
 
                     $scope.types = types;
@@ -283,15 +388,30 @@
                 setViews: function () {
                     var deferred = $q.defer();
 
-                    var views = [];
-                    $(jsnbt.views).each(function (t, template) {
+                    var templates = [];
+                    $($jsnbt.templates).each(function (t, template) {
                         var tmpl = {};
                         $.extend(true, tmpl, template);
-                        views.push(tmpl);
-                    });
-                    $scope.views = views;
 
-                    deferred.resolve(views);
+                        var include = false;
+
+                        if (tmpl.restricted) {
+                            if (tmpl.restricted.indexOf($scope.node.entity) !== -1) {
+                                templates.push(tmpl);
+                            }
+                        }                        
+                        else {
+                            templates.push(tmpl);
+                        }
+                    });
+
+                    $scope.templates = templates;
+
+                    if (_.filter($scope.templates, function (x) { return x.path === $scope.node.template; }).length === 0) {
+                        $scope.node.template = '';
+                    }
+
+                    deferred.resolve(templates);
 
                     return deferred.promise;
                 },
@@ -300,7 +420,7 @@
                     var deferred = $q.defer();
 
                     var addons = [];
-                    $(jsnbt.addons).each(function (a, addon) {
+                    $($jsnbt.addons).each(function (a, addon) {
                         addons.push({
                             name: addon.name,
                             domain: addon.domain
@@ -342,8 +462,8 @@
                                             var newSeoNode = {};
 
                                             $($scope.application.localization.enabled ? $scope.application.languages: ['en']).each(function (l, lang) {
-                                                if (result.url[lang.code])
-                                                    newSeoNode[lang.code] = result.url[lang.code];
+                                                if (result.seo[lang.code])
+                                                    newSeoNode[lang.code] = result.seo[lang.code];
                                             });
 
                                             newSeoNodes.push(newSeoNode);
@@ -407,21 +527,26 @@
 
                         var deferredInternal = $q.defer();
 
-                        if ($scope.entity.seo) {
-                            $data.nodes.get({ parent: $scope.node.parent, domain: $scope.node.domain, id: { $nin: [$scope.id] } }).then(function (siblingsResponse) {
+                        if ($scope.node.active[lang]) {
+                            if ($scope.entity.seo) {
+                                $data.nodes.get({ parent: $scope.node.parent, domain: $scope.node.domain, id: { $nin: [$scope.id] } }).then(function (siblingsResponse) {
 
-                                $scope.siblingSeoNames = _.pluck(_.pluck(_.filter(siblingsResponse, function (x) { return x.url[lang]; }), 'url'), lang);
+                                    $scope.siblingSeoNames = _.pluck(_.pluck(_.filter(siblingsResponse, function (x) { return x.seo[lang]; }), 'seo'), lang);
 
-                                $scope.validation.seo = $scope.node.url[lang] && $scope.siblingSeoNames.indexOf($scope.node.url[lang]) === -1;
+                                    $scope.validation.seo = $scope.node.seo[lang] && $scope.siblingSeoNames.indexOf($scope.node.seo[lang]) === -1;
 
-                                if (!$scope.validation.seo)
-                                    $scope.valid = false;
+                                    if (!$scope.validation.seo)
+                                        $scope.valid = false;
 
+                                    deferredInternal.resolve($scope.valid);
+
+                                }, function (siblingsError) {
+                                    deferredInternal.reject(siblingsError);
+                                });
+                            }
+                            else {
                                 deferredInternal.resolve($scope.valid);
-
-                            }, function (siblingsError) {
-                                deferredInternal.reject(siblingsError);
-                            });
+                            }
                         }
                         else {
                             deferredInternal.resolve($scope.valid);
@@ -432,6 +557,7 @@
 
                     $scope.valid = true;
                     $scope.validation.seo = true;
+
                     $scope.$broadcast(FORM_EVENTS.initiateValidation);
 
                     if (!$scope.valid) {
@@ -468,7 +594,7 @@
                                     };
 
                                     var currentLanguage = $scope.language;
-                                    var restLanguages = _.filter($scope.languages, function (x) { return x.active && x.code !== currentLanguage; });
+                                    var restLanguages = _.filter($scope.languages, function (x) { return x.active && x.code !== currentLanguage && $scope.node.active[x.code]; });
                                     if (restLanguages.length > 0) {
                                         var nextIndex = 0;
                                         var next = function () {
@@ -519,8 +645,11 @@
 
                             var publishNode = {};
                             $.extend(true, publishNode, $scope.node);
-                            if (!publishNode.permissions.inherits)
-                                publishNode.permissions.roles = $scope.roles;
+                            if (!publishNode.roles.inherits)
+                                publishNode.roles.values = $scope.roles;
+
+                            if (!publishNode.robots.inherits)
+                                publishNode.robots.values = $scope.robots;
                             
                             $data.nodes.put($scope.id, publishNode).then(function (result) {
                                 $scope.name = result.name;
@@ -551,9 +680,7 @@
             $scope.editPointee = function () {
                 var targetNode = $data.nodes.get($scope.node.pointer.nodeId).then(function (node) {
                     $location.next($fn.invoke($scope.node.pointer.domain, 'getEditUrl', [node]));
-                }, function (ex) {
-                    
-                });
+                }, function (ex) { });
             };
 
             $scope.back = function () {
@@ -566,8 +693,7 @@
             };
 
             $scope.discard = function () {
-                fn.discard().then(function () {
-                }, function (ex) {
+                fn.discard().catch(function (ex) {
                     logger.error(ex);
                 });
             };
@@ -580,7 +706,7 @@
                         $scope.scroll2error();
                     }
                     else {
-                        fn.setLocation().then(function () { }, function (locEx) {
+                        fn.setLocation().catch(function (locEx) {
                             logger.error(locEx);
                         });
                     }
@@ -590,18 +716,18 @@
             };
             
             $scope.$watch('name', function (newValue, prevValue) {
-                fn.setLocation().then(function () { }, function (ex) {
+                fn.setLocation().catch(function (ex) {
                     logger.error(ex);
                 });
             });
 
             $scope.$watch('tmpl', function (newValue, prevValue) {
-                fn.setSpy(200).then(function () { }, function (ex) {
+                fn.setSpy(200).catch(function (ex) {
                     logger.error(ex);
                 });
             });
 
-            $scope.$watch('node.entity', function () {
+            $scope.$watch('node.entity', function (newValue) {
                 if ($scope.node) {
 
                     fn.setParentEntities().then(function () {
@@ -613,46 +739,47 @@
                     }, function (ex) {
                         logger.error(ex);
                     });
+
+                    var defaults = {
+                        treeNode: true,
+                        localized: true,
+                        parent: true,
+                        seo: true,
+                        meta: true,
+                        permissions: true
+                    };
+
+                    var entity = {};
+                    $.extend(true, entity, defaults);
+
+                    var knownEntity = _.first(_.filter($jsnbt.entities, function (x) { return x.name === newValue; }));
+
+                    if (knownEntity)
+                        $.extend(true, entity, knownEntity);
+
+                    $scope.entity = knownEntity;
+
+                    fn.setViews().catch(function (ex) {
+                        logger.error(ex);
+                    });
                 }
             });
 
-            $scope.$watch('node.view', function () {
+            $scope.$watch('node.template', function () {
                 fn.setTmpl().then(function () {
-                    fn.setSpy(200);
+                    fn.setSpy(200).catch(function (spyEx) {
+                        logger.error(spyEx);
+                    });
                 }, function (ex) {
                     logger.error(ex);
                 });
-            });
-            
-            $scope.$watch('node.entity', function (newValue) {
-                if (!$scope.node)
-                    return;
-
-                var defaults = {
-                    treeNode: true,
-                    localized: true,
-                    parent: true,
-                    seo: true,
-                    meta: true,
-                    permissions: true
-                };
-
-                var entity = {};
-                $.extend(true, entity, defaults);
-
-                var knownEntity = _.first(_.filter(jsnbt.entities, function (x) { return x.name === newValue; }));
-                
-                if (knownEntity)
-                    $.extend(true, entity, knownEntity);
-
-                $scope.entity = knownEntity;
             });
 
             $scope.$watch('node.parent', function () {
                 if (!$scope.node)
                     return;
 
-                fn.setSeo().then(function () { }, function (ex) {
+                fn.setSeo().catch(function (ex) {
                     logger.error(ex);
                 });
             });
@@ -669,11 +796,41 @@
                 }
             });
             
-            $scope.$watch('node.permissions.inherits', function (newValue, prevValue) {
+            $scope.$watch('node.roles.inherits', function (newValue, prevValue) {
                 if (newValue !== undefined && prevValue !== undefined) {
-                    fn.setSelectedRoles().then(function () { }, function (ex) {
-                        logger.error(ex);
-                    });
+                    if (newValue === true) {
+                        fn.getHierarchyNodes().then(function (hierarchyNodes) {
+                            fn.setSelectedRoles(hierarchyNodes).catch(function (setEx) {
+                                logger.error(setEx);
+                            });
+                        }, function (ex) {
+                            logger.error(ex);
+                        });
+                    }
+                    else {
+                        fn.setSelectedRoles().catch(function (setEx) {
+                            logger.error(setEx);
+                        });
+                    }
+                }
+            });
+
+            $scope.$watch('node.robots.inherits', function (newValue, prevValue) {
+                if (newValue !== undefined && prevValue !== undefined) {
+                    if (newValue === true) {
+                        fn.getHierarchyNodes().then(function (hierarchyNodes) {
+                            fn.setSelectedRobots(hierarchyNodes).catch(function (setEx) {
+                                logger.error(setEx);
+                            });
+                        }, function (ex) {
+                            logger.error(ex);
+                        });
+                    }
+                    else {
+                        fn.setSelectedRobots().catch(function (setEx) {
+                            logger.error(setEx);
+                        });
+                    }
                 }
             });
             
@@ -704,41 +861,19 @@
 
 
             $timeout(function () {
-                fn.setRoles().then(function (rolesResponse) {
-                    fn.setAddons().then(function (addonsResponse) {
-                        fn.setLanguages().then(function (languagesResponse) {
-                            fn.setLanguage().then(function (languageResponse) {
-                                fn.setTypes().then(function (typesResponse) {
-                                    fn.setViews().then(function (viewsResponse) {
-                                        fn.set().then(function (setResponse) {
-                                            fn.setSelectedRoles().then(function (selRolesResponse) {
-                                                fn.setTmpl().then(function (tmplResponse) {
-                                                }, function (tmplError) {
-                                                    logger.error(tmplError);
-                                                });
-                                            }, function (selRolesError) {
-                                                logger.error(selRolesError);
-                                            });                                               
-                                        }, function (setError) {
-                                            logger.error(setError);
-                                        });
-                                    }, function (viewsError) {
-                                        logger.error(viewsError);
-                                    });
-                                }, function (typesError) {
-                                    logger.error(typesError);
-                                });
-                            }, function (languageError) {
-                                logger.error(languageError);
+                $q.all(fn.setRoles(), fn.setRobots(), fn.setAddons(), fn.setLanguages(), fn.setLanguage(), fn.setTypes()).then(function () {
+                    fn.set().then(function (setResponse) {
+                        fn.getHierarchyNodes().then(function (hierarchyNodes) {
+                            $q.all(fn.setSelectedRoles(hierarchyNodes), fn.setSelectedRobots(hierarchyNodes)).then(function () {
+                            }, function (set2Error) {
+                                logger.error(set2Error);
                             });
-                        }, function (languagesError) {
-                            logger.error(languagesError);
-                        });
-                    }, function (addonsError) {
-                        logger.error(addonsError);
+                        }, function (getError) {
+                            logger.error(getError);
+                        });                        
+                    }, function (setError) {
+                        logger.error(setError);
                     });
-                }, function (rolesError) {
-                    logger.error(rolesError);
                 });
             }, 200);
 

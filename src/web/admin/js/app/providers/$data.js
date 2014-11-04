@@ -133,24 +133,23 @@
                 entity: 'page',
                 parent: '',
                 published: false,
-                localization: {
-                    enabled: true,
-                    language: ''
-                },
-                data: {
+                content: {
                     localized: {}
                 },
-                url: {},
+                seo: {},
                 active: {},
                 meta: {},
                 createdOn: new Date().getTime(),
                 modifiedOn: new Date().getTime(),
-                permissions: {
+                roles: {
                     inherits: true,
-                    roles: []
+                    values: []
+                },
+                robots: {
+                    inherits: true,
+                    values: []
                 },                
-                hierarchy: [],
-                config: {}
+                hierarchy: []
             });
 
             $data.register('languages', {
@@ -164,11 +163,7 @@
                 domain: '',
                 list: '',
                 name: '',
-                localization: {
-                    enabled: true,
-                    language: ''
-                },
-                data: {
+                content: {
                     localized: {}
                 },
                 createdOn: new Date().getTime(),

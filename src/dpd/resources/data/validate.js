@@ -18,23 +18,11 @@ var knownLanguageCodes = _.pluck(jsnbt.languages, 'code');
 
 var knownList = _.first(_.filter(jsnbt.lists, function (x) { return x.id === self.list; }));
 
-if (self.localization.enabled === true) {
-    if (knownList.localized !== true) {
-        error('localization.enabled', 'list cannot be localized');
-    }
-    else {
-        for (var lang in self.data.localized) {
+if (jsnbt.localization) {
+    if (self.content.localized) {
+        for (var lang in self.content.localized) {
             if (knownLanguageCodes.indexOf(lang) === -1)
-                error('data.localized[' + lang + ']', lang + ' not a known language');
+                error('content.localized[' + lang + ']', lang + ' not a known language');
         }
-    }
-}
-else {
-    if (knownList.localized !== false) {
-        error('localization.enabled', 'list should be localized');
-    }
-    else {
-        if (knownLanguageCodes.indexOf(self.localization.language) === -1)
-            error('localization.language', self.localization.language + ' not a known language');
     }
 }

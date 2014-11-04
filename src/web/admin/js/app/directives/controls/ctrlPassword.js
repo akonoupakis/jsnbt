@@ -15,6 +15,7 @@
                     ngEnabled: '=',
                     ngRequired: '=',
                     ngLabel: '@',
+                    ngTip: '@',
                     ngValidate: '=',
                     ngInvalid: '=',
                     ngAutoFocus: '='

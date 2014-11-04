@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('UserController', function ($scope, $routeParams, $location, $timeout, $q, $logger, $data, ScrollSpyService, LocationService, AuthService, FORM_EVENTS) {
+        .controller('UserController', function ($scope, $routeParams, $location, $timeout, $q, $logger, $data, $jsnbt, ScrollSpyService, LocationService, AuthService, FORM_EVENTS) {
            
             var logger = $logger.create('UserController');
 
@@ -50,7 +50,7 @@
 
                     var allowEdit = true;
 
-                    $(jsnbt.roles).each(function (r, role) {
+                    $($jsnbt.roles).each(function (r, role) {
                         var newRole = {};
                         $.extend(true, newRole, role);
                         newRole.value = newRole.name;
@@ -152,8 +152,7 @@
             };
 
             $scope.discard = function () {
-                fn.set().then(function () {
-                }, function (ex) {
+                fn.set().catch(function (ex) {
                     logger.error(ex);
                 });
             };
@@ -170,7 +169,7 @@
             };
 
             $scope.$watch('name', function (newValue, prevValue) {
-                fn.setLocation().then(function () { }, function (ex) {
+                fn.setLocation().catch(function (ex) {
                     logger.error(ex);
                 });
             });
@@ -196,7 +195,9 @@
             $timeout(function () {
                 fn.set().then(function () {
                     fn.setRoles().then(function () {
-                        fn.setSpy(200);
+                        fn.setSpy(200).catch(function (spyEx) {
+                            logger.error(spyEx);
+                        });
                     }, function (rolesEx) {
                         logger.error(rolesEx);
                     });

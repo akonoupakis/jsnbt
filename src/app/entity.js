@@ -7,35 +7,7 @@ _.str = require('underscore.string');
 
 var getEntity = function (name) {
 
-    var entityDefaults = {
-        name: '',
-        allowed: [],
-        treeNode: true,
-        localized: true,
-
-        properties: {
-            name: true,
-            parent: true,
-            template: true,
-            seo: true,
-            meta: true,
-            permissions: true
-        }
-    };
-
-    var entity = {};
-
-    _.extend(entity, entityDefaults);
-
-    var knownEntity = _.first(_.filter(jsnbt.entities, function (x) { return x.name === name; }));
-    if(knownEntity)
-    {
-        _.extend(entity, knownEntity);
-        return entity;
-    }
-    else{
-        return undefined;
-    }
+    return _.first(_.filter(jsnbt.entities, function (x) { return x.name === name; }));
 
 };
 
@@ -56,6 +28,12 @@ module.exports = function(name) {
         hasProperty: function (property) {
 
             return entity.properties[property] === undefined || entity.properties[property] === true;
+
+        },
+
+        isSeoNamed: function () {
+
+            return this.hasProperty('seo');
 
         }
 

@@ -25,20 +25,12 @@
 			"id": "name",
 			"order": 2
 		},
-		"localization": {
-			"name": "localization",
+		"content": {
+			"name": "content",
 			"type": "object",
 			"typeLabel": "object",
 			"required": true,
-			"id": "localization",
-			"order": 5
-		},
-		"data": {
-			"name": "data",
-			"type": "object",
-			"typeLabel": "object",
-			"required": true,
-			"id": "data",
+			"id": "content",
 			"order": 3
 		},
 		"createdOn": {
