@@ -33,7 +33,11 @@ var jsnbtModule = {
             gravity: 'center',
             fill: true
         }
-    }, {
+    }],
+
+    /*
+    
+    , {
         name: 'normal1',
         options: {
             width: 200,
@@ -46,7 +50,9 @@ var jsnbtModule = {
             gravity: undefined,
             fill: undefined
         }
-    }],
+    }
+
+    */
 
     entities: [{
         name: 'page',
@@ -151,27 +157,27 @@ var jsnbtModule = {
             role: 'sa',
             crud: ['C', 'R', 'U', 'D']
         }]
-    }],
-
-    templates: [{
-        path: '/tmpl/index.html',
-        restricted: ['page']
-    }, {
-        path: '/tmpl/login.html',
-        restricted: ['page']
-    }, {
-        path: '/tmpl/text.html',
-        spec: '/tmpl/spec/page/text.html'
-    }, {
-        path: '/tmpl/nodes.html',
-        spec: '/tmpl/spec/page/nodes.html'
-    }, {
-        path: '/tmpl/data.html',
-        spec: '/tmpl/spec/page/data.html'
-    }, {
-        path: '/tmpl/files.html',
-        spec: '/tmpl/spec/page/files.html'
     }]//,
+
+    //templates: [{
+    //    path: '/tmpl/index.html',
+    //    restricted: ['page']
+    //}, {
+    //    path: '/tmpl/login.html',
+    //    restricted: ['page']
+    //}, {
+    //    path: '/tmpl/text.html',
+    //    spec: '/tmpl/spec/page/text.html'
+    //}, {
+    //    path: '/tmpl/nodes.html',
+    //    spec: '/tmpl/spec/page/nodes.html'
+    //}, {
+    //    path: '/tmpl/data.html',
+    //    spec: '/tmpl/spec/page/data.html'
+    //}, {
+    //    path: '/tmpl/files.html',
+    //    spec: '/tmpl/spec/page/files.html'
+    //}]//,
 
     //lists: [{
     //    name: 'Sample 01',

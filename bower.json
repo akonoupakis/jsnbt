@@ -38,7 +38,6 @@
         {
           "src": "jquery/dist/jquery.js",
           "dest": [
-            "js/lib/a-jquery.js",
             "admin/js/lib/a-jquery.js"
           ]
         }
@@ -49,7 +48,6 @@
         {
           "src": "angular/angular.js",
           "dest": [
-            "js/lib/b-angular.js",
             "admin/js/lib/b-angular.js"
           ]
         }
@@ -80,7 +78,6 @@
         {
           "src": "angular-sanitize/angular-sanitize.js",
           "dest": [
-            "js/lib/angular-lib/angular.sanitize.js",
 			"admin/js/lib/angular-lib/angular.sanitize.js"
           ]
         }
@@ -121,7 +118,6 @@
         {
           "src": "jquery.scrollTo/jquery.scrollTo.js",
           "dest": [
-            "js/lib/jquery/jquery.scrollTo.js",
             "admin/js/lib/jquery/jquery.scrollTo.js"
           ]
         }
@@ -132,7 +128,6 @@
         {
           "src": "underscore/underscore.js",
           "dest": [
-            "js/lib/underscore/underscore.js",
             "admin/js/lib/underscore/underscore.js"
           ]
         }
@@ -143,7 +138,6 @@
         {
           "src": "underscore.string/lib/underscore.string.js",
           "dest": [
-            "js/lib/underscore/underscore.string.js",
             "admin/js/lib/underscore/underscore.string.js"
           ]
         }
