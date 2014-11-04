@@ -366,23 +366,11 @@ module.exports = function (grunt) {
     fs.create('./src/dpd');
     fs.create('./src/pck');
     fs.create('./src/web');
-    fs.create('./src/web/admin');
-    fs.create('./src/web/admin/css');
-    fs.create('./src/web/admin/css/app');
-    fs.create('./src/web/admin/css/lib');
-    fs.create('./src/web/admin/img');
-    fs.create('./src/web/admin/js');
-    fs.create('./src/web/admin/js/app');
-    fs.create('./src/web/admin/js/lib');
-    fs.create('./src/web/admin/tmpl');
-    fs.create('./src/web/admin/tmpl/error');
-    fs.create('./src/web/admin/tmpl/partial');
-    fs.create('./src/web/admin/tmpl/spec');
-    fs.create('./src/web/admin/tmpl/view');
     fs.create('./src/web/public');
     fs.create('./src/web/public/css');
     fs.create('./src/web/public/css/app');
     fs.create('./src/web/public/css/lib');
+    fs.create('./src/web/public/error');
     fs.create('./src/web/public/files');
     fs.create('./src/web/public/img');
     fs.create('./src/web/public/js');
@@ -390,10 +378,8 @@ module.exports = function (grunt) {
     fs.create('./src/web/public/js/lib');
     fs.create('./src/web/public/tmp');
     fs.create('./src/web/public/tmpl');
-    fs.create('./src/web/public/tmpl/error');
     fs.create('./src/web/public/tmpl/partial');
     fs.create('./src/web/public/tmpl/spec');
-    fs.create('./src/web/public/tmpl/view');
 
     gruntConfig.pkg = grunt.file.readJSON('package.json');
 
