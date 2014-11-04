@@ -17,10 +17,6 @@ exports.packages = [];
 
 var jsnbtModule = {
 
-    //scripts: [
-    //   'http://maps.google.com/maps/api/js?sensor=true'
-    //],
-
     images: [{
         name: 'admin-explorer-thumb',
         options: {
@@ -34,26 +30,7 @@ var jsnbtModule = {
             fill: true
         }
     }],
-
-    /*
     
-    , {
-        name: 'normal1',
-        options: {
-            width: 200,
-            height: 100,
-            cropwidth: undefined,
-            cropheight: undefined,
-            x: 0,
-            y: 0,
-            quality: undefined,
-            gravity: undefined,
-            fill: undefined
-        }
-    }
-
-    */
-
     entities: [{
         name: 'page',
         allowed: ['page', 'pointer'],
@@ -157,44 +134,7 @@ var jsnbtModule = {
             role: 'sa',
             crud: ['C', 'R', 'U', 'D']
         }]
-    }]//,
-
-    //templates: [{
-    //    path: '/tmpl/index.html',
-    //    restricted: ['page']
-    //}, {
-    //    path: '/tmpl/login.html',
-    //    restricted: ['page']
-    //}, {
-    //    path: '/tmpl/text.html',
-    //    spec: '/tmpl/spec/page/text.html'
-    //}, {
-    //    path: '/tmpl/nodes.html',
-    //    spec: '/tmpl/spec/page/nodes.html'
-    //}, {
-    //    path: '/tmpl/data.html',
-    //    spec: '/tmpl/spec/page/data.html'
-    //}, {
-    //    path: '/tmpl/files.html',
-    //    spec: '/tmpl/spec/page/files.html'
-    //}]//,
-
-    //lists: [{
-    //    name: 'Sample 01',
-    //    spec: '/tmpl/spec/list/sample1.html',
-    //    localized: true,
-    //    permissions: [{
-    //        role: 'public',
-    //        crud: ['R']
-    //    }, {
-    //        role: 'admin',
-    //        crud: ['C', 'R', 'U', 'D']
-    //    }]
-    //}, {
-    //    name: 'Sample 02',
-    //    spec: '/tmpl/spec/list/sample2.html',
-    //    localized: false
-    //}]
+    }]
 };
 
 exports.templates = jsnbtModule.templates;
