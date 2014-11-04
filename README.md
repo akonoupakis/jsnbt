@@ -41,7 +41,8 @@
 	npm install jsnbt --save - install the jsnbt and save it to package.json
 
 	grunt dev/prod - prepares the application folder for the web server to serve
-	(you may use "grunt dev update-files" to monitor changes in the filesystem and apply them to the application folder while developing)
+	(you may use "grunt dev update-files" to monitor changes in the filesystem 
+	and apply them to the application folder while developing)
 	
 	node server-dev.js (or node server-prod.js) - runs the webserver
 
