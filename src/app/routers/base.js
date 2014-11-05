@@ -70,7 +70,7 @@ module.exports = function () {
                                         }
                                         else {
                                             var settingNode = _.first(settingNodes);
-                                            if (settingNode && settingNode.data && settingNode.data.restricted && settingNode.data.loginpage) {
+                                            if (settingNode && settingNode.data && settingNode.data.loginpage) {
                                                 ctx.dpd.nodes.get(settingNode.data.loginpage, function (loginNode, loginNodeError) {
                                                     if (loginNodeError) {
                                                         ctx.error(500, loginNodeError);
