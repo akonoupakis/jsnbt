@@ -74,7 +74,7 @@
                         }
                     };
                 },
-                templateUrl: 'tmpl/core/partial/controls/ctrlRegistration.html'
+                templateUrl: 'tmpl/core/controls/ctrlRegistration.html'
             };
 
         });

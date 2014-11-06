@@ -10,7 +10,7 @@
             ModalService.open = function (scope) {
                 var deferred = $q.defer();
 
-                var modalTmplInternal = 'tmpl/core/partial/modal/nodeSelector.html';
+                var modalTmplInternal = 'tmpl/core/modals/nodeSelector.html';
                 var modalDomain = 'core';
 
                 var modalCtrl = function ($scope, $modalInstance) {
@@ -37,7 +37,7 @@
                 };
 
                 var modalInstance = $modal.open({
-                    template: '<div ng-controller="' + scope.controller + '" ng-include="\'tmpl/core/partial/common/modal-content.html\'"></div>',
+                    template: '<div ng-controller="' + scope.controller + '" ng-include="\'tmpl/core/common/modal-content.html\'"></div>',
                     backdrop: true,
                     controller: modalCtrl,
                     size: 'lg'

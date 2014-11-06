@@ -86,7 +86,7 @@
                     }
 
                 },
-                templateUrl: 'tmpl/core/partial/controls/ctrlText.html'
+                templateUrl: 'tmpl/core/controls/ctrlText.html'
             };
 
         })

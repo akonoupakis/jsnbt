@@ -45,7 +45,7 @@
                          }
                      };
                 },
-                templateUrl: 'tmpl/core/partial/controls/ctrlLogin.html'
+                templateUrl: 'tmpl/core/controls/ctrlLogin.html'
             };
 
         });

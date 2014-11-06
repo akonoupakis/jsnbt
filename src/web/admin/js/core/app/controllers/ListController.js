@@ -52,7 +52,7 @@
                     ModalService.open({
                         title: 'Type a name',
                         controller: 'NamePromptController',
-                        template: 'tmpl/core/partial/modal/namePrompt.html'
+                        template: 'tmpl/core/modals/namePrompt.html'
                     }).then(function (result) {
                         if (!!result && result !== '') {
                             $data.data.post($data.create('data', {
@@ -80,7 +80,7 @@
                     ModalService.open({
                         title: 'Are you sure you want to delete the item ' + data.name + '?',
                         controller: 'DeletePromptController',
-                        template: 'tmpl/core/partial/modal/deletePrompt.html'
+                        template: 'tmpl/core/modals/deletePrompt.html'
                     }).then(function (confirmed) {
                         if (confirmed) {
                             $data.data.del(data.id).then(function (result) {

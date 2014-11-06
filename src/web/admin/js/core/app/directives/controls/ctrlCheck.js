@@ -61,7 +61,7 @@
                         initiating = false;
                     }, 300);
                 },
-                templateUrl: 'tmpl/core/partial/controls/ctrlCheck.html'
+                templateUrl: 'tmpl/core/controls/ctrlCheck.html'
             };
 
         });

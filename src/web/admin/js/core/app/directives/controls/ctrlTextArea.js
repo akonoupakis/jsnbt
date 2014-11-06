@@ -85,7 +85,7 @@
                         }, 200);
                     }
                 },
-                templateUrl: 'tmpl/core/partial/controls/ctrlTextArea.html'
+                templateUrl: 'tmpl/core/controls/ctrlTextArea.html'
             };
 
         });

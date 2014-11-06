@@ -60,7 +60,7 @@
                         }
                     });
                 },
-                templateUrl: 'tmpl/core/partial/common/scrollspy.html'
+                templateUrl: 'tmpl/core/common/scrollspy.html'
             };
 
         });

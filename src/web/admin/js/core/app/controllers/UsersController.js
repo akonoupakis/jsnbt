@@ -31,7 +31,7 @@
                     //ModalService.open({
                     //    title: 'Type a text key',
                     //    controller: 'NamePromptController',
-                    //    template: 'tmpl/core/partial/modal/namePrompt.html'
+                    //    template: 'tmpl/core/modals/namePrompt.html'
                     //}).then(function (result) {
                     //    if (!!result && result !== '') {
                     //        $data.texts.get({ key: result }).then(function (getResponse) {

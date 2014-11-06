@@ -76,7 +76,7 @@
                             title: 'Select the files you want',
                             controller: 'FileSelectorController',
                             selected: scope.ngModel,
-                            template: 'tmpl/core/partial/modal/FileSelector.html',
+                            template: 'tmpl/core/modals/FileSelector.html',
                             mode: 'multiple',
                             extensions: scope.ngExtensions || []
                         }).then(function (results) {
@@ -108,7 +108,7 @@
                     };
 
                 },
-                templateUrl: 'tmpl/core/partial/controls/ctrlFileList.html'
+                templateUrl: 'tmpl/core/controls/ctrlFileList.html'
             };
 
         });

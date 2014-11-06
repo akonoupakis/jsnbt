@@ -100,7 +100,7 @@
                         
                     }
                 },
-                templateUrl: 'tmpl/core/partial/controls/ctrlHtml.html'
+                templateUrl: 'tmpl/core/controls/ctrlHtml.html'
             };
 
         });

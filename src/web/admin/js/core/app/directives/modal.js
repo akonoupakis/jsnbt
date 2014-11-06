@@ -62,7 +62,7 @@ angular.module('ui.bootstrap.modal', ['ui.bootstrap.transition'])
       restrict: 'EA',
       replace: true,
       templateUrl: function (tElement, tAttrs) {
-          return 'tmpl/core/partial/common/modal-backdrop.html';
+          return 'tmpl/core/common/modal-backdrop.html';
       },
       link: function (scope) {
 
@@ -86,7 +86,7 @@ angular.module('ui.bootstrap.modal', ['ui.bootstrap.transition'])
       replace: true,
       transclude: true,
       templateUrl: function(tElement, tAttrs) {
-          return tAttrs.templateUrl || 'tmpl/core/partial/common/modal-window.html';
+          return tAttrs.templateUrl || 'tmpl/core/common/modal-window.html';
       },
       link: function (scope, element, attrs) {
         element.addClass(attrs.windowClass || '');

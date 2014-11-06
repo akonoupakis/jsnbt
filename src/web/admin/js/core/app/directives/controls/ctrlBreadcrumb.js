@@ -22,7 +22,7 @@
                         $location.previous(path);
                     };
                 },
-                templateUrl: 'tmpl/core/partial/controls/ctrlBreadcrumb.html'
+                templateUrl: 'tmpl/core/controls/ctrlBreadcrumb.html'
             };
 
         });

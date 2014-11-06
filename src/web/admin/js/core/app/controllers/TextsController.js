@@ -32,7 +32,7 @@
                         title: 'Type a text key',
                         controller: 'NamePromptController',
                         validChars: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'.split(''),
-                        template: 'tmpl/core/partial/modal/namePrompt.html'
+                        template: 'tmpl/core/modals/namePrompt.html'
                     }).then(function (result) {
                         if (!!result && result !== '') {
                             $data.texts.get({ key: result }).then(function (getResponse) {
@@ -62,7 +62,7 @@
                     ModalService.open({
                         title: 'Are you sure you want to delete the key ' + data.key + '?',
                         controller: 'DeletePromptController',
-                        template: 'tmpl/core/partial/modal/deletePrompt.html'
+                        template: 'tmpl/core/modals/deletePrompt.html'
                     }).then(function (confirmed) {
                         if (confirmed) {
                             $data.texts.del(data.id).then(function (result) {

@@ -101,7 +101,7 @@
                     }
 
                 },
-                templateUrl: 'tmpl/core/partial/controls/ctrlSelect.html'
+                templateUrl: 'tmpl/core/controls/ctrlSelect.html'
             };
 
         });

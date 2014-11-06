@@ -22,23 +22,23 @@
 
         $routeProvider.
             when('/', {
-                templateUrl: 'tmpl/core/partial/dashboard.html',
+                templateUrl: 'tmpl/core/pages/dashboard.html',
                 controller: 'DashboardController'
             }).
             when('/content', {
-                templateUrl: 'tmpl/core/partial/content.html',
+                templateUrl: 'tmpl/core/pages/content.html',
                 controller: 'ContentController'
             });
 
         if (jsnbt.localization.enabled) {
             $routeProvider.
                 when('/content/languages', {
-                    templateUrl: 'tmpl/core/partial/content/languages.html',
+                    templateUrl: 'tmpl/core/pages/content/languages.html',
                     controller: 'LanguagesController',
                     section: 'languages'
                 }).
                 when('/content/languages/:id', {
-                    templateUrl: 'tmpl/core/partial/content/language.html',
+                    templateUrl: 'tmpl/core/pages/content/language.html',
                     controller: 'LanguageController',
                     section: 'languages'
                 });
@@ -46,79 +46,79 @@
 
         $routeProvider.
             when('/content/nodes', {
-                templateUrl: 'tmpl/core/partial/content/nodes.html',
+                templateUrl: 'tmpl/core/pages/content/nodes.html',
                 controller: 'NodesController',
                 section: 'nodes'
             }).
             when('/content/nodes/:id', {
-                templateUrl: 'tmpl/core/partial/content/node.html',
+                templateUrl: 'tmpl/core/pages/content/node.html',
                 controller: 'NodeController',
                 section: 'nodes'
             }).
             when('/content/data', {
-                templateUrl: 'tmpl/core/partial/content/data.html',
+                templateUrl: 'tmpl/core/pages/content/data.html',
                 controller: 'DataController',
                 section: 'data'
             }).
             when('/content/data/:domain/:list', {
-                templateUrl: 'tmpl/core/partial/content/list.html',
+                templateUrl: 'tmpl/core/pages/content/list.html',
                 controller: 'ListController',
                 section: 'data'
             }).
             when('/content/data/:domain/:list/:id', {
-                templateUrl: 'tmpl/core/partial/content/list-entry.html',
+                templateUrl: 'tmpl/core/pages/content/list-entry.html',
                 controller: 'ListEntryController',
                 section: 'data'
             }).
             when('/content/texts', {
-                templateUrl: 'tmpl/core/partial/content/texts.html',
+                templateUrl: 'tmpl/core/pages/content/texts.html',
                 controller: 'TextsController',
                 section: 'texts'
             }).
             when('/content/texts/:id', {
-                templateUrl: 'tmpl/core/partial/content/text.html',
+                templateUrl: 'tmpl/core/pages/content/text.html',
                 controller: 'TextController',
                 section: 'texts'
             }).
             when('/content/files', {
-                templateUrl: 'tmpl/core/partial/content/files.html',
+                templateUrl: 'tmpl/core/pages/content/files.html',
                 controller: 'FilesController',
                 section: 'files'
             }).
             when('/addons', {
-                templateUrl: 'tmpl/core/partial/addons.html',
+                templateUrl: 'tmpl/core/pages/addons.html',
                 controller: 'AddonsController'
             }).
             when('/addons/:domain/list/:list', {
-                templateUrl: 'tmpl/core/partial/content/list.html',
+                templateUrl: 'tmpl/core/pages/content/list.html',
                 controller: 'ListController'
             }).
             when('/addons/:domain/list', {
                 redirectTo: '/addons/:domain'
             }).
             when('/addons/:domain/list/:list/:id', {
-                templateUrl: 'tmpl/core/partial/content/list-entry.html',
+                templateUrl: 'tmpl/core/pages/content/list-entry.html',
                 controller: 'ListEntryController'
             }).
             when('/users', {
-                templateUrl: 'tmpl/core/partial/users.html',
+                templateUrl: 'tmpl/core/pages/users.html',
                  controller: 'UsersController',
                  section: 'users'
             }).
             when('/users/:id', {
-                templateUrl: 'tmpl/core/partial/user.html',
+                templateUrl: 'tmpl/core/pages/user.html',
                 controller: 'UserController',
                 section: 'users'
             }).
             when('/settings', {
-                templateUrl: 'tmpl/core/partial/settings.html',
+                templateUrl: 'tmpl/core/pages/settings.html',
                 controller: 'SettingsController',
                 section: 'settings',
                 domain: 'core',
-                tmpl: 'tmpl/core/spec/settings.html'
+                tmpl: 'tmpl/core/specs/settings.html'
             }).
             when('/test', {
-                templateUrl: 'tmpl/core/partial/test.html',
+                templateUrl: 'tmpl/core/pages/test.html',
                 controller: 'TestController'
             }).
             otherwise({

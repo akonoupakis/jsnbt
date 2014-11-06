@@ -28,7 +28,7 @@
                         title: 'Select a content node',
                         controller: 'NodeSelectorController',
                         selected: selected,
-                        template: 'tmpl/core/partial/modal/nodeSelector.html',
+                        template: 'tmpl/core/modals/nodeSelector.html',
                         domain: domain,
                         mode: 'single',
                         options: options
@@ -46,7 +46,7 @@
                         title: 'Select the content nodes you want',
                         controller: 'NodeSelectorController',
                         selected: selected,
-                        template: 'tmpl/core/partial/modal/nodeSelector.html',
+                        template: 'tmpl/core/modals/nodeSelector.html',
                         domain: domain,
                         mode: 'multiple',
                         options: options

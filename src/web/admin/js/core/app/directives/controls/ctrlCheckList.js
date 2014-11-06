@@ -143,7 +143,7 @@
                         initiating = false;
                     }, 300);
                 },
-                templateUrl: 'tmpl/core/partial/controls/ctrlCheckList.html'
+                templateUrl: 'tmpl/core/controls/ctrlCheckList.html'
             };
 
         });

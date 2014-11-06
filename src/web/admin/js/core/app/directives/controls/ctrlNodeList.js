@@ -148,7 +148,7 @@
                     };
 
                 },
-                templateUrl: 'tmpl/core/partial/controls/ctrlNodeList.html'
+                templateUrl: 'tmpl/core/controls/ctrlNodeList.html'
             };
 
         });

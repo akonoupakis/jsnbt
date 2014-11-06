@@ -112,7 +112,7 @@
                     };
 
                 },
-                templateUrl: 'tmpl/core/partial/controls/ctrlNode.html'
+                templateUrl: 'tmpl/core/controls/ctrlNode.html'
             };
 
         });

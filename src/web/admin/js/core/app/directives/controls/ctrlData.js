@@ -91,7 +91,7 @@
                             title: 'Select a data item',
                             controller: 'DataSelectorController',
                             selected: scope.ngModel,
-                            template: 'tmpl/core/partial/modal/dataSelector.html',
+                            template: 'tmpl/core/modals/dataSelector.html',
                             domain: scope.ngDomain,
                             list: scope.ngList,
                             mode: 'single'
@@ -107,7 +107,7 @@
                     };
 
                 },
-                templateUrl: 'tmpl/core/partial/controls/ctrlData.html'
+                templateUrl: 'tmpl/core/controls/ctrlData.html'
             };
 
         });

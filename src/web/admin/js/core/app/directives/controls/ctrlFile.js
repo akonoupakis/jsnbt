@@ -77,7 +77,7 @@
                             controller: 'FileSelectorController',
                             selected: scope.ngModel,
                             mode: 'single',
-                            template: 'tmpl/core/partial/modal/fileSelector.html',
+                            template: 'tmpl/core/modals/fileSelector.html',
                             extensions: scope.ngExtensions || []
                         }).then(function (result) {
                             scope.ngModel = result || '';
@@ -91,7 +91,7 @@
                     };
 
                 },
-                templateUrl: 'tmpl/core/partial/controls/ctrlFile.html'
+                templateUrl: 'tmpl/core/controls/ctrlFile.html'
             };
 
         });

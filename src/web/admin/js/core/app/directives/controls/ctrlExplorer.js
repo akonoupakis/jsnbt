@@ -194,7 +194,7 @@
                         ModalService.open({
                             title: 'Upload files',
                             controller: 'FileUploadController',
-                            template: 'tmpl/core/partial/modal/fileUpload.html',
+                            template: 'tmpl/core/modals/fileUpload.html',
                             path: scope.current
                         }).then(function (result) {
                             load(scope.current);
@@ -209,7 +209,7 @@
                         ModalService.open({
                             title: 'Edit this ' + item.type,
                             controller: 'FileSystemEditorController',
-                            template: 'tmpl/core/partial/modal/fsEditor.html',
+                            template: 'tmpl/core/modals/fsEditor.html',
                             data: item
                         }).then(function (result) {
                             if (result !== '' && result !== item.path) {
@@ -228,7 +228,7 @@
                         ModalService.open({
                             title: 'Are you sure you want to delete the ' + item.type + ' ' + item.name + '?',
                             controller: 'DeletePromptController',
-                            template: 'tmpl/core/partial/modal/deletePrompt.html'
+                            template: 'tmpl/core/modals/deletePrompt.html'
                         }).then(function (confirmed) {
                             if (confirmed) {
                                 FileService.delete(item.path).then(function (response) {
@@ -277,7 +277,7 @@
 
                     scope.current = (scope.ngPath || '/').replace(/\\/, '/');
                 },
-                templateUrl: 'tmpl/core/partial/controls/ctrlExplorer.html'
+                templateUrl: 'tmpl/core/controls/ctrlExplorer.html'
             };
 
         });

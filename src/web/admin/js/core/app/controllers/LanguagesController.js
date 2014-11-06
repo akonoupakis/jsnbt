@@ -36,7 +36,7 @@
                         title: 'Select a language',
                         controller: 'LanguageSelectorController',
                         data: available,
-                        template: 'tmpl/core/partial/modal/languageSelector.html'
+                        template: 'tmpl/core/modals/languageSelector.html'
                     }).then(function (language) {
                         $data.languages.get({ code: language.code }).then(function (results) {
                             if (results.length === 0) {
@@ -122,7 +122,7 @@
                     ModalService.open({
                         title: 'Are you sure you want to delete the language ' + data.name + '?',
                         controller: 'DeletePromptController',
-                        template: 'tmpl/core/partial/modal/deletePrompt.html'
+                        template: 'tmpl/core/modals/deletePrompt.html'
                     }).then(function (confirmed) {
                         if (confirmed) {
                             $data.languages.get(data.id).then(function (response) {

@@ -76,7 +76,7 @@
                     }
 
                 },
-                templateUrl: 'tmpl/core/partial/controls/ctrlPassword.html'
+                templateUrl: 'tmpl/core/controls/ctrlPassword.html'
             };
 
         });

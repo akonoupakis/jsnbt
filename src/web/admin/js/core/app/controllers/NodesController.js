@@ -37,7 +37,7 @@
                     ModalService.open({
                         title: 'Type a name',
                         controller: 'NamePromptController',
-                        template: 'tmpl/core/partial/modal/namePrompt.html'
+                        template: 'tmpl/core/modals/namePrompt.html'
                     }).then(function (result) {
                         if (!!result && result !== '') {
                             $data.nodes.post($data.create('nodes', {
@@ -111,7 +111,7 @@
                     ModalService.open({
                         title: 'Are you sure you want to permanently delete the node ' + node.name + '?',
                         controller: 'DeletePromptController',
-                        template: 'tmpl/core/partial/modal/deletePrompt.html'
+                        template: 'tmpl/core/modals/deletePrompt.html'
                     }).then(function (result) {
                         if (result) {
                             $data.nodes.del(node.id).then(function (nodeDeleteResults) {

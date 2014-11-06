@@ -113,7 +113,7 @@
                             title: 'Select the data items you want',
                             controller: 'DataSelectorController',
                             selected: scope.ngModel,
-                            template: 'tmpl/core/partial/modal/dataSelector.html',
+                            template: 'tmpl/core/modals/dataSelector.html',
                             domain: scope.ngDomain,
                             list: scope.ngList,
                             mode: 'multiple'
@@ -147,7 +147,7 @@
                     };
 
                 },
-                templateUrl: 'tmpl/core/partial/controls/ctrlDataList.html'
+                templateUrl: 'tmpl/core/controls/ctrlDataList.html'
             };
 
         });
