@@ -144,29 +144,31 @@ module.exports = {
             }            
         });
 
-        var moduleLists = module.lists || [];
-        _.each(moduleLists, function (moduleList) {
-            var fileName = moduleList.spec.substring(0, moduleList.spec.lastIndexOf('.'));
-            fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
+        if (module.domain !== 'core' || (module.domain === 'core' && module.public)) {
+            var moduleLists = module.lists || [];
+            _.each(moduleLists, function (moduleList) {
+                var fileName = moduleList.spec.substring(0, moduleList.spec.lastIndexOf('.'));
+                fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
 
-            var moduleListDomain = module.addon ? module.domain : 'core';
+                var moduleListDomain = module.addon ? module.domain : 'core';
 
-            var matchedList = _.first(_.filter(self.lists, function (x) { return x.id === fileName && x.domain == moduleListDomain; }));
-            if (matchedList) {
-                extend(true, matchedList, moduleList);
-            }
-            else {
-                var newListSpec = {
-                    domain: moduleListDomain,
-                    localized: true
-                };
+                var matchedList = _.first(_.filter(self.lists, function (x) { return x.id === fileName && x.domain == moduleListDomain; }));
+                if (matchedList) {
+                    extend(true, matchedList, moduleList);
+                }
+                else {
+                    var newListSpec = {
+                        domain: moduleListDomain,
+                        localized: true
+                    };
 
-                extend(true, newListSpec, moduleList);
-                newListSpec.id = fileName;
+                    extend(true, newListSpec, moduleList);
+                    newListSpec.id = fileName;
 
-                self.lists.push(newListSpec);
-            }
-        });
+                    self.lists.push(newListSpec);
+                }
+            });
+        }
 
         var moduleRoles = module.roles || [];
         _.each(moduleRoles, function (moduleRole) {
