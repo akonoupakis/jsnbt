@@ -9,7 +9,7 @@
                 <span ng-click="back()" class="glyphicon glyphicon-arrow-left back-button"></span>
                 <h1 class="title">languages</h1>
                 <div class="buttons">
-                    <button title="Create new" class="btn btn-default glyphicon glyphicon-plus-sign" type="button" value="Create" ng-click="create()" ng-disabled="available.length === 0"></button>
+                    <button title="create new" class="btn btn-default glyphicon glyphicon-plus-sign" type="button" value="create" ng-click="create()" ng-disabled="available.length === 0"></button>
                 </div>
             </div>
         </div>
@@ -18,10 +18,10 @@
             <div class="col-md-12">
                 <ctrl-grid class="table-striped" ng-model="data" ng-fn="gridFn">
                     <ctrl-grid-header>
-                        <ctrl-grid-header-column>Code</ctrl-grid-header-column>
-                        <ctrl-grid-header-column>Name</ctrl-grid-header-column>
-                        <ctrl-grid-header-column>Active</ctrl-grid-header-column>
-                        <ctrl-grid-header-column>Default</ctrl-grid-header-column>
+                        <ctrl-grid-header-column>code</ctrl-grid-header-column>
+                        <ctrl-grid-header-column>name</ctrl-grid-header-column>
+                        <ctrl-grid-header-column>active</ctrl-grid-header-column>
+                        <ctrl-grid-header-column>default</ctrl-grid-header-column>
                         <ctrl-grid-header-column></ctrl-grid-header-column>
                     </ctrl-grid-header>
                     <ctrl-grid-footer>

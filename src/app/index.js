@@ -33,7 +33,7 @@ module.exports = {
             url: '/layout2',
         }],
         dashboard: 'tmpl/test/dashboardSpec.html',
-        content: 'tmpl/test/settingsSpec.html',
+        content: 'tmpl/test/contentSpec.html',
         settings: 'tmpl/test/settingsSpec.html'
     },
 
