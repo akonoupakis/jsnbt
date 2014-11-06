@@ -45,40 +45,43 @@ module.exports = {
 
     configurations: {},
 
+    modules: [],
+
+    addons: [],
+
     entities: [],
-
-    lists: [],
-
+    
     roles: [],
 
     sections: [],
 
     data: [],
-
-    modules: [],
     
-    addons: [],
+    images: [],
+    
+    specs: {},
 
     templates: [],
 
-    images: [],
-
-    setLocale: function (code) {
-        var language = _.first(_.filter(this.languages, function (x) { return x.code === code; }));
-        if (language)
-        {
-            this.localization = false;
-            this.locale = language.code;
-        }
-    },
-
-    setRestricted: function (value) {
-        this.restricted = value;
-    },
-
+    lists: [],
+            
     registerModule: function (name, module) {
         
         var self = this;
+
+        if (module.public) {
+            if (module.locale !== undefined) {
+                var language = _.first(_.filter(this.languages, function (x) { return x.code === module.locale; }));
+                if (language) {
+                    self.localization = false;
+                    self.locale = language.code;
+                }
+            }
+
+            if (module.restricted !== undefined) {
+                self.restricted = module.restricted;
+            }
+        }
 
         module.name = name;
         this.modules.push(module);
@@ -197,18 +200,7 @@ module.exports = {
                 self.data.push(clone(moduleDatum));
             }
         });
-
-        var moduleTemplates = module.templates || [];
-        _.each(moduleTemplates, function (moduleTemplate) {
-            var matchedTemplate = _.first(_.filter(self.templates, function (x) { return x.path === moduleTemplate.path; }));
-            if (matchedTemplate) {
-                extend(true, matchedTemplate, moduleTemplate);
-            }
-            else {
-                self.templates.push(clone(moduleTemplate));
-            }
-        });
-
+        
         var moduleImages = module.images || [];
         _.each(moduleImages, function (moduleImage) {
             var matchedImage = _.first(_.filter(self.images, function (x) { return x.name === moduleImage.name; }));
@@ -219,6 +211,32 @@ module.exports = {
                 self.images.push(clone(moduleImage));
             }
         });
+
+        if (module.public) {
+            var moduleTemplates = module.templates || [];
+            _.each(moduleTemplates, function (moduleTemplate) {
+                var matchedTemplate = _.first(_.filter(self.templates, function (x) { return x.path === moduleTemplate.path; }));
+                if (matchedTemplate) {
+                    extend(true, matchedTemplate, moduleTemplate);
+                }
+                else {
+                    self.templates.push(clone(moduleTemplate));
+                }
+            });
+
+            if (module.specs) {
+                var specs = {};
+
+                extend(true, specs, {
+                    navigation: [],
+                    dashboard: undefined,
+                    content: undefined,
+                    settings: undefined
+                }, module.specs);
+
+                self.specs = specs;
+            }
+        }
     },
 
     registerConfig: function (name, config) {
@@ -266,13 +284,14 @@ module.exports = {
         if (site === 'admin') {
 
             result.version = getVersion();
-            
-            result.addons = self.addons;
-            result.entities = self.entities;
-
-            result.templates = self.templates;
-
             result.restricted = self.restricted;
+
+            result.addons = self.addons;
+
+            result.entities = self.entities;
+            
+            result.roles = self.roles;
+            result.sections = self.sections;
 
             result.lists = [];
             _.each(self.lists, function (list) {
@@ -281,11 +300,9 @@ module.exports = {
                 delete newList.permissions;
                 result.lists.push(newList);
             });
-
-            result.roles = self.roles;
-            result.sections = self.sections;
-
-            result.images = self.images;
+            
+            result.templates = self.templates;
+            result.specs = self.specs;
         }
 
         result.languages = self.languages;

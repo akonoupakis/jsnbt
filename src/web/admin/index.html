@@ -44,12 +44,12 @@
     <!-- @endif -->
 </head>
 <body ng-app="jsnbt" ng-controller="AppController">
-    <header ng-include="'tmpl/partial/common/header.html'"></header>
+    <header ng-include="'tmpl/core/partial/common/header.html'"></header>
 
     <div ng-view class="page" ng-show="current.initiated && !current.denied" ng-class="{'out-backwards': location.leaving && location.direction === 'ltr', 'in-forwards': location.coming && location.direction === 'ltr', 'in-backwards': location.coming && location.direction === 'rtl', 'out-forwards': location.leaving && location.direction === 'rtl'}"></div>
 
-    <div ng-if="current.initiated && !current.user && current.users" ng-include="'tmpl/partial/common/login.html'"></div>
-    <div ng-if="current.initiated && !current.user && !current.users" ng-include="'tmpl/partial/common/first-user.html'"></div>
-    <div ng-if="current.initiated && current.denied" ng-include="'tmpl/partial/common/denied.html'"></div>
+    <div ng-if="current.initiated && !current.user && current.users" ng-include="'tmpl/core/partial/common/login.html'"></div>
+    <div ng-if="current.initiated && !current.user && !current.users" ng-include="'tmpl/core/partial/common/first-user.html'"></div>
+    <div ng-if="current.initiated && current.denied" ng-include="'tmpl/core/partial/common/denied.html'"></div>
 </body>
 </html>

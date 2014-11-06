@@ -9,6 +9,14 @@
 	upon install, reroute to /admin to create your first time user.
 	create the available languages and content nodes (system urls)
 
+
+## note
+
+	unfortunatelly, too many things are changing on developing jsnbt for a first time use, 
+	and combined with the lack of time, I am still unable to maintain a changelog or even
+	a stable version.
+
+	please bear with me until I prepare for you some proper documentation!
 	
 ## quick start
 

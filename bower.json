@@ -38,7 +38,7 @@
         {
           "src": "jquery/dist/jquery.js",
           "dest": [
-            "admin/js/lib/a-jquery.js"
+            "admin/js/core/lib/a-jquery.js"
           ]
         }
       ]
@@ -48,7 +48,7 @@
         {
           "src": "angular/angular.js",
           "dest": [
-            "admin/js/lib/b-angular.js"
+            "admin/js/core/lib/b-angular.js"
           ]
         }
       ]
@@ -58,7 +58,7 @@
         {
           "src": "angular-route/angular-route.js",
           "dest": [
-            "admin/js/lib/angular-lib/angular.route.js"
+            "admin/js/core/lib/angular-lib/angular.route.js"
           ]
         }
       ]
@@ -68,7 +68,7 @@
         {
           "src": "angular-animate/angular-animate.js",
           "dest": [
-            "admin/js/lib/angular-lib/angular.animate.js"
+            "admin/js/core/lib/angular-lib/angular.animate.js"
           ]
         }
       ]
@@ -78,7 +78,7 @@
         {
           "src": "angular-sanitize/angular-sanitize.js",
           "dest": [
-			"admin/js/lib/angular-lib/angular.sanitize.js"
+			"admin/js/core/lib/angular-lib/angular.sanitize.js"
           ]
         }
       ]
@@ -88,7 +88,7 @@
         {
           "src": "angular-strap/dist/angular-strap.js",
           "dest": [
-            "admin/js/lib/angular-lib/angular.strap.js"
+            "admin/js/core/lib/angular-lib/angular.strap.js"
           ]
         }
       ]
@@ -98,7 +98,7 @@
         {
           "src": "angular-ui-sortable/sortable.js",
           "dest": [
-            "admin/js/lib/angular-lib/angular-ui-sortable.js"
+            "admin/js/core/lib/angular-lib/angular-ui-sortable.js"
           ]
         }
       ]
@@ -108,7 +108,7 @@
         {
           "src": "jquery-ui/jquery-ui.js",
           "dest": [
-            "admin/js/lib/jquery/jquery-ui.js"
+            "admin/js/core/lib/jquery/jquery-ui.js"
           ]
         }
       ]
@@ -118,7 +118,7 @@
         {
           "src": "jquery.scrollTo/jquery.scrollTo.js",
           "dest": [
-            "admin/js/lib/jquery/jquery.scrollTo.js"
+            "admin/js/core/lib/jquery/jquery.scrollTo.js"
           ]
         }
       ]
@@ -128,7 +128,7 @@
         {
           "src": "underscore/underscore.js",
           "dest": [
-            "admin/js/lib/underscore/underscore.js"
+            "admin/js/core/lib/underscore/underscore.js"
           ]
         }
       ]
@@ -138,7 +138,7 @@
         {
           "src": "underscore.string/lib/underscore.string.js",
           "dest": [
-            "admin/js/lib/underscore/underscore.string.js"
+            "admin/js/core/lib/underscore/underscore.string.js"
           ]
         }
       ]
@@ -148,25 +148,25 @@
         {
           "src": "bootstrap/dist/css/bootstrap.css",
           "dest": [
-            "admin/css/lib/bootstrap/css/bootstrap.css"
+            "admin/css/core/lib/bootstrap/css/bootstrap.css"
           ]
         },
         {
           "src": "bootstrap/dist/css/bootstrap.css.map",
           "dest": [
-            "admin/css/lib/bootstrap/css/bootstrap.css.map"
+            "admin/css/core/lib/bootstrap/css/bootstrap.css.map"
           ]
         },
         {
           "src": "bootstrap/dist/css/bootstrap.min.css",
           "dest": [
-            "admin/css/lib/bootstrap/css/bootstrap.min.css"
+            "admin/css/core/lib/bootstrap/css/bootstrap.min.css"
           ]
         },
         {
           "src": "bootstrap/dist/js/bootstrap.js",
           "dest": [
-            "admin/js/lib/bootstrap/bootstrap.js"
+            "admin/js/core/lib/bootstrap/bootstrap.js"
           ]
         }
       ],
@@ -174,7 +174,7 @@
         {
           "src": "bootstrap/dist/fonts",
           "dest": [
-            "admin/css/lib/bootstrap/fonts"
+            "admin/css/core/lib/bootstrap/fonts"
           ]
         }
       ]
@@ -184,13 +184,13 @@
         {
           "src": "bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css",
           "dest": [
-            "admin/css/lib/bootstrap/css/bootstrap.switch.css"
+            "admin/css/core/lib/bootstrap/css/bootstrap.switch.css"
           ]
         },
         {
           "src": "bootstrap-switch/dist/js/bootstrap-switch.js",
           "dest": [
-            "admin/js/lib/bootstrap/bootstrap.switch.js"
+            "admin/js/core/lib/bootstrap/bootstrap.switch.js"
           ]
         }
       ]
@@ -200,7 +200,7 @@
         {
           "src": "angular-bootstrap/ui-bootstrap.js",
           "dest": [
-            "admin/js/lib/angular-lib/angular-bootstrap.js"
+            "admin/js/core/lib/angular-lib/angular-bootstrap.js"
           ]
         }
       ]
@@ -210,7 +210,7 @@
         {
           "src": "ngInfiniteScroll/build/ng-infinite-scroll.js",
           "dest": [
-            "admin/js/lib/ngInfiniteScroll/ngInfiniteScroll.js"
+            "admin/js/core/lib/ngInfiniteScroll/ngInfiniteScroll.js"
           ]
         }
       ]
@@ -220,13 +220,13 @@
         {
           "src": "flow.js/dist/flow.js",
           "dest": [
-            "admin/js/lib/flow/flow.js"
+            "admin/js/core/lib/flow/flow.js"
           ]
         },
 		{
           "src": "ng-flow/dist/ng-flow.js",
           "dest": [
-            "admin/js/lib/ng-flow/ng-flow.js"
+            "admin/js/core/lib/ng-flow/ng-flow.js"
           ]
         }
       ]
@@ -236,62 +236,62 @@
         {
           "src": "tinymce/tinymce.min.js",
           "dest": [
-            "admin/js/lib/tinymce/a-tinymce.js"
+            "admin/js/core/lib/tinymce/a-tinymce.js"
           ]
         }, {
           "src": "tinymce/themes/modern/theme.min.js",
           "dest": [
-            "admin/js/lib/tinymce/themes/theme.js"
+            "admin/js/core/lib/tinymce/themes/theme.js"
           ]
         }, {
           "src": "tinymce/skins/lightgray/skin.min.css",
           "dest": [
-            "admin/css/lib/tinymce/skins/lightgray/skin.min.css"
+            "admin/css/core/lib/tinymce/skins/lightgray/skin.min.css"
           ]
         }, {
           "src": "tinymce/skins/lightgray/content.min.css",
           "dest": [
-            "admin/css/lib/tinymce/skins/lightgray/content.min.css"
+            "admin/css/core/lib/tinymce/skins/lightgray/content.min.css"
           ]
         }, {
           "src": "tinymce/skins/lightgray/fonts/icomoon.eot",
           "dest": [
-            "admin/css/lib/tinymce/skins/lightgray/fonts/icomoon.eot"
+            "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon.eot"
           ]
         }, {
           "src": "tinymce/skins/lightgray/fonts/icomoon.svg",
           "dest": [
-            "admin/css/lib/tinymce/skins/lightgray/fonts/icomoon.svg"
+            "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon.svg"
           ]
         }, {
           "src": "tinymce/skins/lightgray/fonts/icomoon.ttf",
           "dest": [
-            "admin/css/lib/tinymce/skins/lightgray/fonts/icomoon.ttf"
+            "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon.ttf"
           ]
         }, {
           "src": "tinymce/skins/lightgray/fonts/icomoon.woff",
           "dest": [
-            "admin/css/lib/tinymce/skins/lightgray/fonts/icomoon.woff"
+            "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon.woff"
           ]
         }, {
           "src": "tinymce/skins/lightgray/fonts/icomoon-small.eot",
           "dest": [
-            "admin/css/lib/tinymce/skins/lightgray/fonts/icomoon-small.eot"
+            "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon-small.eot"
           ]
         }, {
           "src": "tinymce/skins/lightgray/fonts/icomoon-small.svg",
           "dest": [
-            "admin/css/lib/tinymce/skins/lightgray/fonts/icomoon-small.svg"
+            "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon-small.svg"
           ]
         }, {
           "src": "tinymce/skins/lightgray/fonts/icomoon-small.ttf",
           "dest": [
-            "admin/css/lib/tinymce/skins/lightgray/fonts/icomoon-small.ttf"
+            "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon-small.ttf"
           ]
         }, {
           "src": "tinymce/skins/lightgray/fonts/icomoon-small.woff",
           "dest": [
-            "admin/css/lib/tinymce/skins/lightgray/fonts/icomoon-small.woff"
+            "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon-small.woff"
           ]
         }
 	  ]
@@ -301,7 +301,7 @@
         {
           "src": "angular-ui-tinymce/src/tinymce.js",
           "dest": [
-            "admin/js/lib/tinymce/b-angular-ui-tinymce.js"
+            "admin/js/core/lib/tinymce/b-angular-ui-tinymce.js"
           ]
         }
 	  ]

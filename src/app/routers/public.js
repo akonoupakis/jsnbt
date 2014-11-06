@@ -10,8 +10,8 @@ _.str = require('underscore.string');
 module.exports = function () {
 
     var addonRouters = [];
-    for (var i = 0; i < app.packages.length; i++) {
-        var pck = app.packages[i];
+    for (var i = 0; i < jsnbt.modules.length; i++) {
+        var pck = jsnbt.modules[i];
         if (typeof (pck.route) === 'function') {
             addonRouters.push(pck);
         }

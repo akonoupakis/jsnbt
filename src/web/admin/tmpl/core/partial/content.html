@@ -1,0 +1,54 @@
+﻿<div class="container">
+
+    <section class="col-md-12">
+
+        <ctrl-breadcrumb ng-model="current.breadcrumb" ng-title="you are here:"></ctrl-breadcrumb>    
+
+        <div class="row title-container">
+            <div class="col-md-12">
+                <h1 class="title">content</h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <ul class="content-thumbs">
+                <li ng-show="isAuthorized('languages') && application.localization.enabled">
+                    <a href="javascript:;" ng-click="goto('languages')">
+                        <img src="img/core/content/languages.png" style="height: 128px" />
+                    </a>
+                    <label>languages</label>
+                </li>
+                <li ng-show="isAuthorized('nodes')">
+                    <a href="javascript:;" ng-click="goto('nodes')">
+                        <img src="img/core/content/nodes.png" style="height: 128px" />
+                    </a>
+                    <label>nodes</label>
+                </li>
+                <li ng-show="isAuthorized('data')">
+                    <a href="javascript:;" ng-click="goto('data')">
+                        <img src="img/core/content/data.png" style="height: 128px" />
+                    </a>
+                    <label>data</label>
+                </li>
+                <li ng-show="isAuthorized('texts')">
+                    <a href="javascript:;" ng-click="goto('texts')">
+                        <img src="img/core/content/texts.png" style="height: 128px" />
+                    </a>
+                    <label>texts</label>
+                </li>
+                <li ng-show="isAuthorized('files')">
+                    <a href="javascript:;" ng-click="goto('files')">
+                        <img src="img/core/content/files.png" style="height: 128px" />
+                    </a>
+                    <label>files</label>
+                </li>
+            </ul>
+        </div>
+
+        <hr ng-show="publicTmpl" />
+
+        <div ng-show="publicTmpl" ng-include="publicTmpl"></div>
+
+    </section>
+
+</div>
