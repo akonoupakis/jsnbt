@@ -19,7 +19,7 @@
 
         <div class="row" id="page-language" data-scrollspy="Language">
             <ctrl-select class="col-md-10" ng-model="language.code" ng-enabled="false" ng-label="Language" ng-options="languages" ng-name-field="name" ng-value-field="code" ng-auto-focus="true"></ctrl-select>
-            <ctrl-check class="col-md-2" ng-model="language.active" ng-enabled="!language.default" ng-label="Active"></ctrl-check>
+            <ctrl-form-check class="col-md-2" ng-model="language.active" ng-enabled="!language.default" ng-label="Active"></ctrl-form-check>
         </div>
 
         <hr />

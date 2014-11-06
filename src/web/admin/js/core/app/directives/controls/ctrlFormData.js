@@ -5,22 +5,23 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlFile', function ($timeout, ModalService, FORM_EVENTS) {
+        .directive('ctrlFormData', function ($timeout, $data, ModalService, FORM_EVENTS) {
 
             return {
                 restrict: 'E',
                 replace: true,
                 scope: {
                     ngModel: '=',
+                    ngDomain: '=',
+                    ngList: '=',
                     ngEnabled: '=',
                     ngRequired: '=',
                     ngLabel: '@',
-                    ngTip: '@',
-                    ngExtensions: '='
+                    ngTip: '@'
                 },
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl');
-                    element.addClass('ctrl-file');
+                    element.addClass('ctrl-form-data');
 
                     scope.id = Math.random().toString().replace('.', '');
                     scope.value = '';
@@ -52,17 +53,28 @@
                                     valid = !!scope.ngModel && scope.ngModel !== '';
                                 }
                             }
-
                         }
 
                         return valid;
                     };
 
                     scope.$watch('ngModel', function (newValue, prevValue) { 
-                        scope.value = newValue || '';
+                        if (newValue && newValue !== '') {
+                            $data.data.get(newValue).then(function (response) {
+                                scope.value = response.name;
 
-                        if (initiated)
-                            scope.valid = isValid();
+                                if (initiated)
+                                    scope.valid = isValid();
+                            }, function (error) {
+                                throw error;
+                            });
+                        }
+                        else {
+                            scope.value = '';
+
+                            if (initiated)
+                                scope.valid = isValid();
+                        }
                     });
 
                     scope.$on(FORM_EVENTS.initiateValidation, function (sender) {
@@ -70,15 +82,19 @@
                         scope.valid = isValid();
                         scope.$emit(FORM_EVENTS.valueIsValid, scope.valid);
                     });
-                    
+
                     scope.select = function () {
+                        if (!scope.ngDomain || scope.ngDomain === '')
+                            return;
+
                         ModalService.open({
-                            title: 'Select a file',
-                            controller: 'FileSelectorController',
+                            title: 'Select a data item',
+                            controller: 'DataSelectorController',
                             selected: scope.ngModel,
-                            mode: 'single',
-                            template: 'tmpl/core/partial/modal/fileSelector.html',
-                            extensions: scope.ngExtensions || []
+                            template: 'tmpl/core/partial/modal/dataSelector.html',
+                            domain: scope.ngDomain,
+                            list: scope.ngList,
+                            mode: 'single'
                         }).then(function (result) {
                             scope.ngModel = result || '';
                             scope.changed();
@@ -91,7 +107,7 @@
                     };
 
                 },
-                templateUrl: 'tmpl/core/partial/controls/ctrlFile.html'
+                templateUrl: 'tmpl/core/partial/controls/ctrlFormData.html'
             };
 
         });
