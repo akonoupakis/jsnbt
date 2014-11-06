@@ -11,8 +11,10 @@
             $scope.domain = $route.current.$$route.domain;
             $scope.name = ($scope.domain !== 'core' ? ($scope.domain + ' ') : '') + 'settings';
 
-            $scope.id = undefined;
+            $scope.settingsId = undefined;
             $scope.settings = {};
+            $scope.mySettingsId = undefined;
+            $scope.mySettings = {};
 
             $scope.valid = false;
             $scope.published = false;
@@ -25,22 +27,37 @@
                 set: function () {
                     var deferred = $q.defer();
 
-                    $data.settings.get({ domain: $scope.domain }).then(function (results) {
-                        var first = _.first(results)
-                        if (first) {
-                            $scope.id = first.id;
-                            $scope.settings = first.data;
+                    $data.settings.get({ domain: { $in: [$scope.domain, 'public'] } }).then(function (results) {
+                        var domainSettings = _.first(_.filter(results, function (x) { return x.domain === $scope.domain; }));
+                        if (domainSettings) {
+                            $scope.settingsId = domainSettings.id;
+                            $scope.settings = domainSettings.data;
                         }
                         else {
-                            $scope.id = undefined;
+                            $scope.settingsId = undefined;
                             $scope.settings = {};
+                        }
+
+                        if ($scope.domain === 'core') {
+                            var publicSettings = _.first(_.filter(results, function (x) { return x.domain === 'public'; }));
+                            if (publicSettings) {
+                                $scope.mySettingsId = publicSettings.id;
+                                $scope.mySettings = publicSettings.data;
+                            }
+                            else {
+                                $scope.mySettingsId = undefined;
+                                $scope.mySettings = {};
+                            }
+                        }
+                        else {
+                            $scope.mySettings = {};
                         }
                         
                         $scope.valid = true;
 
                         $scope.published = true;
 
-                        deferred.resolve(first);
+                        deferred.resolve();
 
                     }, function (error) {
                         deferred.reject(error);
@@ -96,32 +113,72 @@
                 publish: function (cb) {
                     var deferred = $q.defer();
 
+                    var saveSettings = function () {
+                        var deferredInternal = $q.defer();
+
+                        if ($scope.settingsId) {
+                            $data.settings.put($scope.settingsId, {
+                                data: $scope.settings
+                            }).then(function (result) {
+                                deferredInternal.resolve(true);
+                            }, function (error) {
+                                deferredInternal.reject(error);
+                            });
+                        }
+                        else {
+                            $data.settings.post({
+                                domain: $scope.domain,
+                                data: $scope.settings
+                            }).then(function (result) {
+                                $scope.settingsId = result.id;
+                                $scope.settings = result.data;
+                                deferredInternal.resolve(true);
+                            }, function (error) {
+                                deferredInternal.reject(error);
+                            });
+                        }
+
+                        return deferredInternal.promise;
+                    }
+
+                    var saveMySettings = function () {
+                        var deferredInternal = $q.defer();
+
+                        if ($scope.mySettingsId) {
+                            $data.settings.put($scope.mySettingsId, {
+                                data: $scope.mySettings
+                            }).then(function (result) {
+                                deferredInternal.resolve(true);
+                            }, function (error) {
+                                deferredInternal.reject(error);
+                            });
+                        }
+                        else {
+                            $data.settings.post({
+                                domain: 'public',
+                                data: $scope.mySettings
+                            }).then(function (result) {
+                                $scope.mySettingsId = result.id;
+                                $scope.mySettings = result.data;
+                                deferredInternal.resolve(true);
+                            }, function (error) {
+                                deferredInternal.reject(error);
+                            });
+                        }
+
+                        return deferredInternal.promise;
+                    }
+
                     this.validate().then(function (validationResults) {
                         if (!validationResults) {
                             deferred.resolve(false);
                         }
                         else {
-                            if ($scope.id) {
-                                $data.settings.put($scope.id, {
-                                    data: $scope.settings
-                                }).then(function (result) {
-                                    deferred.resolve(true);
-                                }, function (error) {
-                                    deferred.reject(error);
-                                });
-                            }
-                            else {
-                                $data.settings.post({
-                                    domain: $scope.domain,
-                                    data: $scope.settings
-                                }).then(function (result) {
-                                    $scope.id = result.id;
-                                    $scope.settings = result.data;
-                                    deferred.resolve(true);
-                                }, function (error) {
-                                    deferred.reject(error);
-                                });
-                            }
+                            $q.all(saveSettings(), saveMySettings()).then(function () {
+                                deferred.resolve(true);
+                            }, function (ex) {
+                                deferred.reject(ex);
+                            });
                         }
                     });
 
