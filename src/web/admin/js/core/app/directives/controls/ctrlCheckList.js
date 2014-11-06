@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlFormCheckList', function ($timeout, FORM_EVENTS) {
+        .directive('ctrlCheckList', function ($timeout, FORM_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -24,7 +24,7 @@
                 },
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl');
-                    element.addClass('ctrl-form-check-list');
+                    element.addClass('ctrl-check-list');
                     
                     scope.id = Math.random().toString().replace('.', '');
                     scope.valid = true;
@@ -143,7 +143,7 @@
                         initiating = false;
                     }, 300);
                 },
-                templateUrl: 'tmpl/core/partial/controls/ctrlFormCheckList.html'
+                templateUrl: 'tmpl/core/partial/controls/ctrlCheckList.html'
             };
 
         });

@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlFormCheck', function ($timeout, FORM_EVENTS) {
+        .directive('ctrlCheck', function ($timeout, FORM_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -18,7 +18,7 @@
                 },
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl');
-                    element.addClass('ctrl-form-check');
+                    element.addClass('ctrl-check');
                     
                     scope.id = Math.random().toString().replace('.', '');
                     scope.enabled = scope.ngEnabled !== undefined ? scope.ngEnabled : true;
@@ -61,7 +61,7 @@
                         initiating = false;
                     }, 300);
                 },
-                templateUrl: 'tmpl/core/partial/controls/ctrlFormCheck.html'
+                templateUrl: 'tmpl/core/partial/controls/ctrlCheck.html'
             };
 
         });

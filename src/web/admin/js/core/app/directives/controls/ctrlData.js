@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlFormDataList', function ($timeout, $data, ModalService, FORM_EVENTS) {
+        .directive('ctrlData', function ($timeout, $data, ModalService, FORM_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -13,7 +13,7 @@
                 scope: {
                     ngModel: '=',
                     ngDomain: '=',
-                    ngEntities: '=',
+                    ngList: '=',
                     ngEnabled: '=',
                     ngRequired: '=',
                     ngLabel: '@',
@@ -21,10 +21,10 @@
                 },
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl');
-                    element.addClass('ctrl-form-data-list');
+                    element.addClass('ctrl-data');
 
                     scope.id = Math.random().toString().replace('.', '');
-                    scope.value = [];
+                    scope.value = '';
                     scope.valid = true;
                     scope.enabled = scope.ngEnabled !== undefined ? scope.ngEnabled : true;
 
@@ -50,49 +50,27 @@
 
                             if (valid) {
                                 if (scope.ngRequired) {
-                                    valid = !!scope.ngModel && scope.ngModel.length > 0;
+                                    valid = !!scope.ngModel && scope.ngModel !== '';
                                 }
                             }
-
                         }
 
                         return valid;
                     };
 
-                    scope.$watch('ngModel', function (newValue, prevValue) {
-                        
-                        if (newValue && newValue.length > 0) {
-
-                            $data.data.get({ id: { $in: newValue } }).then(function (results) {
-                                var scopeValues = [];
-
-                                $(newValue).each(function (nv, nValue) {
-                                    var result = _.first(_.filter(results, function (x) { return x.id === nValue; }));
-                                    if (result) {
-                                        scopeValues.push({
-                                            id: result.id,
-                                            name: result.name
-                                        });
-                                    }
-                                    else {
-                                        scopeValues.push({
-                                            id: nValue,
-                                            name: nValue + ' (not found)'
-                                        });
-                                    }
-                                });
-
-                                scope.value = scopeValues;
+                    scope.$watch('ngModel', function (newValue, prevValue) { 
+                        if (newValue && newValue !== '') {
+                            $data.data.get(newValue).then(function (response) {
+                                scope.value = response.name;
 
                                 if (initiated)
                                     scope.valid = isValid();
-
                             }, function (error) {
                                 throw error;
                             });
                         }
                         else {
-                            scope.value = [];
+                            scope.value = '';
 
                             if (initiated)
                                 scope.valid = isValid();
@@ -110,44 +88,26 @@
                             return;
 
                         ModalService.open({
-                            title: 'Select the data items you want',
+                            title: 'Select a data item',
                             controller: 'DataSelectorController',
                             selected: scope.ngModel,
                             template: 'tmpl/core/partial/modal/dataSelector.html',
                             domain: scope.ngDomain,
                             list: scope.ngList,
-                            mode: 'multiple'
-                        }).then(function (results) {
-                            scope.ngModel = results || [];
+                            mode: 'single'
+                        }).then(function (result) {
+                            scope.ngModel = result || '';
                             scope.changed();
                         });
                     };
 
-                    scope.clear = function (node) {
-                        var nodeId = node.id;
-                        scope.ngModel = _.filter(scope.ngModel, function (x) { return x !== nodeId; });
+                    scope.clear = function () {
+                        scope.ngModel = '';
                         scope.changed();
                     };
 
-                    scope.sortableOptions = {
-                        axis: 'v',
-
-                        handle: '.glyphicon-move',
-                        cancel: '',
-                        containment: "parent",
-
-                        stop: function (e, ui) {
-                            var nodeIds = scope.value.map(function (x) {
-                                return x.id;
-                            });
-                        
-                            scope.ngModel = nodeIds;
-                            scope.changed();
-                        }
-                    };
-
                 },
-                templateUrl: 'tmpl/core/partial/controls/ctrlFormDataList.html'
+                templateUrl: 'tmpl/core/partial/controls/ctrlData.html'
             };
 
         });
