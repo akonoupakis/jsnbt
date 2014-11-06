@@ -140,6 +140,7 @@
                             deferred.resolve(false);
                         }
                         else {
+                            $scope.text.published = true;
                             $data.texts.put($scope.id, $scope.text).then(function (result) {
                                 $scope.name = result.key;
                                 deferred.resolve(true);

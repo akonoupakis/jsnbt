@@ -17,13 +17,21 @@
 			"id": "value",
 			"order": 1
 		},
+		"group": {
+			"name": "group",
+			"type": "string",
+			"typeLabel": "string",
+			"required": false,
+			"id": "group",
+			"order": 2
+		},
 		"published": {
 			"name": "published",
 			"type": "boolean",
 			"typeLabel": "boolean",
 			"required": false,
 			"id": "published",
-			"order": 2
+			"order": 3
 		}
 	}
 }

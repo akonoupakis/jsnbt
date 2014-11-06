@@ -18,7 +18,8 @@
             <div class="col-md-12">
                 <ctrl-grid class="table-striped" ng-model="data" ng-fn="gridFn">
                     <ctrl-grid-header>
-                        <ctrl-grid-header-column>Key</ctrl-grid-header-column>
+                        <ctrl-grid-header-column>key</ctrl-grid-header-column>
+                        <ctrl-grid-header-column>group</ctrl-grid-header-column>
                         <ctrl-grid-header-column></ctrl-grid-header-column>
                     </ctrl-grid-header>
                     <ctrl-grid-footer>
@@ -28,6 +29,9 @@
                     <ctrl-grid-body>
                         <ctrl-grid-column>
                             {{ row.key }}
+                        </ctrl-grid-column>
+                        <ctrl-grid-column>
+                            {{ row.group }}
                         </ctrl-grid-column>
                         <ctrl-grid-buttons-column>
                             <button class="btn btn-default glyphicon glyphicon-edit btn-sm" ng-click="fn.edit(row)" />

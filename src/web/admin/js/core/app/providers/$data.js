@@ -174,6 +174,7 @@
             $data.register('texts', {
                 key: '',
                 value: {},
+                group: undefined,
                 published: false
             });
 
