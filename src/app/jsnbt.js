@@ -38,10 +38,7 @@ module.exports = {
 
     restricted: true,
 
-    scripts: {
-        admin: [],
-        public: []
-    },
+    scripts: [],
 
     configurations: {},
 
@@ -100,19 +97,11 @@ module.exports = {
             return resultObj
         }
 
-        if (module.scripts) {
-            var moduleAdminScripts = module.scripts.admin || [];
-            _.each(moduleAdminScripts, function (moduleScript) {
-                if (self.scripts.admin.indexOf(moduleScript) === -1)
-                    self.scripts.admin.push(moduleScript);
-            });
-
-            var modulePublicScripts = module.scripts.admin || [];
-            _.each(modulePublicScripts, function (moduleScript) {
-                if (self.scripts.public.indexOf(moduleScript) === -1)
-                    self.scripts.public.push(moduleScript);
-            });
-        }
+        var moduleScripts = module.scripts || [];
+        _.each(moduleScripts, function (moduleScript) {
+            if (self.scripts.indexOf(moduleScript) === -1)
+                self.scripts.push(moduleScript);
+        });
 
         var entityDefaults = {
             name: '',
@@ -264,26 +253,26 @@ module.exports = {
 
         var result = {};
 
-        result.modules = [];
-        _.each(this.modules, function (mod) {
-            if (mod.modules && mod.modules[site]) {
-                if (typeof (mod.modules[site]) === 'string') {
-                    result.modules.push(mod.modules[site]);
-                }
-                else {
-                    _.each(mod.modules[site], function (mod2) {
-                        result.modules.push(mod2);
-                    });
-                }
-            }
-        });
-
         result.localization = {
             enabled: self.localization,
             locale: self.locale
         };
 
         if (site === 'admin') {
+
+            result.modules = [];
+            _.each(this.modules, function (mod) {
+                if (mod.modules && mod.modules) {
+                    if (typeof (mod.modules) === 'string') {
+                        result.modules.push(mod.modules);
+                    }
+                    else {
+                        _.each(mod.modules, function (mod2) {
+                            result.modules.push(mod2);
+                        });
+                    }
+                }
+            });
 
             result.version = getVersion();
             result.restricted = self.restricted;
