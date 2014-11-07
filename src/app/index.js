@@ -4,7 +4,7 @@ module.exports = {
 
     domain: 'core',
 
-    public: true,
+    public: false,
 
     images: [{
         name: 'admin-explorer-thumb',

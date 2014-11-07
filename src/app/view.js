@@ -12,25 +12,19 @@ exports.render = function (ctx) {
         error.render(ctx, 500, 'template not defined');
     }
     else {
-        var installedTemplate = _.first(_.filter(jsnbt.templates, function (x) { return x.path === ctx.template; }));
-        if (!installedTemplate) {
-            error.render(ctx, 500, 'template not installed: ' + ctx.template);
+        var tmplFilePath = '../' + app.root + '/public' + ctx.template;
+        if (fs.existsSync(tmplFilePath)) {
+            var tmplContent = fs.readFileSync(tmplFilePath, 'utf-8');
+
+            ctx.res.writeHead(200, { "Content-Type": "text/html" });
+
+            tmplContent = html.parse(ctx, tmplContent);
+
+            ctx.res.write(tmplContent);
+            ctx.res.end();
         }
         else {
-            var tmplFilePath = '../' + app.root + '/public' + ctx.template;
-            if (fs.existsSync(tmplFilePath)) {
-                var tmplContent = fs.readFileSync(tmplFilePath, 'utf-8');
-
-                ctx.res.writeHead(200, { "Content-Type": "text/html" });
-
-                tmplContent = html.parse(ctx, tmplContent);
-
-                ctx.res.write(tmplContent);
-                ctx.res.end();
-            }
-            else {
-                error.render(ctx, 500, 'template not found: ' + tmplFilePath);
-            }
+            error.render(ctx, 500, 'template not found: ' + tmplFilePath);
         }
     }
 };
