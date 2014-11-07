@@ -114,16 +114,6 @@ module.exports = function () {
                                         });
                                     }
                                     
-                                    var renderInternal = function (ctxInternal) {
-                                        var installedTemplate = _.first(_.filter(jsnbt.templates, function (x) { return x.path === ctxInternal.template; }));
-                                        if (installedTemplate) {
-                                            ctxInternal.render();
-                                        }
-                                        else {
-                                            ctxInternal.error(500, 'template not installed: ' + ctxInternal.template);
-                                        }
-                                    };
-
                                     if (resolved.pointer) {
 
                                         var addonRouter = _.first(_.filter(jsnbt.modules, function (x) { return x.domain === resolved.pointer.pointer.domain; }));
@@ -133,7 +123,7 @@ module.exports = function () {
                                         }
                                         else {
                                             if (ctx.node) {
-                                                renderInternal(ctx);
+                                                ctx.render();
                                             }
                                             else {
                                                 ctx.error(404);
@@ -141,7 +131,7 @@ module.exports = function () {
                                         }
                                     }
                                     else {
-                                        renderInternal(ctx);
+                                        ctx.render();
                                     }
                                 }
                             }
