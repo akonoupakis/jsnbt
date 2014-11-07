@@ -66,7 +66,7 @@ module.exports = function (grunt) {
             if (fs.existsSync(packInfoPath)) {
                 var packInfo = require(packInfoPath);
                 if (packInfo.main) {
-                    var packIndexPath = server.getPath(packInfo.main);
+                    var packIndexPath = server.getPath(packInfo.name === 'jsnbt' ? 'src/app/index.js' : packInfo.main);
                     if (fs.existsSync(packIndexPath)) {
                         var packObject = require(packIndexPath);
                         if (packObject && packObject.templates) {
@@ -97,7 +97,7 @@ module.exports = function (grunt) {
                             var nodeModulePackage = require(nodeModulePackagePath);
 
                             if (nodeModulePackage.main) {
-                                var nodeModuleIndexPath = server.getPath('node_modules/' + packageItem + '/' + nodeModulePackage.main);
+                                var nodeModuleIndexPath = server.getPath('node_modules/' + packageItem + '/' + nodeModulePackage.name === 'jsnbt' ? 'src/app/index.js' : nodeModulePackage.main);
                                 if (fs.existsSync(nodeModuleIndexPath)) {
                                     var nodeModuleIndex = require(nodeModuleIndexPath);
                                     if (nodeModuleIndex && nodeModuleIndex.templates) {
@@ -144,7 +144,7 @@ module.exports = function (grunt) {
 
         if (site === undefined || site === 'admin') {
             files.push({
-                src: folder + '/public/admin/css/*.less',
+                src: folder + '/public/admin/css/**/*.less',
                 dest: folder + '/public/admin/css/style.css'
             });
         }
@@ -167,11 +167,38 @@ module.exports = function (grunt) {
     };
     
     getFilesToUglify = function (folder) {
+
+        var adminLibPaths = [];
+        var adminAppPaths = [];
+
+        adminLibPaths.push('./' + folder + '/public/admin/js/core/lib/*.js');
+        adminLibPaths.push('./' + folder + '/public/admin/js/core/lib/**/**.js');
+        
+        adminAppPaths.push('./' + folder + '/public/admin/js/core/app/*.js');
+        adminAppPaths.push('./' + folder + '/public/admin/js/core/app/**/**.js');
+
+        var packagesList = fs.readdirSync(server.getPath('node_modules'));
+        _.each(packagesList, function (packageName) {
+            if (_.str.startsWith(packageName, 'jsnbt-')) {
+                if (fs.existsSync(server.getPath('node_modules/' + packageName + '/package.json')))
+                {
+                    var modJson = require(server.getPath('node_modules/' + packageName + '/package.json'));
+                    if (modJson && modJson.domain && modJson.domain !== 'core') {
+                        adminLibPaths.push('./' + folder + '/public/admin/js/' + modJson.domain + '/lib/*.js');
+                        adminLibPaths.push('./' + folder + '/public/admin/js/' + modJson.domain + '/lib/**/**.js');
+
+                        adminAppPaths.push('./' + folder + '/public/admin/js/' + modJson.domain + '/app/*.js');
+                        adminAppPaths.push('./' + folder + '/public/admin/js/' + modJson.domain + '/app/**/**.js');
+                    }
+                }
+            }
+        });
+
         return [{
-            src: ['./' + folder + '/public/admin/js/lib/*.js', './' + folder + '/public/admin/js/lib/**/**.js'],
+            src: adminLibPaths, 
             dest: './' + folder + '/public/admin/js/lib.min.js'
         }, {
-            src: ['./' + folder + '/public/admin/js/app/main.js', './' + folder + '/public/admin/js/app/**/main.js', './' + folder + '/public/admin/js/app/**/**.js'],
+            src: adminAppPaths, 
             dest: './' + folder + '/public/admin/js/app.min.js'
         }, {
             src: ['./' + folder + '/public/admin/js/init.js'],
@@ -366,34 +393,14 @@ module.exports = function (grunt) {
     fs.create('./src/dpd');
     fs.create('./src/pck');
     fs.create('./src/web');
-    fs.create('./src/web/admin');
-    fs.create('./src/web/admin/css');
-    fs.create('./src/web/admin/css/app');
-    fs.create('./src/web/admin/css/lib');
-    fs.create('./src/web/admin/img');
-    fs.create('./src/web/admin/js');
-    fs.create('./src/web/admin/js/app');
-    fs.create('./src/web/admin/js/lib');
-    fs.create('./src/web/admin/tmpl');
-    fs.create('./src/web/admin/tmpl/error');
-    fs.create('./src/web/admin/tmpl/partial');
-    fs.create('./src/web/admin/tmpl/spec');
-    fs.create('./src/web/admin/tmpl/view');
     fs.create('./src/web/public');
     fs.create('./src/web/public/css');
-    fs.create('./src/web/public/css/app');
-    fs.create('./src/web/public/css/lib');
+    fs.create('./src/web/public/error');
     fs.create('./src/web/public/files');
     fs.create('./src/web/public/img');
     fs.create('./src/web/public/js');
-    fs.create('./src/web/public/js/app');
-    fs.create('./src/web/public/js/lib');
     fs.create('./src/web/public/tmp');
     fs.create('./src/web/public/tmpl');
-    fs.create('./src/web/public/tmpl/error');
-    fs.create('./src/web/public/tmpl/partial');
-    fs.create('./src/web/public/tmpl/spec');
-    fs.create('./src/web/public/tmpl/view');
 
     gruntConfig.pkg = grunt.file.readJSON('package.json');
 
@@ -462,8 +469,7 @@ module.exports = function (grunt) {
             "!dist/public/css/*.min.css"
         ],
         prodUglified: [
-            "dist/public/admin/js/app",
-            "dist/public/admin/js/lib",
+            "dist/public/admin/js/**/*.js",
             "dist/public/admin/js/*.js",
             "!dist/public/admin/js/*.min.js",
             "dist/public/js/app",
@@ -637,13 +643,17 @@ module.exports = function (grunt) {
     gruntConfig.cleanempty = {
         dev: {
             src: [
+                'dev/public/admin/js/',
                 'dev/public/admin/css/',
+                'dev/public/js/',
                 'dev/public/css/'
             ]
         },
         prod: {
             src: [
+                'dist/public/admin/js/',
                 'dist/public/admin/css/',
+                'dist/public/js/',
                 'dist/public/css/'
             ]
         }
@@ -663,7 +673,7 @@ module.exports = function (grunt) {
             tasks: ['copy:devAdminImg']
         },
         adminTmpl: {
-            files: ['src/web/admin/tmpl/error/**', 'src/web/admin/tmpl/view/**'],
+            files: ['src/web/admin/error/**', 'src/web/admin/tmpl/**'],
             tasks: ['preprocess:devAdmin']
         },
         adminFiles: {
@@ -688,7 +698,7 @@ module.exports = function (grunt) {
             tasks: ['copy:devPublicImg']
         },
         publicTmpl: {
-            files: ['src/web/public/tmpl/error/**', 'src/web/public/tmpl/view/**'],
+            files: ['src/web/public/error/**', 'src/web/public/tmpl/**'],
             tasks: ['preprocess:devPublic']
         },
         publicFiles: {
@@ -732,7 +742,7 @@ module.exports = function (grunt) {
 
     // 'jshint'
     grunt.registerTask('dev', ['mod:bower', 'mod:npm', 'bower:dev', 'env:dev', 'clean:dev', 'copy:dev', 'patch:dev', 'deploybower:dev', 'less:dev', 'preprocess:dev', 'clean:devLess', 'cleanempty:dev']);
-    grunt.registerTask('prod', ['mod:bower', 'mod:npm', 'bower:prod', 'jshint', 'env:prod', 'clean:prod', 'copy:prod', 'patch:prod', 'deploybower:prod', 'less:prod', 'preprocess:prod', 'clean:prodLess', 'cssmin:prod', 'clean:prodMinified', 'uglify:prod', 'clean:prodUglified', 'cleanempty:prod']);
+    grunt.registerTask('prod', ['mod:bower', 'mod:npm', 'bower:prod', 'env:prod', 'clean:prod', 'copy:prod', 'patch:prod', 'deploybower:prod', 'less:prod', 'preprocess:prod', 'clean:prodLess', 'cssmin:prod', 'clean:prodMinified', 'uglify:prod', 'clean:prodUglified', 'cleanempty:prod']);
 
 
     grunt.registerTask('watch-public-css', ['watch:publicCss']);

@@ -8,23 +8,6 @@ var _ = require('underscore');
 _.str = require('underscore.string');
 
 module.exports = function () {
-
-    var addonRouters = [];
-    for (var i = 0; i < app.packages.length; i++) {
-        var pck = app.packages[i];
-        if (typeof (pck.route) === 'function') {
-            addonRouters.push(pck);
-        }
-    }
-
-    addonRouters.push({
-        route: function (ctx, next) {
-            if (ctx.node)
-                ctx.render();
-            else
-                ctx.error(404);
-        }
-    });
     
     return {
         route: function (ctx, next) {
@@ -70,7 +53,7 @@ module.exports = function () {
                                         }
                                         else {
                                             var settingNode = _.first(settingNodes);
-                                            if (settingNode && settingNode.data && settingNode.data.restricted && settingNode.data.loginpage) {
+                                            if (settingNode && settingNode.data && settingNode.data.loginpage) {
                                                 ctx.dpd.nodes.get(settingNode.data.loginpage, function (loginNode, loginNodeError) {
                                                     if (loginNodeError) {
                                                         ctx.error(500, loginNodeError);
@@ -130,20 +113,35 @@ module.exports = function () {
                                                 ctx.robots[robot] = true;
                                         });
                                     }
+                                    
+                                    var renderInternal = function (ctxInternal) {
+                                        var installedTemplate = _.first(_.filter(jsnbt.templates, function (x) { return x.path === ctxInternal.template; }));
+                                        if (installedTemplate) {
+                                            ctxInternal.render();
+                                        }
+                                        else {
+                                            ctxInternal.error(500, 'template not installed: ' + ctxInternal.template);
+                                        }
+                                    };
 
                                     if (resolved.pointer) {
-                                        var nextIndex = 0;
-                                        var nextInternal = function () {
-                                            nextIndex++;
-                                            var router = addonRouters[nextIndex];
-                                            router.route(ctx, nextInternal);
-                                        };
 
-                                        var first = _.first(addonRouters);
-                                        first.route(ctx, nextInternal);
+                                        var addonRouter = _.first(_.filter(jsnbt.modules, function (x) { return x.domain === resolved.pointer.pointer.domain; }));
+
+                                        if (addonRouter) {
+                                            addonRouter.route(ctx);
+                                        }
+                                        else {
+                                            if (ctx.node) {
+                                                renderInternal(ctx);
+                                            }
+                                            else {
+                                                ctx.error(404);
+                                            }
+                                        }
                                     }
                                     else {
-                                        ctx.render();
+                                        renderInternal(ctx);
                                     }
                                 }
                             }

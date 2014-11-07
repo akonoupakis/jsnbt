@@ -1,0 +1,37 @@
+﻿<div class="container">
+
+    <section class="col-md-12">
+
+        <ctrl-breadcrumb ng-model="current.breadcrumb" ng-title="you are here:"></ctrl-breadcrumb>    
+
+        <div class="row title-container">
+            <div class="col-md-12">
+                <span ng-click="back()" class="glyphicon glyphicon-arrow-left back-button"></span>
+                <h1 class="title">nodes</h1>
+                <div class="buttons">
+                    <button title="create new" class="btn btn-default glyphicon glyphicon-plus-sign" type="button" value="create" ng-click="create()"></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <ctrl-tree ng-model="nodes[0].children" ng-domain="domain" ng-fn="treeFn">
+                    <ctrl-tree-node>
+                        <ctrl-tree-node-content>{{ node.name }}</ctrl-tree-node-content>
+                        <ctrl-tree-node-buttons>
+                            <button title="open" class="btn btn-link" ng-show="fn.canOpen(node)" ng-click="fn.open(node)">open</button>
+                            <button title="create child" class="btn btn-default btn-sm glyphicon glyphicon-plus-sign" ng-disabled="!fn.canCreate(node)" ng-click="fn.create(node)"></button>
+                            <button title="edit" class="btn btn-default btn-sm glyphicon glyphicon-edit" ng-disabled="!fn.canEdit(node)" ng-click="fn.edit(node)"></button>
+                            <button title="delete" class="btn btn-default btn-sm glyphicon glyphicon-remove" ng-disabled="!fn.canDelete(node)" ng-click="fn.delete(node)"></button>
+                        </ctrl-tree-node-buttons>
+                    </ctrl-tree-node>
+                </ctrl-tree>
+                <ctrl-tree-empty ng-model="nodes[0].children" ng-domain="domain">no nodes</ctrl-tree-empty>
+            </div>
+        </div>
+
+    </section>
+
+</div>
+

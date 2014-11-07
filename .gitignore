@@ -5,12 +5,15 @@
 /src/dpd/.dpd/
 /src/dpd/data/
 /src/pck/
+/src/web/public/
 /npm/
 /bower/
 /lib/
 /.grunt/
 /_*
 
+*.sln
+*.cmd
 
 # User-specific files
 *.suo
@@ -162,3 +165,9 @@ $RECYCLE.BIN/
 
 # Mac crap
 .DS_Store
+/*.cmd
+
+/*.cmd
+
+/*.cmd
+/*.sln

@@ -79,7 +79,7 @@ module.exports = function(dpd) {
                 throw new Error('pointed node not found');
             else {
                 var pointedSeoNames = _.str.trim(urlPath, '/') !== '' ? _.str.trim(urlPath, '/').split('/') : [];
-                var pack = _.first(_.filter(app.packages, function (x) { return x.domain === pointedNode.domain && typeof (x.resolve) === 'function'; }));
+                var pack = _.first(_.filter(jsnbt.modules, function (x) { return x.domain === pointedNode.domain && typeof (x.resolve) === 'function'; }));
                 if (pack) {
                     returnObj.seoNames = pointedSeoNames;
                     returnObj.pointed = pointedNode;
@@ -441,7 +441,7 @@ module.exports = function(dpd) {
                                 var newUrl = {};                                
                                 cache.url[parentCacheKey] = parentUrl;
 
-                                var pack = _.first(_.filter(app.packages, function (x) { return x.domain === firstNode.domain && typeof (x.build) === 'function'; }));
+                                var pack = _.first(_.filter(jsnbt.modules, function (x) { return x.domain === firstNode.domain && typeof (x.build) === 'function'; }));
                                 if (pack) {
                                     extend(true, newUrl, parentUrl);
                                     
@@ -472,7 +472,7 @@ module.exports = function(dpd) {
             }
             else {
 
-                var pack = _.first(_.filter(app.packages, function (x) { return x.domain === node.domain && typeof (x.build) === 'function'; }));
+                var pack = _.first(_.filter(jsnbt.modules, function (x) { return x.domain === node.domain && typeof (x.build) === 'function'; }));
                 if (pack) {
                     pack.build({
                         nodes: [],

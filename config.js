@@ -11,12 +11,12 @@ module.exports = {
     },
     prod: {
         host: 'localhost',
-        port: 4000,
+        port: 3000,
         env: 'prod',
         db: {
             host: 'localhost',
             port: 27017,
-            name: 'jsnbt-prod'
+            name: 'jsnbt-dev'
         }
     }
 };

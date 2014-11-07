@@ -38,47 +38,47 @@ module.exports = {
 
     restricted: true,
 
-    scripts: {
-        admin: [],
-        public: []
-    },
+    scripts: [],
 
     configurations: {},
 
+    modules: [],
+
+    addons: [],
+
     entities: [],
-
-    lists: [],
-
+    
     roles: [],
 
     sections: [],
 
     data: [],
-
-    modules: [],
     
-    addons: [],
+    images: [],
+    
+    specs: {},
 
     templates: [],
 
-    images: [],
-
-    setLocale: function (code) {
-        var language = _.first(_.filter(this.languages, function (x) { return x.code === code; }));
-        if (language)
-        {
-            this.localization = false;
-            this.locale = language.code;
-        }
-    },
-
-    setRestricted: function (value) {
-        this.restricted = value;
-    },
-
+    lists: [],
+            
     registerModule: function (name, module) {
         
         var self = this;
+
+        if (module.public) {
+            if (module.locale !== undefined) {
+                var language = _.first(_.filter(this.languages, function (x) { return x.code === module.locale; }));
+                if (language) {
+                    self.localization = false;
+                    self.locale = language.code;
+                }
+            }
+
+            if (module.restricted !== undefined) {
+                self.restricted = module.restricted;
+            }
+        }
 
         module.name = name;
         this.modules.push(module);
@@ -97,19 +97,11 @@ module.exports = {
             return resultObj
         }
 
-        if (module.scripts) {
-            var moduleAdminScripts = module.scripts.admin || [];
-            _.each(moduleAdminScripts, function (moduleScript) {
-                if (self.scripts.admin.indexOf(moduleScript) === -1)
-                    self.scripts.admin.push(moduleScript);
-            });
-
-            var modulePublicScripts = module.scripts.admin || [];
-            _.each(modulePublicScripts, function (moduleScript) {
-                if (self.scripts.public.indexOf(moduleScript) === -1)
-                    self.scripts.public.push(moduleScript);
-            });
-        }
+        var moduleScripts = module.scripts || [];
+        _.each(moduleScripts, function (moduleScript) {
+            if (self.scripts.indexOf(moduleScript) === -1)
+                self.scripts.push(moduleScript);
+        });
 
         var entityDefaults = {
             name: '',
@@ -141,29 +133,31 @@ module.exports = {
             }            
         });
 
-        var moduleLists = module.lists || [];
-        _.each(moduleLists, function (moduleList) {
-            var fileName = moduleList.spec.substring(0, moduleList.spec.lastIndexOf('.'));
-            fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
+        if (module.domain !== 'core' || (module.domain === 'core' && module.public)) {
+            var moduleLists = module.lists || [];
+            _.each(moduleLists, function (moduleList) {
+                var fileName = moduleList.spec.substring(0, moduleList.spec.lastIndexOf('.'));
+                fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
 
-            var moduleListDomain = module.addon ? module.domain : 'core';
+                var moduleListDomain = module.addon ? module.domain : 'core';
 
-            var matchedList = _.first(_.filter(self.lists, function (x) { return x.id === fileName && x.domain == moduleListDomain; }));
-            if (matchedList) {
-                extend(true, matchedList, moduleList);
-            }
-            else {
-                var newListSpec = {
-                    domain: moduleListDomain,
-                    localized: true
-                };
+                var matchedList = _.first(_.filter(self.lists, function (x) { return x.id === fileName && x.domain == moduleListDomain; }));
+                if (matchedList) {
+                    extend(true, matchedList, moduleList);
+                }
+                else {
+                    var newListSpec = {
+                        domain: moduleListDomain,
+                        localized: true
+                    };
 
-                extend(true, newListSpec, moduleList);
-                newListSpec.id = fileName;
+                    extend(true, newListSpec, moduleList);
+                    newListSpec.id = fileName;
 
-                self.lists.push(newListSpec);
-            }
-        });
+                    self.lists.push(newListSpec);
+                }
+            });
+        }
 
         var moduleRoles = module.roles || [];
         _.each(moduleRoles, function (moduleRole) {
@@ -197,18 +191,7 @@ module.exports = {
                 self.data.push(clone(moduleDatum));
             }
         });
-
-        var moduleTemplates = module.templates || [];
-        _.each(moduleTemplates, function (moduleTemplate) {
-            var matchedTemplate = _.first(_.filter(self.templates, function (x) { return x.path === moduleTemplate.path; }));
-            if (matchedTemplate) {
-                extend(true, matchedTemplate, moduleTemplate);
-            }
-            else {
-                self.templates.push(clone(moduleTemplate));
-            }
-        });
-
+        
         var moduleImages = module.images || [];
         _.each(moduleImages, function (moduleImage) {
             var matchedImage = _.first(_.filter(self.images, function (x) { return x.name === moduleImage.name; }));
@@ -219,6 +202,32 @@ module.exports = {
                 self.images.push(clone(moduleImage));
             }
         });
+
+        if (module.public) {
+            var moduleTemplates = module.templates || [];
+            _.each(moduleTemplates, function (moduleTemplate) {
+                var matchedTemplate = _.first(_.filter(self.templates, function (x) { return x.path === moduleTemplate.path; }));
+                if (matchedTemplate) {
+                    extend(true, matchedTemplate, moduleTemplate);
+                }
+                else {
+                    self.templates.push(clone(moduleTemplate));
+                }
+            });
+
+            if (module.specs) {
+                var specs = {};
+
+                extend(true, specs, {
+                    navigation: [],
+                    dashboard: undefined,
+                    content: undefined,
+                    settings: undefined
+                }, module.specs);
+
+                self.specs = specs;
+            }
+        }
     },
 
     registerConfig: function (name, config) {
@@ -244,20 +253,6 @@ module.exports = {
 
         var result = {};
 
-        result.modules = [];
-        _.each(this.modules, function (mod) {
-            if (mod.modules && mod.modules[site]) {
-                if (typeof (mod.modules[site]) === 'string') {
-                    result.modules.push(mod.modules[site]);
-                }
-                else {
-                    _.each(mod.modules[site], function (mod2) {
-                        result.modules.push(mod2);
-                    });
-                }
-            }
-        });
-
         result.localization = {
             enabled: self.localization,
             locale: self.locale
@@ -265,14 +260,29 @@ module.exports = {
 
         if (site === 'admin') {
 
+            result.modules = [];
+            _.each(this.modules, function (mod) {
+                if (mod.modules && mod.modules) {
+                    if (typeof (mod.modules) === 'string') {
+                        result.modules.push(mod.modules);
+                    }
+                    else {
+                        _.each(mod.modules, function (mod2) {
+                            result.modules.push(mod2);
+                        });
+                    }
+                }
+            });
+
             result.version = getVersion();
-            
-            result.addons = self.addons;
-            result.entities = self.entities;
-
-            result.templates = self.templates;
-
             result.restricted = self.restricted;
+
+            result.addons = self.addons;
+
+            result.entities = self.entities;
+            
+            result.roles = self.roles;
+            result.sections = self.sections;
 
             result.lists = [];
             _.each(self.lists, function (list) {
@@ -281,11 +291,9 @@ module.exports = {
                 delete newList.permissions;
                 result.lists.push(newList);
             });
-
-            result.roles = self.roles;
-            result.sections = self.sections;
-
-            result.images = self.images;
+            
+            result.templates = self.templates;
+            result.specs = self.specs;
         }
 
         result.languages = self.languages;

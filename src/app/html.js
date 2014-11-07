@@ -46,13 +46,43 @@ exports.parse = function (ctx, tmpl, model) {
 
     mdl.scripts = isAdmin ? jsnbt.scripts.admin : jsnbt.scripts.public;
     
-    var appFiles = [];
-    findJsFiles('../' + app.root + '/public/' + (isAdmin ? 'admin/' : '') + 'js/app/', appFiles, isAdmin);
-    mdl.js.app = appFiles;
+    if (isAdmin) {
+        var appFiles = [];
+        findJsFiles('../' + app.root + '/public/admin/js/core/app/', appFiles, true);
 
-    var libFiles = [];
-    findJsFiles('../' + app.root + '/public/' + (isAdmin ? 'admin/' : '') + 'js/lib/', libFiles, isAdmin);
-    mdl.js.lib = libFiles;
+        _.each(jsnbt.modules, function (pack) {
+            if (pack.domain !== 'core') {
+                if (fs.existsSync('../' + app.root + '/public/admin/js/' + pack.domain + '/app/')) {
+                    findJsFiles('../' + app.root + '/public/admin/js/' + pack.domain + '/app/', appFiles, true);
+                }
+            }
+        });
+
+        mdl.js.app = appFiles;
+
+
+        var libFiles = [];
+        findJsFiles('../' + app.root + '/public/admin/js/core/lib/', libFiles, true);
+
+        _.each(jsnbt.modules, function (pack) {
+            if (pack.domain !== 'core') {
+                if (fs.existsSync('../' + app.root + '/public/admin/js/' + pack.domain + '/lib/')) {
+                    findJsFiles('../' + app.root + '/public/admin/js/' + pack.domain + '/lib/', libFiles, true);
+                }
+            }
+        });
+
+        mdl.js.lib = libFiles;
+    }
+    else {
+        var appFiles = [];
+        findJsFiles('../' + app.root + '/public/js/app/', appFiles, false);
+        mdl.js.app = appFiles;
+
+        var libFiles = [];
+        findJsFiles('../' + app.root + '/public/js/lib/', libFiles, false);
+        mdl.js.lib = libFiles;
+    }
 
     if (!mdl.meta.title || mdl.meta.title === '')
         mdl.meta.title = app.title;
