@@ -9,27 +9,27 @@
                 <span ng-click="back()" class="glyphicon glyphicon-arrow-left back-button"></span>
                 <h1 class="title">{{ name }}</h1>
                 <div class="buttons">
-                    <button type="button" ng-show="!published" class="btn btn-danger" ng-click="discard()">Discard</button>
-                    <button type="button" ng-disabled="published" class="btn btn-success" ng-click="publish()">Save</button>
+                    <button type="button" ng-show="!published" class="btn btn-danger" ng-click="discard()">discard</button>
+                    <button type="button" ng-disabled="published" class="btn btn-success" ng-click="publish()">save</button>
                 </div>
             </div>
         </div>
         
         <hr />
         
-        <div class="row" id="user-username" data-scrollspy="Email">
-            <ctrl-text class="col-md-12" ng-model="user.username" ng-required="true" ng-enabled="false" ng-label="Email"></ctrl-text>
+        <div class="row" id="user-username" data-scrollspy="email">
+            <ctrl-text class="col-md-12" ng-model="user.username" ng-required="true" ng-enabled="false" ng-label="email"></ctrl-text>
         </div>
         
-        <div class="row" id="user-name" data-scrollspy="Name">
-            <ctrl-text class="col-md-6" ng-model="user.firstName" ng-required="true" ng-enabled="false" ng-label="First Name"></ctrl-text>
-            <ctrl-text class="col-md-6" ng-model="user.lastName" ng-required="true" ng-enabled="false" ng-label="Last Name"></ctrl-text>
+        <div class="row" id="user-name" data-scrollspy="name">
+            <ctrl-text class="col-md-6" ng-model="user.firstName" ng-required="true" ng-enabled="false" ng-label="first name"></ctrl-text>
+            <ctrl-text class="col-md-6" ng-model="user.lastName" ng-required="true" ng-enabled="false" ng-label="last name"></ctrl-text>
         </div>
 
         <hr />
 
-        <div class="row" id="user-roles" data-scrollspy="Roles">
-            <ctrl-check-list class="col-md-12" ng-model="user.roles" ng-options="roles" ng-required="true" ng-enabled="editRoles" ng-label="Roles"></ctrl-check-list>
+        <div class="row" id="user-roles" data-scrollspy="roles">
+            <ctrl-check-list class="col-md-12" ng-model="user.roles" ng-options="roles" ng-required="true" ng-enabled="editRoles" ng-label="roles"></ctrl-check-list>
         </div>
 
         <hr />

@@ -192,7 +192,7 @@
 
                     scope.upload = function () {
                         ModalService.open({
-                            title: 'Upload files',
+                            title: 'upload files',
                             controller: 'FileUploadController',
                             template: 'tmpl/core/modals/fileUpload.html',
                             path: scope.current
@@ -207,7 +207,7 @@
 
                     scope.edit = function (item) {
                         ModalService.open({
-                            title: 'Edit this ' + item.type,
+                            title: 'edit this ' + item.type,
                             controller: 'FileSystemEditorController',
                             template: 'tmpl/core/modals/fsEditor.html',
                             data: item
@@ -226,7 +226,7 @@
 
                     scope.delete = function (item) {
                         ModalService.open({
-                            title: 'Are you sure you want to delete the ' + item.type + ' ' + item.name + '?',
+                            title: 'are you sure you want to delete the ' + item.type + ' ' + item.name + '?',
                             controller: 'DeletePromptController',
                             template: 'tmpl/core/modals/deletePrompt.html'
                         }).then(function (confirmed) {

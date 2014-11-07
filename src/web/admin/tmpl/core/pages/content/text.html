@@ -9,24 +9,24 @@
                 <span ng-click="back()" class="glyphicon glyphicon-arrow-left back-button"></span>
                 <h1 class="title">{{ name }}</h1>
                 <div class="buttons">
-                    <button type="button" ng-show="!published" class="btn btn-danger" ng-click="discard()">Discard</button>
-                    <button type="button" ng-disabled="published && text.published" class="btn btn-success" ng-click="publish()">Publish</button>
+                    <button type="button" ng-show="!published" class="btn btn-danger" ng-click="discard()">discard</button>
+                    <button type="button" ng-disabled="published && text.published" class="btn btn-success" ng-click="publish()">publish</button>
                 </div>
             </div>
         </div>
 
         <hr />
 
-        <div class="row" id="page-text-key" data-scrollspy="Key">
-            <ctrl-text class="col-md-6" ng-model="text.key" ng-required="true" ng-validate="validateKey" ng-invalid="validation.key" ng-characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_" ng-label="Key"></ctrl-text>
-            <ctrl-text class="col-md-6" ng-model="text.group" ng-characters="abcdefghijklmnopqrstuvwxyz_" ng-label="Group"></ctrl-text>
+        <div class="row" id="page-text-key" data-scrollspy="key">
+            <ctrl-text class="col-md-6" ng-model="text.key" ng-required="true" ng-validate="validateKey" ng-invalid="validation.key" ng-characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_" ng-label="key"></ctrl-text>
+            <ctrl-text class="col-md-6" ng-model="text.group" ng-characters="abcdefghijklmnopqrstuvwxyz_" ng-label="group"></ctrl-text>
         </div>
 
         <hr />
 
         <div id="page-text-value" data-scrollspy="Value">
             <div ng-repeat="language in languages" class="row" id="page-text-value-{{language.code}}" data-scrollspy="{{language.name}}">
-                <ctrl-text-area class="col-md-12" ng-model="text.value[language.code]" ng-required="true" ng-label="{{application.localization.enabled ? language.name : 'Value'}}"></ctrl-text-area>
+                <ctrl-text-area class="col-md-12" ng-model="text.value[language.code]" ng-required="true" ng-label="{{application.localization.enabled ? language.name : 'value'}}"></ctrl-text-area>
             </div>
         </div>
 

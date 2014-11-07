@@ -29,7 +29,7 @@
                     var deferred = $q.defer();
 
                     ModalService.open({
-                        title: 'Type a text key',
+                        title: 'type a text key',
                         controller: 'NamePromptController',
                         validChars: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'.split(''),
                         template: 'tmpl/core/modals/namePrompt.html'
@@ -60,7 +60,7 @@
                     var deferred = $q.defer();
 
                     ModalService.open({
-                        title: 'Are you sure you want to delete the key ' + data.key + '?',
+                        title: 'are you sure you want to delete the key ' + data.key + '?',
                         controller: 'DeletePromptController',
                         template: 'tmpl/core/modals/deletePrompt.html'
                     }).then(function (confirmed) {

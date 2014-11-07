@@ -33,7 +33,7 @@
 
                     var available = _.filter($scope.defaults.languages, function (x) { return _.pluck($scope.data.items, 'code').indexOf(x.code) === -1; });
                     ModalService.open({
-                        title: 'Select a language',
+                        title: 'select a language',
                         controller: 'LanguageSelectorController',
                         data: available,
                         template: 'tmpl/core/modals/languageSelector.html'
@@ -120,7 +120,7 @@
                     var deferred = $q.defer();
 
                     ModalService.open({
-                        title: 'Are you sure you want to delete the language ' + data.name + '?',
+                        title: 'are you sure you want to delete the language ' + data.name + '?',
                         controller: 'DeletePromptController',
                         template: 'tmpl/core/modals/deletePrompt.html'
                     }).then(function (confirmed) {

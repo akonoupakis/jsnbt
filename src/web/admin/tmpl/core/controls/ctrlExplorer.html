@@ -9,7 +9,7 @@
             <div class="input-group">
                 <input type="text" class="form-control" ng-model="new" data-input="create" data-allowed-chars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_ ()#$%">
                 <span class="input-group-btn">
-                    <button class="btn btn-primary" type="button" ng-click="create()">Create</button>
+                    <button class="btn btn-primary" type="button" ng-click="create()">create</button>
                 </span>
             </div>
         </div>
@@ -18,7 +18,7 @@
             <div class="input-group">
                 <input type="text" class="form-control" ng-disabled="true">
                 <span class="input-group-btn">
-                    <button class="btn btn-primary" type="button" ng-click="upload()">Upload</button>
+                    <button class="btn btn-primary" type="button" ng-click="upload()">upload</button>
                 </span>
             </div>
         </div>
@@ -34,8 +34,8 @@
                 <div class="size" ng-show="item.type === 'file'">{{item.size}} kb</div>
             </td>
             <td class="buttons" ng-show="!ngSelectable">
-                <button title="Edit" class="btn btn-default btn-sm glyphicon glyphicon-edit" ng-click="edit(item)"></button>
-                <button title="Delete" class="btn btn-default btn-sm glyphicon glyphicon-remove" ng-click="delete(item)"></button>
+                <button title="edit" class="btn btn-default btn-sm glyphicon glyphicon-edit" ng-click="edit(item)"></button>
+                <button title="delete" class="btn btn-default btn-sm glyphicon glyphicon-remove" ng-click="delete(item)"></button>
             </td>
             <td class="buttons" style="width:20px;"></td>
         </tr>

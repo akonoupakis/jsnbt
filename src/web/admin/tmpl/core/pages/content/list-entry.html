@@ -9,23 +9,23 @@
                 <span ng-click="back()" class="glyphicon glyphicon-arrow-left back-button"></span>
                 <h1 class="title">{{ name }}</h1>
                 <div class="buttons">
-                    <button type="button" ng-show="!published" class="btn btn-danger" ng-click="discard()">Discard</button>
-                    <button type="button" ng-disabled="published && item.published" class="btn btn-success" ng-click="publish()">Publish</button>
+                    <button type="button" ng-show="!published" class="btn btn-danger" ng-click="discard()">discard</button>
+                    <button type="button" ng-disabled="published && item.published" class="btn btn-success" ng-click="publish()">publish</button>
                 </div>
             </div>
         </div>
 
         <hr />
 
-        <div class="row" id="page-name" data-scrollspy="Name">
-            <ctrl-text class="col-md-12" ng-model="item.name" ng-required="true" ng-label="Name"></ctrl-text>
+        <div class="row" id="page-name" data-scrollspy="name">
+            <ctrl-text class="col-md-12" ng-model="item.name" ng-required="true" ng-label="name"></ctrl-text>
         </div>
 
         <hr />
 
-        <div class="row" id="page-language" data-scrollspy="Language" ng-show="localized">
+        <div class="row" id="page-language" data-scrollspy="language" ng-show="localized">
             <div class="col-md-12 form-group">
-                <label class="control-label" for="ddlLanguage">Language</label>
+                <label class="control-label" for="ddlLanguage">language</label>
                 <select class="form-control" id="ddlLanguage" ng-model="language">
                     <option ng-repeat="item in languages" value="{{item.code}}" ng-selected="item.code === language">{{item.name}}</option>
                 </select>

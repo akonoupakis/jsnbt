@@ -1,15 +1,15 @@
-﻿<div class="row" id="settings-title" data-scrollspy="Title">
-    <ctrl-text class="col-md-12" ng-model="settings.title" ng-required="true" ng-label="Title"></ctrl-text>
+﻿<div class="row" id="settings-title" data-scrollspy="title">
+    <ctrl-text class="col-md-12" ng-model="settings.title" ng-required="true" ng-label="title"></ctrl-text>
 </div>
 
 <hr />
 
-<div class="row" id="settings-homepage" data-scrollspy="Home page">
-    <ctrl-node class="col-md-12" ng-model="settings.homepage" ng-domain="'core'" ng-required="true" ng-options="{entities: ['page']}" ng-label="Home page"></ctrl-node>
+<div class="row" id="settings-homepage" data-scrollspy="home page">
+    <ctrl-node class="col-md-12" ng-model="settings.homepage" ng-domain="'core'" ng-required="true" ng-options="{entities: ['page']}" ng-label="home page"></ctrl-node>
 </div>
 
 <hr ng-show="application.restricted" />
 
-<div class="row" id="settings-auth" data-scrollspy="Authentication" ng-show="application.restricted">
-    <ctrl-node class="col-md-12" ng-model="settings.loginpage" ng-domain="'core'" ng-required="true" ng-options="{entities: ['page']}" ng-label="Login page" ng-enabled="application.restricted"></ctrl-node>
+<div class="row" id="settings-auth" data-scrollspy="login page" ng-show="application.restricted">
+    <ctrl-node class="col-md-12" ng-model="settings.loginpage" ng-domain="'core'" ng-required="true" ng-options="{entities: ['page']}" ng-label="login page" ng-enabled="application.restricted"></ctrl-node>
 </div>

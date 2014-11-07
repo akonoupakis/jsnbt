@@ -35,7 +35,7 @@
                     var deferred = $q.defer();
 
                     ModalService.open({
-                        title: 'Type a name',
+                        title: 'type a name',
                         controller: 'NamePromptController',
                         template: 'tmpl/core/modals/namePrompt.html'
                     }).then(function (result) {
@@ -109,7 +109,7 @@
 
                 delete: function (node) {
                     ModalService.open({
-                        title: 'Are you sure you want to permanently delete the node ' + node.name + '?',
+                        title: 'are you sure you want to permanently delete the node ' + node.name + '?',
                         controller: 'DeletePromptController',
                         template: 'tmpl/core/modals/deletePrompt.html'
                     }).then(function (result) {

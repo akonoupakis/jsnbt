@@ -27,31 +27,7 @@
 
                 create: function () {
                     var deferred = $q.defer();
-
-                    //ModalService.open({
-                    //    title: 'Type a text key',
-                    //    controller: 'NamePromptController',
-                    //    template: 'tmpl/core/modals/namePrompt.html'
-                    //}).then(function (result) {
-                    //    if (!!result && result !== '') {
-                    //        $data.texts.get({ key: result }).then(function (getResponse) {
-                    //            var first = _.first(getResponse);
-                    //            if (first) {
-                    //                deferred.resolve(first);
-                    //            }
-                    //            else {
-                    //                $data.texts.post($data.create('texts', { key: result })).then(function (response) {
-                    //                    deferred.resolve(response);
-                    //                }, function (error) {
-                    //                    deferred.reject(error);
-                    //                });
-                    //            }
-                    //        }, function (getError) {
-                    //            deferred.reject(getError);
-                    //        });
-                    //    }
-                    //});
-
+                    
                     deferred.reject(new Error('not implemented'));
 
                     return deferred.promise;

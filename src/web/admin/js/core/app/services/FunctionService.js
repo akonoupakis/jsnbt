@@ -25,7 +25,7 @@
                     var deferred = $q.defer();
 
                     ModalService.open({
-                        title: 'Select a content node',
+                        title: 'select a content node',
                         controller: 'NodeSelectorController',
                         selected: selected,
                         template: 'tmpl/core/modals/nodeSelector.html',
@@ -43,7 +43,7 @@
                     var deferred = $q.defer();
 
                     ModalService.open({
-                        title: 'Select the content nodes you want',
+                        title: 'select the content nodes you want',
                         controller: 'NodeSelectorController',
                         selected: selected,
                         template: 'tmpl/core/modals/nodeSelector.html',

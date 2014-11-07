@@ -73,7 +73,7 @@
                     
                     scope.select = function () {
                         ModalService.open({
-                            title: 'Select the files you want',
+                            title: 'select the files you want',
                             controller: 'FileSelectorController',
                             selected: scope.ngModel,
                             template: 'tmpl/core/modals/FileSelector.html',

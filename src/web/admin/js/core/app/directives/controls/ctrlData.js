@@ -88,7 +88,7 @@
                             return;
 
                         ModalService.open({
-                            title: 'Select a data item',
+                            title: 'select a data item',
                             controller: 'DataSelectorController',
                             selected: scope.ngModel,
                             template: 'tmpl/core/modals/dataSelector.html',
