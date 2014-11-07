@@ -66,7 +66,7 @@ module.exports = function (grunt) {
             if (fs.existsSync(packInfoPath)) {
                 var packInfo = require(packInfoPath);
                 if (packInfo.main) {
-                    var packIndexPath = server.getPath(packInfo.main);
+                    var packIndexPath = server.getPath(packInfo.name === 'jsnbt' ? 'src/app/index.js' : packInfo.main);
                     if (fs.existsSync(packIndexPath)) {
                         var packObject = require(packIndexPath);
                         if (packObject && packObject.templates) {
@@ -97,7 +97,7 @@ module.exports = function (grunt) {
                             var nodeModulePackage = require(nodeModulePackagePath);
 
                             if (nodeModulePackage.main) {
-                                var nodeModuleIndexPath = server.getPath('node_modules/' + packageItem + '/' + nodeModulePackage.main);
+                                var nodeModuleIndexPath = server.getPath('node_modules/' + packageItem + '/' + nodeModulePackage.name === 'jsnbt' ? 'src/app/index.js' : nodeModulePackage.main);
                                 if (fs.existsSync(nodeModuleIndexPath)) {
                                     var nodeModuleIndex = require(nodeModuleIndexPath);
                                     if (nodeModuleIndex && nodeModuleIndex.templates) {

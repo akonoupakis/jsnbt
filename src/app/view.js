@@ -1,4 +1,5 @@
 var app = require('./app.js');
+var jsnbt = require('./jsnbt.js');
 var fs = require('./utils/fs.js');
 var html = require('./html.js');
 var _ = require('underscore');
