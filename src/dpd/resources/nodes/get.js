@@ -16,8 +16,6 @@ if (!internal) {
         self.url = response;
     });
     
-    hide('config');
-
     if (!auth.isInRole(me, 'admin')) {
         hide('roles');
     }
