@@ -69,8 +69,6 @@ else {
                 }
             });
         }
-
-        cache.purge(self.id);
     }
 
     if (hierarchyChange) {
@@ -83,6 +81,8 @@ else {
             processChildren(self.domain, self.hierarchy);
         });
     }
+
+    cache.purge(self.id);
 
     emit('nodeUpdated', self);
 }
