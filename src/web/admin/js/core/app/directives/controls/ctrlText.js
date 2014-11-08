@@ -45,6 +45,8 @@
                         if (initiated)
                             if (newValue === false)
                                 scope.valid = false;
+                            else
+                                scope.valid = isValid();
                     });
                     
                     var isValid = function () {

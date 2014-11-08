@@ -21,7 +21,7 @@
                     ngValueField: '@',
                     ngNameField: '@',
                     ngValidate: '=',
-                    ngInvalid: '=',
+                    ngValid: '=',
                     ngAutoFocus: '='
                 },
                 link: function (scope, element, attrs) {
@@ -47,10 +47,12 @@
                         }, 50);
                     };
 
-                    scope.$watch('ngInvalid', function (newValue) {
+                    scope.$watch('ngValid', function (newValue) {
                         if (initiated)
                             if (newValue === false)
                                 scope.valid = false;
+                            else
+                                scope.valid = isValid();
                     });
 
                     var isValid = function () {
@@ -76,7 +78,7 @@
                                 }
                             }
 
-                            if (valid && scope.ngInvalid === false)
+                            if (valid && scope.ngValid === false)
                                 valid = false;
                         }
 

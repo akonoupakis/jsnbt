@@ -106,17 +106,19 @@
 
                     if ($scope.valid) {
 
-                        $data.texts.get({ id: { $nin: [$scope.id] }, $fields: { key: true } }).then(function (siblingsResponse) {
+                        $data.texts.get({ id: { $nin: [$scope.id] }, $fields: { group: true, key: true } }).then(function (siblingsResponse) {
 
-                            $scope.siblingKeys = _.pluck(siblingsResponse, 'key');
+                            $scope.siblings = siblingsResponse;
 
-                            if ($scope.siblingKeys.indexOf($scope.text.key) === -1) {
-                                $scope.valid = true;
-                                $scope.validation.key = true;
-                            }
-                            else {
+                            var matchedSibling = _.find(siblingsResponse, function (x) { return x.group === $scope.text.group && x.key === $scope.text.key; });
+
+                            if (matchedSibling) {
                                 $scope.valid = false;
                                 $scope.validation.key = false;
+                            }
+                            else {
+                                $scope.valid = true;
+                                $scope.validation.key = true;
                             }
 
                             deferred.resolve($scope.valid);
@@ -158,7 +160,7 @@
             $scope.validateKey = function (value) {
                 var valid = true;
 
-                valid = $scope.siblingKeys.indexOf(value) === -1;
+                valid = _.find($scope.siblings, function (x) { return x.group === $scope.text.group && x.key === $scope.text.key; }) === undefined;
                 $scope.validation.key = valid;
 
                 return valid;
