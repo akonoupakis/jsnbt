@@ -36,9 +36,6 @@ module.exports = function(dpd) {
     var getDefaultLanguage = function (cb) {
 
         if (jsnbt.localization) {
-            cb('en');
-        }
-        else {
             var defaultLanguage = 'en';
 
             dpd.languages.get({ active: true, "default": true }, function (defaultLanguages, defaultLanguagesError) {
@@ -52,21 +49,24 @@ module.exports = function(dpd) {
                 }
             });
         }
+        else {
+            cb('en');
+        }
 
     };
 
     var getActiveLanguages = function (cb) {
 
         if (jsnbt.localization) {
-            cb(['en']);
-        }
-        else {
             dpd.languages.get({ active: true }, function (dbLanguages, dbLanguagesError) {
                 if (dbLanguagesError)
                     throw dbLanguagesError;
                 else
                     cb(_.pluck(dbLanguages, 'code'));
             });
+        }
+        else {
+            cb(['en']);
         }
 
     };
@@ -495,6 +495,111 @@ module.exports = function(dpd) {
 
                     cb(newUrl);
                 }
+            }
+        },
+
+        getActiveInfo: function (node, cb) {
+            var self = this;
+
+            var result = {};
+
+            var parentHierarchy = [];
+            if (node.parent !== '' && node.hierarchy.length > 1) {
+                parentHierarchy = node.hierarchy.slice(0);
+                parentHierarchy.pop();
+            }
+
+            if (parentHierarchy.length > 0) {
+                var parentCacheKey = parentHierarchy.join('.');
+                if (cache.active[parentCacheKey]) {
+                    var cachedValue = cache.active[parentCacheKey];
+
+                    var newValue = {};
+                    extend(true, newValue, node.active);
+                    for (var langItem in node.active) {
+                        var seoName = node.active[langItem];
+                        if (cachedValue[langItem] && node.active[langItem]) {
+                            newValue[langItem] = true;
+                        }
+                        else {
+                            newValue[langItem] = false;
+                        }
+                    }
+
+                    cb(newValue);
+                }
+                else {
+                    dpd.nodes.get({ id: { $in: parentHierarchy } }, function (results, error) {
+                        if (error) {
+                            throw error;
+                        }
+                        else {
+                            var hierarchyNodes = [];
+                            var allHierarchyNodes = true;
+
+                            _.each(parentHierarchy, function (selfHierarchy) {
+                                var hNode = _.first(_.filter(results, function (x) { return x.id == selfHierarchy; }));
+                                if (hNode)
+                                    hierarchyNodes.push(hNode);
+                                else {
+                                    allHierarchyNodes = false;
+                                    return false;
+                                }
+                            });
+
+                            if (allHierarchyNodes) {
+                                var parentActive = {};
+                                var firstNode = _.first(hierarchyNodes);
+
+                                var lastNode = _.last(hierarchyNodes);
+
+                                extend(true, parentActive, lastNode.active);
+
+                                for (var langItem in lastNode.active) {
+                                    var langActive = true;
+                                    if (_.filter(jsnbt.languages, function (x) { return x.code === langItem; }).length > 0) {
+                                        _.each(hierarchyNodes, function (hnode) {
+                                            if (!hnode.active[langItem]) {
+                                                langActive = false;
+                                                return false;
+                                            }
+                                        });
+                                    }
+
+                                    parentActive[langItem] = langActive;
+                                }
+
+                                var newActive = {};
+                                cache.active[parentCacheKey] = parentActive;
+
+                                extend(true, newActive, node.active);
+                                for (var langItem in node.active) {
+                                    if (parentActive[langItem] && node.active[langItem])
+                                        newActive[langItem] = true;
+                                    else
+                                        newActive[langItem] = false;
+                                }
+
+                                cb(newActive);
+                            }
+                            else {
+                                cb({});
+                            }
+                        }
+                    });
+                }
+            }
+            else {
+                var newActive = {};
+                extend(true, newActive, node.active);
+                for (var langItem in node.active) {
+                    if (node.active[langItem])
+                        newActive[langItem] = true;
+                    else
+                        newActive[langItem] = false;
+                }
+
+                cb(newActive);
             }
         }
 
