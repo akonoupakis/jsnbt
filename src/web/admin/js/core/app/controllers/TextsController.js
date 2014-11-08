@@ -29,19 +29,24 @@
                     var deferred = $q.defer();
 
                     ModalService.open({
-                        title: 'type a text key',
-                        controller: 'NamePromptController',
-                        validChars: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'.split(''),
-                        template: 'tmpl/core/modals/namePrompt.html'
+                        title: 'type a text identifier',
+                        controller: 'TextPromptController',
+                        template: 'tmpl/core/modals/textPrompt.html'
                     }).then(function (result) {
-                        if (!!result && result !== '') {
-                            $data.texts.get({ key: result }).then(function (getResponse) {
+                        if (result && !!result.key && result.key !== '') {
+                            $data.texts.get({
+                                group: result.group,
+                                key: result.key
+                            }).then(function (getResponse) {
                                 var first = _.first(getResponse);
                                 if (first) {
                                     deferred.resolve(first);
                                 }
                                 else {
-                                    $data.texts.post($data.create('texts', { key: result })).then(function (response) {
+                                    $data.texts.post($data.create('texts', {
+                                        group: result.group,
+                                        key: result.key
+                                    })).then(function (response) {
                                         deferred.resolve(response);
                                     }, function (error) {
                                         deferred.reject(error);
