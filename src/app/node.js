@@ -36,9 +36,6 @@ module.exports = function(dpd) {
     var getDefaultLanguage = function (cb) {
 
         if (jsnbt.localization) {
-            cb('en');
-        }
-        else {
             var defaultLanguage = 'en';
 
             dpd.languages.get({ active: true, "default": true }, function (defaultLanguages, defaultLanguagesError) {
@@ -52,21 +49,24 @@ module.exports = function(dpd) {
                 }
             });
         }
+        else {
+            cb('en');
+        }
 
     };
 
     var getActiveLanguages = function (cb) {
 
         if (jsnbt.localization) {
-            cb(['en']);
-        }
-        else {
             dpd.languages.get({ active: true }, function (dbLanguages, dbLanguagesError) {
                 if (dbLanguagesError)
                     throw dbLanguagesError;
                 else
                     cb(_.pluck(dbLanguages, 'code'));
             });
+        }
+        else {
+            cb(['en']);
         }
 
     };

@@ -126,7 +126,7 @@ module.exports = function () {
 
                                     if (resolved.pointer) {
 
-                                        var addonRouter = _.first(_.filter(jsnbt.modules, function (x) { return x.domain === resolved.pointer.pointer.domain; }));
+                                        var addonRouter = _.first(_.filter(jsnbt.modules, function (x) { return x.domain === resolved.pointer.pointer.domain && typeof (x.route) === 'function'; }));
 
                                         if (addonRouter) {
                                             addonRouter.route(ctx);
