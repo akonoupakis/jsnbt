@@ -134,8 +134,10 @@
 
             $scope.scroll2error = function () {
                 setTimeout(function () {
-                    if ($('.ctrl.invalid:visible:first').length > 0)
-                        $('body').scrollTo($('.ctrl.invalid:visible:first'), { offset: -150, duration: 400 });
+                    var firstInvalidControl = $('.ctrl.invalid:visible:first');
+                    if (firstInvalidControl.length > 0)
+                        if (!firstInvalidControl.inViewport())
+                            $('body').scrollTo(firstInvalidControl, { offset: -150, duration: 400 });
                 }, 100);
             };
 
