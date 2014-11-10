@@ -4,8 +4,8 @@ module.exports = {
 
     domain: 'core',
 
-    public: false,
-
+    public: true,
+    
     images: [{
         name: 'admin-explorer-thumb',
         options: {
@@ -160,6 +160,9 @@ module.exports = {
     }, {
         path: '/tmpl/files.html',
         spec: '/tmpl/spec/page/files.html'
+    }, {
+        path: '/tmpl/images.html',
+        spec: '/tmpl/spec/page/images.html'
     }],
 
     lists: [{
