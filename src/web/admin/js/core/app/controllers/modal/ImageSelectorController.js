@@ -19,6 +19,10 @@
                 sender.stopPropagation();
 
                 console.log(12, selected);
+
+                // go to cropper,
+                // accept by what? submitted?
+
                 // the below becomes an endless loop, do not uncomment
                 //$scope.$emit(MODAL_EVENTS.valueSubmitted, selected);                
             });

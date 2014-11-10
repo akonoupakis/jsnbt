@@ -30,7 +30,8 @@
     "ngInfiniteScroll": "~v1.1.2",
     "ng-flow": "~2.5.1",
     "tinymce": "~4.0",
-    "angular-ui-tinymce": "~0.0.5"
+    "angular-ui-tinymce": "~0.0.5",
+    "cropper": "~0.7.1"
   },
   "deploy": {
     "jquery": {
@@ -313,6 +314,21 @@
           "src": "angular-ui-tinymce/src/tinymce.js",
           "dest": [
             "admin/js/core/lib/tinymce/b-angular-ui-tinymce.js"
+          ]
+        }
+      ]
+    },
+	"cropper": {
+      "files": [
+        {
+          "src": "cropper/dist/cropper.js",
+          "dest": [
+            "admin/js/core/lib/cropper/cropper.js"
+          ]
+        }, {
+          "src": "cropper/dist/cropper.css",
+          "dest": [
+            "admin/css/core/lib/cropper/cropper.css"
           ]
         }
       ]
