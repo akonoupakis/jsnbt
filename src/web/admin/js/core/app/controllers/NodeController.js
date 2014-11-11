@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('NodeController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $q, $queue, $data, $route, $jsnbt, ScrollSpyService, $fn, LocationService, AuthService, DATA_EVENTS, FORM_EVENTS) {
+        .controller('NodeController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $q, $queue, $data, $route, $jsnbt, ScrollSpyService, $fn, LocationService, AuthService, DATA_EVENTS, CONTROL_EVENTS) {
 
             var logger = $logger.create('NodeController');
 
@@ -558,7 +558,7 @@
                     $scope.valid = true;
                     $scope.validation.seo = true;
 
-                    $scope.$broadcast(FORM_EVENTS.initiateValidation);
+                    $scope.$broadcast(CONTROL_EVENTS.initiateValidation);
 
                     if (!$scope.valid) {
                         deferred.resolve(false);
@@ -579,7 +579,7 @@
 
                                         $timeout(function () {
                                         
-                                            $scope.$broadcast(FORM_EVENTS.initiateValidation);
+                                            $scope.$broadcast(CONTROL_EVENTS.initiateValidation);
 
                                             checkExtras(lang.code).then(function (internalValidationResults) {
                                                 if (!$scope.valid)
@@ -842,7 +842,7 @@
                 // throw 404 if is current not found
             });
 
-            $scope.$on(FORM_EVENTS.valueChanged, function (sender) {
+            $scope.$on(CONTROL_EVENTS.valueChanged, function (sender) {
                 sender.stopPropagation();
                 
                 fn.save().then(function () {
@@ -852,7 +852,7 @@
                 });
             });
 
-            $scope.$on(FORM_EVENTS.valueIsValid, function (sender, value) {
+            $scope.$on(CONTROL_EVENTS.valueIsValid, function (sender, value) {
                 sender.stopPropagation();
 
                 if (!value)

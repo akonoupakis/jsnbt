@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlExplorer', function ($timeout, $rootScope, FileService, ModalService, MODAL_EVENTS) {
+        .directive('ctrlExplorer', function ($timeout, $rootScope, FileService, ModalService, CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -166,7 +166,7 @@
                                 if (scope.ngSelectable && item.type === 'file') {
                                     if (scope.ngSelectMode === 'single') {
                                         scope.select(item);
-                                        scope.$emit(MODAL_EVENTS.valueSelected, item.location);
+                                        scope.$emit(CONTROL_EVENTS.valueSelected, item.location);
                                     }
                                 }
                             }
@@ -248,8 +248,8 @@
                             event.preventDefault();
                     });
                     
-                    scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
-
+                    scope.$on(CONTROL_EVENTS.valueRequested, function (sender) {
+                        console.log(22);
                         if (scope.ngSelectMode === 'single') {
                             var sel = '';
 
@@ -260,7 +260,7 @@
                                 }
                             }
 
-                            scope.$emit(MODAL_EVENTS.valueSubmitted, sel);
+                            scope.$emit(CONTROL_EVENTS.valueSubmitted, sel);
                         }
                         else {
                             var selected = [];
@@ -271,7 +271,7 @@
                                 }
                             }
 
-                            scope.$emit(MODAL_EVENTS.valueSubmitted, selected);
+                            scope.$emit(CONTROL_EVENTS.valueSubmitted, selected);
                         }
                     });
 

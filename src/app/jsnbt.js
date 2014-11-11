@@ -56,7 +56,7 @@ module.exports = {
     
     images: [],
     
-    specs: {},
+    injects: {},
 
     templates: [],
 
@@ -215,17 +215,17 @@ module.exports = {
                 }
             });
 
-            if (module.specs) {
-                var specs = {};
+            if (module.injects) {
+                var injects = {};
 
-                extend(true, specs, {
+                extend(true, injects, {
                     navigation: [],
                     dashboard: undefined,
                     content: undefined,
                     settings: undefined
-                }, module.specs);
+                }, module.injects);
 
-                self.specs = specs;
+                self.injects = injects;
             }
         }
     },
@@ -293,7 +293,7 @@ module.exports = {
             });
             
             result.templates = self.templates;
-            result.specs = self.specs;
+            result.injects = self.injects;
         }
 
         result.languages = self.languages;

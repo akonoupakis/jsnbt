@@ -101,7 +101,7 @@
          };
 
      })
-     .directive('ctrlTreeNodeContent', function (MODAL_EVENTS) {
+     .directive('ctrlTreeNodeContent', function (CONTROL_EVENTS) {
 
          return {
              restrict: 'E',
@@ -137,7 +137,7 @@
                                         unselect(totalParent);
 
                                         node.selected = true;
-                                        scope.$emit(MODAL_EVENTS.valueSelected, node);
+                                        scope.$emit(CONTROL_EVENTS.valueSelected, node);
                                  }
                                  else {
                                      if (!node.selected) {

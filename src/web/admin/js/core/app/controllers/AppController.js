@@ -29,7 +29,7 @@
             $scope.defaults.languages = [];
             $scope.defaults.language = null;
 
-            $scope.application.navigationSpec = $jsnbt.specs.navigation;
+            $scope.application.navigationSpec = $jsnbt.injects.navigation;
 
             var apply = function (fn) {
                 var phase = $scope.$root.$$phase;

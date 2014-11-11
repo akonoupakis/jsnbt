@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlImageList', function ($timeout, ModalService, FORM_EVENTS) {
+        .directive('ctrlImageList', function ($timeout, ModalService, CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -16,7 +16,9 @@
                     ngRequired: '=',
                     ngLabel: '@',
                     ngTip: '@',
-                    ngExtensions: '='
+                    ngExtensions: '=',
+                    ngHeight: '=',
+                    ngWidth: '='
                 },
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl');
@@ -26,6 +28,7 @@
                     scope.value = [];
                     scope.valid = true;
                     scope.enabled = scope.ngEnabled !== undefined ? scope.ngEnabled : true;
+                    scope.extensions = scope.ngExtensions ? scope.ngExtensions : ['.png', '.jpg', '.jpeg', '.gif', '.tiff'];
 
                     var initiated = false;
 
@@ -38,7 +41,7 @@
 
                     scope.changed = function () {
                         $timeout(function () {
-                            scope.$emit(FORM_EVENTS.valueChanged, scope.ngModel);
+                            scope.$emit(CONTROL_EVENTS.valueChanged, scope.ngModel);
                         }, 50);
                     };
 
@@ -65,28 +68,70 @@
                             scope.valid = isValid();
                     });
 
-                    scope.$on(FORM_EVENTS.initiateValidation, function (sender) {
+                    scope.$on(CONTROL_EVENTS.initiateValidation, function (sender) {
                         initiated = true;
                         scope.valid = isValid();
-                        scope.$emit(FORM_EVENTS.valueIsValid, scope.valid);
+                        scope.$emit(CONTROL_EVENTS.valueIsValid, scope.valid);
                     });
                     
-                    scope.select = function () {
+                    scope.edit = function (item) {
+                        var itemSrc = item.src;
                         ModalService.open({
                             title: 'select the files you want',
                             controller: 'ImageSelectorController',
-                            selected: scope.ngModel,
+                            selected: item,
                             template: 'tmpl/core/modals/ImageSelector.html',
-                            mode: 'multiple',
-                            extensions: scope.ngExtensions || []
-                        }).then(function (results) {
-                            scope.ngModel = results || [];
+                            mode: 'single',
+                            extensions: scope.extensions,
+                            step: 1
+                        }).then(function (result) {
+                            var matched = _.find(scope.ngModel, function (x) { return x.src === itemSrc; });
+                            if (matched)
+                                matched = result;
+
+                            scope.changed();
+                        });
+                    };
+
+                    scope.crop = function (item) {
+                        var itemSrc = item.src;
+                        ModalService.open({
+                            title: 'select the files you want',
+                            controller: 'ImageSelectorController',
+                            selected: item,
+                            template: 'tmpl/core/modals/ImageSelector.html',
+                            mode: 'single',
+                            extensions: scope.extensions,
+                            step: 2
+                        }).then(function (result) {
+                            var matched = _.find(scope.ngModel, function (x) { return x.src === itemSrc; });
+                            if (matched)
+                                matched = result;
+                            
+                            scope.changed();
+                        });
+                    };
+
+                    scope.add = function () {
+                        ModalService.open({
+                            title: 'select the files you want',
+                            controller: 'ImageSelectorController',
+                            selected: {},
+                            template: 'tmpl/core/modals/ImageSelector.html',
+                            mode: 'single',
+                            extensions: scope.extensions,
+                            step: 1
+                        }).then(function (result) {
+                            if (!scope.ngModel)
+                                scope.ngModel = [];
+
+                            scope.ngModel.push(result);
                             scope.changed();
                         });
                     };
 
                     scope.clear = function (file) {
-                        scope.ngModel = _.filter(scope.ngModel, function (x) { return x !== file; });
+                        scope.ngModel = _.filter(scope.ngModel, function (x) { return x.src !== file.src; });
                         scope.changed();
                     };
 

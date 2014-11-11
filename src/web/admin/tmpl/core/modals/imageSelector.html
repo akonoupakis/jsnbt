@@ -1,4 +1,4 @@
-﻿<div class="image-select image-cropping">
-    <ctrl-explorer ng-selectable="true" ng-select-mode="mode" ng-selected="selected" ng-extensions="extensions"></ctrl-explorer>
-    <ctrl-image-cropper ng-model="ngModel"></ctrl-image-cropper>
+﻿<div class="image-select">
+    <ctrl-explorer ng-show="step == 1" ng-selectable="true" ng-select-mode="mode" ng-selected="ngModel.src" ng-extensions="extensions"></ctrl-explorer>
+    <ctrl-image-cropper ng-show="step == 2" ng-model="ngModel"></ctrl-image-cropper>
 </div>

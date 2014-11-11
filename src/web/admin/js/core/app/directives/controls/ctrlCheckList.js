@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlCheckList', function ($timeout, FORM_EVENTS) {
+        .directive('ctrlCheckList', function ($timeout, CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -62,7 +62,7 @@
                                             scope.valid = isValid();
 
                                             $timeout(function () {
-                                                scope.$emit(FORM_EVENTS.valueChanged, scope.ngModel);
+                                                scope.$emit(CONTROL_EVENTS.valueChanged, scope.ngModel);
                                             }, 50);
                                         }
                                     });
@@ -130,10 +130,10 @@
                         return valid;
                     };
 
-                    scope.$on(FORM_EVENTS.initiateValidation, function (sender) {
+                    scope.$on(CONTROL_EVENTS.initiateValidation, function (sender) {
                         initiated = true;
                         scope.valid = isValid();
-                        scope.$emit(FORM_EVENTS.valueIsValid, scope.valid);
+                        scope.$emit(CONTROL_EVENTS.valueIsValid, scope.valid);
                     });
 
                     if (scope.ngModel)

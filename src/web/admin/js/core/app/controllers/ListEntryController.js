@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('ListEntryController', function ($scope, $rootScope, $routeParams, $location, $timeout, $q, $logger, $queue, $data, $jsnbt, ScrollSpyService, LocationService, FORM_EVENTS) {
+        .controller('ListEntryController', function ($scope, $rootScope, $routeParams, $location, $timeout, $q, $logger, $queue, $data, $jsnbt, ScrollSpyService, LocationService, CONTROL_EVENTS) {
            
             var logger = $logger.create('ListEntryController');
 
@@ -116,7 +116,7 @@
                     var deferred = $q.defer();
 
                     $scope.valid = true;
-                    $scope.$broadcast(FORM_EVENTS.initiateValidation);
+                    $scope.$broadcast(CONTROL_EVENTS.initiateValidation);
                     
                     if (!$scope.valid) {
                         deferred.resolve(false);
@@ -127,7 +127,7 @@
                                 $scope.language = lang.code;
 
                                 $timeout(function () {
-                                    $scope.$broadcast(FORM_EVENTS.initiateValidation);
+                                    $scope.$broadcast(CONTROL_EVENTS.initiateValidation);
 
                                     if (!$scope.valid) {
                                         deferred.resolve(false);
@@ -238,7 +238,7 @@
                 });
             });
 
-            $scope.$on(FORM_EVENTS.valueChanged, function (sender) {
+            $scope.$on(CONTROL_EVENTS.valueChanged, function (sender) {
                 sender.stopPropagation();
                
                 fn.save().then(function () {
@@ -248,7 +248,7 @@
                 });
             });
 
-            $scope.$on(FORM_EVENTS.valueIsValid, function (sender, value) {
+            $scope.$on(CONTROL_EVENTS.valueIsValid, function (sender, value) {
                 sender.stopPropagation();
 
                 if (!value)

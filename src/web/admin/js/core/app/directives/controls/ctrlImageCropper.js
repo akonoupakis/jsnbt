@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlImageCropper', function (FORM_EVENTS, ModalService, MODAL_EVENTS) {
+        .directive('ctrlImageCropper', function (CONTROL_EVENTS, ModalService) {
 
             return {
                 restrict: 'E',
@@ -20,9 +20,10 @@
                     element.addClass('ctrl-image-cropper');
 
                     scope.id = Math.random().toString().replace('.', '');
-                  
-                    scope.$watch('ngModel', function (newValue) {
+
+                    scope.$watch('ngModel.src', function (newValue) {
                         if (newValue) {
+                            console.log('nnn', newValue);
                             var $image = element.find("img");
                             $image.cropper({
                                 aspectRatio: 500 / 200,
@@ -31,10 +32,19 @@
                                 //    y: 0
                                 //},
                                 done: function (data) {
-                                    console.log(data);;
+                                    scope.ngModel.gen = {
+                                        x: data.x,
+                                        y: data.y,
+                                        width: data.width,
+                                        height: data.height
+                                    };
                                 }
                             });
                         }
+                    });
+
+                    scope.$on(CONTROL_EVENTS.valueRequested, function (sender) {
+                        scope.$emit(CONTROL_EVENTS.valueSubmitted, scope.ngModel.gen);
                     });
                 },
                 templateUrl: 'tmpl/core/controls/ctrlImageCropper.html'

@@ -2,7 +2,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('FileSystemEditorController', function ($scope, TreeNodeService, FORM_EVENTS, MODAL_EVENTS) {
+        .controller('FileSystemEditorController', function ($scope, TreeNodeService, CONTROL_EVENTS, MODAL_EVENTS) {
      
             if (!$scope.data)
                 throw new Error('$scope.data not defined in FileSystemEditorController');
@@ -13,13 +13,13 @@
 
             $scope.ngModel = $scope.name;
 
-            $scope.$on(FORM_EVENTS.valueChanged, function (sender, value) {
+            $scope.$on(CONTROL_EVENTS.valueChanged, function (sender, value) {
                 sender.stopPropagation();
 
                 $scope.ngModel = value;
             });
 
-            $scope.$on(FORM_EVENTS.valueIsValid, function (sender, value) {
+            $scope.$on(CONTROL_EVENTS.valueIsValid, function (sender, value) {
                 sender.stopPropagation();
 
                 if (!value)
@@ -42,7 +42,7 @@
 
             $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
                 $scope.valid = true;
-                $scope.$broadcast(FORM_EVENTS.initiateValidation);
+                $scope.$broadcast(CONTROL_EVENTS.initiateValidation);
                 if ($scope.valid) {
                     var selectedFolder = _.first(TreeNodeService.getSelected($scope.nodes));
                     var selectedPath = selectedFolder + (selectedFolder !== '/' ? '/' : '') + $scope.ngModel + $scope.data.ext;

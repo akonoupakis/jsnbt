@@ -20,7 +20,7 @@ module.exports = {
         }
     }],
 
-    specs: {
+    injects: {
         navigation: [{
             index: 0,
             identifier: 'layout',

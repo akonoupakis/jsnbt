@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlImage', function ($timeout, ModalService, FORM_EVENTS) {
+        .directive('ctrlImage', function ($timeout, ModalService, CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -41,7 +41,7 @@
 
                     scope.changed = function () {
                         $timeout(function () {
-                            scope.$emit(FORM_EVENTS.valueChanged, scope.ngModel);
+                            scope.$emit(CONTROL_EVENTS.valueChanged, scope.ngModel);
                         }, 50);
                     };
 
@@ -52,7 +52,7 @@
 
                             if (valid) {
                                 if (scope.ngRequired) {
-                                    valid = !!scope.ngModel && scope.ngModel !== '';
+                                    valid = !!scope.ngModel && (scope.ngModel || {}).src !== '';
                                 }
                             }
 
@@ -62,36 +62,35 @@
                     };
 
                     scope.$watch('ngModel', function (newValue, prevValue) { 
-                        scope.value = newValue || '';
+                        scope.value = (newValue || {}).src || '';
 
                         if (initiated)
                             scope.valid = isValid();
                     });
 
-                    scope.$on(FORM_EVENTS.initiateValidation, function (sender) {
+                    scope.$on(CONTROL_EVENTS.initiateValidation, function (sender) {
                         initiated = true;
                         scope.valid = isValid();
-                        scope.$emit(FORM_EVENTS.valueIsValid, scope.valid);
+                        scope.$emit(CONTROL_EVENTS.valueIsValid, scope.valid);
                     });
                     
-                    scope.select = function () {
+                    scope.select = function (step) {
                         ModalService.open({
                             title: 'select an image',
                             controller: 'ImageSelectorController',
                             selected: scope.ngModel,
                             mode: 'single',
                             template: 'tmpl/core/modals/imageSelector.html',
-                            extensions: scope.extensions
+                            extensions: scope.extensions,
+                            step: step
                         }).then(function (result) {
-
-                            // here trigger the cropper
-                            scope.ngModel = result || '';
+                            scope.ngModel = result;
                             scope.changed();
                         });
                     };
 
                     scope.clear = function () {
-                        scope.ngModel = '';
+                        scope.ngModel = undefined;
                         scope.changed();
                     };
 

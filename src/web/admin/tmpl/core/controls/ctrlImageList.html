@@ -8,8 +8,10 @@
                     <span class="input-group-btn">
                         <button class="btn btn-default glyphicon glyphicon-move" type="button" ng-disabled="!enabled"></button>
                     </span>
-                    <input type="text" class="form-control" ng-model="item" ng-disabled="true" />
+                    <input type="text" class="form-control" ng-model="item.src" ng-disabled="true" />
                     <span class="input-group-btn">
+                        <button class="btn btn-default glyphicon glyphicon-th" type="button" ng-click="edit(item)" ng-disabled="!enabled"></button>
+                        <button class="btn btn-default glyphicon glyphicon-picture" type="button" ng-click="crop(item)" ng-disabled="!enabled"></button>
                         <button class="btn btn-default glyphicon glyphicon-remove" type="button" ng-click="clear(item)" ng-disabled="!enabled"></button>
                     </span>
                 </div>
@@ -20,7 +22,7 @@
             <input type="text" class="form-control" ng-disabled="true" />
             <span ng-show="enabled && !valid" class="glyphicon glyphicon-remove form-control-feedback"></span>
             <span class="input-group-btn">
-                <button class="btn btn-default glyphicon glyphicon-plus-sign" type="button" ng-click="select()" ng-disabled="!enabled"></button>
+                <button class="btn btn-default glyphicon glyphicon-plus-sign" type="button" ng-click="add()" ng-disabled="!enabled"></button>
             </span>
         </div>
     </div>

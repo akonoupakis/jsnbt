@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlCheck', function ($timeout, FORM_EVENTS) {
+        .directive('ctrlCheck', function ($timeout, CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -49,7 +49,7 @@
                             scope.$apply();
 
                             $timeout(function () {
-                                scope.$emit(FORM_EVENTS.valueChanged, scope.ngModel);
+                                scope.$emit(CONTROL_EVENTS.valueChanged, scope.ngModel);
                             }, 50);
                         }
                     });

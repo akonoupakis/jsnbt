@@ -90,7 +90,7 @@
             };
 
         })
-        .directive('ctrlGridColumn', function (MODAL_EVENTS) {
+        .directive('ctrlGridColumn', function (CONTROL_EVENTS) {
 
             return {
                 require: '^ctrlGrid',
@@ -116,7 +116,7 @@
                                             ditem.selected = false;
                                     });
                                     item.selected = true;
-                                    scope.$emit(MODAL_EVENTS.valueSelected, item);
+                                    scope.$emit(CONTROL_EVENTS.valueSelected, item);
                                 }
                                 else {
                                     if (!item.selected) {

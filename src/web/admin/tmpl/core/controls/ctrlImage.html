@@ -5,7 +5,8 @@
             <input type="text" class="form-control" id="file{{id}}" ng-model="value" ng-disabled="true" />
             <span ng-show="enabled && !valid" class="glyphicon glyphicon-remove form-control-feedback"></span>
             <div class="input-group-btn">
-                <button class="btn btn-default glyphicon glyphicon-th" type="button" ng-click="select()" ng-disabled="!enabled"></button>
+                <button class="btn btn-default glyphicon glyphicon-th" type="button" ng-click="select(1)" ng-disabled="!enabled"></button>
+                <button class="btn btn-default glyphicon glyphicon-picture" type="button" ng-click="select(2)" ng-disabled="!enabled || !ngModel.src"></button>
                 <button class="btn btn-default glyphicon glyphicon-remove" type="button" ng-show="!ngRequired" ng-click="clear()" ng-disabled="!enabled || !ngModel"></button>
             </div>
         </div>
