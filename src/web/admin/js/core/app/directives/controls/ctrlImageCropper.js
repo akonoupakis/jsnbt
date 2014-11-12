@@ -36,59 +36,23 @@
                                 aspectRatio: scope.ngWidth / scope.ngHeight,
                                 rotatable: false,                         
                                 built: function () {
-                                    if (cropGen && cropGen.options && cropGen.options.x && cropGen.options.y) {
-
-                                        var imageProperWidth = $image.get(0).naturalWidth;
-                                        var imageProperHeight = $image.get(0).naturalHeight;
-
-                                        var previewImage = element.find('.cropper-container img');
-
-                                        var imagePreviewWidth = previewImage.get(0).width;
-                                        var imagePreviewHeight = previewImage.get(0).height;
-
-                                        var cropX1 = parseInt((imagePreviewWidth / imageProperWidth) * cropGen.options.x);
-                                        var cropX2 = parseInt((imagePreviewWidth / imageProperWidth) * (cropGen.options.x + cropGen.options.width));
-                                        var cropWidth = cropX2 - cropX1;
-
-                                        var cropY1 = parseInt((imagePreviewHeight / imageProperHeight) * cropGen.options.y);
-                                        var cropY2 = parseInt((imagePreviewHeight / imageProperHeight) * (cropGen.options.y + cropGen.options.height));
-                                        var cropHeight = cropY2 - cropY1;
-
+                                    if (cropGen && cropGen.options) {
                                         $image.cropper('setData', {
-                                            x: cropX1,
-                                            y: cropY1,
-                                            width: cropWidth,
-                                            height: cropHeight
+                                            x: cropGen.options.x,
+                                            y: cropGen.options.y,
+                                            width: cropGen.options.width,
+                                            height: cropGen.options.height
                                         });
                                     }
-
-                                    $image.cropper('reset');
-                                },
+                                }, 
                                 done: function (data) {
-
-                                    var imageProperWidth = $image.get(0).naturalWidth;
-                                    var imageProperHeight = $image.get(0).naturalHeight;
-                                    
-                                    var previewImage = element.find('.cropper-container img');
-
-                                    var imagePreviewWidth = previewImage.get(0).width;
-                                    var imagePreviewHeight = previewImage.get(0).height;
-
-                                    var cropX1 = parseInt((imageProperWidth / imagePreviewWidth) * data.x);
-                                    var cropX2 = parseInt((imageProperWidth / imagePreviewWidth) * (data.width + data.x));
-                                    var cropWidth = cropX2 - cropX1;
-
-                                    var cropY1 = parseInt((imageProperHeight / imagePreviewHeight) * data.y);
-                                    var cropY2 = parseInt((imageProperHeight / imagePreviewHeight) * (data.height + data.y));
-                                    var cropHeight = cropY2 - cropY1;
-
                                     scope.ngModel.gen = [{
                                         type: 'crop',
                                         options: {
-                                            x: cropX1,
-                                            y: cropY1,
-                                            width: cropWidth,
-                                            height: cropHeight
+                                            x: data.x,
+                                            y: data.y,
+                                            width: data.width,
+                                            height: data.height
                                         }
                                     }, {
                                         type: 'resize',

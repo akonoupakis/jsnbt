@@ -9,19 +9,37 @@ module.exports = {
     images: [{
         name: 'admin-explorer-thumb',
         processors: [{
-            type: 'crop',
+            type: 'thumb',
             options: {
                 width: 60,
-                height: 60,
-                cropwidth: 60,
-                cropheight: 60,
-                x: 0,
-                y: 0,
-                gravity: 'center',
-                fill: true
+                height: 60
             }
         }]
     }],
+
+    /*
+    [{
+        type: 'crop',
+        options: {
+            x: 0,
+            y: 0,
+            width: 60,
+            height: 60
+        }
+    }, {
+        type: 'resize',
+        options: {
+            width: 60,
+            height: 60
+        }
+    }, {
+        type: 'thumb',
+        options: {
+            width: 60,
+            height: 60
+        }
+    }]
+    */
 
     injects: {
         navigation: [{

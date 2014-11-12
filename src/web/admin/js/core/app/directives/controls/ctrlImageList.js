@@ -75,7 +75,8 @@
                     });
                     
                     scope.edit = function (item) {
-                        var itemSrc = item.src;
+                        var itemIndex = $(scope.ngModel).index(item);
+
                         ModalService.open({
                             title: 'select the files you want',
                             controller: 'ImageSelectorController',
@@ -87,11 +88,7 @@
                             height: scope.ngHeight,
                             width: scope.ngWidth
                         }).then(function (result) {
-                            var matched = _.find(scope.ngModel, function (x) { return x.src === itemSrc; });                            
-                            if (matched) {
-                                matched.src = result.src;
-                                matched.gen = result.gen.slice(0);
-                            }
+                            scope.ngModel[itemIndex] = result;
 
                             if (initiated)
                                 scope.valid = isValid();
@@ -101,7 +98,8 @@
                     };
 
                     scope.crop = function (item) {
-                        var itemSrc = item.src;
+                        var itemIndex = $(scope.ngModel).index(item);
+
                         ModalService.open({
                             title: 'select the files you want',
                             controller: 'ImageSelectorController',
@@ -113,11 +111,8 @@
                             height: scope.ngHeight,
                             width: scope.ngWidth
                         }).then(function (result) {
-                            var matched = _.find(scope.ngModel, function (x) { return x.src === itemSrc; });
-                            if (matched) {
-                                matched.gen = result.gen.slice(0);
-                            }
-
+                            scope.ngModel[itemIndex] = result;
+                            
                             if (initiated)
                                 scope.valid = isValid();
 
