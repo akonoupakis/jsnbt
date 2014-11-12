@@ -129,7 +129,7 @@ var renderImage = function (ctx, src, gen) {
 
                                 fnName = 'crop';
                             }
-                            else if (processor.type === 'thumb') {
+                            else if (processor.type === 'stretch') {
                                 options.width = processor.options.width;
                                 options.height = processor.options.height;
                                 options.x = 0;
@@ -141,7 +141,7 @@ var renderImage = function (ctx, src, gen) {
 
                                 fnName = 'rescrop';
                             }
-                            else if (processor.type === 'resize') {
+                            else if (processor.type === 'fit') {
                                 options.width = processor.options.width;
                                 options.height = processor.options.height;
 

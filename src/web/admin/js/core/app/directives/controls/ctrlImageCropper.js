@@ -55,7 +55,7 @@
                                             height: data.height
                                         }
                                     }, {
-                                        type: 'resize',
+                                        type: 'fit',
                                         options: {
                                             width: scope.ngWidth,
                                             height: scope.ngHeight

@@ -9,7 +9,7 @@ module.exports = {
     images: [{
         name: 'admin-explorer-thumb',
         processors: [{
-            type: 'thumb',
+            type: 'stretch',
             options: {
                 width: 60,
                 height: 60
@@ -27,13 +27,13 @@ module.exports = {
             height: 60
         }
     }, {
-        type: 'resize',
+        type: 'fit',
         options: {
             width: 60,
             height: 60
         }
     }, {
-        type: 'thumb',
+        type: 'stretch',
         options: {
             width: 60,
             height: 60
