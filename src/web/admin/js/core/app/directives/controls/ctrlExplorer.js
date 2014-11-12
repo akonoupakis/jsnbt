@@ -11,7 +11,7 @@
                 restrict: 'E',
                 replace: true,
                 scope: {
-                    ngPath: '@',
+                    ngPath: '=',
                     ngSelectable: '=',
                     ngSelectMode: '=',
                     ngSelected: '=',

@@ -12,6 +12,16 @@
 
             $scope.selected = $scope.selected || [];
 
+            $scope.path = '/';
+
+            if ($scope.mode === 'single') {
+                if ($scope.selected && typeof($scope.selected) === 'string') {
+                    var parts = $scope.selected.split('/');
+                    if (parts.length > 2)
+                        $scope.path += _.initial(_.rest(parts, 1), 1).join('/');
+                }
+            }
+
             $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
                 $scope.$broadcast(CONTROL_EVENTS.valueRequested);
              

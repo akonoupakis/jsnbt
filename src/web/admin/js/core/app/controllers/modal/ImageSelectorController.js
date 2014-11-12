@@ -12,6 +12,14 @@
             if ($scope.selected)
                 $.extend(true, $scope.ngModel, $scope.selected);
 
+            $scope.path = '/';
+            
+            if ($scope.ngModel.src) {
+                var parts = $scope.ngModel.src.split('/');
+                if (parts.length > 2)
+                    $scope.path += _.initial(_.rest(parts, 1), 1).join('/');
+            }
+
             $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {             
                 $scope.$broadcast(CONTROL_EVENTS.valueRequested);
                 if ($scope.step === 1 && $scope.height && $scope.width) {
