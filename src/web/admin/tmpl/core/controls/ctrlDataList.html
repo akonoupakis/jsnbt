@@ -3,7 +3,7 @@
         <label ng-show="ngLabel" class="control-label">{{ngLabel}}<small ng-show="ngTip">({{ngTip}})</small></label>
 
         <ul class="ctrl-data-list-contents sortable-group" ui-sortable="sortableOptions" ng-model="value">
-            <li ng-repeat="item in value">
+            <li ng-repeat="item in value track by $index">
                 <div class="input-group">
                     <span class="input-group-btn">
                         <button class="btn btn-default glyphicon glyphicon-move" type="button" ng-disabled="!enabled"></button>

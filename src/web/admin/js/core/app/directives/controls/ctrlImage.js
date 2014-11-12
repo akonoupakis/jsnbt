@@ -82,7 +82,9 @@
                             mode: 'single',
                             template: 'tmpl/core/modals/imageSelector.html',
                             extensions: scope.extensions,
-                            step: step
+                            step: step,
+                            height: scope.ngHeight,
+                            width: scope.ngWidth
                         }).then(function (result) {
                             scope.ngModel = result;
                             scope.changed();

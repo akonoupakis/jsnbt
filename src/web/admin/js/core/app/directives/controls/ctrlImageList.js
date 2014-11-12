@@ -49,10 +49,10 @@
                         var valid = true;
 
                         if (scope.enabled) {
-
+                            scope.ngModel = scope.ngModel || [];
                             if (valid) {
                                 if (scope.ngRequired) {
-                                    valid = !!scope.ngModel && scope.ngModel.length > 0;
+                                    valid = scope.ngModel.length > 0;
                                 }
                             }
 
@@ -83,11 +83,18 @@
                             template: 'tmpl/core/modals/ImageSelector.html',
                             mode: 'single',
                             extensions: scope.extensions,
-                            step: 1
+                            step: 1,
+                            height: scope.ngHeight,
+                            width: scope.ngWidth
                         }).then(function (result) {
-                            var matched = _.find(scope.ngModel, function (x) { return x.src === itemSrc; });
-                            if (matched)
-                                matched = result;
+                            var matched = _.find(scope.ngModel, function (x) { return x.src === itemSrc; });                            
+                            if (matched) {
+                                matched.src = result.src;
+                                matched.gen = result.gen.slice(0);
+                            }
+
+                            if (initiated)
+                                scope.valid = isValid();
 
                             scope.changed();
                         });
@@ -102,12 +109,18 @@
                             template: 'tmpl/core/modals/ImageSelector.html',
                             mode: 'single',
                             extensions: scope.extensions,
-                            step: 2
+                            step: 2,
+                            height: scope.ngHeight,
+                            width: scope.ngWidth
                         }).then(function (result) {
                             var matched = _.find(scope.ngModel, function (x) { return x.src === itemSrc; });
-                            if (matched)
-                                matched = result;
-                            
+                            if (matched) {
+                                matched.gen = result.gen.slice(0);
+                            }
+
+                            if (initiated)
+                                scope.valid = isValid();
+
                             scope.changed();
                         });
                     };
@@ -116,16 +129,21 @@
                         ModalService.open({
                             title: 'select the files you want',
                             controller: 'ImageSelectorController',
-                            selected: {},
                             template: 'tmpl/core/modals/ImageSelector.html',
                             mode: 'single',
                             extensions: scope.extensions,
-                            step: 1
+                            step: 1,
+                            height: scope.ngHeight,
+                            width: scope.ngWidth
                         }).then(function (result) {
                             if (!scope.ngModel)
                                 scope.ngModel = [];
 
                             scope.ngModel.push(result);
+
+                            if (initiated)
+                                scope.valid = isValid();
+
                             scope.changed();
                         });
                     };

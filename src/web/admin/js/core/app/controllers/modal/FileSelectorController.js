@@ -10,10 +10,12 @@
             if (['single', 'multiple'].indexOf($scope.mode) === -1)
                 $scope.mode = 'single';
 
-            $scope.ngModel = $scope.selected;
+            $scope.selected = $scope.selected || [];
 
             $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
-                $scope.$emit(MODAL_EVENTS.valueSubmitted, $scope.ngModel);
+                $scope.$broadcast(CONTROL_EVENTS.valueRequested);
+             
+                $scope.$emit(MODAL_EVENTS.valueSubmitted, $scope.selected);
             });
 
             $scope.$on(CONTROL_EVENTS.valueSelected, function (sender, selected) {
@@ -23,6 +25,7 @@
             });
 
             $scope.$on(CONTROL_EVENTS.valueSubmitted, function (sender, selected) {
+                $scope.selected = selected;
                 sender.stopPropagation();
             });
         });

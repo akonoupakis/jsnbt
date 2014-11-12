@@ -21,6 +21,8 @@
                     element.addClass('ctrl');
                     element.addClass('ctrl-explorer');
                     
+                    scope.ctrl = 'ctrlExplorer';
+
                     scope.new = '';
                     scope.current = '';
                     scope.breadcrumb = [];
@@ -249,7 +251,6 @@
                     });
                     
                     scope.$on(CONTROL_EVENTS.valueRequested, function (sender) {
-                        console.log(22);
                         if (scope.ngSelectMode === 'single') {
                             var sel = '';
 
@@ -264,13 +265,13 @@
                         }
                         else {
                             var selected = [];
-
+                            
                             for (var name2 in scope.selected) {
                                 if (scope.selected[name2] === true) {
                                     selected.push(name2);
                                 }
                             }
-
+                            
                             scope.$emit(CONTROL_EVENTS.valueSubmitted, selected);
                         }
                     });

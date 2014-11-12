@@ -7,16 +7,19 @@
             $scope.mode = 'single';
 
             $scope.step = $scope.step || 1;
-            $scope.lastStep = 2;
 
-            $scope.ngModel = $scope.selected || {};
-            
+            $scope.ngModel = {};
+            if ($scope.selected)
+                $.extend(true, $scope.ngModel, $scope.selected);
+
             $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {             
                 $scope.$broadcast(CONTROL_EVENTS.valueRequested);
-                if ($scope.step === 1) {
+                if ($scope.step === 1 && $scope.height && $scope.width) {
+                    $scope.ngModel.gen = [];
                     $scope.step++;
                 }
                 else {
+                    $scope.selected = $scope.ngModel;
                     $scope.$emit(MODAL_EVENTS.valueSubmitted, $scope.ngModel);
                 }
             });
@@ -24,15 +27,24 @@
             $scope.$on(CONTROL_EVENTS.valueSelected, function (sender, selected) {
                 sender.stopPropagation();
 
-                if ($scope.step === 1) {
+                if ($scope.step === 1 && $scope.height && $scope.width) {
+                    $scope.ngModel.gen = [];
                     $scope.ngModel.src = selected;
-                    $scope.ngModel.gen = {};
+                    $scope.step++;
                 }
-                $scope.step++;
+                else {
+                    $scope.selected = $scope.ngModel;
+                    $scope.$emit(MODAL_EVENTS.valueSubmitted, $scope.ngModel);
+                }
             });
 
             $scope.$on(CONTROL_EVENTS.valueSubmitted, function (sender, selected) {
                 sender.stopPropagation();
+
+                if (sender.targetScope.ctrl === 'ctrlExplorer')
+                    $scope.ngModel.src = selected;
+                if (sender.targetScope.ctrl === 'ctrlImageCropper')
+                    $scope.ngModel.gen = selected;
             });
 
         });
