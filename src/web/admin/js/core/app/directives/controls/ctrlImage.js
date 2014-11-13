@@ -27,6 +27,7 @@
                     scope.id = Math.random().toString().replace('.', '');
                     scope.value = '';
                     scope.valid = true;
+                    scope.wrong = false;
                     scope.enabled = scope.ngEnabled !== undefined ? scope.ngEnabled : true;
                     scope.extensions = scope.ngExtensions ? scope.ngExtensions : ['.png', '.jpg', '.jpeg', '.gif', '.tiff'];
 
@@ -54,7 +55,9 @@
                                 if (scope.ngRequired) {
                                     if (!scope.ngModel)
                                         valid = false;
-                                    else if (typeof (scope.ngModel) === 'object') {
+                                    else if (!_.isObject(scope.ngModel)) 
+                                        valid = false;
+                                    else {
                                         if (!scope.ngModel.src)
                                             valid = false;
                                         else if (scope.ngModel.src === '')
@@ -63,12 +66,12 @@
                                 }
 
                                 if (scope.ngModel) {
-                                    if (typeof (scope.ngModel) !== 'object')
+                                    if (!_.isObject(scope.ngModel))
                                         valid = false;
                                     else {
                                         if (!scope.ngModel.src)
                                             valid = false;
-                                        else if (!scope.ngModel.gen)
+                                        else if (!_.isArray(scope.ngModel.gen))
                                             valid = false;
                                         else if (scope.ngModel.gen.length !== 2)
                                             valid = false;
@@ -93,15 +96,18 @@
 
                     scope.$watch('ngModel', function (newValue, prevValue) {
                         if (newValue) {
-                            if (typeof (newValue) === 'object') {
+                            if (_.isObject(newValue)) {
                                 scope.value = newValue.src || '';
+                                scope.wrong = false;
                             }
                             else {
-                                scope.value = '-- not parsable image --';
+                                scope.wrong = true;
+                                scope.value = '';
                             }
                         }
                         else {
                             scope.value = '';
+                            scope.wrong = false;
                         }
 
                         if (initiated)
@@ -114,15 +120,32 @@
                         scope.$emit(CONTROL_EVENTS.valueIsValid, scope.valid);
                     });
                     
-                    scope.select = function (step) {
+                    scope.edit = function () {
                         ModalService.open({
-                            title: 'select an image',
+                            title: 'select and crop the image you want',
                             controller: 'ImageSelectorController',
                             selected: scope.ngModel,
                             mode: 'single',
                             template: 'tmpl/core/modals/imageSelector.html',
                             extensions: scope.extensions,
-                            step: step,
+                            step: 1,
+                            height: scope.ngHeight,
+                            width: scope.ngWidth
+                        }).then(function (result) {
+                            scope.ngModel = result;
+                            scope.changed();
+                        });
+                    };
+
+                    scope.crop = function () {
+                        ModalService.open({
+                            title: 'crop ' + scope.ngModel.src,
+                            controller: 'ImageSelectorController',
+                            selected: scope.ngModel,
+                            mode: 'single',
+                            template: 'tmpl/core/modals/imageSelector.html',
+                            extensions: scope.extensions,
+                            step: 2,
                             height: scope.ngHeight,
                             width: scope.ngWidth
                         }).then(function (result) {

@@ -25,6 +25,7 @@
                     scope.id = Math.random().toString().replace('.', '');
                     scope.value = '';
                     scope.valid = true;
+                    scope.wrong = false;
                     scope.enabled = scope.ngEnabled !== undefined ? scope.ngEnabled : true;
 
                     var initiated = false;
@@ -49,7 +50,23 @@
 
                             if (valid) {
                                 if (scope.ngRequired) {
-                                    valid = !!scope.ngModel && scope.ngModel !== '';
+                                    if (!scope.ngModel)
+                                        valid = false;
+                                    else if (typeof (scope.ngModel) !== 'string')
+                                        valid = false;
+                                    else if (scope.ngModel === '')
+                                        valid = false;
+                                    else if (!_.str.startsWith(scope.ngModel, 'files/'))
+                                        valid = false;
+                                }
+
+                                if (scope.ngModel) {
+                                    if (typeof (scope.ngModel) !== 'string')
+                                        valid = false;
+                                    else if (scope.ngModel === '')
+                                        valid = false;
+                                    else if (!_.str.startsWith(scope.ngModel, 'files/'))
+                                        valid = false;
                                 }
                             }
 
@@ -58,8 +75,21 @@
                         return valid;
                     };
 
-                    scope.$watch('ngModel', function (newValue, prevValue) { 
-                        scope.value = newValue || '';
+                    scope.$watch('ngModel', function (newValue, prevValue) {
+                        if (newValue) {
+                            if (typeof (newValue) === 'string') {
+                                scope.value = newValue;
+                                scope.wrong = false;
+                            }
+                            else {
+                                scope.wrong = true;
+                                scope.value = '';
+                            }
+                        }
+                        else {
+                            scope.value = '';
+                            scope.wrong = false;
+                        }
 
                         if (initiated)
                             scope.valid = isValid();
@@ -80,7 +110,7 @@
                             template: 'tmpl/core/modals/fileSelector.html',
                             extensions: scope.ngExtensions || []
                         }).then(function (result) {
-                            scope.ngModel = result || '';
+                            scope.ngModel = result;
                             scope.changed();
                         });
                     };
