@@ -52,7 +52,19 @@
 
                             if (valid) {
                                 if (scope.ngRequired) {
-                                    valid = !!scope.ngModel && (scope.ngModel || {}).src !== '';
+                                    if (!scope.ngModel)
+                                        valid = false;
+                                    else if (typeof (scope.ngModel) === 'object') {
+                                        if (!scope.ngModel.src)
+                                            valid = false;
+                                        else if (scope.ngModel.src === '')
+                                            valid = false;
+                                    }
+                                }
+
+                                if (scope.ngModel) {
+                                    if (typeof (scope.ngModel) !== 'object')
+                                        valid = false;
                                 }
                             }
 
@@ -61,8 +73,18 @@
                         return valid;
                     };
 
-                    scope.$watch('ngModel', function (newValue, prevValue) { 
-                        scope.value = (newValue || {}).src || '';
+                    scope.$watch('ngModel', function (newValue, prevValue) {
+                        if (newValue) {
+                            if (typeof (newValue) === 'object') {
+                                scope.value = newValue.src || '';
+                            }
+                            else {
+                                scope.value = '-- not parsable image --';
+                            }
+                        }
+                        else {
+                            scope.value = '';
+                        }
 
                         if (initiated)
                             scope.valid = isValid();
