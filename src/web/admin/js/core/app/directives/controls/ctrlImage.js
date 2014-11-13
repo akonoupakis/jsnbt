@@ -65,6 +65,24 @@
                                 if (scope.ngModel) {
                                     if (typeof (scope.ngModel) !== 'object')
                                         valid = false;
+                                    else {
+                                        if (!scope.ngModel.src)
+                                            valid = false;
+                                        else if (!scope.ngModel.gen)
+                                            valid = false;
+                                        else if (scope.ngModel.gen.length !== 2)
+                                            valid = false;
+                                        else {
+                                            if (scope.ngHeight) {
+                                                if (scope.ngModel.gen[1].options.height !== scope.ngHeight)
+                                                    valid = false;
+                                            }
+                                            if (scope.ngWidth) {
+                                                if (scope.ngModel.gen[1].options.width !== scope.ngWidth)
+                                                    valid = false;
+                                            }
+                                        }
+                                    }
                                 }
                             }
 

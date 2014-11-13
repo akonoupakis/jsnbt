@@ -9,7 +9,7 @@
             $scope.step = $scope.step || 1;
 
             $scope.ngModel = {};
-            if ($scope.selected)
+            if ($scope.selected && typeof ($scope.selected) === 'object' && $scope.selected.src && $scope.selected.gen)
                 $.extend(true, $scope.ngModel, $scope.selected);
 
             $scope.path = '/';
