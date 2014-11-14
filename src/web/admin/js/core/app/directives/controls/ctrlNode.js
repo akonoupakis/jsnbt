@@ -26,6 +26,7 @@
                     scope.id = Math.random().toString().replace('.', '');
                     scope.value = '';
                     scope.valid = true;
+                    scope.wrong = false;
                     scope.enabled = scope.ngEnabled !== undefined ? scope.ngEnabled : true;
 
                     var initiated = false;
@@ -50,7 +51,17 @@
 
                             if (valid) {
                                 if (scope.ngRequired) {
-                                    valid = !!scope.ngModel && scope.ngModel !== '';
+                                    if (!scope.ngModel)
+                                        valid = false;
+                                    else if (typeof (scope.ngModel) !== 'string')
+                                        valid = false;
+                                    else if (scope.ngModel === '')
+                                        valid = false;
+                                }
+
+                                if (scope.ngModel) {
+                                    if (typeof (scope.ngModel) !== 'string')
+                                        valid = false;
                                 }
                             }
 
@@ -58,16 +69,19 @@
 
                         return valid;
                     };
-
-                    scope.$watch('ngModel', function (newValue, prevValue) { 
+       
+                    scope.$watch('ngModel', function (newValue, prevValue) {
                         if (newValue && newValue !== '') {
                             $data.nodes.get(newValue).then(function (response) {
                                 scope.value = response.name;
+                                scope.wrong = false;
 
                                 if (initiated)
                                     scope.valid = isValid();
                             }, function (error) {
-                                
+                                scope.value = newValue;
+                                scope.wrong = true;
+
                                 if (initiated)
                                     scope.valid = isValid();
 
@@ -76,6 +90,7 @@
                         }
                         else {
                             scope.value = '';
+                            scope.wrong = false;
 
                             if (initiated)
                                 scope.valid = isValid();
