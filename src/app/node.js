@@ -79,12 +79,15 @@ module.exports = function(dpd) {
                 throw new Error('pointed node not found');
             else {
                 var pointedSeoNames = _.str.trim(urlPath, '/') !== '' ? _.str.trim(urlPath, '/').split('/') : [];
-                var pack = _.first(_.filter(jsnbt.modules, function (x) { return x.domain === pointedNode.domain && typeof (x.resolve) === 'function'; }));
+                var pack = _.first(_.filter(jsnbt.modules, function (x) {
+                    return x.domain === pointedNode.domain
+                      && x.url && _.isObject(x.url) && _.isFunction(x.url.resolve);
+                }));
                 if (pack) {
                     returnObj.seoNames = pointedSeoNames;
                     returnObj.pointed = pointedNode;
                     returnObj.dpd = dpd;
-                    pack.resolve(returnObj, cb);
+                    pack.url.resolve(returnObj, cb);
                 }
                 else {
                     if (pointedSeoNames.length === 0) {
@@ -441,11 +444,14 @@ module.exports = function(dpd) {
                                 var newUrl = {};                                
                                 cache.url[parentCacheKey] = parentUrl;
 
-                                var pack = _.first(_.filter(jsnbt.modules, function (x) { return x.domain === firstNode.domain && typeof (x.build) === 'function'; }));
+                                var pack = _.first(_.filter(jsnbt.modules, function (x) {
+                                    return x.domain === firstNode.domain
+                                          && x.url && _.isObject(x.url) && _.isFunction(x.url.build);
+                                }));
                                 if (pack) {
                                     extend(true, newUrl, parentUrl);
                                     
-                                    pack.build({
+                                    pack.url.build({
                                         nodes: hierarchyNodes,
                                         node: node,
                                         url: newUrl

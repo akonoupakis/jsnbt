@@ -68,9 +68,14 @@ exports.init = function (env, config, module) {
         fs.createWriteStream('fatal.log', { 'flags': 'a' }).write(moment().format() + ' ' + err.toString() + "\n");
     };
 
-    var jsnbtModule = require('./index.js');
+    var jsnbtModule = {
+        domain: 'core',
+        getConfig: function () {
+            return require('./config.js');
+        }
+    };
     
-    jsnbt.registerModule('jsnbt', jsnbtModule);
+    jsnbt.register('jsnbt', jsnbtModule);
     
     if (module) {
         try {
@@ -78,7 +83,7 @@ exports.init = function (env, config, module) {
                 module.init(this);
 
             if (module.domain && module.domain !== 'core')
-                jsnbt.registerModule(module.domain, module);
+                jsnbt.register(module.domain, module);
         }
         catch (err) {
             this.logger.error(err.toString());
@@ -89,13 +94,13 @@ exports.init = function (env, config, module) {
     for (var i in installedPackages) {
         if (installedPackages[i] !== 'jsnbt') {
             try {
-                var router = require(installedPackages[i]);
+                var installedModule = require(installedPackages[i]);
 
-                if (typeof (router.init) == 'function')
-                    router.init(this);
+                if (typeof (installedModule.init) == 'function')
+                    installedModule.init(this);
 
-                if (module.domain && module.domain !== 'core')
-                    jsnbt.registerModule(installedPackages[i], router);
+                if (installedModule.domain && installedModule.domain !== 'core')
+                    jsnbt.register(installedPackages[i], installedModule);
             }
             catch (err) {
                 this.logger.error(err.toString());

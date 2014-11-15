@@ -425,10 +425,12 @@
 
                     var addons = [];
                     $($jsnbt.addons).each(function (a, addon) {
-                        addons.push({
-                            name: addon.name,
-                            domain: addon.domain
-                        });
+                        if (addon.pointed) {
+                            addons.push({
+                                name: addon.name,
+                                domain: addon.domain
+                            });
+                        }
                     });
                     $scope.addons = addons;
 

@@ -129,10 +129,13 @@ module.exports = function () {
 
                                     if (resolved.pointer) {
 
-                                        var addonRouter = _.first(_.filter(jsnbt.modules, function (x) { return x.domain === resolved.pointer.pointer.domain && typeof (x.route) === 'function'; }));
+                                        var addonRouter = _.first(_.filter(jsnbt.modules, function (x) {
+                                            return x.domain === resolved.pointer.pointer.domain
+                                                && x.route && _.isObject(x.route) && _.isFunction(x.route.process);
+                                        }));
 
                                         if (addonRouter) {
-                                            addonRouter.route(ctx);
+                                            addonRouter.route.process(ctx);
                                         }
                                         else {
                                             if (ctx.node) {

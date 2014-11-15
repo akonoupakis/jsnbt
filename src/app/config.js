@@ -41,6 +41,8 @@ module.exports = {
     }]
     */
 
+    scripts: [],
+
     injects: {
         navigation: [{
             index: 0,
