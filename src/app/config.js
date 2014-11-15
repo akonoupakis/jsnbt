@@ -6,7 +6,7 @@ module.exports = {
 
     browsable: false,
 
-    public: false,
+    public: true,
     
     images: [{
         name: 'admin-explorer-thumb',

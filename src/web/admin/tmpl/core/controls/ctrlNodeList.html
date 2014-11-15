@@ -8,7 +8,7 @@
                     <span class="input-group-btn">
                         <button class="btn btn-default glyphicon glyphicon-move" type="button" ng-disabled="ngDisabled"></button>
                     </span>
-                    <input type="text" class="form-control" value="{{ wrong[$index] ? (missing[$index] ? '-- not found -- (' + item.id + ')' : '-- invalid value --') : item.name }}" ng-disabled="true" />
+                    <input type="text" class="form-control" value="{{ wrong[$index] ? (missing[$index] ? '-- not found -- (' + item.id + ')' : '-- invalid value --') : item.name }}" disabled="disabled" />
                     <span ng-show="!ngDisabled && !valid && invalid[$index]" class="glyphicon glyphicon-remove form-control-feedback"></span>
                     <span class="input-group-btn">
                         <button class="btn btn-default glyphicon glyphicon-th" type="button" ng-click="edit($index)" ng-disabled="ngDisabled"></button>
@@ -19,7 +19,7 @@
         </ul>
 
         <div class="input-group insert-form-control form-control-feedback-container" ng-class="{ 'has-error': !ngDisabled && !valid && empty, 'has-feedback': !ngDisabled && !valid && empty }">
-            <input type="text" class="form-control" ng-disabled="true" />
+            <input type="text" class="form-control" disabled="disabled" />
             <span ng-show="!ngDisabled && !valid && empty" class="glyphicon glyphicon-remove form-control-feedback"></span>
             <span class="input-group-btn">
                 <button class="btn btn-default glyphicon glyphicon-plus-sign" type="button" ng-click="add()" ng-disabled="ngDisabled || !ngDomain"></button>
