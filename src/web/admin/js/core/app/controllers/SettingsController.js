@@ -189,8 +189,8 @@
 
 
             $scope.back = function () {
-                if ($scope.current.breadcrumb[0].name === 'addons') {
-                    $location.previous('/addons/' + $scope.domain);
+                if ($scope.current.breadcrumb[0].name === 'modules') {
+                    $location.previous('/modules/' + $scope.domain);
                 }
                 else {
                     $location.previous('/');

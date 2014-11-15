@@ -28,7 +28,7 @@
             $scope.types = [];
             $scope.languages = [];
             $scope.templates = [];
-            $scope.addons = [];
+            $scope.modules = [];
 
             $scope.localized = false;
             $scope.language = undefined;
@@ -378,9 +378,9 @@
                     var deferred = $q.defer();
 
                     var types = [];
-                    types.push({ value: 'page', name: 'CMS Page' });
-                    if ($jsnbt.addons.length > 0)
-                        types.push({ value: 'pointer', name: 'Addon Pointer' });
+                    types.push({ value: 'page', name: 'page' });
+                    if (_.filter($jsnbt.modules, function (x) { return x.type === 'addon' && x.pointed === true; }).length > 0)
+                        types.push({ value: 'pointer', name: 'pointer' });
 
                     $scope.types = types;
 
@@ -420,21 +420,21 @@
                     return deferred.promise;
                 },
 
-                setAddons: function () {
+                setModules: function () {
                     var deferred = $q.defer();
 
-                    var addons = [];
-                    $($jsnbt.addons).each(function (a, addon) {
-                        if (addon.pointed) {
-                            addons.push({
-                                name: addon.name,
-                                domain: addon.domain
+                    var modules = [];
+                    $($jsnbt.modules).each(function (a, module) {
+                        if (module.type === 'addon' && module.pointed) {
+                            modules.push({
+                                name: module.name,
+                                domain: module.domain
                             });
                         }
                     });
-                    $scope.addons = addons;
+                    $scope.modules = modules;
 
-                    deferred.resolve(addons);
+                    deferred.resolve(modules);
 
                     return deferred.promise;
                 },
@@ -867,7 +867,7 @@
 
 
             $timeout(function () {
-                $q.all(fn.setRoles(), fn.setRobots(), fn.setAddons(), fn.setLanguages(), fn.setLanguage(), fn.setTypes()).then(function () {
+                $q.all(fn.setRoles(), fn.setRobots(), fn.setModules(), fn.setLanguages(), fn.setLanguage(), fn.setTypes()).then(function () {
                     fn.set().then(function (setResponse) {
                         fn.getHierarchyNodes().then(function (hierarchyNodes) {
                             $q.all(fn.setSelectedRoles(hierarchyNodes), fn.setSelectedRobots(hierarchyNodes)).then(function () {

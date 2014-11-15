@@ -33,7 +33,7 @@
 
                     <li ng-repeat="menuItem in application.navigationSpec | filter: {index: 2}" ng-class="{'active': current.breadcrumb[0].name === menuItem.identifier}"><a href="javascript:;" ng-click="goto(menuItem.url)">{{ menuItem.name }}</a></li>
 
-                    <li ng-class="{'active': current.breadcrumb[0].name === 'addons'}"><a href="javascript:;" ng-click="goto('/addons')">addons</a></li>
+                    <li ng-class="{'active': current.breadcrumb[0].name === 'modules'}"><a href="javascript:;" ng-click="goto('/modules')">modules</a></li>
 
                     <li ng-repeat="menuItem in application.navigationSpec | filter: {index: 3}" ng-class="{'active': current.breadcrumb[0].name === menuItem.identifier}"><a href="javascript:;" ng-click="goto(menuItem.url)">{{ menuItem.name }}</a></li>
 

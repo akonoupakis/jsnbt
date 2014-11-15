@@ -4,9 +4,9 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('AddonsController', function ($scope, $location, $q, $logger, $jsnbt) {
+        .controller('ModulesController', function ($scope, $location, $q, $logger, $jsnbt) {
             
-            var logger = $logger.create('AddonsController');
+            var logger = $logger.create('ModulesController');
 
             $scope.data = {};
             
@@ -16,14 +16,14 @@
                 load: function () {
                     var deferred = $q.defer();
 
-                    var addons = [];
-                    $($jsnbt.addons).each(function (i, item) {
-                        var addon = {};
-                        $.extend(true, addon, item);
-                        addons.push(addon);
+                    var modules = [];
+                    $($jsnbt.modules).each(function (i, item) {
+                        var module = {};
+                        $.extend(true, module, item);
+                        modules.push(module);
                     });
                     var data = {
-                        items: addons,
+                        items: modules,
                         more: function () { }
                     };
 
@@ -37,8 +37,8 @@
 
             $scope.gridFn = {
 
-                edit: function (addon) {
-                    $location.next('/addons/' + addon.domain);
+                edit: function (module) {
+                    $location.next('/modules/' + module.domain);
                 }
 
             };

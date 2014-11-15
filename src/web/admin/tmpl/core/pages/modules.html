@@ -6,7 +6,7 @@
 
         <div class="row title-container">
             <div class="col-md-12">
-                <h1 class="title">addons</h1>
+                <h1 class="title">modules</h1>
             </div>
         </div>
 
@@ -19,11 +19,11 @@
                         <ctrl-grid-header-column></ctrl-grid-header-column>
                     </ctrl-grid-header>
                     <ctrl-grid-footer>
-                        <ctrl-grid-empty>no addons</ctrl-grid-empty>
+                        <ctrl-grid-empty>no modules</ctrl-grid-empty>
                     </ctrl-grid-footer>
                     <ctrl-grid-body>
                         <ctrl-grid-column>
-                            {{ row.name }}
+                            {{ row.name }} <span ng-show="row.type">{{row.type}}</span>
                         </ctrl-grid-column>
                         <ctrl-grid-column>
                             {{ row.version }}

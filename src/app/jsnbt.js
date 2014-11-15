@@ -132,7 +132,7 @@ module.exports = {
                 var fileName = moduleList.spec.substring(0, moduleList.spec.lastIndexOf('.'));
                 fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
 
-                var moduleListDomain = moduleConfig.addon ? moduleConfig.domain : 'core';
+                var moduleListDomain = moduleConfig.type === 'addon' ? moduleConfig.domain : 'core';
 
                 var matchedList = _.first(_.filter(self.lists, function (x) { return x.id === fileName && x.domain == moduleListDomain; }));
                 if (matchedList) {
@@ -249,12 +249,12 @@ module.exports = {
             var jsModules = [];
             _.each(this.modules, function (mod) {
                 if (mod.modules && mod.jsModule) {
-                    if (typeof (mod.jsModule) === 'string') {
-                        result.modules.push(mod.jsModule);
+                    if (_.isString(mod.jsModule)) {
+                        jsModules.push(mod.jsModule);
                     }
-                    else {
+                    else if (_.isArray(mod.jsModule)) {
                         _.each(mod.jsModule, function (mod2) {
-                            result.jsModules.push(mod2);
+                            jsModules.push(mod2);
                         });
                     }
                 }
@@ -266,7 +266,8 @@ module.exports = {
             
             var modules = [];
             _.each(self.modules, function (module) {
-                if (!module.public && module.domain !== 'core') {
+
+                if (!module.public && (module.browsable === undefined || module.browsable === true)) {
                     modules.push({
                         name: module.name,
                         domain: module.domain,

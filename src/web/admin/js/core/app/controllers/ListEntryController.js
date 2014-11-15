@@ -200,8 +200,8 @@
                     $location.previous($rootScope.location.previous);
                 }
                 else {
-                    if ($scope.current.breadcrumb[0].name === 'addons') {
-                        $location.previous('/addons/' + $scope.item.domain + '/list/' + $scope.item.list);
+                    if ($scope.current.breadcrumb[0].name === 'modules') {
+                        $location.previous('/modules/' + $scope.item.domain + '/list/' + $scope.item.list);
                     }
                     else {
                         $location.previous('/content/data/' + $scope.item.domain + '/' + $scope.item.list);

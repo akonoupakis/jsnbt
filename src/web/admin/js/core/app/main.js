@@ -85,18 +85,18 @@
                 controller: 'FilesController',
                 section: 'files'
             }).
-            when('/addons', {
-                templateUrl: 'tmpl/core/pages/addons.html',
-                controller: 'AddonsController'
+            when('/modules', {
+                templateUrl: 'tmpl/core/pages/modules.html',
+                controller: 'ModulesController'
             }).
-            when('/addons/:domain/list/:list', {
+            when('/modules/:domain/list/:list', {
                 templateUrl: 'tmpl/core/pages/content/list.html',
                 controller: 'ListController'
             }).
-            when('/addons/:domain/list', {
-                redirectTo: '/addons/:domain'
+            when('/modules/:domain/list', {
+                redirectTo: '/modules/:domain'
             }).
-            when('/addons/:domain/list/:list/:id', {
+            when('/modules/:domain/list/:list/:id', {
                 templateUrl: 'tmpl/core/pages/content/list-entry.html',
                 controller: 'ListEntryController'
             }).

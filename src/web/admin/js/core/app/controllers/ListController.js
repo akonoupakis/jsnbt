@@ -105,8 +105,8 @@
                     $location.previous($rootScope.location.previous);
                 }
                 else {
-                    if ($scope.current.breadcrumb[0].name === 'addons') {
-                        $location.previous('/addons/' + $routeParams.domain);
+                    if ($scope.current.breadcrumb[0].name === 'modules') {
+                        $location.previous('/modules/' + $routeParams.domain);
                     }
                     else {
                         $location.previous('/content/data');
@@ -116,8 +116,8 @@
                        
             $scope.create = function () {
                 fn.create().then(function (result) {
-                    if ($scope.current.breadcrumb[0].name === 'addons') {
-                        $location.next('/addons/' + result.domain + '/list/' + result.list + '/' + result.id);
+                    if ($scope.current.breadcrumb[0].name === 'modules') {
+                        $location.next('/modules/' + result.domain + '/list/' + result.list + '/' + result.id);
                     }
                     else {
                         $location.next('/content/data/' + result.domain + '/' + result.list + '/' + result.id);
@@ -130,8 +130,8 @@
             $scope.gridFn = {
 
                 edit: function (item) {
-                    if ($scope.current.breadcrumb[0].name === 'addons') {
-                        $location.next('/addons/' + $routeParams.domain + '/list/' + $routeParams.list + '/' + item.id);
+                    if ($scope.current.breadcrumb[0].name === 'modules') {
+                        $location.next('/modules/' + $routeParams.domain + '/list/' + $routeParams.list + '/' + item.id);
                     }
                     else {
                         $location.next('/content/data/' + $routeParams.domain + '/' + $routeParams.list + '/' + item.id);

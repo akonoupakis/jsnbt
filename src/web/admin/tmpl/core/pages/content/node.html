@@ -73,7 +73,7 @@
 
         <div id="page-addon" data-scrollspy="addon" ng-show="node.entity === 'pointer'">
             <div class="row">
-                <ctrl-select class="col-md-6" ng-model="node.pointer.domain" ng-required="true" ng-enabled="node.entity === 'pointer' && node.active[language] === true" ng-label="addon" ng-default="true" ng-options="addons" ng-name-field="name" ng-value-field="domain"></ctrl-select>
+                <ctrl-select class="col-md-6" ng-model="node.pointer.domain" ng-required="true" ng-enabled="node.entity === 'pointer' && node.active[language] === true" ng-label="addon" ng-default="true" ng-options="modules" ng-name-field="name" ng-value-field="domain"></ctrl-select>
                 <ctrl-node class="col-md-5" ng-model="node.pointer.nodeId" ng-domain="node.pointer.domain" ng-required="node.pointer.domain && node.entity === 'pointer'" ng-enabled="node.entity === 'pointer' && node.active[language] === true" ng-label="pointee"></ctrl-node>
                 <div class="col-md-1">
                     <button type="button" ng-disabled="!node.pointer.domain || !node.pointer.nodeId || !node.active[language]" class="btn" ng-click="editPointee()" style="position: relative; top: 25px">edit</button>

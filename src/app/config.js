@@ -4,7 +4,9 @@ module.exports = {
 
     domain: 'core',
 
-    public: true,
+    browsable: false,
+
+    public: false,
     
     images: [{
         name: 'admin-explorer-thumb',
@@ -45,15 +47,10 @@ module.exports = {
 
     injects: {
         navigation: [{
-            index: 0,
-            identifier: 'layout',
-            name: 'layout',
-            url: '/layout',
-        }, {
-            index: 2,
-            identifier: 'layout2',
-            name: 'layout2',
-            url: '/layout2',
+            index: 5,
+            identifier: 'extra',
+            name: 'extra',
+            url: '/extra',
         }],
         dashboard: 'tmpl/test/dashboardSpec.html',
         content: 'tmpl/test/contentSpec.html',
@@ -92,6 +89,9 @@ module.exports = {
     sections: [{
         name: 'languages',
         roles: ['sa']
+    }, {
+        name: 'layouts',
+        roles: ['admin']
     }, {
         name: 'nodes',
         roles: ['admin']
