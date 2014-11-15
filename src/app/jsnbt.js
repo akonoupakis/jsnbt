@@ -52,7 +52,11 @@ module.exports = {
 
     sections: [],
 
-    data: [],    
+    dpd: {
+
+        permissions: []
+
+    },
         
     injects: {},
 
@@ -176,14 +180,14 @@ module.exports = {
             }
         });
 
-        var moduleData = moduleConfig.data || [];
-        _.each(moduleData, function (moduleDatum) {
-            var matchedDatum = _.first(_.filter(self.data, function (x) { return x.collection === moduleDatum.collection; }));
-            if (matchedDatum) {
-                extend(true, matchedDatum, moduleDatum);
+        var modulePermissions = ((moduleConfig.dpd || {}).permissions || []);
+        _.each(modulePermissions, function (modulePermission) {
+            var matchedPermission = _.first(_.filter(self.dpd.permissions, function (x) { return x.collection === modulePermission.collection; }));
+            if (matchedPermission) {
+                extend(true, matchedPermission, modulePermission);
             }
             else {
-                self.data.push(clone(moduleDatum));
+                self.dpd.permissions.push(clone(modulePermission));
             }
         });
         

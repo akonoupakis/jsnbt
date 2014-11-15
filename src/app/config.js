@@ -6,7 +6,7 @@ module.exports = {
 
     browsable: false,
 
-    public: false,
+    public: true,
     
     images: [{
         name: 'admin-explorer-thumb',
@@ -115,58 +115,60 @@ module.exports = {
         roles: ['sa']
     }],
 
-    data: [{
-        collection: 'languages',
+    dpd: {
         permissions: [{
-            role: 'public',
-            crud: ['R']
+            collection: 'languages',
+            roles: [{
+                role: 'public',
+                crud: ['R']
+            }, {
+                role: 'sa',
+                crud: ['C', 'R', 'U', 'D']
+            }]
         }, {
-            role: 'sa',
-            crud: ['C', 'R', 'U', 'D']
-        }]
-    }, {
-        collection: 'nodes',
-        permissions: [{
-            role: 'public',
-            crud: ['R']
+            collection: 'nodes',
+            roles: [{
+                role: 'public',
+                crud: ['R']
+            }, {
+                role: 'admin',
+                crud: ['C', 'R', 'U', 'D']
+            }]
         }, {
-            role: 'admin',
-            crud: ['C', 'R', 'U', 'D']
-        }]
-    }, {
-        collection: 'data',
-        permissions: [{
-            role: 'public',
-            crud: ['R']
+            collection: 'data',
+            roles: [{
+                role: 'public',
+                crud: ['R']
+            }, {
+                role: 'admin',
+                crud: ['C', 'R', 'U', 'D']
+            }]
         }, {
-            role: 'admin',
-            crud: ['C', 'R', 'U', 'D']
-        }]
-    }, {
-        collection: 'texts',
-        permissions: [{
-            role: 'public',
-            crud: ['R']
+            collection: 'texts',
+            roles: [{
+                role: 'public',
+                crud: ['R']
+            }, {
+                role: 'translator',
+                crud: ['R', 'U']
+            }, {
+                role: 'sa',
+                crud: ['C', 'R', 'U', 'D']
+            }]
         }, {
-            role: 'translator',
-            crud: ['R', 'U']
+            collection: 'users',
+            roles: [{
+                role: 'admin',
+                crud: ['C', 'R', 'U']
+            }]
         }, {
-            role: 'sa',
-            crud: ['C', 'R', 'U', 'D']
+            collection: 'settings',
+            roles: [{
+                role: 'sa',
+                crud: ['C', 'R', 'U', 'D']
+            }]
         }]
-    }, {
-        collection: 'users',
-        permissions: [{
-            role: 'admin',
-            crud: ['C', 'R', 'U']
-        }]
-    }, {
-        collection: 'settings',
-        permissions: [{
-            role: 'sa',
-            crud: ['C', 'R', 'U', 'D']
-        }]
-    }],
+    },
 
     templates: [{
         path: '/tmpl/index.html',
