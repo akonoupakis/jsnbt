@@ -1,12 +1,12 @@
-﻿<div ng-class="{ invalid: enabled && !valid }">
-    <div class="form-group" ng-class="{ 'has-error': enabled && !valid, 'has-feedback': enabled && !valid }">
+﻿<div ng-class="{ invalid: !ngDisabled && !valid }">
+    <div class="form-group" ng-class="{ 'has-error': !ngDisabled && !valid, 'has-feedback': !ngDisabled && !valid }">
         <label ng-show="ngLabel" class="control-label" for="ddl{{id}}">{{ngLabel}}<small ng-show="ngTip">({{ngTip}})</small></label>
         <div class="form-control-feedback-container">
-            <select class="form-control" id="ddl{{id}}" ng-model="ngModel" ng-change="changed()" ng-disabled="!enabled">
+            <select class="form-control" id="ddl{{id}}" ng-model="ngModel" ng-change="changed()" ng-disabled="ngDisabled">
                 <option ng-show="ngDefault" value="" ng-selected="!ngModel || notFound">Please select</option>
                 <option ng-repeat="item in ngOptions" value="{{item[valueField]}}" ng-selected="item[valueField] === ngModel">{{item[nameField]}}</option>
             </select>
-            <span ng-show="enabled && !valid" class="glyphicon glyphicon-remove form-control-feedback"></span>
+            <span ng-show="!ngDisabled && !valid" class="glyphicon glyphicon-remove form-control-feedback"></span>
         </div>
     </div>
 </div> 

@@ -12,7 +12,7 @@
                 replace: true,
                 scope: {
                     ngModel: '=',
-                    ngEnabled: '=',
+                    ngDisabled: '=',
                     ngRequired: '=',
                     ngLabel: '@',
                     ngTip: '@',
@@ -28,7 +28,7 @@
                     
                     scope.id = Math.random().toString().replace('.', '');
                     scope.valid = true;
-                    scope.enabled = scope.ngEnabled !== undefined ? scope.ngEnabled : true;
+                    scope.enabled = !scope.ngDisabled;
 
                     scope.valueField = scope.ngValueField ? scope.ngValueField : 'value';
                     scope.nameField = scope.ngNameField ? scope.ngNameField : 'name';
@@ -99,8 +99,8 @@
                         initiated = true;
                     });
 
-                    scope.$watch('ngEnabled', function (newValue) {
-                        scope.enabled = newValue !== undefined ? newValue : true;
+                    scope.$watch('ngDisabled', function (newValue) {
+                        scope.enabled = !newValue;
 
                         $(scope.ngOptions).each(function (o, option) {
                             if ($('.bootstrap-switch-id-chk' + scope.id + option[scope.valueField], element).length > 0) {

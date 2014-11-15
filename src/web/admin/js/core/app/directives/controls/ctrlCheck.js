@@ -12,7 +12,7 @@
                 replace: true,
                 scope: {
                     ngModel: '=',
-                    ngEnabled: '=',
+                    ngDisabled: '=',
                     ngLabel: '@',
                     ngTip: '@'
                 },
@@ -21,7 +21,7 @@
                     element.addClass('ctrl-check');
                     
                     scope.id = Math.random().toString().replace('.', '');
-                    scope.enabled = scope.ngEnabled !== undefined ? scope.ngEnabled : true;
+                    scope.enabled = !scope.ngDisabled;
 
                     var initiating = true;
                     var initiated = false;
@@ -33,7 +33,7 @@
                     });
 
                     scope.$watch('ngEnabled', function (newValue) {
-                        scope.enabled = newValue !== undefined ? newValue : true;
+                        scope.enabled = !newValue;
                         element.find('input[type="checkbox"]').bootstrapSwitch('disabled', !scope.enabled);
                     });
 

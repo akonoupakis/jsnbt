@@ -12,7 +12,7 @@
                 replace: true,
                 scope: {
                     ngModel: '=',
-                    ngEnabled: '=',
+                    ngDisabled: '=',
                     ngRequired: '=',
                     ngLabel: '@',
                     ngTip: '@',
@@ -26,15 +26,13 @@
                     scope.value = [];
                     scope.valid = true;
                     scope.empty = false;
-                    scope.enabled = scope.ngEnabled !== undefined ? scope.ngEnabled : true;
                     
                     scope.invalid = {};
                     scope.wrong = {};
 
                     var initiated = false;
 
-                    scope.$watch('ngEnabled', function (newValue) {
-                        scope.enabled = newValue !== undefined ? newValue : true;
+                    scope.$watch('ngDisabled', function (newValue) {
 
                         if (initiated)
                             scope.valid = isValid();
@@ -50,7 +48,7 @@
                         var valid = true;
                         scope.empty = false;
 
-                        if (scope.enabled) {
+                        if (!scope.ngDisabled) {
 
                             if (scope.ngRequired) {
                                 if (!scope.ngModel) {

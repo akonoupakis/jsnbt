@@ -12,7 +12,7 @@
                 replace: true,
                 scope: {
                     ngModel: '=',
-                    ngEnabled: '=',
+                    ngDisabled: '=',
                     ngRequired: '=',
                     ngOptions: '=',
                     ngLabel: '@',
@@ -57,10 +57,10 @@
 
                         scope.id = Math.random().toString().replace('.', '');
                         scope.valid = true;
-                        scope.enabled = true;// scope.ngEnabled !== undefined ? scope.ngEnabled : true;
+                        scope.enabled = true;
 
-                        scope.$watch('ngEnabled', function (newValue) {
-                            scope.enabled = newValue !== undefined ? newValue : true;
+                        scope.$watch('ngDisabled', function (newValue) {
+                            scope.enabled = true; // newValue !== undefined ? newValue : true;
                         });
 
                         var initiated = false;

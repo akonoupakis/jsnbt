@@ -14,7 +14,7 @@
                     ngModel: '=',
                     ngDomain: '=',
                     ngOptions: '=',
-                    ngEnabled: '=',
+                    ngDisabled: '=',
                     ngRequired: '=',
                     ngLabel: '@',
                     ngTip: '@'
@@ -28,13 +28,10 @@
                     scope.valid = true;
                     scope.wrong = false;
                     scope.missing = false;
-                    scope.enabled = scope.ngEnabled !== undefined ? scope.ngEnabled : true;
 
                     var initiated = false;
 
-                    scope.$watch('ngEnabled', function (newValue) {
-                        scope.enabled = newValue !== undefined ? newValue : true;
-
+                    scope.$watch('ngDisabled', function (newValue) {
                         if (initiated)
                             scope.valid = isValid();
                     });
@@ -48,7 +45,7 @@
                     var isValid = function () {
                         var valid = true;
 
-                        if (scope.enabled) {
+                        if (!scope.ngDisabled) {
 
                             if (valid) {
                                 if (scope.ngRequired) {
