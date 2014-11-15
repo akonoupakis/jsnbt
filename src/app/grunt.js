@@ -66,13 +66,16 @@ module.exports = function (grunt) {
             if (fs.existsSync(packInfoPath)) {
                 var packInfo = require(packInfoPath);
                 if (packInfo.main) {
-                    var packIndexPath = server.getPath(packInfo.name === 'jsnbt' ? 'src/app/index.js' : packInfo.main);
+                    var packIndexPath = server.getPath(packInfo.main);
                     if (fs.existsSync(packIndexPath)) {
                         var packObject = require(packIndexPath);
-                        if (packObject && packObject.templates) {
-                            _.each(packObject.templates, function (packTemplate) {
-                                addFile('src/web/public/' + _.str.ltrim(packTemplate.path, '/'));
-                            });
+                        if (packObject) {
+                            var packConfig = typeof (packObject.getConfig) === 'function' ? packObject.getConfig() : {};
+                            if (_.isArray(packConfig.templates)) {
+                                _.each(packConfig.templates, function (packTemplate) {
+                                    addFile('src/web/public/' + _.str.ltrim(packTemplate.path, '/'));
+                                });
+                            }
                         }
                     }
                 }
@@ -97,13 +100,17 @@ module.exports = function (grunt) {
                             var nodeModulePackage = require(nodeModulePackagePath);
 
                             if (nodeModulePackage.main) {
-                                var nodeModuleIndexPath = server.getPath('node_modules/' + packageItem + '/' + nodeModulePackage.name === 'jsnbt' ? 'src/app/index.js' : nodeModulePackage.main);
+                                var nodeModuleIndexPath = server.getPath('node_modules/' + packageItem + '/' + nodeModulePackage.main);
                                 if (fs.existsSync(nodeModuleIndexPath)) {
-                                    var nodeModuleIndex = require(nodeModuleIndexPath);
-                                    if (nodeModuleIndex && nodeModuleIndex.templates) {
-                                        _.each(nodeModuleIndex.templates, function (packTemplate) {
-                                            addFile('src/pck/' + packageItem + '/web/public/' + _.str.ltrim(packTemplate.path, '/'));
-                                        });
+                                    var nodeModulePackObject = require(nodeModuleIndexPath);
+
+                                    if (nodeModulePackObject) {
+                                        var nodeModulePackConfig = typeof (nodeModulePackObject.getConfig) === 'function' ? nodeModulePackObject.getConfig() : {};
+                                        if (_.isArray(nodeModulePackConfig.templates)) {
+                                            _.each(nodeModulePackConfig.templates, function (packTemplate) {
+                                                addFile('src/pck/' + packageItem + '/web/public/' + _.str.ltrim(packTemplate.path, '/'));
+                                            });
+                                        }
                                     }
                                 }
                             }

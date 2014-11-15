@@ -139,6 +139,10 @@ exports.init = function (env, config, module) {
     delete this.init;
 };
 
+exports.getConfig = function () {
+    return require('./config.js');
+}
+
 exports.start = function (title) {
     this.title = title;
     this.server.listen();
