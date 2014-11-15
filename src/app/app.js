@@ -15,7 +15,7 @@ exports.server = null;
 
 exports.init = function (env, config, module) {
     var self = this;
-    
+
     process.chdir(env === 'prod' ? 'dist' : 'dev');
 
     var configSection = config[env];
@@ -74,16 +74,18 @@ exports.init = function (env, config, module) {
             return require('./config.js');
         }
     };
-    
+
     jsnbt.register('jsnbt', jsnbtModule);
-    
+
     if (module) {
         try {
             if (typeof (module.init) == 'function')
                 module.init(this);
 
-            if (module.domain && module.domain !== 'core')
-                jsnbt.register(module.domain, module);
+            var moduleConfig = typeof (module.getConfig) === 'function' ? module.getConfig() : {};
+
+            if (moduleConfig.domain && moduleConfig.domain !== 'core')
+                jsnbt.register(moduleConfig.domain, module);
         }
         catch (err) {
             this.logger.error(err.toString());
@@ -96,10 +98,12 @@ exports.init = function (env, config, module) {
             try {
                 var installedModule = require(installedPackages[i]);
 
+                var installedModuleConfig = typeof (installedModule.getConfig) === 'function' ? installedModule.getConfig() : {};
+
                 if (typeof (installedModule.init) == 'function')
                     installedModule.init(this);
-
-                if (installedModule.domain && installedModule.domain !== 'core')
+                
+                if (installedModuleConfig.domain && installedModuleConfig.domain !== 'core')
                     jsnbt.register(installedPackages[i], installedModule);
             }
             catch (err) {
@@ -107,7 +111,7 @@ exports.init = function (env, config, module) {
             }
         }
     }
-    
+
     this.server = deployd({
         port: config.port,
         env: config.env === 'prod' ? 'production' : 'development',
@@ -131,7 +135,7 @@ exports.init = function (env, config, module) {
         },
         appPath: __dirname
     });
-    
+
     delete this.init;
 };
 

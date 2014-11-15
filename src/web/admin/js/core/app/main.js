@@ -130,7 +130,7 @@
             simultaneousUploads: 1
         };
 
-        tinymce.baseURL = '/admin/css/lib/tinymce';
+        tinymce.baseURL = '/admin/css/core/lib/tinymce';
     })
     .run(function ($rootScope, $location, $route, $timeout, $fn, FunctionService, AuthService, AUTH_EVENTS, ROUTE_EVENTS) {
         $fn.register('core', FunctionService);

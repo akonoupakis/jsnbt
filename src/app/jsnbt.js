@@ -42,6 +42,8 @@ module.exports = {
 
     restricted: true,
 
+    jsModules: [],
+
     scripts: [],
 
     images: [],
@@ -92,6 +94,19 @@ module.exports = {
             var resultObj = {};
             extend(true, resultObj, obj);
             return resultObj
+        }
+
+        if (moduleConfig.jsModule) {
+            if (_.isString(moduleConfig.jsModule)) {
+                if (self.jsModules.indexOf(moduleConfig.jsModule) === -1)
+                    self.jsModules.push(moduleConfig.jsModule);
+            }
+            else if (_.isArray(moduleConfig.jsModule)) {
+                _.each(moduleConfig.jsModule, function (mod2) {
+                    if (self.jsModules.indexOf(mod2) === -1)
+                        self.jsModules.push(mod2);
+                });
+            }
         }
 
         var moduleScripts = moduleConfig.scripts || [];
@@ -250,20 +265,7 @@ module.exports = {
 
         if (site === 'admin') {
 
-            var jsModules = [];
-            _.each(this.modules, function (mod) {
-                if (mod.modules && mod.jsModule) {
-                    if (_.isString(mod.jsModule)) {
-                        jsModules.push(mod.jsModule);
-                    }
-                    else if (_.isArray(mod.jsModule)) {
-                        _.each(mod.jsModule, function (mod2) {
-                            jsModules.push(mod2);
-                        });
-                    }
-                }
-            });
-            result.jsModules = jsModules;
+            result.jsModules = self.jsModules;
 
             result.version = getVersion();
             result.restricted = self.restricted;
