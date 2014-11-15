@@ -87,7 +87,8 @@
             }).
             when('/modules', {
                 templateUrl: 'tmpl/core/pages/modules.html',
-                controller: 'ModulesController'
+                controller: 'ModulesController',
+                section: 'modules'
             }).
             when('/modules/:domain/list/:list', {
                 templateUrl: 'tmpl/core/pages/content/list.html',
@@ -116,10 +117,6 @@
                 section: 'settings',
                 domain: 'core',
                 tmpl: 'tmpl/core/specs/settings.html'
-            }).
-            when('/test', {
-                templateUrl: 'tmpl/core/pages/test.html',
-                controller: 'TestController'
             }).
             otherwise({
                 redirectTo: '/'

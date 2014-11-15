@@ -273,7 +273,8 @@ module.exports = {
                         domain: module.domain,
                         type: module.type,
                         version: module.version,
-                        pointed: module.pointed
+                        pointed: module.pointed,
+                        section: module.section
                     });
                 }
             });

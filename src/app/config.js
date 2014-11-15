@@ -96,6 +96,9 @@ module.exports = {
         name: 'nodes',
         roles: ['admin']
     }, {
+        name: 'modules',
+        roles: ['admin']
+    }, {
         name: 'data',
         roles: ['admin']
     }, {
