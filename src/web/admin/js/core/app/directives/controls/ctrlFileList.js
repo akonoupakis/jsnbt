@@ -77,7 +77,7 @@
                                             valid = false;
                                             scope.invalid[i] = true;
                                         }
-                                        else if (typeof(item) !== 'string') {
+                                        else if (!_.isString(item)) {
                                             valid = false;
                                             scope.invalid[i] = true;
                                         }
@@ -137,7 +137,7 @@
                         var item = scope.ngModel[index];
 
                         ModalService.open({
-                            title: 'select the files you want',
+                            title: 'select the file you want',
                             controller: 'FileSelectorController',
                             selected: item,
                             template: 'tmpl/core/modals/FileSelector.html',
@@ -158,7 +158,6 @@
                         ModalService.open({
                             title: 'select the files you want',
                             controller: 'FileSelectorController',
-                            //selected: scope.ngModel,
                             template: 'tmpl/core/modals/FileSelector.html',
                             mode: 'multiple',
                             extensions: scope.ngExtensions || []
@@ -169,6 +168,10 @@
                             $(results).each(function (i, item) {
                                 scope.ngModel.push(item);
                             });
+                            scope.ngModel = scope.ngModel.slice(0);
+
+                            if (initiated)
+                                scope.valid = isValid();
 
                             scope.changed();
                         });

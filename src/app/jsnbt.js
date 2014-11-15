@@ -152,7 +152,9 @@ module.exports = {
                     };
 
                     extend(true, newListSpec, moduleList);
-                    newListSpec.id = fileName;
+
+                    if (!newListSpec.id)
+                        newListSpec.id = fileName;
 
                     self.lists.push(newListSpec);
                 }

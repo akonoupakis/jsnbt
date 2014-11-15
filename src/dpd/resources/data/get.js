@@ -7,10 +7,12 @@ if (!internal && !auth.isAuthorized(me, 'data:' + self.domain + ':' + self.list,
 
 if (!internal) {
 
-    if (!auth.isInRole(me, 'admin')) {
-        hide('createdOn');
-        hide('modifiedOn');
-        hide('published');
+    if (self.id) {
+        if (!auth.isInRole(me, 'admin')) {
+            hide('createdOn');
+            hide('modifiedOn');
+            hide('published');
+        }
     }
 
 }

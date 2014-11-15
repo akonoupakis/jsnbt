@@ -1,26 +1,28 @@
 ﻿<div ng-class="{ 'ng-required': ngRequired, invalid: enabled && !valid }">
-    <div class="form-group" ng-class="{ 'has-error': enabled && !valid, 'has-feedback': enabled && !valid }">
+    <div class="form-group">
         <label ng-show="ngLabel" class="control-label">{{ngLabel}}<small ng-show="ngTip">({{ngTip}})</small></label>
 
         <ul class="ctrl-data-list-contents sortable-group" ui-sortable="sortableOptions" ng-model="value">
-            <li ng-repeat="item in value track by $index">
+            <li ng-repeat="item in value track by $index" ng-class="{ 'has-error': enabled && !valid && invalid[$index], 'has-feedback': enabled && !valid && invalid[$index] }" class="form-control-feedback-container">
                 <div class="input-group">
                     <span class="input-group-btn">
                         <button class="btn btn-default glyphicon glyphicon-move" type="button" ng-disabled="!enabled"></button>
                     </span>
-                    <input type="text" class="form-control" id="data{{id}}{{item.id}}" ng-model="item.name" ng-disabled="true" />
+                    <input type="text" class="form-control" value="{{ wrong[$index] ? (missing[$index] ? '-- not found -- (' + item.id + ')' : '-- invalid value --') : item.name }}" ng-disabled="true" />
+                    <span ng-show="enabled && !valid && invalid[$index]" class="glyphicon glyphicon-remove form-control-feedback"></span>
                     <span class="input-group-btn">
-                        <button class="btn btn-default glyphicon glyphicon-remove" type="button" ng-click="clear(item)" ng-disabled="!enabled"></button>
+                        <button class="btn btn-default glyphicon glyphicon-th" type="button" ng-click="edit($index)" ng-disabled="!enabled"></button>
+                        <button class="btn btn-default glyphicon glyphicon-remove" type="button" ng-click="clear($index)" ng-disabled="!enabled"></button>
                     </span>
                 </div>
             </li>
         </ul>
 
-        <div class="input-group form-control-feedback-container">
-            <input type="text" class="form-control" id="data{{id}}" ng-disabled="true" />
-            <span ng-show="enabled && !valid" class="glyphicon glyphicon-remove form-control-feedback"></span>
+        <div class="input-group insert-form-control form-control-feedback-container" ng-class="{ 'has-error': enabled && !valid && empty, 'has-feedback': enabled && !valid && empty }">
+            <input type="text" class="form-control" ng-disabled="true" />
+            <span ng-show="enabled && !valid && empty" class="glyphicon glyphicon-remove form-control-feedback"></span>
             <span class="input-group-btn">
-                <button class="btn btn-default glyphicon glyphicon-plus-sign" type="button" ng-click="select()" ng-disabled="!enabled || !ngDomain"></button>
+                <button class="btn btn-default glyphicon glyphicon-plus-sign" type="button" ng-click="add()" ng-disabled="!enabled || !ngDomain || !ngListId"></button>
             </span>
         </div>
     </div>

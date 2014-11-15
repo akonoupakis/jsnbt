@@ -187,6 +187,7 @@ module.exports = {
     }],
 
     lists: [{
+        id: 'sample1',
         name: 'Sample 01',
         spec: '/tmpl/spec/list/sample1.html',
         localized: true,
@@ -198,6 +199,7 @@ module.exports = {
             crud: ['C', 'R', 'U', 'D']
         }]
     }, {
+        id: 'sample2',
         name: 'Sample 02',
         spec: '/tmpl/spec/list/sample2.html',
         localized: false

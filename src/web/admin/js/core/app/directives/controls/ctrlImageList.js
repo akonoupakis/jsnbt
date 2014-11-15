@@ -214,6 +214,7 @@
                                 scope.ngModel = [];
 
                             scope.ngModel.push(result);
+                            scope.ngModel = scope.ngModel.slice(0);
 
                             if (initiated)
                                 scope.valid = isValid();

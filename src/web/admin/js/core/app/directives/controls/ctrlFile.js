@@ -52,7 +52,7 @@
                                 if (scope.ngRequired) {
                                     if (!scope.ngModel)
                                         valid = false;
-                                    else if (typeof (scope.ngModel) !== 'string')
+                                    else if (!_.isString(scope.ngModel))
                                         valid = false;
                                     else if (scope.ngModel === '')
                                         valid = false;
@@ -61,7 +61,7 @@
                                 }
 
                                 if (scope.ngModel) {
-                                    if (typeof (scope.ngModel) !== 'string')
+                                    if (!_.isString(scope.ngModel))
                                         valid = false;
                                     else if (scope.ngModel === '')
                                         valid = false;
@@ -77,7 +77,7 @@
 
                     scope.$watch('ngModel', function (newValue, prevValue) {
                         if (newValue) {
-                            if (typeof (newValue) === 'string') {
+                            if (_.isString(newValue)) {
                                 scope.value = newValue;
                                 scope.wrong = false;
                             }

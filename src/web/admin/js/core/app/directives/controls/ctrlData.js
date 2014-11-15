@@ -13,7 +13,7 @@
                 scope: {
                     ngModel: '=',
                     ngDomain: '=',
-                    ngList: '=',
+                    ngListId: '=',
                     ngEnabled: '=',
                     ngRequired: '=',
                     ngLabel: '@',
@@ -26,6 +26,8 @@
                     scope.id = Math.random().toString().replace('.', '');
                     scope.value = '';
                     scope.valid = true;
+                    scope.wrong = false;
+                    scope.missing = false;
                     scope.enabled = scope.ngEnabled !== undefined ? scope.ngEnabled : true;
 
                     var initiated = false;
@@ -50,7 +52,19 @@
 
                             if (valid) {
                                 if (scope.ngRequired) {
-                                    valid = !!scope.ngModel && scope.ngModel !== '';
+                                    if (!scope.ngModel)
+                                        valid = false;
+                                    else if (!_.isString(scope.ngModel))
+                                        valid = false;
+                                    else if (scope.ngModel === '')
+                                        valid = false;
+                                }
+
+                                if (scope.ngModel) {
+                                    if (!_.isString(scope.ngModel))
+                                        valid = false;
+                                    else if (scope.wrong && scope.missing)
+                                        valid = false;
                                 }
                             }
                         }
@@ -58,19 +72,44 @@
                         return valid;
                     };
 
-                    scope.$watch('ngModel', function (newValue, prevValue) { 
-                        if (newValue && newValue !== '') {
-                            $data.data.get(newValue).then(function (response) {
-                                scope.value = response.name;
+                    scope.$watch('ngModel', function (newValue, prevValue) {
+                        if (newValue) {
+                            if (_.isString(newValue)) {
+                                if (newValue !== '') {
+                                    $data.data.get({
+                                        domain: scope.ngDomain,
+                                        list: scope.ngListId,
+                                        id: newValue
+                                    }).then(function (response) {
+                                        scope.value = response.name;
+                                        scope.wrong = false;
+                                        scope.missing = false;
+
+                                        if (initiated)
+                                            scope.valid = isValid();
+                                    }, function (error) {
+                                        scope.value = newValue;
+                                        scope.wrong = true;
+                                        scope.missing = true;
+
+                                        if (initiated)
+                                            scope.valid = isValid();
+                                    });
+                                }
+                            }
+                            else {
+                                scope.value = '';
+                                scope.wrong = true;
+                                scope.missing = false;
 
                                 if (initiated)
                                     scope.valid = isValid();
-                            }, function (error) {
-                                throw error;
-                            });
+                            }
                         }
                         else {
                             scope.value = '';
+                            scope.wrong = false;
+                            scope.missing = false;
 
                             if (initiated)
                                 scope.valid = isValid();
@@ -93,7 +132,7 @@
                             selected: scope.ngModel,
                             template: 'tmpl/core/modals/dataSelector.html',
                             domain: scope.ngDomain,
-                            list: scope.ngList,
+                            list: scope.ngListId,
                             mode: 'single'
                         }).then(function (result) {
                             scope.ngModel = result || '';

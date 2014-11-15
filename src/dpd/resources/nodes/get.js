@@ -11,24 +11,24 @@ if (!internal && !auth.isAuthorized(me, 'nodes', 'R')) {
 }
 
 if (!internal) {
-            
-    node.buildUrl(self, function (response) {
-        self.url = response;
-    });
+    if (self.id) {
+        node.buildUrl(self, function (response) {
+            self.url = response;
+        });
 
-    node.getActiveInfo(self, function (response) {
-        self.enabled = response;
-    });
+        node.getActiveInfo(self, function (response) {
+            self.enabled = response;
+        });
 
-    if (!auth.isInRole(me, 'admin')) {
-        hide('roles');
-        hide('robots');
-        hide('template');
-        hide('meta');
-        
-        hide('createdOn');
-        hide('modifiedOn');
-        hide('published');
+        if (!auth.isInRole(me, 'admin')) {
+            hide('roles');
+            hide('robots');
+            hide('template');
+            hide('meta');
+
+            hide('createdOn');
+            hide('modifiedOn');
+            hide('published');
+        }
     }
-
 }

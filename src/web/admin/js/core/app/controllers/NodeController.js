@@ -71,8 +71,8 @@
 
                         $scope.node = result;
 
-                        if ($route.current.$$route.name && result.data.localized['en'] && result.data.localized['en'][$route.current.$$route.name]) {
-                            $scope.name = result.data.localized['en'][$route.current.$$route.name];
+                        if ($route.current.$$route.name && result.content.localized['en'] && result.content.localized['en'][$route.current.$$route.name]) {
+                            $scope.name = result.content.localized['en'][$route.current.$$route.name];
                         }
                         else {
                             $scope.name = result.name;
@@ -126,8 +126,8 @@
 
                                         var nameValue = resultNode.name;
 
-                                        if ($route.current.$$route.name && resultNode.data.localized['en'] && resultNode.data.localized['en'][$route.current.$$route.name]) {
-                                            nameValue = resultNode.data.localized['en'][$route.current.$$route.name];
+                                        if ($route.current.$$route.name && resultNode.content.localized['en'] && resultNode.content.localized['en'][$route.current.$$route.name]) {
+                                            nameValue = resultNode.content.localized['en'][$route.current.$$route.name];
                                         }
 
                                         breadcrumb.push({
@@ -358,11 +358,15 @@
 
                     if ($scope.node && $scope.node.entity !== 'pointer') {
                         var spec = _.find($jsnbt.templates, function (x) { return x.path === $scope.node.template; });
-                        if (spec)
+                        if (spec) {
                             $scope.tmpl = spec.spec;
-                        else {
-                            $scope.tmpl = null;
                         }
+                        else {
+                            $scope.tmpl = undefined;
+                        }
+                    }
+                    else {
+                        $scope.tmpl = undefined;
                     }
                     
                     deferred.resolve();                    

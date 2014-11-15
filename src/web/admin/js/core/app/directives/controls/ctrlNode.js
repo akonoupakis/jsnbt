@@ -27,6 +27,7 @@
                     scope.value = '';
                     scope.valid = true;
                     scope.wrong = false;
+                    scope.missing = false;
                     scope.enabled = scope.ngEnabled !== undefined ? scope.ngEnabled : true;
 
                     var initiated = false;
@@ -53,15 +54,18 @@
                                 if (scope.ngRequired) {
                                     if (!scope.ngModel)
                                         valid = false;
-                                    else if (typeof (scope.ngModel) !== 'string')
+                                    else if (!_.isString(scope.ngModel))
                                         valid = false;
                                     else if (scope.ngModel === '')
                                         valid = false;
                                 }
 
                                 if (scope.ngModel) {
-                                    if (typeof (scope.ngModel) !== 'string')
+                                    if (!_.isString(scope.ngModel))
                                         valid = false;
+                                    else if (scope.wrong && scope.missing)
+                                        valid = false;
+
                                 }
                             }
 
@@ -71,26 +75,42 @@
                     };
        
                     scope.$watch('ngModel', function (newValue, prevValue) {
-                        if (newValue && newValue !== '') {
-                            $data.nodes.get(newValue).then(function (response) {
-                                scope.value = response.name;
-                                scope.wrong = false;
+                        if (newValue) {
+                            if (_.isString(newValue)) {
+                                if (newValue !== '') {
+                                    $data.nodes.get({
+                                        id: newValue,
+                                        domain: scope.ngDomain
+                                    }).then(function (response) {
+                                        scope.value = response.name;
+                                        scope.wrong = false;
+                                        scope.missing = false;
 
-                                if (initiated)
-                                    scope.valid = isValid();
-                            }, function (error) {
-                                scope.value = newValue;
+                                        if (initiated)
+                                            scope.valid = isValid();
+                                    }, function (error) {
+                                        scope.value = newValue;
+                                        scope.wrong = true;
+                                        scope.missing = true;
+
+                                        if (initiated)
+                                            scope.valid = isValid();
+                                    });
+                                }
+                            }
+                            else {
+                                scope.value = '';
                                 scope.wrong = true;
+                                scope.missing = false;
 
                                 if (initiated)
                                     scope.valid = isValid();
-
-                                throw error;
-                            });
+                            }
                         }
                         else {
                             scope.value = '';
                             scope.wrong = false;
+                            scope.missing = false;
 
                             if (initiated)
                                 scope.valid = isValid();
