@@ -141,7 +141,9 @@
                                             });
 
                                             scope.wrong[nv] = true;
-                                            scope.missing[nv] = true;
+
+                                            if (!invalids[nv])
+                                                scope.missing[nv] = true;
                                         }
                                     });
 

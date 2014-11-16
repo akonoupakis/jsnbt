@@ -17,6 +17,15 @@ module.exports = {
                 height: 60
             }
         }]
+    }, {
+        name: 'admin-image-thumb',
+        processors: [{
+            type: 'stretch',
+            options: {
+                width: 60,
+                height: 60
+            }
+        }]
     }],
 
     /*

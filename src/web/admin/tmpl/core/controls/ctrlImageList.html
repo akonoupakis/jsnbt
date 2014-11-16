@@ -8,12 +8,15 @@
                     <span class="input-group-btn">
                         <button class="btn btn-default glyphicon glyphicon-move" type="button" ng-disabled="ngDisabled"></button>
                     </span>
-                    <input type="text" class="form-control" value="{{ wrong[$index] ? '-- invalid value --' : item.src }}" disabled="disabled" />
+                    <div class="form-control">
+                        <img ng-src="../{{ wrong[$index] ? 'admin/img/core/noimage.jpg' : (item.src != '' ? item.src : 'admin/img/core/noimage.jpg') }}?type=admin-image-thumb" />
+                        <span>{{ wrong[$index] ? '-- invalid value --' : item.src }}</span>
+                    </div>
                     <span ng-show="!ngDisabled && !valid && invalid[$index]" class="glyphicon glyphicon-remove form-control-feedback"></span>
                     <span class="input-group-btn">
-                        <button class="btn btn-default glyphicon glyphicon-th" type="button" ng-click="edit($index)" ng-disabled="ngDisabled"></button>
-                        <button class="btn btn-default glyphicon glyphicon-picture" type="button" ng-click="crop($index)" ng-disabled="ngDisabled || wrong[$index] || !item.src"></button>
-                        <button class="btn btn-default glyphicon glyphicon-remove" type="button" ng-click="clear($index)" ng-disabled="ngDisabled"></button>
+                        <button title="select" class="btn btn-default glyphicon glyphicon-th" type="button" ng-click="edit($index)" ng-disabled="ngDisabled"></button>
+                        <button title="crop" class="btn btn-default glyphicon glyphicon-picture" type="button" ng-click="crop($index)" ng-disabled="ngDisabled || wrong[$index] || !item.src"></button>
+                        <button title="delete" class="btn btn-default glyphicon glyphicon-remove" type="button" ng-click="clear($index)" ng-disabled="ngDisabled"></button>
                     </span>
                 </div>
             </li>

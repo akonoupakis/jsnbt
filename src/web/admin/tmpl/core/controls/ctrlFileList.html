@@ -11,8 +11,8 @@
                     <input type="text" class="form-control" value="{{ wrong[$index] ? '-- invalid value --' : item }}" disabled="disabled" />
                     <span ng-show="!ngDisabled && !valid && invalid[$index]" class="glyphicon glyphicon-remove form-control-feedback"></span>
                     <span class="input-group-btn">
-                        <button class="btn btn-default glyphicon glyphicon-th" type="button" ng-click="edit($index)" ng-disabled="ngDisabled"></button>
-                        <button class="btn btn-default glyphicon glyphicon-remove" type="button" ng-click="clear($index)" ng-disabled="ngDisabled"></button>
+                        <button title="select" class="btn btn-default glyphicon glyphicon-th" type="button" ng-click="edit($index)" ng-disabled="ngDisabled"></button>
+                        <button title="delete" class="btn btn-default glyphicon glyphicon-remove" type="button" ng-click="clear($index)" ng-disabled="ngDisabled"></button>
                     </span>
                 </div>
             </li>
