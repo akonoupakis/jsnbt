@@ -11,7 +11,7 @@ module.exports = {
     active: {
     
     },
-
+    
     purge: function (nodeId) {
         var self = this;
 

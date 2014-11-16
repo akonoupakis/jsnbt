@@ -2,12 +2,14 @@ var app = require('./app.js');
 
 module.exports = {
 
+    // core module configs
+
     domain: 'core',
-
     browsable: false,
-
     public: true,
     
+    // common module configs
+
     images: [{
         name: 'admin-explorer-thumb',
         processors: [{
@@ -53,19 +55,7 @@ module.exports = {
     */
 
     scripts: [],
-
-    injects: {
-        navigation: [{
-            index: 5,
-            identifier: 'extra',
-            name: 'extra',
-            url: '/extra',
-        }],
-        dashboard: 'tmpl/test/dashboardSpec.html',
-        content: 'tmpl/test/contentSpec.html',
-        settings: 'tmpl/test/settingsSpec.html'
-    },
-
+    
     entities: [{
         name: 'page',
         allowed: ['page', 'pointer'],
@@ -133,6 +123,15 @@ module.exports = {
             }, {
                 role: 'sa',
                 crud: ['C', 'R', 'U', 'D']
+            }]
+        }, {
+            collection: 'layouts',
+            roles: [{
+                role: 'public',
+                crud: ['R']
+            }, {
+                role: 'admin',
+                crud: ['C', 'R', 'U']
             }]
         }, {
             collection: 'nodes',
@@ -219,5 +218,22 @@ module.exports = {
         name: 'Sample 02',
         spec: '/tmpl/spec/list/sample2.html',
         localized: false
-    }]
+    }],
+
+    injects: {
+        navigation: [{
+            index: 5,
+            identifier: 'extra',
+            name: 'extra',
+            url: '/extra',
+        }],
+        dashboard: 'tmpl/public/injects/dashboard.html',
+        content: 'tmpl/public/injects/content.html',
+        settings: 'tmpl/public/injects/settings.html'
+    },
+    
+    layouts: {
+        global: 'tmpl/public/layouts/global.html',
+        global: 'tmpl/public/layouts/eshop.html'
+    }
 }

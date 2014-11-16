@@ -127,12 +127,23 @@
                 roles: []
             });
             
+            $data.register('layouts', {
+                layout: '',
+                content: {
+                    localized: {}
+                }
+            });
+
             $data.register('nodes', {
                 name: '',
                 domain: 'core',                
                 entity: 'page',
                 parent: '',
                 published: false,
+                layout: {
+                    inherits: true,
+                    value: ''
+                },
                 content: {
                     localized: {}
                 },

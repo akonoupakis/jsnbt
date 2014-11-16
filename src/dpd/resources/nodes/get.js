@@ -25,6 +25,7 @@ if (!internal) {
             hide('robots');
             hide('template');
             hide('meta');
+            hide('layout');
 
             hide('createdOn');
             hide('modifiedOn');

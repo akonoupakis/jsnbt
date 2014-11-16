@@ -171,3 +171,4 @@ $RECYCLE.BIN/
 
 /*.cmd
 /*.sln
+/src/web/admin/tmpl/public

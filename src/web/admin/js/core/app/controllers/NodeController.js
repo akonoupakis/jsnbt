@@ -13,13 +13,17 @@
             $scope.node = undefined;
             $scope.entity = undefined;
             
-            $scope.roleOptions = [];
             $scope.roles = [];
+            $scope.nodeRoles = [];
             $scope.draftRoles = [];
 
-            $scope.robotOptions = [];
             $scope.robots = [];
+            $scope.nodeRobots = [];
             $scope.draftRobots = [];
+
+            $scope.layouts = [];
+            $scope.nodeLayout = '';
+            $scope.draftLayout = '';
 
             $scope.seoNames = [];
             
@@ -87,12 +91,16 @@
                         $scope.valid = true;
                         $scope.published = true;
 
-                        $scope.roles = result.roles.values;
+                        $scope.nodeLayout = result.layout.value;
+                        $scope.draftLayout = result.layout.value;
+                        console.log(result.layout.value);
+
+                        $scope.nodeRoles = result.roles.values;
                         $scope.draftRoles = result.roles.values;
 
-                        $scope.robots = result.robots.values;
+                        $scope.nodeRobots = result.robots.values;
                         $scope.draftRobots = result.robots.values;
-
+                        
                         deferred.resolve(result);
                         
                     }, function (error) {
@@ -194,6 +202,23 @@
                     return deferred.promise;
                 },
 
+                setLayouts: function () {
+                    var deferred = $q.defer();
+      
+                    var layouts = [];
+                    for (var layoutName in $jsnbt.layouts) {
+                        layouts.push({
+                            name: layoutName
+                        });
+                    }
+
+                    $scope.layouts = layouts;
+
+                    deferred.resolve(layouts);
+
+                    return deferred.promise;
+                },
+
                 setRoles: function () {
                     var deferred = $q.defer();
 
@@ -246,7 +271,7 @@
                         description: 'do not index images'
                     }];
 
-                    $scope.robotOptions = robots;
+                    $scope.robots = robots;
 
                     deferred.resolve(robots);
 
@@ -277,11 +302,42 @@
                     return deferred.promise;
                 },
 
+                setSelectedLayout: function (hierarchyNodes) {
+                    var deferred = $q.defer();
+
+                    if ($scope.node.layout.inherits) {
+                        $scope.draftLayout = $scope.nodeLayout;
+
+                        var layout = '';
+
+                        $($scope.node.hierarchy).each(function (i, item) {
+                            var matchedNode = _.first(_.filter(hierarchyNodes, function (x) { return x.id === item; }));
+                            if (matchedNode) {
+                                if (!matchedNode.layout.inherits) {
+                                    layout = matchedNode.layout.value;
+                                }
+                            }
+                            else {
+                                return false;
+                            }
+                        });
+
+                        $scope.nodeLayout = layout;
+                        deferred.resolve(layout);
+                    }
+                    else {
+                        $scope.nodeLayout = $scope.draftLayout;
+                        deferred.resolve($scope.nodeLayout);
+                    }
+
+                    return deferred.promise;
+                },
+
                 setSelectedRoles: function (hierarchyNodes) {
                     var deferred = $q.defer();
 
                     if ($scope.node.roles.inherits) {
-                        $scope.draftRoles = $scope.roles.slice(0);
+                        $scope.draftRoles = $scope.nodeRoles.slice(0);
 
                         var roles = [];
 
@@ -297,12 +353,12 @@
                             }
                         });
                                 
-                        $scope.roles = roles;
+                        $scope.nodeRoles = roles;
                         deferred.resolve(roles);
                     }
                     else {
                         var roles = $scope.draftRoles.slice(0);
-                        $scope.roles = roles;
+                        $scope.nodeRoles = roles;
                         deferred.resolve(roles);
                     }
 
@@ -313,7 +369,7 @@
                     var deferred = $q.defer();
 
                     if ($scope.node.robots.inherits) {
-                        $scope.draftRobots = $scope.robots.slice(0);
+                        $scope.draftRobots = $scope.nodeRobots.slice(0);
 
                         var robots = [];
 
@@ -329,12 +385,12 @@
                             }
                         });
 
-                        $scope.robots = robots;
+                        $scope.nodeRobots = robots;
                         deferred.resolve(robots);
                     }
                     else {
                         var robots = $scope.draftRobots.slice(0);
-                        $scope.robots = robots;
+                        $scope.nodeRobots = robots;
                         deferred.resolve(robots);
                     }
 
@@ -425,7 +481,7 @@
 
                     var modules = [];
                     $($jsnbt.modules).each(function (a, module) {
-                        if (module.type === 'addon' && module.pointed) {
+                        if (module.pointed) {
                             modules.push({
                                 name: module.name,
                                 domain: module.domain
@@ -651,12 +707,11 @@
 
                             var publishNode = {};
                             $.extend(true, publishNode, $scope.node);
-                            if (!publishNode.roles.inherits)
-                                publishNode.roles.values = $scope.roles;
 
-                            if (!publishNode.robots.inherits)
-                                publishNode.robots.values = $scope.robots;
-                            
+                            publishNode.roles.values = !publishNode.roles.inherits ? $scope.nodeRoles : [];
+                            publishNode.robots.values = !publishNode.robots.inherits ? $scope.nodeRobots : [];
+                            publishNode.layout.value = !publishNode.layout.inherits ? $scope.nodeLayout : '';
+
                             $data.nodes.put($scope.id, publishNode).then(function (result) {
                                 $scope.name = result.name;
                                 deferred.resolve(true);
@@ -802,6 +857,25 @@
                 }
             });
             
+            $scope.$watch('node.layout.inherits', function (newValue, prevValue) {
+                if (newValue !== undefined && prevValue !== undefined) {
+                    if (newValue === true) {
+                        fn.getHierarchyNodes().then(function (hierarchyNodes) {
+                            fn.setSelectedLayout(hierarchyNodes).catch(function (setEx) {
+                                logger.error(setEx);
+                            });
+                        }, function (ex) {
+                            logger.error(ex);
+                        });
+                    }
+                    else {
+                        fn.setSelectedLayout().catch(function (setEx) {
+                            logger.error(setEx);
+                        });
+                    }
+                }
+            });
+
             $scope.$watch('node.roles.inherits', function (newValue, prevValue) {
                 if (newValue !== undefined && prevValue !== undefined) {
                     if (newValue === true) {
@@ -867,10 +941,10 @@
 
 
             $timeout(function () {
-                $q.all(fn.setRoles(), fn.setRobots(), fn.setModules(), fn.setLanguages(), fn.setLanguage(), fn.setTypes()).then(function () {
+                $q.all(fn.setLayouts(), fn.setRoles(), fn.setRobots(), fn.setModules(), fn.setLanguages(), fn.setLanguage(), fn.setTypes()).then(function () {
                     fn.set().then(function (setResponse) {
                         fn.getHierarchyNodes().then(function (hierarchyNodes) {
-                            $q.all(fn.setSelectedRoles(hierarchyNodes), fn.setSelectedRobots(hierarchyNodes)).then(function () {
+                            $q.all(fn.setSelectedLayout(hierarchyNodes), fn.setSelectedRoles(hierarchyNodes), fn.setSelectedRobots(hierarchyNodes)).then(function () {
                             }, function (set2Error) {
                                 logger.error(set2Error);
                             });

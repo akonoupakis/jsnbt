@@ -45,6 +45,16 @@
         }
 
         $routeProvider.
+            when('/content/layouts', {
+                templateUrl: 'tmpl/core/pages/content/layouts.html',
+                controller: 'LayoutsController',
+                section: 'layouts'
+            }).
+            when('/content/layouts/:id', {
+                templateUrl: 'tmpl/core/pages/content/layout.html',
+                controller: 'LayoutController',
+                section: 'layouts'
+            }).
             when('/content/nodes', {
                 templateUrl: 'tmpl/core/pages/content/nodes.html',
                 controller: 'NodesController',
@@ -142,7 +152,7 @@
 
         $rootScope.back = function () {
             var prevUrl = history.length > 1 ? history.splice(-2)[0] : "/";
-            $location.path(prevUrl);
+            $location.previous(prevUrl);
         };
 
         $rootScope.location = $rootScope.location || {};

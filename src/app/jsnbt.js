@@ -62,6 +62,8 @@ module.exports = {
         
     injects: {},
 
+    layouts: {},
+
     templates: [],
 
     lists: [],
@@ -72,21 +74,7 @@ module.exports = {
 
         var moduleConfig = typeof (module.getConfig) === 'function' ? module.getConfig() : {};
         this.setConfig(name, moduleConfig);
-
-        if (moduleConfig.public) {
-            if (moduleConfig.locale !== undefined) {
-                var language = _.first(_.filter(this.languages, function (x) { return x.code === moduleConfig.locale; }));
-                if (language) {
-                    self.localization = false;
-                    self.locale = language.code;
-                }
-            }
-
-            if (moduleConfig.restricted !== undefined) {
-                self.restricted = moduleConfig.restricted;
-            }
-        }
-
+        
         moduleConfig.name = name;
         this.modules.push(moduleConfig);
         
@@ -125,6 +113,7 @@ module.exports = {
                 name: true,
                 parent: true,
                 template: true,
+                layout: true,
                 seo: true,
                 meta: true,
                 permissions: true,
@@ -144,34 +133,6 @@ module.exports = {
                 self.entities.push(newEntity);
             }            
         });
-
-        if (moduleConfig.domain !== 'core' || (moduleConfig.domain === 'core' && moduleConfig.public)) {
-            var moduleLists = moduleConfig.lists || [];
-            _.each(moduleLists, function (moduleList) {
-                var fileName = moduleList.spec.substring(0, moduleList.spec.lastIndexOf('.'));
-                fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
-
-                var moduleListDomain = moduleConfig.type === 'addon' ? moduleConfig.domain : 'core';
-
-                var matchedList = _.first(_.filter(self.lists, function (x) { return x.id === fileName && x.domain == moduleListDomain; }));
-                if (matchedList) {
-                    extend(true, matchedList, moduleList);
-                }
-                else {
-                    var newListSpec = {
-                        domain: moduleListDomain,
-                        localized: true
-                    };
-
-                    extend(true, newListSpec, moduleList);
-
-                    if (!newListSpec.id)
-                        newListSpec.id = fileName;
-
-                    self.lists.push(newListSpec);
-                }
-            });
-        }
 
         var moduleRoles = moduleConfig.roles || [];
         _.each(moduleRoles, function (moduleRole) {
@@ -205,7 +166,7 @@ module.exports = {
                 self.dpd.permissions.push(clone(modulePermission));
             }
         });
-        
+
         var moduleImages = moduleConfig.images || [];
         _.each(moduleImages, function (moduleImage) {
             var matchedImage = _.first(_.filter(self.images, function (x) { return x.name === moduleImage.name; }));
@@ -217,29 +178,80 @@ module.exports = {
             }
         });
 
-        if (moduleConfig.public) {
-            var moduleTemplates = moduleConfig.templates || [];
-            _.each(moduleTemplates, function (moduleTemplate) {
-                var matchedTemplate = _.first(_.filter(self.templates, function (x) { return x.path === moduleTemplate.path; }));
-                if (matchedTemplate) {
-                    extend(true, matchedTemplate, moduleTemplate);
+        if (moduleConfig.domain !== 'core' || (moduleConfig.domain === 'core' && moduleConfig.public)) {
+            
+            var moduleLists = moduleConfig.lists || [];
+            _.each(moduleLists, function (moduleList) {
+                var fileName = moduleList.spec.substring(0, moduleList.spec.lastIndexOf('.'));
+                fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
+
+                var moduleListDomain = moduleConfig.type === 'addon' ? moduleConfig.domain : 'core';
+
+                var matchedList = _.first(_.filter(self.lists, function (x) { return x.id === fileName && x.domain == moduleListDomain; }));
+                if (matchedList) {
+                    extend(true, matchedList, moduleList);
                 }
                 else {
-                    self.templates.push(clone(moduleTemplate));
+                    var newListSpec = {
+                        domain: moduleListDomain,
+                        localized: true
+                    };
+
+                    extend(true, newListSpec, moduleList);
+
+                    if (!newListSpec.id)
+                        newListSpec.id = fileName;
+
+                    self.lists.push(newListSpec);
                 }
             });
 
-            if (moduleConfig.injects) {
-                var injects = {};
+            if (moduleConfig.public) {
 
-                extend(true, injects, {
-                    navigation: [],
-                    dashboard: undefined,
-                    content: undefined,
-                    settings: undefined
-                }, moduleConfig.injects);
+                if (moduleConfig.locale !== undefined) {
+                    var language = _.first(_.filter(this.languages, function (x) { return x.code === moduleConfig.locale; }));
+                    if (language) {
+                        self.localization = false;
+                        self.locale = language.code;
+                    }
+                }
 
-                self.injects = injects;
+                if (moduleConfig.restricted !== undefined) {
+                    self.restricted = moduleConfig.restricted;
+                }
+
+                var moduleTemplates = moduleConfig.templates || [];
+                _.each(moduleTemplates, function (moduleTemplate) {
+                    var matchedTemplate = _.first(_.filter(self.templates, function (x) { return x.path === moduleTemplate.path; }));
+                    if (matchedTemplate) {
+                        extend(true, matchedTemplate, moduleTemplate);
+                    }
+                    else {
+                        self.templates.push(clone(moduleTemplate));
+                    }
+                });
+
+                if (moduleConfig.injects) {
+                    var injects = {};
+
+                    extend(true, injects, {
+                        navigation: [],
+                        dashboard: undefined,
+                        content: undefined,
+                        settings: undefined
+                    }, moduleConfig.injects);
+
+                    self.injects = injects;
+                }
+
+                if (_.isObject(moduleConfig.layouts)) {
+                    for (var layoutName in moduleConfig.layouts) {
+                        if (_.isString(moduleConfig.layouts[layoutName])) {
+                            self.layouts[layoutName] = moduleConfig.layouts[layoutName];
+                        }
+                    }                    
+                }
+
             }
         }
     },
@@ -301,6 +313,7 @@ module.exports = {
             
             result.templates = self.templates;
             result.injects = self.injects;
+            result.layouts = self.layouts;
         }
 
         result.languages = self.languages;

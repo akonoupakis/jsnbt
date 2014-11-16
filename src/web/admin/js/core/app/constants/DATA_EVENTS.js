@@ -27,7 +27,10 @@
             textDeleted: 'textDeleted',
 
             userCreated: 'userCreated',
-            userUpdated: 'userUpdated'
+            userUpdated: 'userUpdated',
+
+            layoutCreated: 'layoutCreated',
+            layoutUpdated: 'layoutUpdated'
 
         });
 })();

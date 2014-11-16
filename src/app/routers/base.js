@@ -97,6 +97,7 @@ module.exports = function () {
                                 else {
                                     ctx.node = resolved.page || {};
                                     ctx.pointer = resolved.pointer || {};
+                                    ctx.layout = resolved.getLayout();
                                     ctx.language = jsnbt.localization ? resolved.language || 'en' : jsnbt.locale;
                                     ctx.template = resolved.template || '';
                                     ctx.meta = resolved.page.meta || {};
