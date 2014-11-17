@@ -110,8 +110,8 @@
                                 $(newValue).each(function (nv, nValue) {
                                     if (_.isString(nValue)) {
                                         scopeValues.push({
-                                            id: result.id,
-                                            name: result.name
+                                            id: nValue,
+                                            name: nValue
                                         });
 
                                         scope.wrong[nv] = false;

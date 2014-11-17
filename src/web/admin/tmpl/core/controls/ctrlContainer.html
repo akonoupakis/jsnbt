@@ -5,7 +5,7 @@
             <input type="text" class="form-control" id="data{{id}}" value="{{ wrong ? (missing ? '-- not found -- (' + value + ')' : '-- invalid value --') : value }}" disabled="disabled" />
             <span ng-show="!ngDisabled && !valid" class="glyphicon glyphicon-remove form-control-feedback"></span>
             <div class="input-group-btn">
-                <button class="btn btn-default glyphicon glyphicon-th" type="button" ng-click="select()" ng-disabled="ngDisabled || !ngDomain"></button>
+                <button class="btn btn-default glyphicon glyphicon-th" type="button" ng-click="select()" ng-disabled="ngDisabled"></button>
                 <button class="btn btn-default glyphicon glyphicon-remove" type="button" ng-show="!ngRequired" ng-click="clear()" ng-disabled="ngDisabled || !ngModel"></button>
             </div>
         </div>

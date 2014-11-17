@@ -193,7 +193,7 @@ module.exports = {
 
     layouts: {
         global: 'tmpl/public/layouts/global.html',
-        global: 'tmpl/public/layouts/eshop.html'
+        eshop: 'tmpl/public/layouts/eshop.html'
     },
 
     containers: [

@@ -118,9 +118,6 @@
                     });
 
                     scope.select = function () {
-                        if (!scope.ngDomain || scope.ngDomain === '')
-                            return;
-
                         ModalService.open({
                             title: 'select a container item',
                             controller: 'ContainerSelectorController',
