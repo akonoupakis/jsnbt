@@ -29,7 +29,7 @@
             $scope.defaults.languages = [];
             $scope.defaults.language = null;
 
-            $scope.application.navigationSpec = $jsnbt.specs.navigation;
+            $scope.application.navigationSpec = $jsnbt.injects.navigation;
 
             var apply = function (fn) {
                 var phase = $scope.$root.$$phase;
@@ -134,8 +134,10 @@
 
             $scope.scroll2error = function () {
                 setTimeout(function () {
-                    if ($('.ctrl.invalid:visible:first').length > 0)
-                        $('body').scrollTo($('.ctrl.invalid:visible:first'), { offset: -150, duration: 400 });
+                    var firstInvalidControl = $('.ctrl.invalid:visible:first');
+                    if (firstInvalidControl.length > 0)
+                        if (!firstInvalidControl.inViewport())
+                            $('body').scrollTo(firstInvalidControl, { offset: -150, duration: 400 });
                 }, 100);
             };
 

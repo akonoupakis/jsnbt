@@ -12,8 +12,8 @@
             
             $scope.publicTmpl = null;
 
-            if ($jsnbt.specs.content)
-                $scope.publicTmpl = $jsnbt.specs.content;
+            if ($jsnbt.injects.content)
+                $scope.publicTmpl = $jsnbt.injects.content;
 
         });
 })();

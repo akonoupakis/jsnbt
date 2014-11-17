@@ -10,9 +10,10 @@ exports.parse = function (ctx, tmpl, model) {
     var mdl = {
         baseHref: ctx.uri.getBaseHref(),
         language: ctx.language || 'en',
-        view: ctx.view,
-        node: ctx.node,
-        pointer: ctx.pointer,        
+        view: ctx.view || '',
+        node: ctx.node || {},
+        pointer: ctx.pointer || {},
+        layout: ctx.layout || '',
         meta: {
             title: '',
             keywords: '',

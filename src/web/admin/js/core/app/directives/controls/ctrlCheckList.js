@@ -5,14 +5,14 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlCheckList', function ($timeout, FORM_EVENTS) {
+        .directive('ctrlCheckList', function ($timeout, CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
                 replace: true,
                 scope: {
                     ngModel: '=',
-                    ngEnabled: '=',
+                    ngDisabled: '=',
                     ngRequired: '=',
                     ngLabel: '@',
                     ngTip: '@',
@@ -28,7 +28,7 @@
                     
                     scope.id = Math.random().toString().replace('.', '');
                     scope.valid = true;
-                    scope.enabled = scope.ngEnabled !== undefined ? scope.ngEnabled : true;
+                    scope.enabled = !scope.ngDisabled;
 
                     scope.valueField = scope.ngValueField ? scope.ngValueField : 'value';
                     scope.nameField = scope.ngNameField ? scope.ngNameField : 'name';
@@ -62,7 +62,7 @@
                                             scope.valid = isValid();
 
                                             $timeout(function () {
-                                                scope.$emit(FORM_EVENTS.valueChanged, scope.ngModel);
+                                                scope.$emit(CONTROL_EVENTS.valueChanged, scope.ngModel);
                                             }, 50);
                                         }
                                     });
@@ -99,8 +99,8 @@
                         initiated = true;
                     });
 
-                    scope.$watch('ngEnabled', function (newValue) {
-                        scope.enabled = newValue !== undefined ? newValue : true;
+                    scope.$watch('ngDisabled', function (newValue) {
+                        scope.enabled = !newValue;
 
                         $(scope.ngOptions).each(function (o, option) {
                             if ($('.bootstrap-switch-id-chk' + scope.id + option[scope.valueField], element).length > 0) {
@@ -130,10 +130,10 @@
                         return valid;
                     };
 
-                    scope.$on(FORM_EVENTS.initiateValidation, function (sender) {
+                    scope.$on(CONTROL_EVENTS.initiateValidation, function (sender) {
                         initiated = true;
                         scope.valid = isValid();
-                        scope.$emit(FORM_EVENTS.valueIsValid, scope.valid);
+                        scope.$emit(CONTROL_EVENTS.valueIsValid, scope.valid);
                     });
 
                     if (scope.ngModel)

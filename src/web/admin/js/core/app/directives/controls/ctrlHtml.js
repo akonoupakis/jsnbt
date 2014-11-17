@@ -5,14 +5,14 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlHtml', function ($timeout, FORM_EVENTS) {
+        .directive('ctrlHtml', function ($timeout, CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
                 replace: true,
                 scope: {
                     ngModel: '=',
-                    ngEnabled: '=',
+                    ngDisabled: '=',
                     ngRequired: '=',
                     ngOptions: '=',
                     ngLabel: '@',
@@ -57,17 +57,17 @@
 
                         scope.id = Math.random().toString().replace('.', '');
                         scope.valid = true;
-                        scope.enabled = true;// scope.ngEnabled !== undefined ? scope.ngEnabled : true;
+                        scope.enabled = true;
 
-                        scope.$watch('ngEnabled', function (newValue) {
-                            scope.enabled = newValue !== undefined ? newValue : true;
+                        scope.$watch('ngDisabled', function (newValue) {
+                            scope.enabled = true; // newValue !== undefined ? newValue : true;
                         });
 
                         var initiated = false;
 
                         scope.changed = function () {
                             $timeout(function () {
-                                scope.$emit(FORM_EVENTS.valueChanged, scope.ngModel);
+                                scope.$emit(CONTROL_EVENTS.valueChanged, scope.ngModel);
                             }, 50);
                         };
 
@@ -92,10 +92,10 @@
                                 scope.valid = isValid();
                         });
 
-                        scope.$on(FORM_EVENTS.initiateValidation, function (sender) {
+                        scope.$on(CONTROL_EVENTS.initiateValidation, function (sender) {
                             initiated = true;
                             scope.valid = isValid();
-                            scope.$emit(FORM_EVENTS.valueIsValid, scope.valid);
+                            scope.$emit(CONTROL_EVENTS.valueIsValid, scope.valid);
                         });
                         
                     }

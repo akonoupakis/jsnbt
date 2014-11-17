@@ -73,6 +73,14 @@
 			"id": "pointer",
 			"order": 8
 		},
+		"layout": {
+			"name": "layout",
+			"type": "object",
+			"typeLabel": "object",
+			"required": true,
+			"id": "layout",
+			"order": 14
+		},
 		"content": {
 			"name": "content",
 			"type": "object",

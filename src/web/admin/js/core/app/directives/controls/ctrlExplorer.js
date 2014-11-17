@@ -5,13 +5,13 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlExplorer', function ($timeout, $rootScope, FileService, ModalService, MODAL_EVENTS) {
+        .directive('ctrlExplorer', function ($timeout, $rootScope, FileService, ModalService, CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
                 replace: true,
                 scope: {
-                    ngPath: '@',
+                    ngPath: '=',
                     ngSelectable: '=',
                     ngSelectMode: '=',
                     ngSelected: '=',
@@ -21,6 +21,8 @@
                     element.addClass('ctrl');
                     element.addClass('ctrl-explorer');
                     
+                    scope.ctrl = 'ctrlExplorer';
+
                     scope.new = '';
                     scope.current = '';
                     scope.breadcrumb = [];
@@ -166,7 +168,7 @@
                                 if (scope.ngSelectable && item.type === 'file') {
                                     if (scope.ngSelectMode === 'single') {
                                         scope.select(item);
-                                        scope.$emit(MODAL_EVENTS.valueSelected, item.location);
+                                        scope.$emit(CONTROL_EVENTS.valueSelected, item.location);
                                     }
                                 }
                             }
@@ -248,8 +250,7 @@
                             event.preventDefault();
                     });
                     
-                    scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
-
+                    scope.$on(CONTROL_EVENTS.valueRequested, function (sender) {
                         if (scope.ngSelectMode === 'single') {
                             var sel = '';
 
@@ -260,18 +261,18 @@
                                 }
                             }
 
-                            scope.$emit(MODAL_EVENTS.valueSubmitted, sel);
+                            scope.$emit(CONTROL_EVENTS.valueSubmitted, sel);
                         }
                         else {
                             var selected = [];
-
+                            
                             for (var name2 in scope.selected) {
                                 if (scope.selected[name2] === true) {
                                     selected.push(name2);
                                 }
                             }
-
-                            scope.$emit(MODAL_EVENTS.valueSubmitted, selected);
+                            
+                            scope.$emit(CONTROL_EVENTS.valueSubmitted, selected);
                         }
                     });
 

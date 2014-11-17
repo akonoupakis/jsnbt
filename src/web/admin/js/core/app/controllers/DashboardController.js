@@ -8,8 +8,8 @@
         
             $scope.publicTmpl = null;
 
-            if ($jsnbt.specs.dashboard)
-                $scope.publicTmpl = $jsnbt.specs.dashboard;
+            if ($jsnbt.injects.dashboard)
+                $scope.publicTmpl = $jsnbt.injects.dashboard;
 
         });
 })();

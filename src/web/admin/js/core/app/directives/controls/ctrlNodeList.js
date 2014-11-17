@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlNodeList', function ($timeout, $data, $fn, FORM_EVENTS) {
+        .directive('ctrlNodeList', function ($timeout, $data, $fn, CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -14,7 +14,7 @@
                     ngModel: '=',
                     ngDomain: '=',
                     ngOptions: '=',
-                    ngEnabled: '=',
+                    ngDisabled: '=',
                     ngRequired: '=',
                     ngLabel: '@',
                     ngTip: '@'
@@ -26,72 +26,145 @@
                     scope.id = Math.random().toString().replace('.', '');
                     scope.value = [];
                     scope.valid = true;
-                    scope.enabled = scope.ngEnabled !== undefined ? scope.ngEnabled : true;
+                    scope.empty = false;
+
+                    scope.invalid = {};
+                    scope.wrong = {};
+                    scope.missing = {};
 
                     var initiated = false;
 
-                    scope.$watch('ngEnabled', function (newValue) {
-                        scope.enabled = newValue !== undefined ? newValue : true;
-
+                    scope.$watch('ngDisabled', function (newValue) {
                         if (initiated)
                             scope.valid = isValid();
                     });
                     
                     scope.changed = function () {
                         $timeout(function () {
-                            scope.$emit(FORM_EVENTS.valueChanged, scope.ngModel);
+                            scope.$emit(CONTROL_EVENTS.valueChanged, scope.ngModel);
                         }, 50);
                     };
 
                     var isValid = function () {
                         var valid = true;
+                        scope.empty = false;
 
-                        if (scope.enabled) {
+                        if (!scope.ngDisabled) {
 
                             if (valid) {
+
                                 if (scope.ngRequired) {
-                                    valid = !!scope.ngModel && scope.ngModel.length > 0;
+                                    if (!scope.ngModel) {
+                                        valid = false;
+                                        scope.empty = true;
+                                    }
+                                    else if (!_.isArray(scope.ngModel)) {
+                                        valid = false;
+                                    }
+                                    else if (scope.ngModel.length === 0) {
+                                        valid = false;
+                                        scope.empty = true;
+                                    }
                                 }
+
+                                if (scope.ngModel) {
+                                    if (!_.isArray(scope.ngModel))
+                                        valid = false;
+                                    else {
+                                        $(scope.ngModel).each(function (i, item) {
+                                            scope.invalid[i] = false;
+                                            if (!item) {
+                                                valid = false;
+                                                scope.invalid[i] = true;
+                                            }
+                                            else if (!_.isString(item)) {
+                                                valid = false;
+                                                scope.invalid[i] = true;
+                                            }
+                                            else if (scope.wrong[i] && scope.missing[i]) {
+                                                valid = false;
+                                                scope.invalid[i] = true;
+                                            }
+                                        });
+
+                                    }
+
+                                }
+
                             }
 
                         }
-                        
+
                         return valid;
                     };
 
                     scope.$watch('ngModel', function (newValue, prevValue) {
-                        
-                        if (newValue && newValue.length > 0) {
+                        if (newValue) {
+                            if (_.isArray(newValue)) {
+                                var invalids = {};
 
-                            $data.nodes.get({ id: { $in: newValue } }).then(function (results) {
-                                var scopeValues = [];
+                                var newValueKeys = [];
 
-                                $(newValue).each(function (nv, nValue) {
-                                    var result = _.first(_.filter(results, function (x) { return x.id === nValue; }));
-                                    if (result) {
-                                        scopeValues.push({
-                                            id: result.id,
-                                            name: result.name
-                                        });
+                                $(newValue).each(function (i, item) {
+                                    if (!_.isString(item)) {
+                                        invalids[i] = true;
                                     }
                                     else {
-                                        scopeValues.push({
-                                            id: nValue,
-                                            name: nValue + ' (not found)'
-                                        });
+                                        newValueKeys.push(item);
                                     }
                                 });
 
-                                scope.value = scopeValues;
+                                scope.wrong = {};
+                                scope.missing = {};
 
-                                if (initiated)
-                                    scope.valid = isValid();
+                                $data.nodes.get({
+                                    domain: scope.ngDomain,
+                                    id: { $in: newValueKeys }
+                                }).then(function (results) {
+                                    var scopeValues = [];
 
-                            }, function (error) {
-                                throw error;
-                            });
+                                    $(newValue).each(function (nv, nValue) {
+                                        var result = _.first(_.filter(results, function (x) { return x.id === nValue; }));
+                                        if (result) {
+                                            scopeValues.push({
+                                                id: result.id,
+                                                name: result.name
+                                            });
+
+                                            scope.wrong[nv] = false;
+                                            scope.missing[nv] = false;
+                                        }
+                                        else {
+                                            scopeValues.push({
+                                                id: nValue,
+                                                name: nValue
+                                            });
+
+                                            scope.wrong[nv] = true;
+
+                                            if (!invalids[nv])
+                                                scope.missing[nv] = true;
+                                        }
+                                    });
+
+                                    scope.value = scopeValues;
+
+                                    if (initiated)
+                                        scope.valid = isValid();
+
+                                }, function (error) {
+                                    throw error;
+                                });
+                            }
+                            else {
+                                scope.wrong = {};
+                                scope.missing = {};
+                                scope.value = [];
+                            }
                         }
                         else {
+                            scope.wrong = {};
+                            scope.missing = {};
                             scope.value = [];
 
                             if (initiated)
@@ -99,21 +172,25 @@
                         }
                     });
 
-                    scope.$on(FORM_EVENTS.initiateValidation, function (sender) {
+                    scope.$on(CONTROL_EVENTS.initiateValidation, function (sender) {
                         initiated = true;
                         scope.valid = isValid();
-                        scope.$emit(FORM_EVENTS.valueIsValid, scope.valid);
+                        scope.$emit(CONTROL_EVENTS.valueIsValid, scope.valid);
                     });
 
-                    scope.select = function () {
-                        if (!scope.ngDomain || scope.ngDomain === '')
-                            return;
+                    scope.edit = function (index) {
+                        var item = scope.ngModel[index];
 
-                        var invoked = $fn.invoke(scope.ngDomain, 'selectNodes', [scope.ngDomain, scope.ngModel, scope.ngOptions], true);
-                        
+                        var invoked = $fn.invoke(scope.ngDomain, 'selectNode', [scope.ngDomain, item, scope.ngOptions], true);
+
                         if (invoked) {
-                            invoked.then(function (selectedNodeIds) {
-                                scope.ngModel = selectedNodeIds || [];
+                            invoked.then(function (selectedNodeId) {
+                                scope.ngModel[index] = selectedNodeId;
+                                scope.ngModel = scope.ngModel.slice(0);
+
+                                if (initiated)
+                                    scope.valid = isValid();
+
                                 scope.changed();
                             }, function (error) {
                                 throw error;
@@ -124,9 +201,43 @@
                         }
                     };
 
-                    scope.clear = function (node) {
-                        var nodeId = node.id;
-                        scope.ngModel = _.filter(scope.ngModel, function (x) { return x !== nodeId; });
+                    scope.add = function () {
+                        var invoked = $fn.invoke(scope.ngDomain, 'selectNodes', [scope.ngDomain, [], scope.ngOptions], true);
+                        
+                        if (invoked) {
+                            invoked.then(function (selectedNodeIds) {
+                                if (!scope.ngModel)
+                                    scope.ngModel = [];
+
+                                $(selectedNodeIds).each(function (i, item) {
+                                    scope.ngModel.push(item);
+                                });
+
+                                scope.ngModel = scope.ngModel.slice(0);
+
+                                if (initiated)
+                                    scope.valid = isValid();
+
+                                scope.changed();
+                            }, function (error) {
+                                throw error;
+                            });
+                        }
+                        else {
+                            throw new Error('unable to select node for domain: ' + scope.ngDomain);
+                        }
+                    };
+
+                    scope.clear = function (index) {
+                        var newValue = [];
+
+                        $(scope.ngModel).each(function (i, item) {
+                            if (i !== index) {
+                                newValue.push(item);
+                            }
+                        });
+
+                        scope.ngModel = newValue;
                         scope.changed();
                     };
 

@@ -15,7 +15,7 @@ exports.server = null;
 
 exports.init = function (env, config, module) {
     var self = this;
-    
+
     process.chdir(env === 'prod' ? 'dist' : 'dev');
 
     var configSection = config[env];
@@ -68,17 +68,24 @@ exports.init = function (env, config, module) {
         fs.createWriteStream('fatal.log', { 'flags': 'a' }).write(moment().format() + ' ' + err.toString() + "\n");
     };
 
-    var jsnbtModule = require('./index.js');
-    
-    jsnbt.registerModule('jsnbt', jsnbtModule);
-    
+    var jsnbtModule = {
+        domain: 'core',
+        getConfig: function () {
+            return require('./config.js');
+        }
+    };
+
+    jsnbt.register('jsnbt', jsnbtModule);
+
     if (module) {
         try {
             if (typeof (module.init) == 'function')
                 module.init(this);
 
-            if (module.domain && module.domain !== 'core')
-                jsnbt.registerModule(module.domain, module);
+            var moduleConfig = typeof (module.getConfig) === 'function' ? module.getConfig() : {};
+
+            if (moduleConfig.domain && moduleConfig.domain !== 'core')
+                jsnbt.register(moduleConfig.domain, module);
         }
         catch (err) {
             this.logger.error(err.toString());
@@ -89,20 +96,22 @@ exports.init = function (env, config, module) {
     for (var i in installedPackages) {
         if (installedPackages[i] !== 'jsnbt') {
             try {
-                var router = require(installedPackages[i]);
+                var installedModule = require(installedPackages[i]);
 
-                if (typeof (router.init) == 'function')
-                    router.init(this);
+                var installedModuleConfig = typeof (installedModule.getConfig) === 'function' ? installedModule.getConfig() : {};
 
-                if (module.domain && module.domain !== 'core')
-                    jsnbt.registerModule(installedPackages[i], router);
+                if (typeof (installedModule.init) == 'function')
+                    installedModule.init(this);
+                
+                if (installedModuleConfig.domain && installedModuleConfig.domain !== 'core')
+                    jsnbt.register(installedPackages[i], installedModule);
             }
             catch (err) {
                 this.logger.error(err.toString());
             }
         }
     }
-    
+
     this.server = deployd({
         port: config.port,
         env: config.env === 'prod' ? 'production' : 'development',
@@ -126,9 +135,13 @@ exports.init = function (env, config, module) {
         },
         appPath: __dirname
     });
-    
+
     delete this.init;
 };
+
+exports.getConfig = function () {
+    return require('./config.js');
+}
 
 exports.start = function (title) {
     this.title = title;

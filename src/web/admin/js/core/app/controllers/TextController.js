@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('TextController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $queue, $q, $data, ScrollSpyService, LocationService, FORM_EVENTS) {
+        .controller('TextController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $queue, $q, $data, ScrollSpyService, LocationService, CONTROL_EVENTS) {
            
             var logger = $logger.create('TextController');
 
@@ -102,7 +102,7 @@
                     $scope.valid = true;
                     $scope.validation.key = true;
 
-                    $scope.$broadcast(FORM_EVENTS.initiateValidation);
+                    $scope.$broadcast(CONTROL_EVENTS.initiateValidation);
 
                     if ($scope.valid) {
 
@@ -194,7 +194,7 @@
                 });
             });
 
-            $scope.$on(FORM_EVENTS.valueChanged, function (sender) {
+            $scope.$on(CONTROL_EVENTS.valueChanged, function (sender) {
                 sender.stopPropagation();
 
                 fn.save().then(function () {
@@ -204,7 +204,7 @@
                 });
             });
 
-            $scope.$on(FORM_EVENTS.valueIsValid, function (sender, value) {
+            $scope.$on(CONTROL_EVENTS.valueIsValid, function (sender, value) {
                 sender.stopPropagation();
 
                 if (!value)

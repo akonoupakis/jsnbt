@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlNode', function ($timeout, $data, $fn, FORM_EVENTS) {
+        .directive('ctrlNode', function ($timeout, $data, $fn, CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -14,7 +14,7 @@
                     ngModel: '=',
                     ngDomain: '=',
                     ngOptions: '=',
-                    ngEnabled: '=',
+                    ngDisabled: '=',
                     ngRequired: '=',
                     ngLabel: '@',
                     ngTip: '@'
@@ -26,31 +26,43 @@
                     scope.id = Math.random().toString().replace('.', '');
                     scope.value = '';
                     scope.valid = true;
-                    scope.enabled = scope.ngEnabled !== undefined ? scope.ngEnabled : true;
+                    scope.wrong = false;
+                    scope.missing = false;
 
                     var initiated = false;
 
-                    scope.$watch('ngEnabled', function (newValue) {
-                        scope.enabled = newValue !== undefined ? newValue : true;
-
+                    scope.$watch('ngDisabled', function (newValue) {
                         if (initiated)
                             scope.valid = isValid();
                     });
                     
                     scope.changed = function () {
                         $timeout(function () {
-                            scope.$emit(FORM_EVENTS.valueChanged, scope.ngModel);
+                            scope.$emit(CONTROL_EVENTS.valueChanged, scope.ngModel);
                         }, 50);
                     };
 
                     var isValid = function () {
                         var valid = true;
 
-                        if (scope.enabled) {
+                        if (!scope.ngDisabled) {
 
                             if (valid) {
                                 if (scope.ngRequired) {
-                                    valid = !!scope.ngModel && scope.ngModel !== '';
+                                    if (!scope.ngModel)
+                                        valid = false;
+                                    else if (!_.isString(scope.ngModel))
+                                        valid = false;
+                                    else if (scope.ngModel === '')
+                                        valid = false;
+                                }
+
+                                if (scope.ngModel) {
+                                    if (!_.isString(scope.ngModel))
+                                        valid = false;
+                                    else if (scope.wrong && scope.missing)
+                                        valid = false;
+
                                 }
                             }
 
@@ -58,34 +70,54 @@
 
                         return valid;
                     };
+       
+                    scope.$watch('ngModel', function (newValue, prevValue) {
+                        if (newValue) {
+                            if (_.isString(newValue)) {
+                                if (newValue !== '') {
+                                    $data.nodes.get({
+                                        id: newValue,
+                                        domain: scope.ngDomain
+                                    }).then(function (response) {
+                                        scope.value = response.name;
+                                        scope.wrong = false;
+                                        scope.missing = false;
 
-                    scope.$watch('ngModel', function (newValue, prevValue) { 
-                        if (newValue && newValue !== '') {
-                            $data.nodes.get(newValue).then(function (response) {
-                                scope.value = response.name;
+                                        if (initiated)
+                                            scope.valid = isValid();
+                                    }, function (error) {
+                                        scope.value = newValue;
+                                        scope.wrong = true;
+                                        scope.missing = true;
+
+                                        if (initiated)
+                                            scope.valid = isValid();
+                                    });
+                                }
+                            }
+                            else {
+                                scope.value = '';
+                                scope.wrong = true;
+                                scope.missing = false;
 
                                 if (initiated)
                                     scope.valid = isValid();
-                            }, function (error) {
-                                
-                                if (initiated)
-                                    scope.valid = isValid();
-
-                                throw error;
-                            });
+                            }
                         }
                         else {
                             scope.value = '';
+                            scope.wrong = false;
+                            scope.missing = false;
 
                             if (initiated)
                                 scope.valid = isValid();
                         }
                     });
 
-                    scope.$on(FORM_EVENTS.initiateValidation, function (sender) {
+                    scope.$on(CONTROL_EVENTS.initiateValidation, function (sender) {
                         initiated = true;
                         scope.valid = isValid();
-                        scope.$emit(FORM_EVENTS.valueIsValid, scope.valid);
+                        scope.$emit(CONTROL_EVENTS.valueIsValid, scope.valid);
                     });
                     
                     scope.select = function () {

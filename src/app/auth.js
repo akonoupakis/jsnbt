@@ -44,7 +44,7 @@ var getUserRoles = function (user) {
 }
 
 var isUserAuthorized = function (user, section, permission) {
-    var dataCollections = jsnbt.data || [];
+    var dataCollections = jsnbt.dpd.permissions || [];
 
     var dataCollection = _.first(_.filter(dataCollections, function (x) { return x.collection === section; }));
 
@@ -54,7 +54,7 @@ var isUserAuthorized = function (user, section, permission) {
         var roles = getUserRoles(user);
         result = false;
 
-        _.each(dataCollection.permissions, function (perm) {
+        _.each(dataCollection.roles, function (perm) {
             if (roles.indexOf(perm.role) !== -1) {
                 if (perm.crud.indexOf(permission) !== -1)
                     result = true;

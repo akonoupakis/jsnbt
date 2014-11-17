@@ -5,14 +5,14 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlCheck', function ($timeout, FORM_EVENTS) {
+        .directive('ctrlCheck', function ($timeout, CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
                 replace: true,
                 scope: {
                     ngModel: '=',
-                    ngEnabled: '=',
+                    ngDisabled: '=',
                     ngLabel: '@',
                     ngTip: '@'
                 },
@@ -21,7 +21,7 @@
                     element.addClass('ctrl-check');
                     
                     scope.id = Math.random().toString().replace('.', '');
-                    scope.enabled = scope.ngEnabled !== undefined ? scope.ngEnabled : true;
+                    scope.enabled = !scope.ngDisabled;
 
                     var initiating = true;
                     var initiated = false;
@@ -33,7 +33,7 @@
                     });
 
                     scope.$watch('ngEnabled', function (newValue) {
-                        scope.enabled = newValue !== undefined ? newValue : true;
+                        scope.enabled = !newValue;
                         element.find('input[type="checkbox"]').bootstrapSwitch('disabled', !scope.enabled);
                     });
 
@@ -49,7 +49,7 @@
                             scope.$apply();
 
                             $timeout(function () {
-                                scope.$emit(FORM_EVENTS.valueChanged, scope.ngModel);
+                                scope.$emit(CONTROL_EVENTS.valueChanged, scope.ngModel);
                             }, 50);
                         }
                     });

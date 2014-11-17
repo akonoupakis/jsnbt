@@ -18,6 +18,12 @@
                     </a>
                     <label>languages</label>
                 </li>
+                <li ng-show="isAuthorized('layouts')">
+                    <a href="javascript:;" ng-click="goto('layouts')">
+                        <img src="img/core/content/layouts.png" style="height: 128px" />
+                    </a>
+                    <label>layouts</label>
+                </li>
                 <li ng-show="isAuthorized('nodes')">
                     <a href="javascript:;" ng-click="goto('nodes')">
                         <img src="img/core/content/nodes.png" style="height: 128px" />

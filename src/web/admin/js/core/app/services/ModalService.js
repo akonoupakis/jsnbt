@@ -17,7 +17,7 @@
                     angular.extend($scope, scope);
                     
                     $scope.valid = false;
-
+                    
                     $scope.$on(MODAL_EVENTS.valueSubmitted, function (sender, value) {
                         sender.stopPropagation();
 

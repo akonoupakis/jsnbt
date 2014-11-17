@@ -35,7 +35,7 @@
                     };
 
                     var getFn = function (domain, fn, cascade) {
-                        var addon = _.first(_.filter($jsnbt.addons, function (x) { return x.domain === domain; }));
+                        //var module = _.first(_.filter($jsnbt.modules, function (x) { return x.domain === domain; }));
                         var loopObject;
                         var coreDomain = 'core';
                         if (angular.providers[domain]) {

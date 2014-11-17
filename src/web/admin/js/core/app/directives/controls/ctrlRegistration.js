@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlRegistration', function ($rootScope, $data, AuthService, AUTH_EVENTS, FORM_EVENTS) {
+        .directive('ctrlRegistration', function ($rootScope, $data, AuthService, AUTH_EVENTS, CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -36,7 +36,7 @@
                         }
                     });
 
-                    scope.$on(FORM_EVENTS.valueIsValid, function (sender, value) {
+                    scope.$on(CONTROL_EVENTS.valueIsValid, function (sender, value) {
                         sender.stopPropagation();
 
                         if (!value)
@@ -46,7 +46,7 @@
                     scope.register = function () {
                         scope.valid = true;
                         scope.validEmail = true;
-                        scope.$broadcast(FORM_EVENTS.initiateValidation);
+                        scope.$broadcast(CONTROL_EVENTS.initiateValidation);
                         if (scope.valid) {
                             if (!scope.username.match(/^[A-Z0-9._%+-]+@(?:[A-Z0-9\-]+\.)+[A-Z]{2,4}$/i)) {
                                 scope.valid = false;

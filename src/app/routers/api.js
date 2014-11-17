@@ -50,17 +50,19 @@ module.exports = function () {
                                     }
                                 }
                                 else {
-                                    ctx.params = fields;
+                                    //ctx.params = fields;
 
-                                    var nextIndex = 0;
-                                    var nextInternal = function () {
-                                        nextIndex++;
-                                        var router = addonRouters[nextIndex];
-                                        router.route(ctx, nextInternal);
-                                    };
+                                    //var nextIndex = 0;
+                                    //var nextInternal = function () {
+                                    //    nextIndex++;
+                                    //    var router = moduleRouters[nextIndex];
+                                    //    router.route(ctx, nextInternal);
+                                    //};
 
-                                    var first = _.first(addonRouters);
-                                    first.route(ctx, nextInternal);
+                                    //var first = _.first(moduleRouters);
+                                    //first.route(ctx, nextInternal);
+
+                                    throw new Error('not implemented');
                                 }
                             }
                             catch (err) {

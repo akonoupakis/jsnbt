@@ -98,8 +98,8 @@ module.exports = function () {
                                 }
                                 else {
                                     ctx.node = resolved.page || {};
-
                                     ctx.pointer = resolved.pointer || {};
+                                    ctx.layout = resolved.getLayout();
                                     ctx.language = jsnbt.localization ? resolved.language || 'en' : jsnbt.locale;
                                     ctx.template = resolved.template || '';
                                     ctx.meta = resolved.page.meta || {};
@@ -129,10 +129,13 @@ module.exports = function () {
 
                                     if (resolved.pointer) {
 
-                                        var addonRouter = _.first(_.filter(jsnbt.modules, function (x) { return x.domain === resolved.pointer.pointer.domain && typeof (x.route) === 'function'; }));
+                                        var moduleRouter = _.first(_.filter(jsnbt.modules, function (x) {
+                                            return x.domain === resolved.pointer.pointer.domain
+                                                && x.route && _.isObject(x.route) && _.isFunction(x.route.process);
+                                        }));
 
-                                        if (addonRouter) {
-                                            addonRouter.route(ctx);
+                                        if (moduleRouter) {
+                                            moduleRouter.route.process(ctx);
                                         }
                                         else {
                                             if (ctx.node) {

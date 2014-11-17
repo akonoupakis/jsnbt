@@ -4,7 +4,7 @@
 
     "use strict";
 
-    var modules = jsnbt.modules.slice(0);
+    var modules = jsnbt.jsModules.slice(0);
     modules.push('ngRoute');
     modules.push('ngAnimate');
     modules.push('ngSanitize');
@@ -45,6 +45,16 @@
         }
 
         $routeProvider.
+            when('/content/layouts', {
+                templateUrl: 'tmpl/core/pages/content/layouts.html',
+                controller: 'LayoutsController',
+                section: 'layouts'
+            }).
+            when('/content/layouts/:id', {
+                templateUrl: 'tmpl/core/pages/content/layout.html',
+                controller: 'LayoutController',
+                section: 'layouts'
+            }).
             when('/content/nodes', {
                 templateUrl: 'tmpl/core/pages/content/nodes.html',
                 controller: 'NodesController',
@@ -85,18 +95,19 @@
                 controller: 'FilesController',
                 section: 'files'
             }).
-            when('/addons', {
-                templateUrl: 'tmpl/core/pages/addons.html',
-                controller: 'AddonsController'
+            when('/modules', {
+                templateUrl: 'tmpl/core/pages/modules.html',
+                controller: 'ModulesController',
+                section: 'modules'
             }).
-            when('/addons/:domain/list/:list', {
+            when('/modules/:domain/list/:list', {
                 templateUrl: 'tmpl/core/pages/content/list.html',
                 controller: 'ListController'
             }).
-            when('/addons/:domain/list', {
-                redirectTo: '/addons/:domain'
+            when('/modules/:domain/list', {
+                redirectTo: '/modules/:domain'
             }).
-            when('/addons/:domain/list/:list/:id', {
+            when('/modules/:domain/list/:list/:id', {
                 templateUrl: 'tmpl/core/pages/content/list-entry.html',
                 controller: 'ListEntryController'
             }).
@@ -117,10 +128,6 @@
                 domain: 'core',
                 tmpl: 'tmpl/core/specs/settings.html'
             }).
-            when('/test', {
-                templateUrl: 'tmpl/core/pages/test.html',
-                controller: 'TestController'
-            }).
             otherwise({
                 redirectTo: '/'
             });
@@ -133,7 +140,7 @@
             simultaneousUploads: 1
         };
 
-        tinymce.baseURL = '/admin/css/lib/tinymce';
+        tinymce.baseURL = '/admin/css/core/lib/tinymce';
     })
     .run(function ($rootScope, $location, $route, $timeout, $fn, FunctionService, AuthService, AUTH_EVENTS, ROUTE_EVENTS) {
         $fn.register('core', FunctionService);
@@ -145,7 +152,7 @@
 
         $rootScope.back = function () {
             var prevUrl = history.length > 1 ? history.splice(-2)[0] : "/";
-            $location.path(prevUrl);
+            $location.previous(prevUrl);
         };
 
         $rootScope.location = $rootScope.location || {};

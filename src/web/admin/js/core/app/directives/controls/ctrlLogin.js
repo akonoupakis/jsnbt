@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlLogin', function ($rootScope, AuthService, AUTH_EVENTS, FORM_EVENTS) {
+        .directive('ctrlLogin', function ($rootScope, AuthService, AUTH_EVENTS, CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -21,7 +21,7 @@
                     scope.username = '';
                     scope.password = '';
 
-                     scope.$on(FORM_EVENTS.valueIsValid, function (sender, value) {
+                     scope.$on(CONTROL_EVENTS.valueIsValid, function (sender, value) {
                        sender.stopPropagation();
 
                         if (!value)
@@ -31,7 +31,7 @@
                      scope.login = function () {
                          scope.failed = false;
                          scope.valid = true;
-                         scope.$broadcast(FORM_EVENTS.initiateValidation);
+                         scope.$broadcast(CONTROL_EVENTS.initiateValidation);
                          if (scope.valid) {
                              AuthService.login(scope.username, scope.password).then(function (user) {
                                  if (AuthService.isInRole(user, 'admin'))

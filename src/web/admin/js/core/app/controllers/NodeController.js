@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('NodeController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $q, $queue, $data, $route, $jsnbt, ScrollSpyService, $fn, LocationService, AuthService, DATA_EVENTS, FORM_EVENTS) {
+        .controller('NodeController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $q, $queue, $data, $route, $jsnbt, ScrollSpyService, $fn, LocationService, AuthService, DATA_EVENTS, CONTROL_EVENTS) {
 
             var logger = $logger.create('NodeController');
 
@@ -13,13 +13,17 @@
             $scope.node = undefined;
             $scope.entity = undefined;
             
-            $scope.roleOptions = [];
             $scope.roles = [];
+            $scope.nodeRoles = [];
             $scope.draftRoles = [];
 
-            $scope.robotOptions = [];
             $scope.robots = [];
+            $scope.nodeRobots = [];
             $scope.draftRobots = [];
+
+            $scope.layouts = [];
+            $scope.nodeLayout = '';
+            $scope.draftLayout = '';
 
             $scope.seoNames = [];
             
@@ -28,7 +32,7 @@
             $scope.types = [];
             $scope.languages = [];
             $scope.templates = [];
-            $scope.addons = [];
+            $scope.modules = [];
 
             $scope.localized = false;
             $scope.language = undefined;
@@ -71,8 +75,8 @@
 
                         $scope.node = result;
 
-                        if ($route.current.$$route.name && result.data.localized['en'] && result.data.localized['en'][$route.current.$$route.name]) {
-                            $scope.name = result.data.localized['en'][$route.current.$$route.name];
+                        if ($route.current.$$route.name && result.content.localized['en'] && result.content.localized['en'][$route.current.$$route.name]) {
+                            $scope.name = result.content.localized['en'][$route.current.$$route.name];
                         }
                         else {
                             $scope.name = result.name;
@@ -87,12 +91,15 @@
                         $scope.valid = true;
                         $scope.published = true;
 
-                        $scope.roles = result.roles.values;
+                        $scope.nodeLayout = result.layout.value;
+                        $scope.draftLayout = result.layout.value;
+
+                        $scope.nodeRoles = result.roles.values;
                         $scope.draftRoles = result.roles.values;
 
-                        $scope.robots = result.robots.values;
+                        $scope.nodeRobots = result.robots.values;
                         $scope.draftRobots = result.robots.values;
-
+                        
                         deferred.resolve(result);
                         
                     }, function (error) {
@@ -126,8 +133,8 @@
 
                                         var nameValue = resultNode.name;
 
-                                        if ($route.current.$$route.name && resultNode.data.localized['en'] && resultNode.data.localized['en'][$route.current.$$route.name]) {
-                                            nameValue = resultNode.data.localized['en'][$route.current.$$route.name];
+                                        if ($route.current.$$route.name && resultNode.content.localized['en'] && resultNode.content.localized['en'][$route.current.$$route.name]) {
+                                            nameValue = resultNode.content.localized['en'][$route.current.$$route.name];
                                         }
 
                                         breadcrumb.push({
@@ -194,6 +201,23 @@
                     return deferred.promise;
                 },
 
+                setLayouts: function () {
+                    var deferred = $q.defer();
+      
+                    var layouts = [];
+                    for (var layoutName in $jsnbt.layouts) {
+                        layouts.push({
+                            name: layoutName
+                        });
+                    }
+
+                    $scope.layouts = layouts;
+
+                    deferred.resolve(layouts);
+
+                    return deferred.promise;
+                },
+
                 setRoles: function () {
                     var deferred = $q.defer();
 
@@ -246,7 +270,7 @@
                         description: 'do not index images'
                     }];
 
-                    $scope.robotOptions = robots;
+                    $scope.robots = robots;
 
                     deferred.resolve(robots);
 
@@ -277,11 +301,42 @@
                     return deferred.promise;
                 },
 
+                setSelectedLayout: function (hierarchyNodes) {
+                    var deferred = $q.defer();
+
+                    if ($scope.node.layout.inherits) {
+                        $scope.draftLayout = $scope.nodeLayout;
+
+                        var layout = '';
+
+                        $($scope.node.hierarchy).each(function (i, item) {
+                            var matchedNode = _.first(_.filter(hierarchyNodes, function (x) { return x.id === item; }));
+                            if (matchedNode) {
+                                if (!matchedNode.layout.inherits) {
+                                    layout = matchedNode.layout.value;
+                                }
+                            }
+                            else {
+                                return false;
+                            }
+                        });
+
+                        $scope.nodeLayout = layout;
+                        deferred.resolve(layout);
+                    }
+                    else {
+                        $scope.nodeLayout = $scope.draftLayout;
+                        deferred.resolve($scope.nodeLayout);
+                    }
+
+                    return deferred.promise;
+                },
+
                 setSelectedRoles: function (hierarchyNodes) {
                     var deferred = $q.defer();
 
                     if ($scope.node.roles.inherits) {
-                        $scope.draftRoles = $scope.roles.slice(0);
+                        $scope.draftRoles = $scope.nodeRoles.slice(0);
 
                         var roles = [];
 
@@ -297,12 +352,12 @@
                             }
                         });
                                 
-                        $scope.roles = roles;
+                        $scope.nodeRoles = roles;
                         deferred.resolve(roles);
                     }
                     else {
                         var roles = $scope.draftRoles.slice(0);
-                        $scope.roles = roles;
+                        $scope.nodeRoles = roles;
                         deferred.resolve(roles);
                     }
 
@@ -313,7 +368,7 @@
                     var deferred = $q.defer();
 
                     if ($scope.node.robots.inherits) {
-                        $scope.draftRobots = $scope.robots.slice(0);
+                        $scope.draftRobots = $scope.nodeRobots.slice(0);
 
                         var robots = [];
 
@@ -329,12 +384,12 @@
                             }
                         });
 
-                        $scope.robots = robots;
+                        $scope.nodeRobots = robots;
                         deferred.resolve(robots);
                     }
                     else {
                         var robots = $scope.draftRobots.slice(0);
-                        $scope.robots = robots;
+                        $scope.nodeRobots = robots;
                         deferred.resolve(robots);
                     }
 
@@ -358,11 +413,15 @@
 
                     if ($scope.node && $scope.node.entity !== 'pointer') {
                         var spec = _.find($jsnbt.templates, function (x) { return x.path === $scope.node.template; });
-                        if (spec)
+                        if (spec) {
                             $scope.tmpl = spec.spec;
-                        else {
-                            $scope.tmpl = null;
                         }
+                        else {
+                            $scope.tmpl = undefined;
+                        }
+                    }
+                    else {
+                        $scope.tmpl = undefined;
                     }
                     
                     deferred.resolve();                    
@@ -374,9 +433,9 @@
                     var deferred = $q.defer();
 
                     var types = [];
-                    types.push({ value: 'page', name: 'CMS Page' });
-                    if ($jsnbt.addons.length > 0)
-                        types.push({ value: 'pointer', name: 'Addon Pointer' });
+                    types.push({ value: 'page', name: 'page' });
+                    if (_.filter($jsnbt.modules, function (x) { return x.type === 'addon' && x.pointed === true; }).length > 0)
+                        types.push({ value: 'pointer', name: 'pointer' });
 
                     $scope.types = types;
 
@@ -416,19 +475,21 @@
                     return deferred.promise;
                 },
 
-                setAddons: function () {
+                setModules: function () {
                     var deferred = $q.defer();
 
-                    var addons = [];
-                    $($jsnbt.addons).each(function (a, addon) {
-                        addons.push({
-                            name: addon.name,
-                            domain: addon.domain
-                        });
+                    var modules = [];
+                    $($jsnbt.modules).each(function (a, module) {
+                        if (module.pointed) {
+                            modules.push({
+                                name: module.name,
+                                domain: module.domain
+                            });
+                        }
                     });
-                    $scope.addons = addons;
+                    $scope.modules = modules;
 
-                    deferred.resolve(addons);
+                    deferred.resolve(modules);
 
                     return deferred.promise;
                 },
@@ -558,7 +619,7 @@
                     $scope.valid = true;
                     $scope.validation.seo = true;
 
-                    $scope.$broadcast(FORM_EVENTS.initiateValidation);
+                    $scope.$broadcast(CONTROL_EVENTS.initiateValidation);
 
                     if (!$scope.valid) {
                         deferred.resolve(false);
@@ -579,7 +640,7 @@
 
                                         $timeout(function () {
                                         
-                                            $scope.$broadcast(FORM_EVENTS.initiateValidation);
+                                            $scope.$broadcast(CONTROL_EVENTS.initiateValidation);
 
                                             checkExtras(lang.code).then(function (internalValidationResults) {
                                                 if (!$scope.valid)
@@ -645,12 +706,11 @@
 
                             var publishNode = {};
                             $.extend(true, publishNode, $scope.node);
-                            if (!publishNode.roles.inherits)
-                                publishNode.roles.values = $scope.roles;
 
-                            if (!publishNode.robots.inherits)
-                                publishNode.robots.values = $scope.robots;
-                            
+                            publishNode.roles.values = !publishNode.roles.inherits ? $scope.nodeRoles : [];
+                            publishNode.robots.values = !publishNode.robots.inherits ? $scope.nodeRobots : [];
+                            publishNode.layout.value = !publishNode.layout.inherits ? $scope.nodeLayout : '';
+
                             $data.nodes.put($scope.id, publishNode).then(function (result) {
                                 $scope.name = result.name;
                                 deferred.resolve(true);
@@ -796,6 +856,25 @@
                 }
             });
             
+            $scope.$watch('node.layout.inherits', function (newValue, prevValue) {
+                if (newValue !== undefined && prevValue !== undefined) {
+                    if (newValue === true) {
+                        fn.getHierarchyNodes().then(function (hierarchyNodes) {
+                            fn.setSelectedLayout(hierarchyNodes).catch(function (setEx) {
+                                logger.error(setEx);
+                            });
+                        }, function (ex) {
+                            logger.error(ex);
+                        });
+                    }
+                    else {
+                        fn.setSelectedLayout().catch(function (setEx) {
+                            logger.error(setEx);
+                        });
+                    }
+                }
+            });
+
             $scope.$watch('node.roles.inherits', function (newValue, prevValue) {
                 if (newValue !== undefined && prevValue !== undefined) {
                     if (newValue === true) {
@@ -842,7 +921,7 @@
                 // throw 404 if is current not found
             });
 
-            $scope.$on(FORM_EVENTS.valueChanged, function (sender) {
+            $scope.$on(CONTROL_EVENTS.valueChanged, function (sender) {
                 sender.stopPropagation();
                 
                 fn.save().then(function () {
@@ -852,7 +931,7 @@
                 });
             });
 
-            $scope.$on(FORM_EVENTS.valueIsValid, function (sender, value) {
+            $scope.$on(CONTROL_EVENTS.valueIsValid, function (sender, value) {
                 sender.stopPropagation();
 
                 if (!value)
@@ -861,10 +940,10 @@
 
 
             $timeout(function () {
-                $q.all(fn.setRoles(), fn.setRobots(), fn.setAddons(), fn.setLanguages(), fn.setLanguage(), fn.setTypes()).then(function () {
+                $q.all(fn.setLayouts(), fn.setRoles(), fn.setRobots(), fn.setModules(), fn.setLanguages(), fn.setLanguage(), fn.setTypes()).then(function () {
                     fn.set().then(function (setResponse) {
                         fn.getHierarchyNodes().then(function (hierarchyNodes) {
-                            $q.all(fn.setSelectedRoles(hierarchyNodes), fn.setSelectedRobots(hierarchyNodes)).then(function () {
+                            $q.all(fn.setSelectedLayout(hierarchyNodes), fn.setSelectedRoles(hierarchyNodes), fn.setSelectedRobots(hierarchyNodes)).then(function () {
                             }, function (set2Error) {
                                 logger.error(set2Error);
                             });

@@ -87,7 +87,7 @@ module.exports = function () {
                     
                     if (!processRequest && ctx.uri.first === 'files' && ctx.uri.query.type) {
                         var imageType = _.first(_.filter(jsnbt.images, function (x) { return x.name === ctx.uri.query.type; }));
-                        if (imageType) {
+                        if (imageType || ctx.uri.query.type === 'custom') {
                             var imageFileExtension = path.extname(ctx.uri.path).toLowerCase();
                             if (['.png', '.jpg', 'jpeg', 'gif', 'tiff'].indexOf(imageFileExtension) !== -1)
                                 processRequest = true;
