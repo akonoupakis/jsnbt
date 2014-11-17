@@ -99,9 +99,10 @@
 
             <div ng-show="tmpl" ng-include="tmpl"></div>
 
-            <div ng-repeat="tmplItem in tmpls" ng-include="tmplItem"></div>
-
-            <hr />
+            <div ng-repeat="tmplItem in tmpls">
+                <div ng-include="tmplItem"></div>
+                <hr />
+            </div>
         </div>
 
         <div id="page-meta" data-scrollspy="meta" ng-show="entity.properties.meta">
@@ -127,10 +128,10 @@
             <hr />
         </div>
 
-        <div id="page-robots" data-scrollspy="robots" ng-show="application.restricted && entity.properties.robots"> 
+        <div id="page-robots" data-scrollspy="robots" ng-show="entity.properties.robots"> 
             <div class="row">
-                <ctrl-check-list class="col-md-10" ng-model="nodeRobots" ng-options="robots" ng-required="true" ng-disabled="!application.restricted || !entity.properties.robots || node.robots.inherits" ng-label="robots"></ctrl-check-list>
-                <ctrl-check class="col-md-2" ng-model="node.robots.inherits" ng-disabled="!application.restricted || !entity.properties.robots" ng-label="inheritance"></ctrl-check>
+                <ctrl-check-list class="col-md-10" ng-model="nodeRobots" ng-options="robots" ng-required="true" ng-disabled="!entity.properties.robots || node.robots.inherits" ng-label="robots"></ctrl-check-list>
+                <ctrl-check class="col-md-2" ng-model="node.robots.inherits" ng-disabled="!entity.properties.robots" ng-label="inheritance"></ctrl-check>
             </div>
 
             <hr />
