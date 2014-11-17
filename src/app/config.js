@@ -6,7 +6,7 @@ module.exports = {
 
     domain: 'core',
     browsable: false,
-    public: true,
+    public: false,
     
     // common module configs
 
