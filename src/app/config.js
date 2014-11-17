@@ -178,6 +178,29 @@ module.exports = {
         }]
     },
 
+
+    injects: {
+        navigation: [{
+            index: 5,
+            identifier: 'extra',
+            name: 'extra',
+            url: '/extra',
+        }],
+        dashboard: 'tmpl/public/injects/dashboard.html',
+        content: 'tmpl/public/injects/content.html',
+        settings: 'tmpl/public/injects/settings.html'
+    },
+
+    layouts: {
+        global: 'tmpl/public/layouts/global.html',
+        global: 'tmpl/public/layouts/eshop.html'
+    },
+
+    containers: [
+        '/tmpl/partial/containers/sampleContainerA.html',
+        '/tmpl/partial/containers/sampleContainerB.html'
+    ],
+
     templates: [{
         path: '/tmpl/index.html',
         restricted: ['page']
@@ -218,22 +241,6 @@ module.exports = {
         name: 'Sample 02',
         spec: '/tmpl/spec/list/sample2.html',
         localized: false
-    }],
+    }]
 
-    injects: {
-        navigation: [{
-            index: 5,
-            identifier: 'extra',
-            name: 'extra',
-            url: '/extra',
-        }],
-        dashboard: 'tmpl/public/injects/dashboard.html',
-        content: 'tmpl/public/injects/content.html',
-        settings: 'tmpl/public/injects/settings.html'
-    },
-    
-    layouts: {
-        global: 'tmpl/public/layouts/global.html',
-        global: 'tmpl/public/layouts/eshop.html'
-    }
 }

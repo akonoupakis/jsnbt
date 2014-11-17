@@ -93,7 +93,6 @@
 
                         $scope.nodeLayout = result.layout.value;
                         $scope.draftLayout = result.layout.value;
-                        console.log(result.layout.value);
 
                         $scope.nodeRoles = result.roles.values;
                         $scope.draftRoles = result.roles.values;
