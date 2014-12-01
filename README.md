@@ -24,7 +24,7 @@
 
 	NodeJs : http://nodejs.org/download/
 
-	MongoDB : http://nodejs.org/download/
+	MongoDB : https://www.mongodb.org/downloads
 	
 	GraphicsMagick : http://www.graphicsmagick.org/download.html
 

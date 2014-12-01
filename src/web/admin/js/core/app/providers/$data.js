@@ -149,6 +149,7 @@
                 },
                 seo: {},
                 active: {},
+                secure: {},
                 meta: {},
                 createdOn: new Date().getTime(),
                 modifiedOn: new Date().getTime(),
