@@ -233,9 +233,9 @@
                             allRoles.push(newRole);
                         }
                     });
-                    
-                    $scope.roleOptions = allRoles;
-                    
+
+                    $scope.roles = allRoles;
+
                     deferred.resolve(allRoles);
 
                     return deferred.promise;
