@@ -6,8 +6,10 @@ module.exports = {
 
     domain: 'core',
     browsable: false,
-    public: false,
+    public: true,
     
+    //locale: 'el',
+
     // common module configs
 
     images: [{
@@ -241,6 +243,11 @@ module.exports = {
         name: 'Sample 02',
         spec: '/tmpl/spec/list/sample2.html',
         localized: false
+    }, {
+        id: 'telephones',
+        name: 'Telephones',
+        spec: '/tmpl/spec/list/telephones.html',
+        localized: true
     }]
 
 }

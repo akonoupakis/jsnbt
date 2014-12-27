@@ -1,0 +1,315 @@
+﻿<h2>
+    database
+</h2>
+LANGUAGES
+
+	{
+ 	    // id (objectId) : the language identifier
+	    "_id" : "f54436103e862b87",
+
+ 	    // code (string) : the two letter IsoCode of the language
+	    "code" : "en",
+
+	    // name (string) : the display name (most commonly used by the admin)
+	    "name" : "English",
+
+	    // active (bool) : if this is an active site language
+	    "active" : true,
+
+	    // default (bool) : if this is the default site language
+	    "default" : true
+	}
+
+
+NODES
+
+{
+    // id (objectId) : the node identifier
+    "_id" : "e8ab42bdbcd2688d",
+
+    // name (string) : the display name, most commonly used by the admin
+    "name" : "contact",
+
+    // domain (string) : the domain identifier (this is typically the module domain, in order to group nodes per domain)
+    "domain" : "core",
+
+    // entity (string) : a named entity name identifier (the available entities are injected to jsnbt through the modules' index configurations)
+    "entity" : "page",
+
+    // parent (string) : the parent node id (if the node is a child; otherwise it should be an empty string)
+    "parent" : "2655683b9307585e",
+
+    // published (bool) : indicated that this node has been saved at least one time. since the nodes are created before content validation, this helps to prevent these nodes to come into our live content
+    "published" : true,
+
+    // createdOn (timestamp) : the timestamp that the node was created
+    "createdOn" : 1415452924638,
+
+    // modifiedOn (timestamp) : the timestamp that the node was last modified
+    "modifiedOn" : 1416179926894,
+
+    // template (string) : the template path that will be used for rendering (does not apply to pointer nodes)
+    "template" : "/tmpl/contact.html",
+
+    // pointer (object) : the pointee data (if the entity is set to "pointer")
+    "pointer" : {
+
+         // domain (string) : the pointee domain identifier
+         "domain": "",
+
+         // nodeId (string) : the pointee node identifier
+         "nodeId": ""
+
+    },
+
+    // layout (object) : the layout defined for this node
+    "layout" : {
+
+        // inherits (bool) : if the node should inherit the layout from its parent
+        "inherits" : false,
+
+        // value (string) : the layout id for this node (and all children nodes that inherit)
+        "value" : "common"
+
+    },
+
+    // content (object) : the content data of this node
+    "content" : {
+
+        // localized (object) : holds the localized data values per language
+        "localized" : {
+
+            "en" : {
+                 "title" : "title goes here",
+                 "body" : "body goes here"
+            },
+
+            "el" : {
+                 "title" : "τίτλος εδώ",
+                 "body" : "περιεχόμενο εδώ"
+            }
+
+        },
+
+       // all non localized properties can be put directly under content to be read and used for any language given
+       "filepath": '/files/file.png'
+
+    },
+
+    // seo (object) : holds the seo names information for each language
+    "seo" : {
+        "en" : "contact",
+        "el" : "contact"
+    },
+
+    // active (object) : holds the active information for each language
+    "active" : {
+        "en" : true,
+        "el" : true
+    },
+
+    // secure (object) : if the node should be under https or not.
+    "secure" : {
+
+        // inherits (bool) : if the node should inherit the secure property from its parent
+        "inherits" : true,
+
+        // value (bool) : if the node should be under https or not (and all children nodes that inherit)
+        "value": false
+    },
+
+    // meta (object) : holds the meta information for each language
+    "meta" : {
+        "en" : {
+            "title" : "contact page meta title goes here",
+            "keywords" : "contact page keywords goes here",
+            "description" : "contact page meta description goes here"
+        },
+        "el" : {
+            "title" : "ο meta τίτλος της σελίδας εδώ",
+            "keywords" : "οι meta λέξεις κλειδιά εδώ",
+            "description" : "η meta περιγραφή της σελίδας εδώ"
+        }
+    },
+
+    // roles (object) : holds the role restrictions for this node
+    "roles" : {
+
+        // inherits (bool) : if the node should inherit the role restrictions from its parent
+        "inherits" : false,
+
+        // values (array) : the role names that this node is restricted to (and all children nodes that inherit)
+        "values" : [ "member" ]
+
+    },
+
+    // robots (object) : holds the robot values for this node
+    "robots" : {
+
+        // inherits (bool) : if the node should inherit the robot values from its parent
+        "inherits" : false,
+
+        // values (array) : the robot values for this node (and all children nodes that inherit)
+        "values" : [ "index", "follow" ]
+
+    },
+
+    // hierarchy (array) : the cascade node ids tha lead to this node. this property is auto calculated upon saving the node
+    "hierarchy" : [
+        "2655683b9307585e",
+        "e8ab42bdbcd2688d"
+    ],
+
+    // url (object) : holds the localized full urls of this node. this property is calculated upon retrieving the node and it is not included in the database object
+    url : {
+        "en": "/en/about/contact",
+        "el": "/en/about/contact"
+    },
+
+    // enabled (object) : holds the cascaded active information for this node. this property is calculated upon retrieving the node and it is not included in the database object
+    enabled : {
+        "en": true,
+        "el": true
+    }
+}
+
+
+LAYOUTS
+
+{
+    // id (objectId) : the layout identifier
+    "_id" : "b1fae84aa4441a95",
+
+    // layout (string) : the layout key to be used referencing this layout
+    "layout" : "eshop",
+
+    // content (object) : the content data of this layout
+    "content" : {
+
+        // localized (object) : holds the localized data values per language
+        "localized" : {
+
+            "en" : {
+                 "title" : "title goes here"
+            },
+
+            "el" : {
+                 "title" : "τίτλος εδώ"
+            }
+
+        },
+
+        // all non localized properties can be put directly under content to be read and used for any language given
+        "filepath": '/files/file.png'
+
+    }
+}
+
+
+DATA
+
+{
+    // id (objectId) : the data identifier
+    "_id" : "ede20efea91c58cb",
+
+    // domain (string) : the domain identifier (this is typically the module domain, in order to group data objects per domain)
+    "domain" : "core",
+
+    // list (string) : the list identifier identifying this data object as part of a specific list
+    "list" : "list1",
+
+    // name (string) : the display name, most commonly used by the admin
+    "name" : "entry name",
+
+    // published (bool) : indicated that this object has been saved at least one time. since the data objects are created before content validation, this helps to prevent them to come into our live content
+    "published" : true,
+
+    // createdOn (timestamp) : the timestamp that the data object was created
+    "createdOn" : 1415044624698,
+
+    // modifiedOn (timestamp) : the timestamp that the data object was last modified
+    "modifiedOn" : 1415044630373,
+
+    // content (object) : the content data of this data object
+    "content" : {
+
+        // localized (object) : holds the localized data values per language
+        "localized" : {
+
+            "en" : {
+                "title" : "title goes here"
+            },
+
+            "el" : {
+                "title" : "τίτλος εδώ"
+            }
+
+        }
+
+    }
+
+}
+
+TEXTS
+
+{
+    // id (objectId) : the data identifier
+    "_id" : "96982a30f1d078a8",
+
+    // key (string) : the key identifier for this text entry
+    "key" : "en",
+
+    // group (string) : the group identifier for this text entry (commonly used to group texts together)
+    "group" : "language",
+
+    // published (bool) : indicated that this text entry has been saved at least one time
+    "published" : true,
+
+    // value (object) : the value data of this text entry for each language
+    "value" : {
+        "en" : "English",
+        "el" : "agglika",
+        "es" : "ingles"
+    }
+
+}
+
+SETTINGS
+
+{
+    // id (objectId) : the setting identifier
+    "_id" : "0dc5d6239efc19ff",
+
+    // domain (string) : the domain identifier (this is typically the module domain, in order to group setting objects per domain)
+    "domain" : "core",
+
+    // data (object) : the data of this setting object
+    "data" : {
+        "title" : "title here"
+    }
+}
+
+USERS
+
+{
+    // id (objectId) : the user identifier
+    "_id" : "06dd0ca8891ecb03",
+
+    // firstName (string) : the user first name
+    "firstName" : "Apostolis",
+
+    // lastName (string) : the user last name
+    "lastName" : "Konoupakis",
+
+    // username (string) : the user name
+    "username" : "konoupakis@gmail.com",
+
+    // password (string) : the user password
+    "password" : "db1772",
+
+    // roles (array) : the user roles
+    "roles" : [
+        "admin"
+    ]
+
+}
