@@ -14,15 +14,52 @@ $(document).ready(function () {
 
     angular.bootstrap(document, ['jsnbt']);
 
-    //setTimeout(function () {
-        //$('body').scrollspy({
-        //    target: '#myNavbar',
-        //    placement: 'top',
-        //    offset: 190
-        //});
-        //$(".myMain").scrollspy({ target: "#myNavbar" });
+    var getSpyElements = function ($el, level) {
+        var results = [];
+        var spyItems = $('*[data-spy-title!=""][data-spy-level=' + level + ']', $el);
 
-        $('#myScrollspy').affix();
-    //}, 1000);
+        spyItems.each(function (i, item) {
+            var $item = $(item);
+
+            var itemId = 'spiedEl-' + level + '-' + i;
+
+            $item.prop('id', itemId);
+            var spyItem = $('<li />')
+                  .append(
+                        $('<a />')
+                            .prop('href', '#' + itemId)
+                            .html($item.data('spy-title'))
+                    );
+
+            var childSpyElements = getSpyElements($item, level + 1);
+            if (childSpyElements.length > 0)
+            {
+                var childUl = $('<ul />')
+                    .addClass('nav');
+
+                $(childSpyElements).each(function (ci, citem) {
+                    childUl.append(citem);
+                });
+
+                spyItem.append(childUl);
+            }
+
+            results.push(spyItem);
+        });
+
+        return results;
+    }
+    
+    setTimeout(function () {
+        var targetContainer = $('#scroll-spy-container');
+        var spyItems = getSpyElements(targetContainer, 1);
+        var targetUl = $('ul.nav.bs-docs-sidenav');
+
+        $(spyItems).each(function (i, item) {
+            targetUl.append(item);
+        });
+
+        $('#scroll-spy-sidebar').affix();
+    }, 100);
 
 });
