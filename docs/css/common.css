@@ -4,6 +4,23 @@
 .bs-docs-sidebar.affix {
     top: 120px;
 }
-.scoll-spy-section {
+.scroll-spy-section {
     padding-bottom:20px;
+}
+
+.data-structure {
+
+}
+
+.data-structure .data-title > td {
+    background-color: #f5f5f5;
+}
+
+.data-structure .data-description > td {
+    font-style: italic;
+    font-size: 0.8875em;
+}
+
+.data-sample {
+    text-align: right;
 }

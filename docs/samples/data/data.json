@@ -1,0 +1,19 @@
+﻿{
+    "_id" : "ede20efea91c58cb",
+    "domain" : "core",
+    "list" : "list1",
+    "name" : "entry name",
+    "published" : true,
+    "createdOn" : 1415044624698,
+    "modifiedOn" : 1415044630373,
+    "content" : {
+        "localized" : {
+            "en" : {
+                "title" : "title goes here"
+            },
+            "el" : {
+                "title" : "τίτλος εδώ"
+            }
+        }
+    }
+}

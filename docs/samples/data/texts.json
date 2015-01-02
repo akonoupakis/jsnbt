@@ -1,0 +1,11 @@
+﻿{
+    "_id" : "96982a30f1d078a8",
+    "key" : "en",
+    "group" : "language",
+    "published" : true,
+    "value" : {
+        "en" : "English",
+        "el" : "agglika",
+        "es" : "ingles"
+    }
+}
