@@ -14,14 +14,17 @@ $(document).ready(function () {
 
     angular.bootstrap(document, ['jsnbt']);
 
+    var randomIndex = 0;
     var getSpyElements = function ($el, level) {
         var results = [];
         var spyItems = $('*[data-spy-title!=""][data-spy-level=' + level + ']', $el);
 
         spyItems.each(function (i, item) {
+            randomIndex++;
+
             var $item = $(item);
 
-            var itemId = 'spiedEl-' + level + '-' + i;
+            var itemId = 'spiedEl-' + level + '-' + randomIndex;
 
             $item.prop('id', itemId);
             var spyItem = $('<li />')

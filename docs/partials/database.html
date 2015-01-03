@@ -3,12 +3,12 @@
         database
     </h2>
     <div>
-        <h4>languages</h4>
+        <h4 data-spy-title="database-languages" data-spy-level="2">languages</h4>
 
         <p>
-            the languages data collection holds the site languages of the target site.
+            the languages data collection holds the site languages of the target site
             <br />
-            this collection is used only when the site is configured to be multilingual.
+            this collection is used only when the site is configured to be multilingual
         </p>
 
         <div class="panel panel-default">
@@ -20,7 +20,7 @@
                     </tr>
                     <tr class="data-description">
                         <td colspan="2">
-                            the object identifier
+                            the language identifier
                         </td>
                     </tr>
 
@@ -72,337 +72,589 @@
                 <a href="samples/data/languages.json" target="_blank">click here</a> for a json sample
             </div>
         </div>
-    </div>
 
-    <h4>nodes</h4>
+        <h4 data-spy-title="database-nodes" data-spy-level="2">nodes</h4>
 
-    <p>[nodes table description]</p>
+        <p>
+            the nodes data collection holds all the cascaded objects, grouped by domain
+            <br />
+            typically, the nodes are the cms pages, each if active creating a url address for the site
+        </p>
 
-    <div class="panel panel-default">
-        <table class="table table-bordered table-condensed data-structure">
-            <tbody>
-                <tr class="data-title">
-                    <td>_id</td>
-                    <td>objectId</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        the object identifier
-                    </td>
-                </tr>
-                
-                <tr class="data-title">
-                    <td>name</td>
-                    <td>string</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        the display name (most commonly used by the admin)
-                    </td>
-                </tr>
+        <div class="panel panel-default">
+            <table class="table table-bordered table-condensed data-structure">
+                <tbody>
+                    <tr class="data-title">
+                        <td>_id</td>
+                        <td>objectId</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the node identifier
+                        </td>
+                    </tr>
 
-                <tr class="data-title">
-                    <td>domain</td>
-                    <td>string</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        the domain identifier, typically the module domain in order to group nodes together
-                    </td>
-                </tr>
+                    <tr class="data-title">
+                        <td>name</td>
+                        <td>string</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the display name (most commonly used by the admin)
+                        </td>
+                    </tr>
 
-                <tr class="data-title">
-                    <td>entity</td>
-                    <td>string</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        a named entity name identifier, typically the type of the node
-                    </td>
-                </tr>
+                    <tr class="data-title">
+                        <td>domain</td>
+                        <td>string</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the domain identifier, typically the module domain in order to group nodes together
+                        </td>
+                    </tr>
 
-                <tr class="data-title">
-                    <td>parent</td>
-                    <td>string</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        the parent node id (should be empty if the parent is the root)
-                    </td>
-                </tr>
+                    <tr class="data-title">
+                        <td>entity</td>
+                        <td>string</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            a named entity name identifier, typically the type of the node
+                        </td>
+                    </tr>
 
-                <tr class="data-title">
-                    <td>active</td>
-                    <td>bool</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        indicates whether this is an active language or not
-                    </td>
-                </tr>
+                    <tr class="data-title">
+                        <td>parent</td>
+                        <td>string</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the parent node id (should be empty if the parent is the root)
+                        </td>
+                    </tr>
 
-                <tr class="data-title">
-                    <td>default</td>
-                    <td>bool</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        indicates whether this is the default language or not (only one object in the collection should be marked as default)
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+                    <tr class="data-title">
+                        <td>published</td>
+                        <td>bool</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            indicates that this node has been saved at least one time
+                            <br />
+                            since the nodes are created before content validation, this helps to prevent these nodes to come into our live content
+                        </td>
+                    </tr>
 
-    <pre>
-    {
-        // id (objectId) : the node identifier
-        "_id" : "e8ab42bdbcd2688d",
-        // name (string) : the display name, most commonly used by the admin
-        "name" : "contact",
-        // domain (string) : the domain identifier (this is typically the module domain, in order to group nodes per domain)
-        "domain" : "core",
-        // entity (string) : a named entity name identifier (the available entities are injected to jsnbt through the modules' index configurations)
-        "entity" : "page",
-        // parent (string) : the parent node id (if the node is a child; otherwise it should be an empty string)
-        "parent" : "2655683b9307585e",
-        // published (bool) : indicated that this node has been saved at least one time. since the nodes are created before content validation, this helps to prevent these nodes to come into our live content
-        "published" : true,
-        // createdOn (timestamp) : the timestamp that the node was created
-        "createdOn" : 1415452924638,
-        // modifiedOn (timestamp) : the timestamp that the node was last modified
-        "modifiedOn" : 1416179926894,
-        // template (string) : the template path that will be used for rendering (does not apply to pointer nodes)
-        "template" : "/tmpl/contact.html",
-        // pointer (object) : the pointee data (if the entity is set to "pointer")
-            "pointer" : {
-            // domain (string) : the pointee domain identifier
-            "domain": "",
-            // nodeId (string) : the pointee node identifier
-            "nodeId": ""
-        },
-        // layout (object) : the layout defined for this node
-        "layout" : {
-            // inherits (bool) : if the node should inherit the layout from its parent
-            "inherits" : false,
-            // value (string) : the layout id for this node (and all children nodes that inherit)
-            "value" : "common"
-        },
-        // content (object) : the content data of this node
-        "content" : {
-            // localized (object) : holds the localized data values per language
-            "localized" : {
-                "en" : {
-                    "title" : "title goes here",
-                    "body" : "body goes here"
-                },
-                "el" : {
-                    "title" : "τίτλος εδώ",
-                    "body" : "περιεχόμενο εδώ"
-                }
-            },
+                    <tr class="data-title">
+                        <td>createdOn</td>
+                        <td>timestamp</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the timestamp that the node was created
+                        </td>
+                    </tr>
+
+                    <tr class="data-title">
+                        <td>modifiedOn</td>
+                        <td>timestamp</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the timestamp that the node was last modified
+                        </td>
+                    </tr>
+
+                    <tr class="data-title">
+                        <td>template</td>
+                        <td>string</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the template path that will be used for rendering (does not apply to pointer nodes)
+                        </td>
+                    </tr>
+
+                    <tr class="data-title">
+                        <td>pointer</td>
+                        <td>object</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the pointee data (if the entity is set to "pointer")
+                            <br />
+                            the object structure should be as { domain: "core", nodeId: "2655683b9307585e" }
+                        </td>
+                    </tr>
+
+                    <tr class="data-title">
+                        <td>layout</td>
+                        <td>object</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the layout defined for this node
+                            <br />
+                            the property value can be inherited from the parent node, thus the object structure should be as { inherits: false, value: "layoutKey" }
+                        </td>
+                    </tr>
+
+                    <tr class="data-title">
+                        <td>content</td>
+                        <td>object</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the content data of this node
+                            <br />
+                            the object structure is free to structure as you wish, with optional localized values on a localization object as { localized: { en: { ... } } }
+                        </td>
+                    </tr>
+
+                    <tr class="data-title">
+                        <td>seo</td>
+                        <td>object</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the seo names for each language
+                            <br />
+                            the object structure should be a localized dictionary with the seo names for each language as in { en: 'about' }
+                        </td>
+                    </tr>
+
+                    <tr class="data-title">
+                        <td>active</td>
+                        <td>object</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the active information for each language
+                            <br />
+                            the object structure should be a localized dictionary with the active information for each language as in { en: true }
+                        </td>
+                    </tr>
+
+                    <tr class="data-title">
+                        <td>secure</td>
+                        <td>object</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            indicates whether the node should be under https or not
+                            <br />
+                            the property value can be inherited from the parent node, thus the object structure should be as { inherits: false, value: true }
+                        </td>
+                    </tr>
+
+                    <tr class="data-title">
+                        <td>meta</td>
+                        <td>object</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the meta information for each language
+                            <br />
+                            the object structure should be a localized dictionary with the meta information for each language as in { en: { title: "", keywords: "", description: "" } }
+                        </td>
+                    </tr>
+
+                    <tr class="data-title">
+                        <td>roles</td>
+                        <td>object</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the role restrictions
+                            <br />
+                            the property value can be inherited from the parent node, thus the object structure should be as { inherits: false, value: ["admin"] }
+                        </td>
+                    </tr>
+
+                    <tr class="data-title">
+                        <td>robots</td>
+                        <td>object</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the robot values
+                            <br />
+                            the property value can be inherited from the parent node, thus the object structure should be as { inherits: false, value: ["index", "follow"] }
+                        </td>
+                    </tr>
+
+                    <tr class="data-title">
+                        <td>hierarchy</td>
+                        <td>array</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the cascade node ids tha lead to this node
+                            <br />
+                            this property is auto calculated upon saving the node
+                        </td>
+                    </tr>
+
+                    <tr class="data-title">
+                        <td>url</td>
+                        <td>object</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            holds the localized full urls of this node
+                            <br />
+                            this property is calculated upon retrieving the node and it is not included in the database object
+                            <br />
+                            the object structure comes as a localized dictionary with the url for each language as in { en: "/en/about" }
+                        </td>
+                    </tr>
+
+                    <tr class="data-title">
+                        <td>enabled</td>
+                        <td>object</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            holds the cascaded active information for this node
+                            <br />
+                            this property is calculated upon retrieving the node and it is not included in the database object
+                            <br />
+                            the object structure comes as a localized dictionary with the cascade active information for each language as in { en: true }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-body data-sample">
+                <a href="samples/data/nodes.json" target="_blank">click here</a> for a json sample
+            </div>
+        </div>
+
+        <h4 data-spy-title="database-layouts" data-spy-level="2">layouts</h4>
+
+        <p>
+            the layouts data collection holds the layout content data as they are saved from the admin data forms to be linked in nodes and to be used in the site
+        </p>
+
+        <div class="panel panel-default">
+            <table class="table table-bordered table-condensed data-structure">
+                <tbody>
+                    <tr class="data-title">
+                        <td>_id</td>
+                        <td>objectId</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the layout identifier
+                        </td>
+                    </tr>
+
+                    <tr class="data-title">
+                        <td>layout</td>
+                        <td>string</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the layout key to be used referencing this layout
+                        </td>
+                    </tr>
+
+                    <tr class="data-title">
+                        <td>content</td>
+                        <td>object</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the content data of this layout
+                            <br />
+                            the object structure is free to structure as you wish, with optional localized values on a localization object as { localized: { en: { ... } } }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         
-            // all non localized properties can be put directly under content to be read and used for any language given
-            "filepath": '/files/file.png'
-        },
-        // seo (object) : holds the seo names information for each language
-        "seo" : {
-            "en" : "contact",
-            "el" : "contact"
-        },
-        // active (object) : holds the active information for each language
-        "active" : {
-            "en" : true,
-            "el" : true
-        },
-        // secure (object) : if the node should be under https or not.
-        "secure" : {
-            // inherits (bool) : if the node should inherit the secure property from its parent
-            "inherits" : true,
-            // value (bool) : if the node should be under https or not (and all children nodes that inherit)
-            "value": false
-        },
-        // meta (object) : holds the meta information for each language
-        "meta" : {
-            "en" : {
-                "title" : "contact page meta title goes here",
-                "keywords" : "contact page keywords goes here",
-                "description" : "contact page meta description goes here"
-            },
-            "el" : {
-                "title" : "ο meta τίτλος της σελίδας εδώ",
-                "keywords" : "οι meta λέξεις κλειδιά εδώ",
-                "description" : "η meta περιγραφή της σελίδας εδώ"
-            }
-        },
-        // roles (object) : holds the role restrictions for this node
-        "roles" : {
-            // inherits (bool) : if the node should inherit the role restrictions from its parent
-            "inherits" : false,
-            // values (array) : the role names that this node is restricted to (and all children nodes that inherit)
-            "values" : [ "member" ]
-        },
-        // robots (object) : holds the robot values for this node
-        "robots" : {
-            // inherits (bool) : if the node should inherit the robot values from its parent
-            "inherits" : false,
-            // values (array) : the robot values for this node (and all children nodes that inherit)
-            "values" : [ "index", "follow" ]
-        },
-        // hierarchy (array) : the cascade node ids tha lead to this node. this property is auto calculated upon saving the node
-        "hierarchy" : [
-            "2655683b9307585e",
-            "e8ab42bdbcd2688d"
-        ],
-        // url (object) : holds the localized full urls of this node. this property is calculated upon retrieving the node and it is not included in the database object
-        url : {
-            "en": "/en/about/contact",
-            "el": "/en/about/contact"
-        },
-        // enabled (object) : holds the cascaded active information for this node. this property is calculated upon retrieving the node and it is not included in the database object
-        enabled : {
-            "en": true,
-            "el": true
-        }
-    }
-    </pre>
+        <div class="panel panel-default">
+            <div class="panel-body data-sample">
+                <a href="samples/data/layouts.json" target="_blank">click here</a> for a json sample
+            </div>
+        </div>
 
-    <div class="bs-callout bs-callout-info">
-        <p>see a json sample <a href="samples/data/nodes.json" target="_blank">here</a></p>
-    </div>
+        <h4 data-spy-title="database-data" data-spy-level="2">data</h4>
 
-    <h4>layouts</h4>
+        <p>the data collection holds the content saved from data lists, grouped by their list name</p>
 
-    <pre>
-    {
-        // id (objectId) : the layout identifier
-        "_id" : "b1fae84aa4441a95",
-        // layout (string) : the layout key to be used referencing this layout
-        "layout" : "eshop",
-        // content (object) : the content data of this layout
-        "content" : {
-            // localized (object) : holds the localized data values per language
-            "localized" : {
-                "en" : {
-                    "title" : "title goes here"
-                },
-                "el" : {
-                    "title" : "τίτλος εδώ"
-                }
-            },
-            // all non localized properties can be put directly under content to be read and used for any language given
-            "filepath": '/files/file.png'
-        }
-    }
-    </pre>
+        <div class="panel panel-default">
+            <table class="table table-bordered table-condensed data-structure">
+                <tbody>
+                    <tr class="data-title">
+                        <td>_id</td>
+                        <td>objectId</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the data identifier
+                        </td>
+                    </tr>
 
-    <div class="bs-callout bs-callout-info">
-        <p>see a json sample <a href="samples/data/layouts.json" target="_blank">here</a></p>
-    </div>
+                    <tr class="data-title">
+                        <td>domain</td>
+                        <td>string</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the domain identifier, typically the module domain in order to group list data together
+                        </td>
+                    </tr>
 
-    <h4>data</h4>
+                    <tr class="data-title">
+                        <td>name</td>
+                        <td>string</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the display name (most commonly used by the admin)
+                        </td>
+                    </tr>
 
-    <pre>
-    {
-        // id (objectId) : the data identifier
-        "_id" : "ede20efea91c58cb",
-        // domain (string) : the domain identifier (this is typically the module domain, in order to group data objects per domain)
-        "domain" : "core",
-        // list (string) : the list identifier identifying this data object as part of a specific list
-        "list" : "list1",
-        // name (string) : the display name, most commonly used by the admin
-        "name" : "entry name",
-        // published (bool) : indicated that this object has been saved at least one time. since the data objects are created before content validation, this helps to prevent them to come into our live content
-        "published" : true,
-        // createdOn (timestamp) : the timestamp that the data object was created
-        "createdOn" : 1415044624698,
-        // modifiedOn (timestamp) : the timestamp that the data object was last modified
-        "modifiedOn" : 1415044630373,
-        // content (object) : the content data of this data object
-        "content" : {
-            // localized (object) : holds the localized data values per language
-            "localized" : {
-                "en" : {
-                    "title" : "title goes here"
-                },
-                "el" : {
-                    "title" : "τίτλος εδώ"
-                }
-            }
-        }
-    }
-    </pre>
+                    <tr class="data-title">
+                        <td>published</td>
+                        <td>bool</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            indicates that this data object has been saved at least one time
+                            <br />
+                            since the data objects are created before content validation, this helps to prevent them to come into our live content
+                        </td>
+                    </tr>
 
-    <div class="bs-callout bs-callout-info">
-        <p>see a json sample <a href="samples/data/data.json" target="_blank">here</a></p>
-    </div>
+                    <tr class="data-title">
+                        <td>createdOn</td>
+                        <td>timestamp</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the timestamp that the object was created
+                        </td>
+                    </tr>
 
-    <h4>texts</h4>
+                    <tr class="data-title">
+                        <td>modifiedOn</td>
+                        <td>timestamp</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the timestamp that the object was last modified
+                        </td>
+                    </tr>
 
-    <pre>
-    {
-        // id (objectId) : the data identifier
-        "_id" : "96982a30f1d078a8",
-        // key (string) : the key identifier for this text entry
-        "key" : "en",
-        // group (string) : the group identifier for this text entry (commonly used to group texts together)
-        "group" : "language",
-        // published (bool) : indicated that this text entry has been saved at least one time
-        "published" : true,
-        // value (object) : the value data of this text entry for each language
-        "value" : {
-            "en" : "English",
-            "el" : "agglika",
-            "es" : "ingles"
-        }
-    }
-    </pre>
+                    <tr class="data-title">
+                        <td>content</td>
+                        <td>object</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the content data
+                            <br />
+                            the object structure is free to structure as you wish, with optional localized values on a localization object as { localized: { en: { ... } } }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="panel panel-default">
+            <div class="panel-body data-sample">
+                <a href="samples/data/data.json" target="_blank">click here</a> for a json sample
+            </div>
+        </div>
 
-    <div class="bs-callout bs-callout-info">
-        <p>see a json sample <a href="samples/data/texts.json" target="_blank">here</a></p>
-    </div>
+        <h4 data-spy-title="database-texts" data-spy-level="2">texts</h4>
 
-    <h4>settings</h4>
+        <p>the texts collection holds the localized text resources for the available site languages</p>
 
-    <pre>
-    {
-        // id (objectId) : the setting identifier
-        "_id" : "0dc5d6239efc19ff",
-        // domain (string) : the domain identifier (this is typically the module domain, in order to group setting objects per domain)
-        "domain" : "core",
-        // data (object) : the data of this setting object
-        "data" : {
-            "title" : "title here"
-        }
-    }
-    </pre>
+        <div class="panel panel-default">
+            <table class="table table-bordered table-condensed data-structure">
+                <tbody>
+                    <tr class="data-title">
+                        <td>_id</td>
+                        <td>objectId</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the text identifier
+                        </td>
+                    </tr>
 
-    <div class="bs-callout bs-callout-info">
-        <p>see a json sample <a href="samples/data/settings.json" target="_blank">here</a></p>
-    </div>
+                    <tr class="data-title">
+                        <td>key</td>
+                        <td>string</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the text key to be used referencing this text
+                        </td>
+                    </tr>
 
-    <h4>users</h4>
+                    <tr class="data-title">
+                        <td>group</td>
+                        <td>string</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            an optional group key to be used to group text resources together
+                        </td>
+                    </tr>
 
-    <pre>
-    {
-        // id (objectId) : the user identifier
-        "_id" : "06dd0ca8891ecb03",
-        // firstName (string) : the user first name
-        "firstName" : "Apostolis",
-        // lastName (string) : the user last name
-        "lastName" : "Konoupakis",
-        // username (string) : the user name
-        "username" : "konoupakis@gmail.com",
-        // password (string) : the user password
-        "password" : "db1772",
-        // roles (array) : the user roles
-        "roles" : [
-            "admin"
-        ]
-    }
-    </pre>
+                    <tr class="data-title">
+                        <td>published</td>
+                        <td>bool</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            indicates that this text has been saved at least one time
+                            <br />
+                            since the text objects are created before content validation, this helps to prevent them to come into our live content
+                        </td>
+                    </tr>
 
-    <div class="bs-callout bs-callout-info">
-        <p>see a json sample <a href="samples/data/users.json" target="_blank">here</a></p>
+                    <tr class="data-title">
+                        <td>value</td>
+                        <td>object</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the value data
+                            <br />
+                            the object structure should be a localized dictionary with the values for each language as in { en: 'english text translation' }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="panel panel-default">
+            <div class="panel-body data-sample">
+                <a href="samples/data/texts.json" target="_blank">click here</a> for a json sample
+            </div>
+        </div>
+
+        <h4 data-spy-title="database-settings" data-spy-level="2">settings</h4>
+
+        <p>the settings per module domain</p>
+
+        <div class="panel panel-default">
+            <table class="table table-bordered table-condensed data-structure">
+                <tbody>
+                    <tr class="data-title">
+                        <td>_id</td>
+                        <td>objectId</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the setting identifier
+                        </td>
+                    </tr>
+
+                    <tr class="data-title">
+                        <td>domain</td>
+                        <td>string</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the domain identifier, typically the module domain
+                        </td>
+                    </tr>
+
+                    <tr class="data-title">
+                        <td>data</td>
+                        <td>object</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the setting data
+                            <br />
+                            the object structure is free to structure as you wish, with optional localized values on a localization object as { localized: { en: { ... } } }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="panel panel-default">
+            <div class="panel-body data-sample">
+                <a href="samples/data/settings.json" target="_blank">click here</a> for a json sample
+            </div>
+        </div>
+
+        <h4 data-spy-title="database-users" data-spy-level="2">users</h4>
+
+        <p>lastly, the users collection</p>
+
+        <div class="panel panel-default">
+            <table class="table table-bordered table-condensed data-structure">
+                <tbody>
+                    <tr class="data-title">
+                        <td>_id</td>
+                        <td>objectId</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the user identifier
+                        </td>
+                    </tr>
+
+                    <tr class="data-title">
+                        <td>firstName</td>
+                        <td>string</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the first name
+                        </td>
+                    </tr>
+
+                    <tr class="data-title">
+                        <td>lastName</td>
+                        <td>string</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the last name
+                        </td>
+                    </tr>
+
+                    <tr class="data-title">
+                        <td>username</td>
+                        <td>string</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the username
+                        </td>
+                    </tr>
+                    
+                    <tr class="data-title">
+                        <td>roles</td>
+                        <td>array</td>
+                    </tr>
+                    <tr class="data-description">
+                        <td colspan="2">
+                            the roles that the user exists in
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-body data-sample">
+                <a href="samples/data/users.json" target="_blank">click here</a> for a json sample
+            </div>
+        </div>
     </div>
 </div>
