@@ -74,11 +74,11 @@
                                 if (newValue !== '') {
                                     
                                     var selectedContainer = _.find($jsnbt.containers, function (x) {
-                                        return x.toLowerCase() === newValue.toLowerCase()
+                                        return x.html.toLowerCase() === newValue.toLowerCase()
                                     });
 
                                     if (selectedContainer) {
-                                        scope.value = selectedContainer;
+                                        scope.value = selectedContainer.name;
                                         scope.wrong = false;
                                         scope.missing = false;
                                     }

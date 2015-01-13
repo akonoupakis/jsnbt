@@ -196,10 +196,13 @@ module.exports = {
         eshop: 'tmpl/public/layouts/eshop.html'
     },
 
-    containers: [
-        '/tmpl/partial/containers/sampleContainerA.html',
-        '/tmpl/partial/containers/sampleContainerB.html'
-    ],
+    containers: [{
+        name: 'sample container A',
+        html: '/tmpl/partial/containers/sampleContainerA.html',
+    }, {
+        name: 'sample container B',
+        html: '/tmpl/partial/containers/sampleContainerB.html'
+    }],
 
     templates: [{
         path: '/tmpl/index.html',

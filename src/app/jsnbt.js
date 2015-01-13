@@ -246,9 +246,13 @@ module.exports = {
 
                 if (_.isArray(moduleConfig.containers)) {
                     _.each(moduleConfig.containers, function (moduleContainer) {
-                        if (_.isString(moduleContainer))
-                            if (self.containers.indexOf(moduleContainer) === -1)
-                                self.containers.push(moduleContainer);
+                        var matchedContainer = _.first(_.filter(self.containers, function (x) { return x.name === moduleContainer.name; }));
+                        if (matchedContainer) {
+                            extend(true, matchedContainer, moduleContainer);
+                        }
+                        else {
+                            self.containers.push(clone(moduleContainer));
+                        }
                     });
                 }
 
