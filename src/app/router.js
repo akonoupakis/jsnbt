@@ -49,9 +49,9 @@ module.exports = function () {
             notFoundPaths = _.union(notFoundPaths, templatePaths);
             notFoundPaths = _.union(notFoundPaths, ['/tmp/', '/error/', '/admin/error/']);
 
-            var specPaths = _.union(
-                _.pluck(_.filter(jsnbt.templates, function (x) { return x.spec !== undefined; }), 'spec'),
-                _.pluck(_.filter(jsnbt.lists, function (x) { return x.spec !== undefined; }), 'spec')
+            var formPaths = _.union(
+                _.pluck(_.filter(jsnbt.templates, function (x) { return x.form !== undefined; }), 'form'),
+                _.pluck(_.filter(jsnbt.lists, function (x) { return x.form !== undefined; }), 'form')
             );
 
             var forbiddedPathPrefixes = [];
@@ -81,7 +81,7 @@ module.exports = function () {
                         }
                     }
 
-                    if (_.filter(specPaths, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length > 0) {
+                    if (_.filter(formPaths, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length > 0) {
                         processRequest = true;
                     }
                     
@@ -108,12 +108,12 @@ module.exports = function () {
                                 ctx.dpd = require('deployd/lib/internal-client').build(app.server, session, ctx.req.stack);
                                 ctx.req.dpd = ctx.dpd;
 
-                                if (_.filter(specPaths, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length > 0) {
+                                if (_.filter(formPaths, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length > 0) {
                                     if (!(session.user && auth.isInRole(session.user, 'admin'))) {
                                         ctx.error(404);
                                     }
                                     else {
-                                        var specContents = fs.readFile(server.getPath(app.root + '/public' + ctx.uri.path), function (readErr, readResults) {
+                                        fs.readFile(server.getPath(app.root + '/public' + ctx.uri.path), function (readErr, readResults) {
                                             if (readErr) {
                                                 ctx.error(500, readErr);
                                             }

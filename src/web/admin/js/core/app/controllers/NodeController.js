@@ -412,9 +412,9 @@
                     var deferred = $q.defer();
 
                     if ($scope.node && $scope.node.entity !== 'pointer') {
-                        var spec = _.find($jsnbt.templates, function (x) { return x.path === $scope.node.template; });
-                        if (spec) {
-                            $scope.tmpl = spec.spec;
+                        var jtmpl = _.find($jsnbt.templates, function (x) { return x.path === $scope.node.template; });
+                        if (jtmpl) {
+                            $scope.tmpl = jtmpl.form;
                         }
                         else {
                             $scope.tmpl = undefined;

@@ -40,12 +40,8 @@ module.exports = {
 
     sections: [],
 
-    dpd: {
+    permissions: [],
 
-        permissions: []
-
-    },
-        
     injects: {},
 
     layouts: {},
@@ -148,14 +144,14 @@ module.exports = {
             });
         }
 
-        if (_.isObject(moduleConfig.dpd) && _.isArray(moduleConfig.dpd.permissions)) {
-            _.each(moduleConfig.dpd.permissions, function (modulePermission) {
-                var matchedPermission = _.first(_.filter(self.dpd.permissions, function (x) { return x.collection === modulePermission.collection; }));
+        if (_.isArray(moduleConfig.permissions)) {
+            _.each(moduleConfig.permissions, function (modulePermission) {
+                var matchedPermission = _.first(_.filter(self.permissions, function (x) { return x.collection === modulePermission.collection; }));
                 if (matchedPermission) {
                     extend(true, matchedPermission, modulePermission);
                 }
                 else {
-                    self.dpd.permissions.push(clone(modulePermission));
+                    self.permissions.push(clone(modulePermission));
                 }
             });
         }
@@ -176,7 +172,7 @@ module.exports = {
             
             if (_.isArray(moduleConfig.lists)) {
                 _.each(moduleConfig.lists, function (moduleList) {
-                    var fileName = moduleList.spec.substring(0, moduleList.spec.lastIndexOf('.'));
+                    var fileName = moduleList.form.substring(0, moduleList.form.lastIndexOf('.'));
                     fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
 
                     var moduleListDomain = moduleConfig.type === 'addon' ? moduleConfig.domain : 'core';

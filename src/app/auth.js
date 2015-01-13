@@ -44,7 +44,7 @@ var getUserRoles = function (user) {
 }
 
 var isUserAuthorized = function (user, section, permission) {
-    var dataCollections = jsnbt.dpd.permissions || [];
+    var dataCollections = jsnbt.permissions || [];
 
     var dataCollection = _.first(_.filter(dataCollections, function (x) { return x.collection === section; }));
 
