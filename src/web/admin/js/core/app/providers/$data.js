@@ -149,7 +149,10 @@
                 },
                 seo: {},
                 active: {},
-                secure: {},
+                secure: {
+                    inherits: true,
+                    value: false
+                },
                 meta: {},
                 createdOn: new Date().getTime(),
                 modifiedOn: new Date().getTime(),

@@ -25,6 +25,9 @@
             $scope.nodeLayout = '';
             $scope.draftLayout = '';
 
+            $scope.nodeSSL = '';
+            $scope.draftSSL = '';
+
             $scope.seoNames = [];
             
             $scope.siblingSeoNames = [];
@@ -99,6 +102,9 @@
 
                         $scope.nodeRobots = result.robots.values;
                         $scope.draftRobots = result.robots.values;
+
+                        $scope.nodeSSL = result.secure.value;
+                        $scope.draftSSL = result.secure.value;
                         
                         deferred.resolve(result);
                         
@@ -327,6 +333,36 @@
                     else {
                         $scope.nodeLayout = $scope.draftLayout;
                         deferred.resolve($scope.nodeLayout);
+                    }
+
+                    return deferred.promise;
+                },
+
+                setSelectedSSL: function (hierarchyNodes) {
+                    var deferred = $q.defer();
+
+                    if ($scope.node.secure.inherits) {
+                        $scope.draftSSL = $scope.nodeSSL;
+
+                        var ssl = false;
+
+                        $($scope.node.hierarchy).each(function (i, item) {
+                            var matchedNode = _.first(_.filter(hierarchyNodes, function (x) { return x.id === item; }));
+                            if (matchedNode) {
+                                if (!matchedNode.secure.inherits) {
+                                    ssl = matchedNode.secure.value;
+                                }
+                            }
+                            else {
+                                return false;
+                            }
+                        });
+                        $scope.nodeSSL = ssl;
+                        deferred.resolve(ssl);
+                    }
+                    else {
+                        $scope.nodeSSL = $scope.draftSSL;
+                        deferred.resolve($scope.nodeSSL);
                     }
 
                     return deferred.promise;
@@ -710,6 +746,7 @@
                             publishNode.roles.values = !publishNode.roles.inherits ? $scope.nodeRoles : [];
                             publishNode.robots.values = !publishNode.robots.inherits ? $scope.nodeRobots : [];
                             publishNode.layout.value = !publishNode.layout.inherits ? $scope.nodeLayout : '';
+                            publishNode.secure.value = !publishNode.secure.inherits ? $scope.nodeSSL : false;
 
                             $data.nodes.put($scope.id, publishNode).then(function (result) {
                                 $scope.name = result.name;
@@ -806,7 +843,8 @@
                         parent: true,
                         seo: true,
                         meta: true,
-                        permissions: true
+                        permissions: true,
+                        ssl: true
                     };
 
                     var entity = {};
@@ -869,6 +907,25 @@
                     }
                     else {
                         fn.setSelectedLayout().catch(function (setEx) {
+                            logger.error(setEx);
+                        });
+                    }
+                }
+            });
+
+            $scope.$watch('node.secure.inherits', function (newValue, prevValue) {
+                if (newValue !== undefined && prevValue !== undefined) {
+                    if (newValue === true) {
+                        fn.getHierarchyNodes().then(function (hierarchyNodes) {
+                            fn.setSelectedSSL(hierarchyNodes).catch(function (setEx) {
+                                logger.error(setEx);
+                            });
+                        }, function (ex) {
+                            logger.error(ex);
+                        });
+                    }
+                    else {
+                        fn.setSelectedSSL().catch(function (setEx) {
                             logger.error(setEx);
                         });
                     }
@@ -943,7 +1000,7 @@
                 $q.all(fn.setLayouts(), fn.setRoles(), fn.setRobots(), fn.setModules(), fn.setLanguages(), fn.setLanguage(), fn.setTypes()).then(function () {
                     fn.set().then(function (setResponse) {
                         fn.getHierarchyNodes().then(function (hierarchyNodes) {
-                            $q.all(fn.setSelectedLayout(hierarchyNodes), fn.setSelectedRoles(hierarchyNodes), fn.setSelectedRobots(hierarchyNodes)).then(function () {
+                            $q.all(fn.setSelectedSSL(hierarchyNodes), fn.setSelectedLayout(hierarchyNodes), fn.setSelectedRoles(hierarchyNodes), fn.setSelectedRobots(hierarchyNodes)).then(function () {
                             }, function (set2Error) {
                                 logger.error(set2Error);
                             });

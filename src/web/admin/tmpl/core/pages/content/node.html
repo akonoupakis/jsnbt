@@ -137,6 +137,15 @@
             <hr />
         </div>
 
+        <div id="page-ssl" data-scrollspy="ssl" ng-show="application.ssl && entity.properties.ssl">
+            <div class="row">
+                <ctrl-check class="col-md-10" ng-model="nodeSSL" ng-disabled="!application.ssl || !entity.properties.ssl || node.secure.inherits" ng-label="ssl"></ctrl-check>
+                <ctrl-check class="col-md-2" ng-model="node.secure.inherits" ng-disabled="!application.ssl || !entity.properties.ssl" ng-label="inheritance"></ctrl-check>
+            </div>
+
+            <hr />
+        </div>
+
     </section>
 
     <div class="col-md-2">

@@ -23,6 +23,7 @@
             $scope.application.languages = [];
             $scope.application.localization = $jsnbt.localization;
             $scope.application.restricted = $jsnbt.restricted;
+            $scope.application.ssl = $jsnbt.ssl;
 
             $scope.defaults.countries = $jsnbt.countries;
 

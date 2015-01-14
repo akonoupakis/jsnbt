@@ -7,7 +7,7 @@ module.exports = {
     domain: 'core',
     browsable: false,
     public: true,
-    
+    ssl: true,
     //locale: 'el',
 
     // common module configs

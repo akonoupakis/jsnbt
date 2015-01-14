@@ -26,6 +26,8 @@ module.exports = {
 
     locale: '',
 
+    ssl: false,
+
     restricted: true,
 
     jsModules: [],
@@ -102,7 +104,8 @@ module.exports = {
                 seo: true,
                 meta: true,
                 permissions: true,
-                robots: true
+                robots: true,
+                ssl: true
             }
         };
 
@@ -199,6 +202,10 @@ module.exports = {
 
             if (moduleConfig.public) {
 
+                if (moduleConfig.ssl !== undefined) {
+                    self.ssl = moduleConfig.ssl === true;
+                }
+
                 if (moduleConfig.locale !== undefined) {
                     var language = _.first(_.filter(this.languages, function (x) { return x.code === moduleConfig.locale; }));
                     if (language) {
@@ -285,7 +292,8 @@ module.exports = {
 
             result.version = getVersion();
             result.restricted = self.restricted;
-            
+            result.ssl = self.ssl;
+
             var modules = [];
             _.each(self.modules, function (module) {
 
