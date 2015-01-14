@@ -32,7 +32,7 @@
                         initiated = true;
                     });
 
-                    scope.$watch('ngDisabled', function (newValue) {
+                    scope.$watch('ngEnabled', function (newValue) {
                         scope.enabled = !newValue;
                         element.find('input[type="checkbox"]').bootstrapSwitch('disabled', !scope.enabled);
                     });
