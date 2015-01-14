@@ -26,26 +26,24 @@
                     var initiating = true;
                     var initiated = false;
                     
+                    scope.$watch('ngDisabled', function (newValue) {
+                        scope.enabled = !newValue;
+                        element.find('input[type="checkbox"]').bootstrapSwitch('disabled', !scope.enabled);
+                    });
+                    
                     scope.$watch('ngModel', function (newValue, prevValue) {
                         initiated = false;
                         element.find('input[type="checkbox"]').bootstrapSwitch('state', newValue || false);
                         initiated = true;
                     });
 
-                    scope.$watch('ngEnabled', function (newValue) {
-                        scope.enabled = !newValue;
-                        element.find('input[type="checkbox"]').bootstrapSwitch('disabled', !scope.enabled);
-                    });
-
-                    element.find('input[type="checkbox"]').bootstrapSwitch({
-                        disabled: !scope.enabled,
-                        state: scope.ngModel
-                    });
-
+                    //element.find('input[type="checkbox"]').bootstrapSwitch('disabled', scope.ngDisabled);
+                    //element.find('input[type="checkbox"]').bootstrapSwitch('state', scope.ngModel);
+                    
                     element.find('input[type="checkbox"]').on('switchChange.bootstrapSwitch', function (event, state) {
                         if (!initiating && initiated) {
                             scope.ngModel = state;
-
+                            
                             scope.$apply();
 
                             $timeout(function () {
