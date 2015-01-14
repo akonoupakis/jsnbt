@@ -36,10 +36,7 @@
                         element.find('input[type="checkbox"]').bootstrapSwitch('state', newValue || false);
                         initiated = true;
                     });
-
-                    //element.find('input[type="checkbox"]').bootstrapSwitch('disabled', scope.ngDisabled);
-                    //element.find('input[type="checkbox"]').bootstrapSwitch('state', scope.ngModel);
-                    
+                                        
                     element.find('input[type="checkbox"]').on('switchChange.bootstrapSwitch', function (event, state) {
                         if (!initiating && initiated) {
                             scope.ngModel = state;
