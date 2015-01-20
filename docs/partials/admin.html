@@ -6,199 +6,125 @@
         <p>
             the jsnbt admin is located at /admin<br />
             the first time on admin after the jsnbt install, you will be prompted to create your sa user.<br />
-            below there will be a brief guide on the admin pages
         </p>
-
-        <h3 data-spy-title="dashboard" data-spy-level="2">dashboard</h3>
+        <h3 data-spy-title="intro" data-spy-level="2">intro</h3>
         <div>
             <p>
-                this will be a dashboard area for the site and the admin.<br />
-                modules you install might inject their dashboard widgets to this area
+                below there will be a brief guide on the admin pages
             </p>
-            <p>
-                in your end custom site, you may have an html file installed on src/web/admin/tmpl/public/ and reference it in your config injects section for dashboard.<br />
-                accompanying this file with an angular controller, you may inject functionality in the admin working with the existing admin functions or any of your own
-            </p>
+
+            <h3 data-spy-title="dashboard" data-spy-level="3">dashboard</h3>
+            <div ng-include="'partials/admin/intro/dashboard.html'"></div>
+            
+            <h3 data-spy-title="content" data-spy-level="3">content</h3>
+            <div ng-include="'partials/admin/intro/content.html'"></div>
+
+            <h3 data-spy-title="modules" data-spy-level="3">modules</h3>
+            <div ng-include="'partials/admin/intro/modules.html'"></div>
+
+            <h3 data-spy-title="users" data-spy-level="3">users</h3>
+            <div ng-include="'partials/admin/intro/users.html'"></div>
+
+            <h3 data-spy-title="settings" data-spy-level="3">settings</h3>
+            <div ng-include="'partials/admin/intro/settings.html'"></div>
         </div>
 
-        <h3 data-spy-title="content" data-spy-level="2">content</h3>
+        <h3 data-spy-title="controls" data-spy-level="2">controls</h3>
         <div>
-            <p>like in dashboard, you may have an html file installed on src/web/admin/tmpl/public/ and reference it in your config injects section for content.</p>
-
-            <h4 data-spy-title="languages" data-spy-level="3">languages</h4>
             <p>
-                here you are able to administer the site languages<br />
-                if you define in your site config that you do not want localization on your site (locale: 'en'), this section will not be visible
+                going through the jsnbt pages and sections, you constantly find yourself in forms full of input controls<br />
+                if a template is accompanied with a form file, the html notation on that file could extend the jsnbt form with more controls to save data to the target database object.<br />
+                controls are angular directives, therefore they may be injected in the control collection easily from any module to enrich a form's functionality.
             </p>
+            <p>here we'll have a look at the default controls shipped with jsnbt:</p>
 
-            <h4 data-spy-title="layouts" data-spy-level="3">layouts</h4>
-            <p>
-                the layouts are defined on your site config as a key value collection linking each layout with a partial html file.<br />
-                this file can include controls that bind their values to the data layout object, therefore saving a layout entry with whatever fields your site needs.<br />
-                this data, can be then bound to a node, and be used in the template in the front site
-            </p>
+            <h3 data-spy-title="ctrlText" data-spy-level="3">ctrlText</h3>
+            <div ng-include="'partials/admin/controls/ctrlText.html'"></div>
 
-            <h4 data-spy-title="nodes" data-spy-level="3">nodes</h4>
-            <p>
-                the nodes represent the endpoints that will result in your site urls.
-                <br />
-                each node is defined a seo name that will be part of the end url.
-            </p>
-            <p>depending on the node entity, you might have extra or less input controls, but here's a few that matter:</p>
+            <h3 data-spy-title="ctrlTextArea" data-spy-level="3">ctrlTextArea</h3>
+            <div ng-include="'partials/admin/controls/ctrlTextArea.html'"></div>
 
-            <div class="panel panel-default">
-                <table class="table table-bordered table-condensed data-structure">
-                    <tbody>
-                        <tr class="data-title">
-                            <td>name</td>
-                        </tr>
-                        <tr class="data-description">
-                            <td>
-                                the name identifier for use in the admin
-                            </td>
-                        </tr>
+            <h3 data-spy-title="ctrlSelect" data-spy-level="3">ctrlSelect</h3>
+            <div ng-include="'partials/admin/controls/ctrlSelect.html'"></div>
 
-                        <tr class="data-title">
-                            <td>parent</td>
-                        </tr>
-                        <tr class="data-description">
-                            <td>
-                                this is the parent of the node. if blank, root is meant as the parent
-                            </td>
-                        </tr>
+            <h3 data-spy-title="ctrlCheck" data-spy-level="3">ctrlCheck</h3>
+            <div ng-include="'partials/admin/controls/ctrlCheck.html'"></div>
 
-                        <tr class="data-title">
-                            <td>type</td>
-                        </tr>
-                        <tr class="data-description">
-                            <td>
-                                the entity type <br />
-                                in the central node form, if extension modules are installed, you may define a node as a pointer to another node in another module.<br />
-                                in other module node forms, you may see different options as entities in this select box
-                            </td>
-                        </tr>
+            <h3 data-spy-title="ctrlCheckList" data-spy-level="3">ctrlCheckList</h3>
+            <div ng-include="'partials/admin/controls/ctrlCheckList.html'"></div>
 
-                        <tr class="data-title">
-                            <td>language</td>
-                        </tr>
-                        <tr class="data-description">
-                            <td>
-                                the current node language.
-                                <br />
-                                this is just for viewing to change the controls to another language for editing
-                            </td>
-                        </tr>
+            <h3 data-spy-title="ctrlHtml" data-spy-level="3">ctrlHtml</h3>
+            <div ng-include="'partials/admin/controls/ctrlHtml.html'"></div>
 
-                        <tr class="data-title">
-                            <td>url</td>
-                        </tr>
-                        <tr class="data-description">
-                            <td>
-                                the seo name for this node.
-                                <br />
-                                the final url of this node is computed with the seo names of the hierarchical nodes leading to this one, followed by this seo name
-                            </td>
-                        </tr>
+            <h3 data-spy-title="ctrlImage" data-spy-level="3">ctrlImage</h3>
+            <div ng-include="'partials/admin/controls/ctrlImage.html'"></div>
 
-                        <tr class="data-title">
-                            <td>active</td>
-                        </tr>
-                        <tr class="data-description">
-                            <td>
-                                indicates whether this node is active per language<br />
-                                note that a node might be active for one language but not for another
-                            </td>
-                        </tr>
+            <h3 data-spy-title="ctrlImageList" data-spy-level="3">ctrlImageList</h3>
+            <div ng-include="'partials/admin/controls/ctrlImageList.html'"></div>
 
-                        <tr class="data-title">
-                            <td>layout</td>
-                        </tr>
-                        <tr class="data-description">
-                            <td>
-                                the selected layout for this node.<br />
-                                this may inherit its value from the parent node.<br />
-                                the layout identifier comes as meta content in your site's html source code, so that you can pick it up and use it to retrieve the layout data that accompany this node page
-                            </td>
-                        </tr>
+            <h3 data-spy-title="ctrlNode" data-spy-level="3">ctrlNode</h3>
+            <div ng-include="'partials/admin/controls/ctrlNode.html'"></div>
 
-                        <tr class="data-title">
-                            <td>template</td>
-                        </tr>
-                        <tr class="data-description">
-                            <td>
-                                the selected template for this node.<br />
-                                if the template is accompanied with a form file, it is used to extend the node content with extra input controls that appear below the template section
-                            </td>
-                        </tr>
+            <h3 data-spy-title="ctrlNodeList" data-spy-level="3">ctrlNodeList</h3>
+            <div ng-include="'partials/admin/controls/ctrlNodeList.html'"></div>
 
-                        <tr class="data-title">
-                            <td>meta</td>
-                        </tr>
-                        <tr class="data-description">
-                            <td>
-                                the title, keywords and description meta information
-                            </td>
-                        </tr>
+            <h3 data-spy-title="ctrlData" data-spy-level="3">ctrlData</h3>
+            <div ng-include="'partials/admin/controls/ctrlData.html'"></div>
 
-                        <tr class="data-title">
-                            <td>robots</td>
-                        </tr>
-                        <tr class="data-description">
-                            <td>
-                                the meta robots for then page's head section<br />
-                                this may inherit its value from the parent node
-                            </td>
-                        </tr>
+            <h3 data-spy-title="ctrlDataList" data-spy-level="3">ctrlDataList</h3>
+            <div ng-include="'partials/admin/controls/ctrlDataList.html'"></div>
 
-                        <tr class="data-title">
-                            <td>permissions</td>
-                        </tr>
-                        <tr class="data-description">
-                            <td>
-                                the role permissions that will be able to reach this node<br />
-                                this may inherit its value from the parent node
-                            </td>
-                        </tr>
-                        
-                        <tr class="data-title">
-                            <td>ssl</td>
-                        </tr>
-                        <tr class="data-description">
-                            <td>
-                                indicates whether this node should be under https or not<br />
-                                this may inherit its value from the parent node
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <h3 data-spy-title="ctrlFile" data-spy-level="3">ctrlFile</h3>
+            <div ng-include="'partials/admin/controls/ctrlFile.html'"></div>
 
-            <h4 data-spy-title="data" data-spy-level="3">data</h4>
-            <p>
-                the lists are defined on your site config to provide fluent lists of data<br />
-                then you may link list items to your nodes or layouts through data-container controls
-            </p>
+            <h3 data-spy-title="ctrlFileList" data-spy-level="3">ctrlFileList</h3>
+            <div ng-include="'partials/admin/controls/ctrlFileList.html'"></div>
 
-            <h4 data-spy-title="texts" data-spy-level="3">texts</h4>
-            <p>
-                this section holds the text resources for the front end site<br />
-                the text entries may be grouped so that they can be fetched together per any section needed
-            </p>
+            <h3 data-spy-title="ctrlContainer" data-spy-level="3">ctrlContainer</h3>
+            <div ng-include="'partials/admin/controls/ctrlContainer.html'"></div>
 
-            <h4 data-spy-title="files" data-spy-level="3">files</h4>
-            <p>
-                typically, a file manager for you to upload any files to be used by your site<br />
-                the files are uploaded in a /files folder on the root path of the application
-            </p>
+            <h3 data-spy-title="ctrlContainerList" data-spy-level="3">ctrlContainerList</h3>
+            <div ng-include="'partials/admin/controls/ctrlContainerList.html'"></div>
         </div>
 
-        <h3 data-spy-title="modules" data-spy-level="2">modules</h3>
-        <div></div>
+        <h3 data-spy-title="providers" data-spy-level="2">providers</h3>
+        <div>
+            <p></p>
 
-        <h3 data-spy-title="users" data-spy-level="2">users</h3>
-        <div></div>
+            <h3 data-spy-title="$data" data-spy-level="3">$data</h3>
+            <div ng-include="'partials/admin/providers/$data.html'"></div>
 
-        <h3 data-spy-title="settings" data-spy-level="2">settings</h3>
-        <div></div>
+            <h3 data-spy-title="$jsnbt" data-spy-level="3">$jsnbt</h3>
+            <div ng-include="'partials/admin/providers/$jsnbt.html'"></div>
+
+            <h3 data-spy-title="$logger" data-spy-level="3">$logger</h3>
+            <div ng-include="'partials/admin/providers/$logger.html'"></div>
+
+            <h3 data-spy-title="$package" data-spy-level="3">$package</h3>
+            <div ng-include="'partials/admin/providers/$package.html'"></div>
+
+            <h3 data-spy-title="$queue" data-spy-level="3">$queue</h3>
+            <div ng-include="'partials/admin/providers/$queue.html'"></div>
+        </div>
+
+        <h3 data-spy-title="services" data-spy-level="2">services</h3>
+        <div>
+            <p></p>
+
+            <h3 data-spy-title="AuthService" data-spy-level="3">AuthService</h3>
+            <div ng-include="'partials/admin/services/AuthService.html'"></div>
+
+            <h3 data-spy-title="FileService" data-spy-level="3">FileService</h3>
+            <div ng-include="'partials/admin/services/FileService.html'"></div>
+
+            <h3 data-spy-title="ModalService" data-spy-level="3">ModalService</h3>
+            <div ng-include="'partials/admin/services/ModalService.html'"></div>
+
+            <h3 data-spy-title="PagedDataService" data-spy-level="3">PagedDataService</h3>
+            <div ng-include="'partials/admin/services/PagedDataService.html'"></div>
+
+            <h3 data-spy-title="TreeNodeService" data-spy-level="3">TreeNodeService</h3>
+            <div ng-include="'partials/admin/services/TreeNodeService.html'"></div>
+        </div>
     </div>
 </div>

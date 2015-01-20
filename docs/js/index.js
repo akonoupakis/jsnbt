@@ -17,38 +17,39 @@ $(document).ready(function () {
     var randomIndex = 0;
     var getSpyElements = function ($el, level) {
         var results = [];
-        var spyItems = $('*[data-spy-title!=""][data-spy-level=' + level + ']', $el);
+        if (level <= 2) {
+            var spyItems = $('*[data-spy-title!=""][data-spy-level=' + level + ']', $el);
 
-        spyItems.each(function (i, item) {
-            randomIndex++;
+            spyItems.each(function (i, item) {
+                randomIndex++;
 
-            var $item = $(item);
+                var $item = $(item);
 
-            var itemId = 'spiedEl-' + level + '-' + randomIndex;
+                var itemId = 'spiedEl-' + level + '-' + randomIndex;
 
-            $item.prop('id', itemId);
-            var spyItem = $('<li />')
-                  .append(
-                        $('<a />')
-                            .prop('href', '#' + itemId)
-                            .html($item.data('spy-title'))
-                    );
+                $item.prop('id', itemId);
+                var spyItem = $('<li />')
+                      .append(
+                            $('<a />')
+                                .prop('href', '#' + itemId)
+                                .html($item.data('spy-title'))
+                        );
 
-            var childSpyElements = getSpyElements($item, level + 1);
-            if (childSpyElements.length > 0)
-            {
-                var childUl = $('<ul />')
-                    .addClass('nav');
+                var childSpyElements = getSpyElements($item, level + 1);
+                if (childSpyElements.length > 0) {
+                    var childUl = $('<ul />')
+                        .addClass('nav');
 
-                $(childSpyElements).each(function (ci, citem) {
-                    childUl.append(citem);
-                });
+                    $(childSpyElements).each(function (ci, citem) {
+                        childUl.append(citem);
+                    });
 
-                spyItem.append(childUl);
-            }
+                    spyItem.append(childUl);
+                }
 
-            results.push(spyItem);
-        });
+                results.push(spyItem);
+            });
+        }
 
         return results;
     }
