@@ -12,8 +12,6 @@
                 replace: true,
                 scope: {
                     ngModel: '=',
-                    ngDomain: '=',
-                    ngListId: '=',
                     ngDisabled: '=',
                     ngRequired: '=',
                     ngLabel: '@',
