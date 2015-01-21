@@ -1,1 +1,121 @@
-﻿
+﻿<p>a checkboxlist control</p>
+
+<div class="panel panel-default">
+    <table class="table table-bordered table-condensed data-structure">
+        <tbody>
+            <tr class="data-title">
+                <td>ngModel</td>
+                <td>bool</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    the model to be bound to the control
+                </td>
+            </tr>
+
+            <tr class="data-title">
+                <td>ngDisabled</td>
+                <td>bool</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    indicates whether this control is disabled or not
+                </td>
+            </tr>
+
+            <tr class="data-title">
+                <td>ngRequired</td>
+                <td>bool</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    indicates whether the value of this control is required or not (at least one checked checkbox in the list)
+                </td>
+            </tr>
+
+            <tr class="data-title">
+                <td>ngLabel</td>
+                <td>text</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    the label for this control, viewed as header
+                </td>
+            </tr>
+
+            <tr class="data-title">
+                <td>ngTip</td>
+                <td>text</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    the sublabel for this control, viewed as subheader
+                </td>
+            </tr>
+
+            <tr class="data-title">
+                <td>ngOptions</td>
+                <td>array of objects</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    these objects represent the checkboxlist options
+                </td>
+            </tr>
+
+            <tr class="data-title">
+                <td>ngValueField</td>
+                <td>text</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    the name of the option property that should be used as value
+                </td>
+            </tr>
+
+            <tr class="data-title">
+                <td>ngNameField</td>
+                <td>text</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    the name of the option property that should be used as name
+                </td>
+            </tr>
+
+            <tr class="data-title">
+                <td>ngDisabledField</td>
+                <td>text</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    the name of the option property that should be used as disabled
+                </td>
+            </tr>
+
+            <tr class="data-title">
+                <td>ngDescriptionField</td>
+                <td>text</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    the name of the option property that should be used as description
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="panel-body">
+        <p>usage:</p>
+        <pre>&lt;ctrl-check-list
+    ng-model="sample.value" 
+    ng-disabled="false" 
+    ng-required="false" 
+    ng-label="sample label text" 
+    ng-tip="sample tip text"
+    ng-options="options"
+    ng-name-field="name"
+    ng-value-field="value"
+    ng-disabled-field="disabled"
+    ng-description-field="description"&gt;&lt;/ctrl-check-list&gt;</pre>
+    </div>
+</div>
