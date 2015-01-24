@@ -15,7 +15,7 @@
 
             <h3 data-spy-title="dashboard" data-spy-level="3">dashboard</h3>
             <div ng-include="'partials/admin/intro/dashboard.html'"></div>
-            
+
             <h3 data-spy-title="content" data-spy-level="3">content</h3>
             <div ng-include="'partials/admin/intro/content.html'"></div>
 
@@ -33,7 +33,8 @@
         <div>
             <p>
                 going through the jsnbt pages and sections, you constantly find yourself in forms full of input controls<br />
-                if a template is accompanied with a form file, the html notation on that file could extend the jsnbt form with more controls to save data to the target database object.<br />
+                if a template is accompanied with a form file, the html notation on that file could extend the jsnbt form with more controls to save data to the target database object.
+            </p><p>
                 controls are angular directives, therefore they may be injected in the control collection easily from any module to enrich a form's functionality.
             </p>
             <p>here we'll have a look at the default controls shipped with jsnbt:</p>
@@ -89,7 +90,11 @@
 
         <h3 data-spy-title="providers" data-spy-level="2">providers</h3>
         <div>
-            <p></p>
+            <p>
+                jsnbt ships with a few builtin angular providers.<br />
+                you may implement your own providers and inject them to the angular namespace for your use within the admin and admin sections you will provide.
+            </p>
+            <p>here there are a few things you should know about the providers you have laready in hand:</p>
 
             <h3 data-spy-title="$data" data-spy-level="3">$data</h3>
             <div ng-include="'partials/admin/providers/$data.html'"></div>
