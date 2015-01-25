@@ -1,1 +1,22 @@
-﻿
+﻿<p>PagedDataService will bring you data from a collection in a paged wrapper object, including a more() function that will bring the next page's data.</p>
+<p>The functions in this service are most suited for the ctrlGrid control.</p>
+
+<h4>PagedDataService.get(fn, query, start, limit, selected)</h4>
+<pre>(function () {
+    
+    angular.module("jsnbt")
+        .controller('AppController', function ($scope, PagedDataService) {
+
+            $scope.data = {};
+
+            PagedDataService.get(dpd.data.get, { 
+                list: 'list1'
+            }, 0, 50, []).then(function (results) {
+                $scope.data = results;
+            }, function (error) {
+                throw error;
+            });
+
+        });
+
+})();</pre>

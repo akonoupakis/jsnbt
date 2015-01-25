@@ -10,9 +10,6 @@
             ModalService.open = function (scope) {
                 var deferred = $q.defer();
 
-                var modalTmplInternal = 'tmpl/core/modals/nodeSelector.html';
-                var modalDomain = 'core';
-
                 var modalCtrl = function ($scope, $modalInstance) {
                     angular.extend($scope, scope);
                     

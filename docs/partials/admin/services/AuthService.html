@@ -1,1 +1,85 @@
-﻿
+﻿<p>AuthService contains a few common authentication and authorization functions</p>
+
+<h4>AuthService.login(username, password)</h4>
+<pre>(function () {
+    
+    angular.module("jsnbt")
+        .controller('AppController', function ($scope, AuthService) {
+
+            $scope.user = undefined;
+
+            AuthService.login('username', 'password').then(function (response) {
+                $scope.user = response;
+            }, function (error) {
+                throw error;
+            });
+
+        });
+
+})();</pre>
+
+<h4>AuthService.get()</h4>
+<pre>(function () {
+
+    angular.module("jsnbt")
+        .controller('AppController', function ($scope, AuthService) {
+            
+            AuthService.get().then(function (response) {
+                $scope.user = response;
+            }, function (error) {
+                throw error;
+            });
+
+        });
+
+})();</pre>
+
+<h4>AuthService.logout()</h4>
+<pre>(function () {
+
+    angular.module("jsnbt")
+        .controller('AppController', function ($scope, AuthService) {
+
+            AuthService.logout().catch(function (error) {
+                throw error;
+            });
+
+        });
+
+})();</pre>
+
+<h4>AuthService.isInRole(user, role)</h4>
+<pre>(function () {
+    angular.module("jsnbt")
+
+        .controller('AppController', function ($scope, AuthService) {
+
+            $scope.isAdmin = false;
+
+            AuthService.get().then(function (response) {
+                $scope.isAdmin = AuthService.isInRole(response, 'admin');
+            }, function (error) {
+                throw error;
+            });
+            
+        });
+
+})();</pre>
+
+<h4>AuthService.authorize(user, section)</h4>
+<pre>(function () {
+
+    angular.module("jsnbt")
+        .controller('AppController', function ($scope, AuthService) {
+
+            $scope.permission = false;
+
+            AuthService.get().then(function (response) {
+                $scope.permission = AuthService.authorize(response, 'languages');
+            }, function (error) {
+                throw error;
+            });
+
+        });
+
+})();</pre>

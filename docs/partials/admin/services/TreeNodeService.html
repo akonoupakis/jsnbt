@@ -1,1 +1,36 @@
-﻿
+﻿<p>TreeNodeService will bring you cascade node data in a tree structural form.</p>
+<p>The functions in this service are most suited for the ctrlTree control.</p>
+
+<h4>TreeNodeService.getNodes(options)</h4>
+<pre>(function () {
+    
+    angular.module("jsnbt")
+        .controller('AppController', function ($scope, TreeNodeService) {
+
+            $scope.data = [];
+
+            var options = {
+                // identifier: a cache key if to remember the last state of the tree. 
+                // if so, when the same tree loads again, opened tree nodes will open again
+                identifier: 'cacheIdentifier',
+                // the target domain of the node
+                domain: $scope.domain,
+                // the single parent to retrieve nodes for
+                parentId: '',
+                // multiple parents to retrieve nodes for 
+                parentIds: [],
+                // selected entities to filter the result nodes
+                entities: [],
+                // selected node ids to be excluded from the result nodes
+                restricted: []
+            };
+
+            TreeNodeService.getNodes(options).then(function (response) {
+                $scope.data = response;
+            }, function (error) {
+                throw error;
+            });
+
+        });
+
+})();</pre>
