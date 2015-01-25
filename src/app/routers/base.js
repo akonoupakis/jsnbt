@@ -116,8 +116,9 @@ module.exports = function () {
                                     }
                                     
                                     var renderInternal = function (ctxInternal) {
-                                        var installedTemplate = _.first(_.filter(jsnbt.templates, function (x) { return x.path === ctxInternal.template; }));
+                                        var installedTemplate = _.first(_.filter(jsnbt.templates, function (x) { return x.id === ctxInternal.template; }));
                                         if (installedTemplate) {
+                                            ctxInternal.template = installedTemplate.html;
                                             ctxInternal.render();
                                         }
                                         else {

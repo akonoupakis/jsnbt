@@ -74,7 +74,7 @@
                                 if (newValue !== '') {
                                     
                                     var selectedContainer = _.find($jsnbt.containers, function (x) {
-                                        return x.html.toLowerCase() === newValue.toLowerCase()
+                                        return x.id === newValue
                                     });
 
                                     if (selectedContainer) {

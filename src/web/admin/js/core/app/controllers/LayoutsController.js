@@ -11,11 +11,12 @@
             $scope.data = {};
 
             var layouts = [];
-            for (var layoutName in $jsnbt.layouts) {
+            $($jsnbt.layouts).each(function (l, layout) {
                 layouts.push({
-                    name: layoutName
+                    id: layout.id,
+                    name: layout.name
                 });
-            }
+            });
             $scope.data = {
                 items: _.sortBy(layouts, 'name')
             };
@@ -23,7 +24,7 @@
             $scope.gridFn = {
 
                 edit: function (item) {
-                    $location.next('/content/layouts/' + item.name);
+                    $location.next('/content/layouts/' + item.id);
                 }
 
             };

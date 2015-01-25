@@ -247,7 +247,7 @@ module.exports = function(dpd) {
                             layout = rnode.layout.value;
                         }
                     });
-
+                    
                     return layout;
                 },
                 getPermissions: function () {

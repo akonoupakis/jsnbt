@@ -111,13 +111,21 @@
                                         scope.wrong[nv] = false;
 
                                         var selectedContainer = _.find($jsnbt.containers, function (x) {
-                                            return x.html.toLowerCase() === nValue.toLowerCase()
+                                            return x.id === nValue.id
                                         });
 
-                                        scopeValues.push({
-                                            id: nValue,
-                                            name: selectedContainer.name
-                                        });
+                                        if (selectedContainer) {
+                                            scopeValues.push({
+                                                id: nValue,
+                                                name: selectedContainer.name
+                                            });
+                                        }
+                                        else {
+                                            scopeValues.push({
+                                                id: nValue,
+                                                name: nValue
+                                            });
+                                        }
 
                                         if (!selectedContainer)
                                             scope.missing[nv] = true;

@@ -73,7 +73,7 @@ module.exports = function (grunt) {
                             var packConfig = typeof (packObject.getConfig) === 'function' ? packObject.getConfig() : {};
                             if (_.isArray(packConfig.templates)) {
                                 _.each(packConfig.templates, function (packTemplate) {
-                                    addFile('src/web/public/' + _.str.ltrim(packTemplate.path, '/'));
+                                    addFile('src/web/public/' + _.str.ltrim(packTemplate.html, '/'));
                                 });
                             }
                         }
@@ -108,7 +108,7 @@ module.exports = function (grunt) {
                                         var nodeModulePackConfig = typeof (nodeModulePackObject.getConfig) === 'function' ? nodeModulePackObject.getConfig() : {};
                                         if (_.isArray(nodeModulePackConfig.templates)) {
                                             _.each(nodeModulePackConfig.templates, function (packTemplate) {
-                                                addFile('src/pck/' + packageItem + '/web/public/' + _.str.ltrim(packTemplate.path, '/'));
+                                                addFile('src/pck/' + packageItem + '/web/public/' + _.str.ltrim(packTemplate.html, '/'));
                                             });
                                         }
                                     }

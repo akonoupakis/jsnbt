@@ -46,7 +46,7 @@ module.exports = {
 
     injects: {},
 
-    layouts: {},
+    layouts: [],
 
     containers: [],
 
@@ -220,7 +220,7 @@ module.exports = {
 
                 if (_.isArray(moduleConfig.templates)) {
                     _.each(moduleConfig.templates, function (moduleTemplate) {
-                        var matchedTemplate = _.first(_.filter(self.templates, function (x) { return x.path === moduleTemplate.path; }));
+                        var matchedTemplate = _.first(_.filter(self.templates, function (x) { return x.id === moduleTemplate.id; }));
                         if (matchedTemplate) {
                             extend(true, matchedTemplate, moduleTemplate);
                         }
@@ -243,17 +243,21 @@ module.exports = {
                     self.injects = injects;
                 }
 
-                if (_.isObject(moduleConfig.layouts)) {
-                    for (var layoutName in moduleConfig.layouts) {
-                        if (_.isString(moduleConfig.layouts[layoutName])) {
-                            self.layouts[layoutName] = moduleConfig.layouts[layoutName];
+                if (_.isArray(moduleConfig.layouts)) {
+                    _.each(moduleConfig.layouts, function (moduleLayout) {
+                        var matchedLayout = _.first(_.filter(self.layouts, function (x) { return x.id === moduleLayout.id; }));
+                        if (matchedLayout) {
+                            extend(true, matchedLayout, moduleLayout);
                         }
-                    }                    
+                        else {
+                            self.layouts.push(clone(moduleLayout));
+                        }
+                    });
                 }
 
                 if (_.isArray(moduleConfig.containers)) {
                     _.each(moduleConfig.containers, function (moduleContainer) {
-                        var matchedContainer = _.first(_.filter(self.containers, function (x) { return x.name === moduleContainer.name; }));
+                        var matchedContainer = _.first(_.filter(self.containers, function (x) { return x.id === moduleContainer.id; }));
                         if (matchedContainer) {
                             extend(true, matchedContainer, moduleContainer);
                         }

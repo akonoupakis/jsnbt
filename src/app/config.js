@@ -191,39 +191,60 @@ module.exports = {
         settings: 'tmpl/public/injects/settings.html'
     },
 
-    layouts: {
-        global: 'tmpl/public/layouts/global.html',
-        eshop: 'tmpl/public/layouts/eshop.html'
-    },
+    layouts: [{
+        id: 'global',
+        name: 'global layout',
+        form: 'tmpl/public/layouts/global.html'
+    }, {
+        id: 'eshop',
+        name: 'eshop layout',
+        form: 'tmpl/public/layouts/eshop.html'
+    }],
 
     containers: [{
+        id: 'sampleContainer1',
         name: 'sample container A',
         html: '/tmpl/partial/containers/sampleContainerA.html',
     }, {
+        id: 'sampleContainer2',
         name: 'sample container B',
         html: '/tmpl/partial/containers/sampleContainerB.html'
     }],
 
     templates: [{
-        path: '/tmpl/index.html',
+        id: 'home',
+        name: 'home page',
+        html: '/tmpl/index.html',
         restricted: ['page']
     }, {
-        path: '/tmpl/login.html',
+        id: 'login',
+        name: 'login page',
+        html: '/tmpl/login.html',
         restricted: ['page']
     }, {
-        path: '/tmpl/text.html',
+        id: 'text',
+        name: 'text page',
+        html: '/tmpl/text.html',
         form: 'tmpl/public/forms/page/text.html'
     }, {
-        path: '/tmpl/nodes.html',
+        id: 'nodes',
+        name: 'nodes page',
+        html: '/tmpl/nodes.html',
         form: 'tmpl/public/forms/page/nodes.html'
     }, {
-        path: '/tmpl/data.html',
+        id: 'data',
+        name: 'data page',
+        html: '/tmpl/data.html',
         form: 'tmpl/public/forms/page/data.html'
     }, {
-        path: '/tmpl/files.html',
+        id: 'files',
+        name: 'files page',
+        html: '/tmpl/files.html',
         form: 'tmpl/public/forms/page/files.html'
     }, {
-        path: '/tmpl/images.html',
+        id: 'images',
+        name: 'images page',
+        html: '/tmpl/images.html',
         form: 'tmpl/public/forms/page/images.html'
     }],
 

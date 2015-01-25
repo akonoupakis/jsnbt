@@ -12,12 +12,12 @@
             $scope.saveValue = function () {
                 var deferred = $q.defer();                
 
-                save($scope.inputValue, function(callback){
+                save($scope.inputValue, function(callback) {
                     deferred.resolve(); 
                 });
 
                 return deferred.promise;
-            }
+            };
 
             $scope.$watch('inputValue', function (newValue, prevValue) {
                 $queue.enqueue('queueName', $scope.saveValue);

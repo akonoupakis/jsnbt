@@ -211,11 +211,12 @@
                     var deferred = $q.defer();
       
                     var layouts = [];
-                    for (var layoutName in $jsnbt.layouts) {
+                    $($jsnbt.layouts).each(function (l, layout) {
                         layouts.push({
-                            name: layoutName
+                            id: layout.id,
+                            name: layout.name
                         });
-                    }
+                    });
 
                     $scope.layouts = layouts;
 
@@ -448,7 +449,7 @@
                     var deferred = $q.defer();
 
                     if ($scope.node && $scope.node.entity !== 'pointer') {
-                        var jtmpl = _.find($jsnbt.templates, function (x) { return x.path === $scope.node.template; });
+                        var jtmpl = _.find($jsnbt.templates, function (x) { return x.id === $scope.node.template; });
                         if (jtmpl) {
                             $scope.tmpl = jtmpl.form;
                         }
@@ -501,8 +502,8 @@
                     });
 
                     $scope.templates = templates;
-
-                    if (_.filter($scope.templates, function (x) { return x.path === $scope.node.template; }).length === 0) {
+                    
+                    if (_.filter($scope.templates, function (x) { return x.id === $scope.node.template; }).length === 0) {
                         $scope.node.template = '';
                     }
 
