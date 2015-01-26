@@ -4,6 +4,40 @@
 .bs-docs-sidebar.affix {
     top: 120px;
 }
+
+.bs-docs-sidebar .nav > li.level1 > a {
+    padding-left: 20px;
+}
+.bs-docs-sidebar .nav > li.level1.active > a,
+.bs-docs-sidebar .nav > li.level1.active > a:hover {
+    padding-left: 18px;
+}
+.bs-docs-sidebar .nav > li.level1 > a:hover {
+    padding-left: 19px;
+}
+
+.bs-docs-sidebar .nav > li.level2 > a {
+    padding-left: 30px;
+}
+.bs-docs-sidebar .nav > li.level2.active > a,
+.bs-docs-sidebar .nav > li.level2.active > a:hover {
+    padding-left: 28px;
+}
+.bs-docs-sidebar .nav > li.level2 > a:hover {
+    padding-left: 29px;
+}
+
+.bs-docs-sidebar .nav > li.level3 > a {
+    padding-left: 40px;
+}
+.bs-docs-sidebar .nav > li.level3.active > a,
+.bs-docs-sidebar .nav > li.level3.active > a:hover {
+    padding-left: 38px;
+}
+.bs-docs-sidebar .nav > li.level3 > a:hover {
+    padding-left: 39px;
+}
+
 .scroll-spy-section {
     padding-bottom:20px;
 }

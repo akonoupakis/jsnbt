@@ -17,43 +17,49 @@ $(document).ready(function () {
     var randomIndex = 0;
     var getSpyElements = function ($el, level) {
         var results = [];
-        if (level <= 2) {
-            var spyItems = $('*[data-spy-title!=""][data-spy-level=' + level + ']', $el);
 
-            spyItems.each(function (i, item) {
-                randomIndex++;
+        var spyItems = $('*[data-spy-title!=""][data-spy-level=' + level + ']', $el);
+        console.log(level, $el, spyItems);
+        spyItems.each(function (i, item) {
+            randomIndex++;
 
-                var $item = $(item);
+            var $item = $(item);
 
-                var itemId = 'spiedEl-' + level + '-' + randomIndex;
+            var itemId = 'spiedEl-' + level + '-' + randomIndex;
 
-                $item.prop('id', itemId);
-                var spyItem = $('<li />')
-                      .append(
-                            $('<a />')
-                                .prop('href', '#' + itemId)
-                                .html($item.data('spy-title'))
-                        );
+            $item.prop('id', itemId);
 
-                var childSpyElements = getSpyElements($item, level + 1);
-                if (childSpyElements.length > 0) {
-                    var childUl = $('<ul />')
-                        .addClass('nav');
+            var spyAnchor = $('<a />')
+                .prop('href', '#' + itemId)
+                .html($item.data('spy-title'));
 
-                    $(childSpyElements).each(function (ci, citem) {
-                        childUl.append(citem);
-                    });
+            var spyItem = $('<li />')
+                .addClass('level' + level).append(spyAnchor);
 
-                    spyItem.append(childUl);
-                }
+            spyAnchor.click(function (e) {
+                e.preventDefault();
 
-                results.push(spyItem);
+                $('body').scrollTo('#' + itemId, { offset: -5, duration: 400 });
             });
-        }
+
+            var childSpyElements = getSpyElements($item, level + 1);
+            if (childSpyElements.length > 0) {
+                var childUl = $('<ul />')
+                    .addClass('nav');
+
+                $(childSpyElements).each(function (ci, citem) {
+                    childUl.append(citem);
+                });
+
+                spyItem.append(childUl);
+            }
+
+            results.push(spyItem);
+        });
 
         return results;
     }
-    
+   
     setTimeout(function () {
         var targetContainer = $('#scroll-spy-container');
         var spyItems = getSpyElements(targetContainer, 1);

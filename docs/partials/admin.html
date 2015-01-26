@@ -28,8 +28,8 @@
             <div ng-include="'partials/admin/intro/settings.html'"></div>
         </div>
 
-        <h3 data-spy-title="controls" data-spy-level="2">admin &raquo; controls</h3>
-        <div>
+        <div data-spy-title="controls" data-spy-level="2">
+            <h3>admin &raquo; controls</h3>
             <p>
                 going through the jsnbt pages and sections, you constantly find yourself in forms full of input controls<br />
                 if a template is accompanied with a form file, the html notation on that file could extend the jsnbt form with more controls to save data to the target database object.
@@ -43,9 +43,6 @@
 
             <h3 data-spy-title="ctrlTree" data-spy-level="3">admin &raquo; controls &raquo; ctrlTree</h3>
             <div ng-include="'partials/admin/controls/ctrlTree.html'"></div>
-
-            <h3 data-spy-title="ctrlExplorer" data-spy-level="3">admin &raquo; controls &raquo; ctrlExplorer</h3>
-            <div ng-include="'partials/admin/controls/ctrlExplorer.html'"></div>
 
             <h3 data-spy-title="ctrlText" data-spy-level="3">admin &raquo; controls &raquo; ctrlText</h3>
             <div ng-include="'partials/admin/controls/ctrlText.html'"></div>
@@ -96,8 +93,8 @@
             <div ng-include="'partials/admin/controls/ctrlContainerList.html'"></div>
         </div>
 
-        <h3 data-spy-title="providers" data-spy-level="2">admin &raquo; providers</h3>
-        <div>
+        <div data-spy-title="providers" data-spy-level="2">
+            <h3>admin &raquo; providers</h3>
             <p>
                 jsnbt ships with a few builtin angular providers.<br />
                 you may implement your own providers and inject them to the angular namespace for your use within the admin and admin sections you will provide.
@@ -120,10 +117,12 @@
             <div ng-include="'partials/admin/providers/$queue.html'"></div>
         </div>
 
-        <h3 data-spy-title="services" data-spy-level="2">admin &raquo; services</h3>
-        <div>
-            <p>jsnbt ships with a few builtin angular services.<br />
-                you may implement your own services and inject them to the angular namespace for your use within the admin and admin sections you will provide.</p>
+        <div data-spy-title="services" data-spy-level="2">
+            <h3>admin &raquo; services</h3>
+            <p>
+                jsnbt ships with a few builtin angular services.<br />
+                you may implement your own services and inject them to the angular namespace for your use within the admin and admin sections you will provide.
+            </p>
 
             <h3 data-spy-title="AuthService" data-spy-level="3">admin &raquo; services &raquo; AuthService</h3>
             <div ng-include="'partials/admin/services/AuthService.html'"></div>
