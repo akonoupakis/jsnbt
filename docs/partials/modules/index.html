@@ -1,0 +1,44 @@
+﻿<p>
+    Each module uses an index entry point (typically the package.json main js file reference) to inject its functionality and parameterization to the jsnbt engine.
+    <br />
+    The index file is placed in the "src/app/" folder as all server side code blocks.
+</p>
+<p>The below are the specs needed in a module's index.js file:</p>
+<div class="panel panel-default">
+    <table class="table table-bordered table-condensed data-structure">
+        <tbody>
+            <tr class="data-title">
+                <td>init(application)</td>
+                <td>function</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    runs on application start
+                </td>
+            </tr>
+
+            <tr class="data-title">
+                <td>getConfig()</td>
+                <td>function</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    returns the module's cofiguration as a json object
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="panel-body">
+        <p>sample:</p>
+        <pre>module.exports = {
+
+init: function (application) {
+},
+
+getConfig: function () {
+    return require('./config.js');
+}
+
+};</pre>
+    </div>
+</div>

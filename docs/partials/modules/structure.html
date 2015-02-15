@@ -1,0 +1,60 @@
+﻿    <p>All modules follow the same structure having the source code under a "src" folder and reserving a folder "docs" for the module's documentation</p>
+
+    <pre>docs/
+  ├── index.html
+src/
+  ├── css/
+  │   ├── app/
+  │         ├── index.js
+  │         ├── config.js
+  ├── dpd/
+  │   ├── resources/
+  └── web/
+      ├── admin/
+      └── public/</pre>
+
+    <p>
+        Each module is meant to enrich the cms functionality and extend the jsnbt admin.
+        <br />
+        In case that a module needs to alter the dpd default configuration, under the dpd specficiations files that will be found under the "dpd" folder will be merged with the other installed ones; or they will be appended as new.
+        <br />
+        <br />
+        A module might need to inject custom client files to be used by the user interface. Same path anf filename locations from different installed modules will result on conflicts! Therefore it is highly recommended to append any of these files under a reserved folder named after the module domain.
+        <br />
+        It is quite wize not to append files in the public folder, as this is intended to be used only by the end site. However if you need to, we won't stop you.
+        <br />
+        <br />
+        So, supposedly if we had a module called "customModule", we would have the below resulting structure when the modules are merged together:
+    </p>
+
+    <pre>web/
+  ├── admin/
+  │   ├── css/
+  │         ├── core/
+  │             ├── file1.css  
+  │             ├── file2.css  
+  │         ├── customModule/
+  │             ├── file1.css
+  │             ├── file2.css  
+  │   ├── img/
+  │         ├── core/
+  │             ├── image1.css  
+  │             ├── image2.css  
+  │         ├── customModule/
+  │             ├── image1.css  
+  │             ├── image2.css 
+  │   ├── js/
+  │         ├── core/
+  │             ├── script1.js
+  │             ├── script2.js  
+  │         ├── customModule/
+  │             ├── script1.js  
+  │             ├── script2.js  
+  │   ├── tmpl/
+  │         ├── core/
+  │             ├── template1.js
+  │             ├── template2.js  
+  │         ├── customModule/
+  │             ├── template1.js  
+  │             ├── template2.js  
+  ├── public/</pre>

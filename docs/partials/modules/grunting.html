@@ -1,0 +1,10 @@
+﻿<p>
+    Upon grunt, all installed modules are fetched from node_modules and their file system is coppied to "src/pck/".
+    <br />
+    the "src/pck/" folder should be ignored from any source control services, as it is auto generated.
+    <br />
+    Afterwards, the module files from "src/pck/" along with the underlying module files, are deployd in turn to the deployment folder ("dev/" or "dist/").
+</p>
+<p>
+    The configurations of all modules as well as their dpd configurations, are merged together to the engine configuration. A module might extend this way the configuration started by the jsnbt engine or another module.
+</p>
