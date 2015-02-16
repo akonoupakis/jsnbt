@@ -6,75 +6,73 @@
         <p>
             First, download a copy of jsnbt-strap-angular from <a href="https://github.com/akonoupakis/jsnbt-strap-angular" target="_blank">https://github.com/akonoupakis/jsnbt-strap-angular</a>.
             <br />
-            This is a quick bootstrap to strart you up. Put the files in a folder of your choice, and lets have a look at a few of them
+            This is a quick bootstrap to strart you up. Put the files in a folder of your choice, and lets have a look at a few of them.
         </p>
         <br />
         <ul>
             <li>
                 <h4>package.json</h4>
                 <p>
-                    the file should have filled the grunt dependencies that will be needed.
+                    The file should have filled the grunt dependencies that will be needed.
                     <br />
-                    also, the "main" attribute that points to the module's index file!
+                    Also, the "main" attribute that points to the module's index file!
                 </p>
             </li>
             <li>
                 <h4>bower.json</h4>
                 <p>
-                    specify here the bower dependencies that your site will need.
+                    Specify here the bower dependencies that your site will need.
                     <br />
-                    the "deploy" section of this config file, guides the system to copy the downloaded files to a target location (we will see later, that this target location is the lib folder within our app)
+                    The "deploy" section of this config file, guides the system to copy the downloaded files to a target location (we will see later, that this target location is the lib folder within our app).
                 </p>
             </li>
             <li>
                 <h4>config.js</h4>
-                <p>specify here the web server and database settings for each deployment target (dev/prod)</p>
+                <p>Specify here the web server and database settings for each deployment target (dev/prod).</p>
             </li>
             <li>
                 <h4>gruntfile.js</h4>
                 <p>
-                    this is used by the grunt task runner to bundle the site to a deployment target folder (dev/dist) in order to be started by the node web server.
+                    This is used by the grunt task runner to bundle the site to a deployment target folder (dev/dist) in order to be started by the node web server.
                     <br />
-                    the jsnbt grunt process is fairly complicated, so it has been embedded in the jsnbt core code and will be covered in next chapters.
+                    The jsnbt grunt process is fairly complicated, so it has been embedded in the jsnbt core code and will be covered in next chapters.
                     <br />
-                    in your gruntfile, you should point the grunt function to jsnbt/src/app/grunt.js
+                    In your gruntfile, you should point the grunt function to jsnbt/src/app/grunt.js.
                 </p>
             </li>
             <li>
                 <h4>src/app/index.js</h4>
-                <p>this is the entry point of your site to the cms engine. (we will go through the module index file in next chapters)</p>
+                <p>This is the entry point of your site to the cms engine. We will go through the module index file in next chapters.</p>
             </li>
             <li>
                 <h4>src/app/config.js</h4>
-                <p>this is the configuration file of your site.</p>
+                <p>This is the configuration file of your site.</p>
             </li>
             <li>
                 <h4>server-dev.js / server-prod.js</h4>
                 <p>
-                    runs the application on the respective deployment target
+                    Runs the application on the respective deployment target.
                 </p>
             </li>
         </ul>
 
         <h3>install</h3>
         <p>
-            point to the app folder and:
+            Point to the app folder and:
             <br />
-            run <b>npm install</b> to install all dependencies
+            Run <b>npm install</b> to install all dependencies.
             <br />
-            run <b>npm install jsnbt --save</b> to install jsnbt
+            Run <b>npm install jsnbt --save</b> to install jsnbt.
         </p>
         <h3>run</h3>
         <p>
-            run <b>grunt dev</b> or <b>grunt prod</b> to grunt the app (this also downloads any bower components needed)
+            Run <b>grunt dev</b> or <b>grunt prod</b> to grunt the app (this also downloads any bower components needed).
             <br />
-            run <b>node server-dev.js</b> or <b>node server-prod.js</b> to run the app
+            Run <b>node server-dev.js</b> or <b>node server-prod.js</b> to run the app.
         </p>
         <h3>you're done</h3>
         <p>
-            you can hit the /admin section to create your first sa user and access the administration panel and
-            <br />
-            you can hit the /dashboard section for the deployd dashboard
+            You can hit the /admin section to create your first sa user and access the administration panel and you can hit the /dashboard section for the deployd dashboard.
         </p>
     </div>
 </div>

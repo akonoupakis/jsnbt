@@ -4,21 +4,21 @@
     </h2>
     <div>
         <p>
-            grunt is a task runner.
+            Grunt is a task runner.
         </p>
         <p>
-            we use grunt to prepare the a target folder with the nessesary app files for deployment.
+            We use grunt to prepare the a target folder with the nessesary app files for deployment.
         </p>
         <p>
-            in general lines, grunting, gets the files from all installed modules from their "src" folders and merges them to the deployment folder target  ("dev" or "dist")
+            In general lines, grunting, gets the files from all installed modules from their "src/" folders and merges them to the deployment folder target  ("dev/" or "dist/").
         </p>
         <p>
-            upon grunt, the "src/public" ends to "{target}/public" and the "src/admin" ends to {target}/public/admin ready as wanted by the app so that the admin would reside in a "/admin" directory.
+            Upon grunt, the "src/public/" ends to "{target}/public/" and the "src/admin/" ends to "{target}/public/admin/" ready as wanted by the app so that the admin would reside in a "/admin" directory.
             <br />
-            the deployd resource configuration files, are merged together and copied from "src/dpd" to "{target}/dpd"
+            The deployd resource configuration files, are merged together and copied from "src/dpd/" to "{target}/dpd/".
         </p>
         <p>
-            the "src/app" location containing all server side code is left out as it is always triggered from the downloaded npm packages, from  "node_modules"
+            The "src/app/" location containing all server side code is left out as it is always triggered from the downloaded npm packages, from "node_modules".
         </p>
 
         <div class="panel panel-default">
@@ -59,9 +59,9 @@
         
         <h4>update-files switch</h4>
         <p>
-            grunt utilizes a files watch, and if the update-files switch is defined (e.g. grunt dev update-files), grunt will monitor any changes on your src files and re-deploy them to the deployment target folder when modified.
+            Grunt utilizes a files watch, and if the update-files switch is defined (e.g. grunt dev update-files), grunt will monitor any changes on your src files and re-deploy them to the deployment target folder when modified.
             <br /><br />
-            try <b>grunt dev/prod update-files</b>
+            Try <b>grunt dev/prod update-files.</b>
         </p>
     </div>
 </div>
