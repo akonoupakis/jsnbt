@@ -10,6 +10,30 @@ _.str = require('underscore.string');
 
 module.exports = function (grunt) {
 
+    var getFilesToClean = function (folder) {
+        var results = [];
+
+        var folderPath = server.getPath(folder);
+        if (fs.existsSync(folderPath)) {
+            var rootItems = fs.readdirSync(folderPath);
+            _.each(rootItems, function (rootItem) {
+                if (rootItem === 'public') {
+                    var publicItems = fs.readdirSync(path.join(folderPath, rootItem));
+                    _.each(publicItems, function (publicItem) {
+                        if (publicItem !== 'files') {
+                            results.push(path.join('dev', rootItem, publicItem));
+                        }
+                    });
+                }
+                else {
+                    results.push(path.join('dev', rootItem));
+                }
+            });
+        }
+
+        return results;
+    };
+
     var getFilesToCopy = function (folder) {
 
         var files = [{
@@ -21,7 +45,7 @@ module.exports = function (grunt) {
 		{
 		    expand: true,
 		    cwd: 'src/web/public/',
-		    src: ['img/**', 'js/**', 'font/**', 'css/**', 'tmpl/**', 'files/**', 'error/**', 'tmp/**'],
+		    src: ['img/**', 'js/**', 'font/**', 'css/**', 'tmpl/**', 'error/**', 'tmp/', 'files/'],
 		    dest: folder + '/public/'
 		},
 		{
@@ -450,12 +474,16 @@ module.exports = function (grunt) {
 
     gruntConfig.clean = {
         dev: {
-            options: { force: true },
-            src: ['dev']
+            options: {
+                force: true
+            },
+            src: getFilesToClean('dev')
         },
         prod: {
-            options: { force: true },
-            src: ['dist']
+            options: {
+                force: true
+            },
+            src: getFilesToClean('dist')
         },
         devLess: [
             "dev/public/admin/css/**/*.less",
