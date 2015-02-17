@@ -7,12 +7,12 @@ var _ = require('underscore');
 _.str = require('underscore.string');
 
 module.exports = function (req, res) {
-    var uri = new parseUri('http://' + app.config.host + ':' + app.config.port + req.url);
+    var uri = new parseUri('http://' + app.hosts.host + ':' + app.hosts.port + req.url);
     
     if (!_.str.endsWith(uri.path, '/'))
         uri.path += '/';
 
-    uri = new parseUri(('http://' + app.config.host + ':' + app.config.port + uri.path).toLowerCase() + (uri.query !== '' ? '?' + uri.query : ''));
+    uri = new parseUri(('http://' + app.hosts.host + ':' + app.hosts.port + uri.path).toLowerCase() + (uri.query !== '' ? '?' + uri.query : ''));
 
     if (uri.path === '/' || uri.path.toLowerCase() === '/index.html')
         uri.path = '/';

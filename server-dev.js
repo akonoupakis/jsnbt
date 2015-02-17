@@ -1,8 +1,5 @@
-var config = require('./config.js');
+var hosts = require('./hosts.js');
 var app = require('./src/app/app.js');
 
-app.init('dev', config, {
-    //restricted: false
-    //locale: 'el'
-});
+app.init('dev', hosts);
 app.start('jsnbt dev');

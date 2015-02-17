@@ -5,6 +5,8 @@ var fs = require('./utils/fs.js');
 var path = require('path');
 var moment = require('moment');
 
+exports.hosts = null;
+
 exports.root = null;
 exports.path = null;
 exports.dbg = false;
@@ -13,33 +15,16 @@ exports.cache = null;
 exports.logger = null;
 exports.server = null;
 
-exports.init = function (env, config, module) {
+exports.init = function (env, hosts, module) {
     var self = this;
 
     process.chdir(env === 'prod' ? 'dist' : 'dev');
 
-    var configSection = config[env];
+    this.hosts = hosts;
 
-    if (!configSection)
-        throw 'config section for environment "' + env + '" is missing';
-
-    config.host = configSection.host;
-    config.port = configSection.port;
-    config.env = env;
-    config.db = {
-        host: configSection.db.host,
-        port: configSection.db.port,
-        name: configSection.db.name
-    };
-
-    delete config.dev;
-    delete config.prod;
-
-    this.config = config;
-
-    this.root = config.env == 'prod' ? 'dist' : 'dev';
+    this.root = env == 'prod' ? 'dist' : 'dev';
     this.path = path.join(__dirname, this.root, 'public');
-    this.dbg = config.env != 'prod';
+    this.dbg = env != 'prod';
 
     this.logger = require('custom-logger').config({ level: 0 });
     this.logger.new({
@@ -113,12 +98,12 @@ exports.init = function (env, config, module) {
     }
 
     this.server = deployd({
-        port: config.port,
-        env: config.env === 'prod' ? 'production' : 'development',
+        port: hosts.port,
+        env: env === 'prod' ? 'production' : 'development',
         db: {
-            host: config.db.host,
-            port: config.db.port,
-            name: config.db.name
+            host: hosts.db.host,
+            port: hosts.db.port,
+            name: hosts.db.name
         },
         events: {
             request: function (req, res) {
@@ -126,7 +111,7 @@ exports.init = function (env, config, module) {
                 router.process(req, res);
             },
             listening: function () {
-                self.logger.info('server is listening on ' + config.host + ':' + config.port);
+                self.logger.info('server is listening on ' + hosts.host + ':' + hosts.port);
             },
             "request:error": function (err, req, res) {
                 self.logger.error(req.method, req.url, err.stack || err);
