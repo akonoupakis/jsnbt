@@ -1,6 +1,6 @@
 {
   "name": "jsnbt",
-  "version": "1.0.74",
+  "version": "1.0.75",
   "description": "The Jsonbot engine",
   "keywords": [
     "jsnbt",
@@ -37,6 +37,7 @@
     "MD5": "^1.2.1",
     "async": "~0.8.0",
     "bower": "~1.2.7",
+    "connect": "^3.3.3",
     "cookies": ">= 0.3.0",
     "custom-logger": "0.2.1",
     "deployd": "git://github.com/akonoupakis/deployd",
@@ -52,6 +53,7 @@
     "underscore.string": "2.3.3"
   },
   "devDependencies": {
+	"serve-static": "*",
     "grunt": "*",
     "grunt-contrib-clean": "*",
     "grunt-contrib-uglify": "*",

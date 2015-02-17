@@ -1,0 +1,28 @@
+﻿<p>$queue came at a need's moment, not used anymore, but it served its point well so it has not been thrown away.</p>
+<p>This is a promised functions queue, triggering each entry in turn until the queue is empty.</p>
+<p>The need came on saving a document on each change of a user input, which was proven to be quite too often and was having race condition issues.</p>
+<p>$queue gave a solution saving the document in series waiting for the previous save functions to be completed first.</p>
+<pre>(function () {
+    
+    angular.module("jsnbt")
+        .controller('AppController', function ($scope, $q, $queue) {
+
+            $scope.inputValue = 'test'; // assume you have an html input element bound to this scope model
+            
+            $scope.saveValue = function () {
+                var deferred = $q.defer();                
+
+                save($scope.inputValue, function(callback) {
+                    deferred.resolve(); 
+                });
+
+                return deferred.promise;
+            };
+
+            $scope.$watch('inputValue', function (newValue, prevValue) {
+                $queue.enqueue('queueName', $scope.saveValue);
+            });
+
+        });
+
+})();</pre>

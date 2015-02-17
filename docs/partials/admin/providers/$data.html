@@ -1,0 +1,44 @@
+﻿<p>$data is given as a shorthand for any dpd.js functions, already converted into useful promise callbacks.</p>
+<p>Therefore, the below snippet:</p>
+<pre>(function () {
+
+    angular.module("jsnbt")
+        .controller('AppController', function ($scope) {
+
+            dpd.nodes.get({}, function (error, results) {
+                $scope.nodes = results;
+                $scope.$apply();
+            });
+
+        });
+
+})();</pre>
+<p>could become:</p>
+<pre>(function () {
+
+    angular.module("jsnbt")
+        .controller('AppController', function ($scope, $data) {
+
+            $data.get({}).then(function (results) {
+                $scope.nodes = results;
+            }, function (error) {
+                throw error;
+            });
+
+        });
+
+})();</pre>
+<p>$data becomes aware of the dpd collections during the angular "run" initilizer where you should define any new collections giving their default collection values.</p>
+<pre>(function () {
+
+    angular.module("jsnbt")
+        .run(function ($data) {
+
+            $data.register('nodes', {
+                nodeId: '',
+                title: ''
+            });
+
+        });
+
+})();</pre>

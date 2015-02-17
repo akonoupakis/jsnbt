@@ -1,0 +1,140 @@
+﻿<p>
+    These are the html templates of your nodes.
+</p>
+<p>
+    As guided, these templates must be defined in your config.js file providing an html template and a form template. <br />
+    The html template is the one that is served when you hit the node url while the form template is used to guide the admin on extra controls needed by the template.<br />
+    Typically a form template extends the edit forms within the admin to save additional information upon the node's save action. This information can then be retrieved and loaded in your template for displaying.
+</p>
+<p>Next, we should have a look on the head section of a template. Templates are preprocessed upon grunt and are meant to give different head output depending on their deployment status (debug or production).<br />
+    Upon page request, the templates are bound with a model as:
+</p>
+<pre>{
+    baseHref: 'http://www.domain.com/',
+    language: "en",
+    layout: "3875fd69e1f2c9dd",
+    page: "178627f90a002832",
+    pointer: "",
+    robots: "index,follow",
+    meta: {
+        title: "meta title",
+        description: "meta description",
+        keywords: "meta keywords"
+    },
+    js: { 
+        lib: [],
+        app: []
+    }
+}</pre>
+
+<p>Let's have a look at each needed part of the head section</p>
+<h4>base href</h4>
+<pre>
+&lt;base href="&lt;%= baseHref %&gt;" /&gt;
+</pre>
+<h4>robots</h4>
+<pre>
+&lt;% if(robots !== '') { %&gt;
+&lt;meta name="robots" content="&lt;%= robots %&gt;" /&gt;
+&lt;% } %&gt;
+</pre>
+<h4>meta</h4>
+<pre>
+&lt;title&gt;&lt;%= meta.title %&gt;&lt;/title&gt;
+&lt;meta name="keywords" content="&lt;%= meta.keywords %&gt;" /&gt;
+&lt;meta name="description" content="&lt;%= meta.description %&gt;" /&gt;
+</pre>
+<h4>layout</h4>
+<p>This is the layout id selected for this node.</p>
+<pre>
+&lt;meta name="layout" content="&lt;%= layout %&gt;" /&gt;
+</pre>
+<h4>page</h4>
+<p>This is the current node id.</p>
+<pre>
+&lt;meta name="page" content="&lt;%= nodeId %&gt;" /&gt;
+</pre>
+<h4>pointer</h4>
+<p>This is the pointer leading to the current node (if the node is not of the core engine).</p>
+<pre>
+&lt;meta name="pointer" content="&lt;%= pointerId %&gt;" /&gt;
+</pre>
+<h4>js.lib</h4>
+<p>In production environment, all the js files in "/js/lib" are merged and minified to a /js/lib.min.js file.<br />
+   Currently, jsnbt picks them all in alphabetical order. <br />
+    The js.lib part of the model contains the js files in order to be used in debug mode.</p>
+<pre>
+    &lt;!-- @if NODE_ENV='DEVELOPMENT' --&gt;
+    &lt;% _.each(js.lib, function(file) { %&gt;
+    &lt;script type="text/javascript" src="&lt;%= file %&gt;"&gt;&lt;/script&gt;
+    &lt;% }); %&gt;
+    &lt;!-- @endif --&gt;
+
+    &lt;!-- @if NODE_ENV='PRODUCTION' --&gt;
+    &lt;script type="text/javascript" src="js/lib.min.js"&gt;&lt;/script&gt;
+    &lt;!-- @endif --&gt;
+</pre>
+<h4>js.app</h4>
+<p>Similarly, files in "/js/app" are minified to "/js/app.min.js".</p>
+<pre>
+    &lt;!-- @if NODE_ENV='DEVELOPMENT' --&gt;
+    &lt;% _.each(js.app, function(file) { %&gt;
+    &lt;script type="text/javascript" src="&lt;%= file %&gt;"&gt;&lt;/script&gt;
+    &lt;% }); %&gt;
+    &lt;!-- @endif --&gt;
+    &lt;!-- @if NODE_ENV='PRODUCTION' --&gt;
+    &lt;script type="text/javascript" src="js/app.min.js"&gt;&lt;/script&gt;
+    &lt;!-- @endif --&gt;
+</pre>
+<br />
+<h4>All together..</h4>
+<pre>&lt;head&gt;
+    &lt;base href="&lt;%= baseHref %&gt;" /&gt;
+    &lt;meta charset="utf-8" /&gt;
+
+    &lt;% if(robots !== '') { %&gt;
+    &lt;meta name="robots" content="&lt;%= robots %&gt;" /&gt;
+    &lt;% } %&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+
+    &lt;!--meta--&gt;
+    &lt;title&gt;&lt;%= meta.title %&gt;&lt;/title&gt;
+    &lt;meta name="keywords" content="&lt;%= meta.keywords %&gt;" /&gt;
+    &lt;meta name="description" content="&lt;%= meta.description %&gt;" /&gt;
+
+    &lt;meta name="layout" content="&lt;%= layout %&gt;" /&gt;
+    &lt;meta name="page" content="&lt;%= nodeId %&gt;" /&gt;
+    &lt;meta name="pointer" content="&lt;%= pointerId %&gt;" /&gt;
+
+    &lt;!-- @if NODE_ENV='DEVELOPMENT' --&gt;
+    &lt;link rel="stylesheet" href="css/style.css" /&gt;
+
+    &lt;% _.each(js.lib, function(file) { %&gt;
+    &lt;script type="text/javascript" src="&lt;%= file %&gt;"&gt;&lt;/script&gt;
+    &lt;% }); %&gt;
+    &lt;script type="text/javascript" src="dpd.js"&gt;&lt;/script&gt;
+    &lt;script type="text/javascript" src="jsnbt.js"&gt;&lt;/script&gt;
+    &lt;% _.each(js.app, function(file) { %&gt;
+    &lt;script type="text/javascript" src="&lt;%= file %&gt;"&gt;&lt;/script&gt;
+    &lt;% }); %&gt;
+    &lt;script type="text/javascript" src="js/init.js"&gt;&lt;/script&gt;
+    &lt;!-- @endif --&gt;
+
+    &lt;!-- @if NODE_ENV='PRODUCTION' --&gt;
+    &lt;link rel="stylesheet" href="css/style.min.css" /&gt;
+
+    &lt;script type="text/javascript" src="js/lib.min.js"&gt;&lt;/script&gt;
+    &lt;script type="text/javascript" src="dpd.js"&gt;&lt;/script&gt;
+    &lt;script type="text/javascript" src="jsnbt.js"&gt;&lt;/script&gt;
+    &lt;script type="text/javascript" src="js/app.min.js"&gt;&lt;/script&gt;
+    &lt;script type="text/javascript" src="js/init.min.js"&gt;&lt;/script&gt;
+    &lt;!-- @endif --&gt;
+&lt;/head&gt;</pre>
+
+<br />
+<h3>error templates</h3>
+<p>As in our proper templates, the jsnbt will render an error template when an error is occured.<br />
+    The system selects a file from the "errors/" folder depending on their status code.
+</p><p>
+    So, for a 500 error, the cms will render the "/errors/500.html" error template and if not exists it will try for "/errors/error.html".
+</p>

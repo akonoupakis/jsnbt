@@ -1,0 +1,10 @@
+﻿{
+    "_id" : "06dd0ca8891ecb03",
+    "firstName" : "Apostolis",
+    "lastName" : "Konoupakis",
+    "username" : "konoupakis@gmail.com",
+    "password" : "db1772",
+    "roles" : [
+        "admin"
+    ]
+}

@@ -1,0 +1,83 @@
+﻿<p>FileService contains the few wrapped functions for the file manager rest api.</p>
+<p>All methods request a path variable, which should be relative to the "files/".</p>
+
+<h4>FileService.get(path)</h4>
+<pre>(function () {
+    
+    angular.module("jsnbt")
+        .controller('AppController', function ($scope, FileService) {
+
+            $scope.file = undefined;
+
+            FileService.get('/folder/image.jpg').then(function (response) {
+                $scope.file = response;
+            }, function (error) {
+                throw error;
+            });
+
+            $scope.files = undefined;
+
+            FileService.get([
+                '/folder/image1.jpg', 
+                '/folder/image2.jpg', 
+                '/folder2'
+            ]).then(function (response) {
+                $scope.files = response;
+            }, function (error) {
+                throw error;
+            });
+
+        });
+
+})();</pre>
+
+<h4>FileService.create(path, name)</h4>
+<pre>(function () {
+    
+    angular.module("jsnbt")
+        .controller('AppController', function ($scope, FileService) {
+
+            FileService.create('/folder', 'newName').then(function (success) {
+                if (success)
+                    console.log('folder created');
+            }, function (error) {
+                throw error;
+            });
+
+        });
+
+})();</pre>
+
+<h4>FileService.move(path, newPath)</h4>
+<pre>(function () {
+    
+    angular.module("jsnbt")
+        .controller('AppController', function ($scope, FileService) {
+
+            FileService.move('/folder', '/folder2').then(function (success) {
+                if (success)
+                    console.log('folder moved');
+            }, function (error) {
+                throw error;
+            });
+
+        });
+
+})();</pre>
+
+<h4>FileService.delete(path)</h4>
+<pre>(function () {
+    
+    angular.module("jsnbt")
+        .controller('AppController', function ($scope, FileService) {
+
+            FileService.delete('/folder').then(function (success) {
+                if (success)
+                    console.log('folder deleted');
+            }, function (error) {
+                throw error;
+            });
+
+        });
+
+})();</pre>

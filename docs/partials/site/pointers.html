@@ -1,0 +1,16 @@
+﻿<p>
+    Node Pointing is quite a nice to have feature in jsnbt.
+</p><p>
+    Each node is exposed (if active) to a url on the front site.<br />
+    If you have your about node with a seo name "about", then it is reached in the /{language}/about/ url. If you have a child under the about node with the seo name "contact", then this node would be reached in the /{language}/about/contact url.
+    <br />
+    <br />
+    In a same way, you could have a "news" folder creating a /{language}/news url. <br />
+    Now, assume that you will have a Articles module, pluggable and installable to your cms, that would give you the cms pages for editing your articles, along with a tree section to categorize them, all within this Articles module.
+    In your Articles module tree, you have your articles grouped by category and country, let's say /politics/GB/article1 and /sports/GB/article1 and so on..<br />
+    These nodes, are saved in the same way in the database with the only difference their domain that it's something other than "core". Therefore, on their own, they do not produce a link for the front end site.<br />
+    In order to bring them to your url engine, you may point to them through a pointer node.<br />
+    Create a node in your main nodes tree with a name "articles" and give it the type of "pointer". Then link this node to the /politics node within the Articles module.<br />
+    <br />
+    Now the urls under the /politics category will be visible in front urls as they were created in the main nodes tree under the node "articles" with urls as in /{language}/articles/GB/article1.
+</p>

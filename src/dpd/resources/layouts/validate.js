@@ -4,5 +4,8 @@ var _ = require('underscore');
 
 var self = this;
 
-if(!jsnbt.layouts[self.layout])
+var layout = _.find(jsnbt.layouts, function (x) {
+    return x.id === self.layout;
+});
+if (!layout)
     error('layout', 'not a known layout');

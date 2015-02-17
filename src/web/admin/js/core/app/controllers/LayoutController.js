@@ -89,7 +89,12 @@
                 setTmpl: function () {
                     var deferred = $q.defer();
 
-                    $scope.tmpl = $jsnbt.layouts[$routeParams.id] ? $jsnbt.layouts[$routeParams.id] : null;
+                    var layout = _.find($jsnbt.layouts, function (x) { return x.id === $routeParams.id; });
+                    
+                    if (layout)
+                        $scope.tmpl = layout.form;
+                    else
+                        $scope.tmpl = null;
 
                     deferred.resolve();
 

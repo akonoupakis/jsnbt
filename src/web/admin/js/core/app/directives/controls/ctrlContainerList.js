@@ -12,8 +12,6 @@
                 replace: true,
                 scope: {
                     ngModel: '=',
-                    ngDomain: '=',
-                    ngListId: '=',
                     ngDisabled: '=',
                     ngRequired: '=',
                     ngLabel: '@',
@@ -109,16 +107,25 @@
 
                                 $(newValue).each(function (nv, nValue) {
                                     if (_.isString(nValue)) {
-                                        scopeValues.push({
-                                            id: nValue,
-                                            name: nValue
-                                        });
-
+                                        
                                         scope.wrong[nv] = false;
 
                                         var selectedContainer = _.find($jsnbt.containers, function (x) {
-                                            return x.toLowerCase() === nValue.toLowerCase()
+                                            return x.id === nValue.id
                                         });
+
+                                        if (selectedContainer) {
+                                            scopeValues.push({
+                                                id: nValue,
+                                                name: selectedContainer.name
+                                            });
+                                        }
+                                        else {
+                                            scopeValues.push({
+                                                id: nValue,
+                                                name: nValue
+                                            });
+                                        }
 
                                         if (!selectedContainer)
                                             scope.missing[nv] = true;

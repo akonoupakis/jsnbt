@@ -72,7 +72,7 @@
                     var deferred = $q.defer();
 
                     var list = _.first(_.filter($jsnbt.lists, function (x) { return x.id === $routeParams.list && x.domain === $routeParams.domain; }));
-                    $scope.tmpl = list ? list.spec : null;
+                    $scope.tmpl = list ? list.form : null;
 
                     deferred.resolve();
 

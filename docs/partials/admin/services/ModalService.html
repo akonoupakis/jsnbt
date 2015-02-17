@@ -1,0 +1,35 @@
+﻿<p>ModalService provides a wrapper function for the bootstrap $modal.open method.</p>
+
+<h4>ModalService.open(options)</h4>
+<p>
+    The options object must specify a controller and a template to guide the modal function on the targeted html injected.<br />
+    Besides that, everyting on the options will come in the target controller's $scope.
+</p>
+<pre>(function () {
+
+    angular.module("jsnbt")
+        .controller('AppController', function ($scope, ModalService) {
+
+            $scope.result = '';
+
+            var options = {
+                // a custom title for the modal window
+                title: 'the modal window title',
+                // the controller to be used
+                controller: 'NamePromptController',
+                // the template to be used
+                template: 'tmpl/core/modals/namePrompt.html',
+                // any extra option properties, will be available in the controller's scope
+                valueA: 'value 1',
+                valueB: 'value 2'
+            };
+
+            ModalService.open(options).then(function (result) {
+                $scope.result = result;
+            }, function (error) {
+                throw error;
+            });
+
+        });
+
+})();</pre>

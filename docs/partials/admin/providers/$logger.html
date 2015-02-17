@@ -1,0 +1,21 @@
+﻿<p>$logger is a simple log mechanism to provide easy logging features to your code.</p>
+<p>There's still a lot to be implemented in the given area but for the moment it works only on the two known levels of "info" and "error" without any actual logging actions.</p>
+<pre>(function () {
+
+    angular.module("jsnbt")
+        .controller('AppController', function ($scope, $logger) {
+
+            var logger = $logger.create('AppControllerLogger');
+
+            try {
+                logger.info('action succeeded');
+            }
+            catch (ex) {
+                logger.error(ex);
+                throw ex;
+            }
+
+        });
+
+})();
+</pre>

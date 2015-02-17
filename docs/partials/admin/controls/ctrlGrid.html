@@ -1,0 +1,65 @@
+﻿<div class="panel panel-default">
+    <table class="table table-bordered table-condensed data-structure">
+        <tbody>
+            <tr class="data-title">
+                <td>ngModel</td>
+                <td>object</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    the model to be bound to the control<br />
+                    this object must have the results set along with a more() function that when triggered returns the next results page<br />
+                    this sort of function is provided by the PagedDataService that will be covered in next chapters
+                </td>
+            </tr>
+
+            <tr class="data-title">
+                <td>ngFn</td>
+                <td>object</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    an object with functions to be used internally in the control
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="panel-body">
+        <p>usage:</p>
+        <pre>(function () {
+
+    angular.module("jsnbt")
+        .controller('AppController', function ($scope) {
+            
+            $scope.gridFn = {
+                edit: function (item) {
+                    console.log('edit', item);
+                },
+                delete: function (item) {
+                    console.log('delete', item);
+                }
+            };
+
+        });
+})();</pre>
+        <pre ng-non-bindable>&lt;ctrl-grid ng-model="data" ng-fn="gridFn"&gt;
+    &lt;ctrl-grid-header&gt;
+        &lt;ctrl-grid-header-column&gt;name&lt;/ctrl-grid-header-column&gt;
+        &lt;ctrl-grid-header-column&gt;&lt;/ctrl-grid-header-column&gt;
+    &lt;/ctrl-grid-header&gt;
+    &lt;ctrl-grid-footer&gt;
+        &lt;ctrl-grid-infinite-scroll&gt;&lt;/ctrl-grid-infinite-scroll&gt;
+        &lt;ctrl-grid-empty&gt;no data&lt;/ctrl-grid-empty&gt;
+    &lt;/ctrl-grid-footer&gt;
+    &lt;ctrl-grid-body&gt;
+        &lt;ctrl-grid-column&gt;
+            {{ row.name }}
+        &lt;/ctrl-grid-column&gt;
+        &lt;ctrl-grid-buttons-column&gt;
+            &lt;button class="btn btn-default glyphicon glyphicon-edit btn-sm" ng-click="fn.edit(row)" /&gt;
+            &lt;button class="btn btn-default glyphicon glyphicon-remove btn-sm" ng-click="fn.delete(row)" /&gt;
+        &lt;/ctrl-grid-buttons-column&gt;
+    &lt;/ctrl-grid-body&gt;
+&lt;/ctrl-grid&gt;</pre>
+    </div>
+</div>

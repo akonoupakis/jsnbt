@@ -26,6 +26,8 @@ module.exports = {
 
     locale: '',
 
+    ssl: false,
+
     restricted: true,
 
     jsModules: [],
@@ -40,15 +42,11 @@ module.exports = {
 
     sections: [],
 
-    dpd: {
+    permissions: [],
 
-        permissions: []
-
-    },
-        
     injects: {},
 
-    layouts: {},
+    layouts: [],
 
     containers: [],
 
@@ -106,7 +104,8 @@ module.exports = {
                 seo: true,
                 meta: true,
                 permissions: true,
-                robots: true
+                robots: true,
+                ssl: true
             }
         };
 
@@ -148,14 +147,14 @@ module.exports = {
             });
         }
 
-        if (_.isObject(moduleConfig.dpd) && _.isArray(moduleConfig.dpd.permissions)) {
-            _.each(moduleConfig.dpd.permissions, function (modulePermission) {
-                var matchedPermission = _.first(_.filter(self.dpd.permissions, function (x) { return x.collection === modulePermission.collection; }));
+        if (_.isArray(moduleConfig.permissions)) {
+            _.each(moduleConfig.permissions, function (modulePermission) {
+                var matchedPermission = _.first(_.filter(self.permissions, function (x) { return x.collection === modulePermission.collection; }));
                 if (matchedPermission) {
                     extend(true, matchedPermission, modulePermission);
                 }
                 else {
-                    self.dpd.permissions.push(clone(modulePermission));
+                    self.permissions.push(clone(modulePermission));
                 }
             });
         }
@@ -176,7 +175,7 @@ module.exports = {
             
             if (_.isArray(moduleConfig.lists)) {
                 _.each(moduleConfig.lists, function (moduleList) {
-                    var fileName = moduleList.spec.substring(0, moduleList.spec.lastIndexOf('.'));
+                    var fileName = moduleList.form.substring(0, moduleList.form.lastIndexOf('.'));
                     fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
 
                     var moduleListDomain = moduleConfig.type === 'addon' ? moduleConfig.domain : 'core';
@@ -203,6 +202,10 @@ module.exports = {
 
             if (moduleConfig.public) {
 
+                if (moduleConfig.ssl !== undefined) {
+                    self.ssl = moduleConfig.ssl === true;
+                }
+
                 if (moduleConfig.locale !== undefined) {
                     var language = _.first(_.filter(this.languages, function (x) { return x.code === moduleConfig.locale; }));
                     if (language) {
@@ -217,7 +220,7 @@ module.exports = {
 
                 if (_.isArray(moduleConfig.templates)) {
                     _.each(moduleConfig.templates, function (moduleTemplate) {
-                        var matchedTemplate = _.first(_.filter(self.templates, function (x) { return x.path === moduleTemplate.path; }));
+                        var matchedTemplate = _.first(_.filter(self.templates, function (x) { return x.id === moduleTemplate.id; }));
                         if (matchedTemplate) {
                             extend(true, matchedTemplate, moduleTemplate);
                         }
@@ -240,19 +243,27 @@ module.exports = {
                     self.injects = injects;
                 }
 
-                if (_.isObject(moduleConfig.layouts)) {
-                    for (var layoutName in moduleConfig.layouts) {
-                        if (_.isString(moduleConfig.layouts[layoutName])) {
-                            self.layouts[layoutName] = moduleConfig.layouts[layoutName];
+                if (_.isArray(moduleConfig.layouts)) {
+                    _.each(moduleConfig.layouts, function (moduleLayout) {
+                        var matchedLayout = _.first(_.filter(self.layouts, function (x) { return x.id === moduleLayout.id; }));
+                        if (matchedLayout) {
+                            extend(true, matchedLayout, moduleLayout);
                         }
-                    }                    
+                        else {
+                            self.layouts.push(clone(moduleLayout));
+                        }
+                    });
                 }
 
                 if (_.isArray(moduleConfig.containers)) {
                     _.each(moduleConfig.containers, function (moduleContainer) {
-                        if (_.isString(moduleContainer))
-                            if (self.containers.indexOf(moduleContainer) === -1)
-                                self.containers.push(moduleContainer);
+                        var matchedContainer = _.first(_.filter(self.containers, function (x) { return x.id === moduleContainer.id; }));
+                        if (matchedContainer) {
+                            extend(true, matchedContainer, moduleContainer);
+                        }
+                        else {
+                            self.containers.push(clone(moduleContainer));
+                        }
                     });
                 }
 
@@ -285,7 +296,8 @@ module.exports = {
 
             result.version = getVersion();
             result.restricted = self.restricted;
-            
+            result.ssl = self.ssl;
+
             var modules = [];
             _.each(self.modules, function (module) {
 

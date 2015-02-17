@@ -6,8 +6,10 @@ module.exports = {
 
     domain: 'core',
     browsable: false,
-    public: false,
-    
+    public: true,
+    ssl: true,
+    //locale: 'el',
+
     // common module configs
 
     images: [{
@@ -114,69 +116,67 @@ module.exports = {
         roles: ['sa']
     }],
 
-    dpd: {
-        permissions: [{
-            collection: 'languages',
-            roles: [{
-                role: 'public',
-                crud: ['R']
-            }, {
-                role: 'sa',
-                crud: ['C', 'R', 'U', 'D']
-            }]
+    permissions: [{
+        collection: 'languages',
+        roles: [{
+            role: 'public',
+            crud: ['R']
         }, {
-            collection: 'layouts',
-            roles: [{
-                role: 'public',
-                crud: ['R']
-            }, {
-                role: 'admin',
-                crud: ['C', 'R', 'U']
-            }]
-        }, {
-            collection: 'nodes',
-            roles: [{
-                role: 'public',
-                crud: ['R']
-            }, {
-                role: 'admin',
-                crud: ['C', 'R', 'U', 'D']
-            }]
-        }, {
-            collection: 'data',
-            roles: [{
-                role: 'public',
-                crud: ['R']
-            }, {
-                role: 'admin',
-                crud: ['C', 'R', 'U', 'D']
-            }]
-        }, {
-            collection: 'texts',
-            roles: [{
-                role: 'public',
-                crud: ['R']
-            }, {
-                role: 'translator',
-                crud: ['R', 'U']
-            }, {
-                role: 'sa',
-                crud: ['C', 'R', 'U', 'D']
-            }]
-        }, {
-            collection: 'users',
-            roles: [{
-                role: 'admin',
-                crud: ['C', 'R', 'U']
-            }]
-        }, {
-            collection: 'settings',
-            roles: [{
-                role: 'sa',
-                crud: ['C', 'R', 'U', 'D']
-            }]
+            role: 'sa',
+            crud: ['C', 'R', 'U', 'D']
         }]
-    },
+    }, {
+        collection: 'layouts',
+        roles: [{
+            role: 'public',
+            crud: ['R']
+        }, {
+            role: 'admin',
+            crud: ['C', 'R', 'U']
+        }]
+    }, {
+        collection: 'nodes',
+        roles: [{
+            role: 'public',
+            crud: ['R']
+        }, {
+            role: 'admin',
+            crud: ['C', 'R', 'U', 'D']
+        }]
+    }, {
+        collection: 'data',
+        roles: [{
+            role: 'public',
+            crud: ['R']
+        }, {
+            role: 'admin',
+            crud: ['C', 'R', 'U', 'D']
+        }]
+    }, {
+        collection: 'texts',
+        roles: [{
+            role: 'public',
+            crud: ['R']
+        }, {
+            role: 'translator',
+            crud: ['R', 'U']
+        }, {
+            role: 'sa',
+            crud: ['C', 'R', 'U', 'D']
+        }]
+    }, {
+        collection: 'users',
+        roles: [{
+            role: 'admin',
+            crud: ['C', 'R', 'U']
+        }]
+    }, {
+        collection: 'settings',
+        roles: [{
+            role: 'sa',
+            crud: ['C', 'R', 'U', 'D']
+        }]
+    }],
 
 
     injects: {
@@ -191,43 +191,67 @@ module.exports = {
         settings: 'tmpl/public/injects/settings.html'
     },
 
-    layouts: {
-        global: 'tmpl/public/layouts/global.html',
-        eshop: 'tmpl/public/layouts/eshop.html'
-    },
+    layouts: [{
+        id: 'global',
+        name: 'global layout',
+        form: 'tmpl/public/layouts/global.html'
+    }, {
+        id: 'eshop',
+        name: 'eshop layout',
+        form: 'tmpl/public/layouts/eshop.html'
+    }],
 
-    containers: [
-        '/tmpl/partial/containers/sampleContainerA.html',
-        '/tmpl/partial/containers/sampleContainerB.html'
-    ],
+    containers: [{
+        id: 'sampleContainer1',
+        name: 'sample container A',
+        html: '/tmpl/partial/containers/sampleContainerA.html',
+    }, {
+        id: 'sampleContainer2',
+        name: 'sample container B',
+        html: '/tmpl/partial/containers/sampleContainerB.html'
+    }],
 
     templates: [{
-        path: '/tmpl/index.html',
+        id: 'home',
+        name: 'home page',
+        html: '/tmpl/index.html',
         restricted: ['page']
     }, {
-        path: '/tmpl/login.html',
+        id: 'login',
+        name: 'login page',
+        html: '/tmpl/login.html',
         restricted: ['page']
     }, {
-        path: '/tmpl/text.html',
-        spec: '/tmpl/spec/page/text.html'
+        id: 'text',
+        name: 'text page',
+        html: '/tmpl/text.html',
+        form: 'tmpl/public/forms/page/text.html'
     }, {
-        path: '/tmpl/nodes.html',
-        spec: '/tmpl/spec/page/nodes.html'
+        id: 'nodes',
+        name: 'nodes page',
+        html: '/tmpl/nodes.html',
+        form: 'tmpl/public/forms/page/nodes.html'
     }, {
-        path: '/tmpl/data.html',
-        spec: '/tmpl/spec/page/data.html'
+        id: 'data',
+        name: 'data page',
+        html: '/tmpl/data.html',
+        form: 'tmpl/public/forms/page/data.html'
     }, {
-        path: '/tmpl/files.html',
-        spec: '/tmpl/spec/page/files.html'
+        id: 'files',
+        name: 'files page',
+        html: '/tmpl/files.html',
+        form: 'tmpl/public/forms/page/files.html'
     }, {
-        path: '/tmpl/images.html',
-        spec: '/tmpl/spec/page/images.html'
+        id: 'images',
+        name: 'images page',
+        html: '/tmpl/images.html',
+        form: 'tmpl/public/forms/page/images.html'
     }],
 
     lists: [{
         id: 'sample1',
         name: 'Sample 01',
-        spec: '/tmpl/spec/list/sample1.html',
+        form: 'tmpl/public/forms/list/sample1.html',
         localized: true,
         permissions: [{
             role: 'public',
@@ -239,8 +263,13 @@ module.exports = {
     }, {
         id: 'sample2',
         name: 'Sample 02',
-        spec: '/tmpl/spec/list/sample2.html',
+        form: 'tmpl/public/forms/list/sample2.html',
         localized: false
+    }, {
+        id: 'telephones',
+        name: 'Telephones',
+        form: 'tmpl/public/forms/list/telephones.html',
+        localized: true
     }]
 
 }

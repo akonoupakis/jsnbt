@@ -105,13 +105,21 @@
 			"id": "active",
 			"order": 12
 		},
+		"secure": {
+			"name": "secure",
+			"type": "object",
+			"typeLabel": "object",
+			"required": true,
+			"id": "secure",
+			"order": 13
+		},
 		"meta": {
 			"name": "meta",
 			"type": "object",
 			"typeLabel": "object",
 			"required": true,
 			"id": "meta",
-			"order": 13
+			"order": 14
 		},
 		"roles": {
 			"name": "roles",
@@ -119,7 +127,7 @@
 			"typeLabel": "object",
 			"required": true,
 			"id": "roles",
-			"order": 14
+			"order": 15
 		},
 		"robots": {
 			"name": "robots",
@@ -127,7 +135,7 @@
 			"typeLabel": "object",
 			"required": true,
 			"id": "robots",
-			"order": 15
+			"order": 16
 		},
 		"hierarchy": {
 			"name": "hierarchy",
@@ -135,7 +143,7 @@
 			"typeLabel": "array",
 			"required": true,
 			"id": "hierarchy",
-			"order": 16
+			"order": 17
 		}
 	}
 }

@@ -1,0 +1,233 @@
+﻿<p>
+    You might not have a config file, and in the index file's getConfig() method just return there the json configuration object.
+    <br />
+    This is just to separate the config from the functionality!
+</p>
+
+<div class="panel panel-default">
+    <table class="table table-bordered table-condensed data-structure">
+        <tbody>
+            <tr class="data-title">
+                <td>domain</td>
+                <td>string</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    the domain identifier for the module. this should be easy to identify, and if possible limited to one word for consistency
+                </td>
+            </tr>
+
+            <tr class="data-title">
+                <td>browsable</td>
+                <td>bool</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    indicates whether this module is to be shown in the admin modules list
+                </td>
+            </tr>
+
+            <tr class="data-title">
+                <td>pointed</td>
+                <td>bool</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    indicates whether if the content of this module can be linked to a pointer node
+                </td>
+            </tr>
+
+            <tr class="data-title">
+                <td>version</td>
+                <td>string</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    returns the module version
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <pre>version: require('../../package.json').version</pre>
+                </td>
+            </tr>
+
+            <tr class="data-title">
+                <td>jsModule</td>
+                <td>string</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    the js angular module to be injected in the admin angular module configuration
+                </td>
+            </tr>
+
+            <tr class="data-title">
+                <td>entities</td>
+                <td>array of objects</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    entity type injections for the data in the "nodes" collection
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <pre>entities: [{
+    name: 'item'
+}, {
+    name: 'folder',
+    allowed: ['folder', 'item']
+}]</pre>
+                </td>
+            </tr>
+      
+            <tr class="data-title">
+                <td>roles</td>
+                <td>array of objects</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    custom roles that might be needed by the module
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <pre>roles: [{
+    name: 'module-role'
+}, {
+    name: 'module-super-role',
+    inherits: ['module-role']
+}]</pre>
+                </td>
+            </tr>
+     
+            <tr class="data-title">
+                <td>sections</td>
+                <td>array of objects</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    custom sections that are used by the module's pages, along with their role access lists
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <pre>sections: [{
+    name: 'module-section',
+    roles: ['module-role']
+}, {
+    name: 'module-super-section',
+    roles: ['module-super-role']
+}]</pre>
+                </td>
+            </tr>
+
+            <tr class="data-title">
+                <td>permissions</td>
+                <td>array of objects</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    custom permissions for the dpd resources
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <pre>permissions: [{
+    collection: 'custom-collection',
+    roles: [{
+        role: 'module-role',
+        crud: ['R']
+    }, {
+        role: 'module-super-role',
+        crud: ['C, 'R', 'U', 'D']
+    }]
+}]</pre>
+                </td>
+            </tr>
+
+            <tr class="data-title">
+                <td>images</td>
+                <td>array of objects</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    custom image type cropping and sizing specifications
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <pre>images: [{
+    name: 'thumb',
+    processors: [{
+        type: 'crop',
+        options: {
+            x: 0,
+            y: 0,
+            width: 60,
+            height: 60
+        }
+    }, {
+        type: 'fit',
+        options: {
+            width: 60,
+            height: 60
+        }
+    }, {
+        type: 'stretch',
+        options: {
+            width: 60,
+            height: 60
+        }
+    }]
+}]</pre>
+                </td>
+            </tr>
+
+            <tr class="data-title">
+                <td>scripts</td>
+                <td>array of strings</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    a collection of js script urls to be included in the admin pages
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <pre>scripts: [
+    'http://maps.google.com/maps/api/js?sensor=true'
+]</pre>
+                </td>
+            </tr>
+
+            <tr class="data-title">
+                <td>lists</td>
+                <td>array of objects</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    custom data lists along with their role permissions
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <pre>lists: [{
+    id: 'sample1',
+    name: 'Sample 01',
+    form: 'tmpl/customModule/sample1.html',
+    localized: true,
+    permissions: [{
+        role: 'module-role',
+        crud: ['R']
+    }, {
+        role: 'module-super-role',
+        crud: ['C', 'R', 'U', 'D']
+    }]
+}]</pre>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,35 @@
+﻿<p>Images are uploaded via the cms file manager to a "files/" location. After that, they can be selected with file or image controls to be brought to content.</p>
+<p>Generally, having specified your custom image types in the config.js file, you may apply it to any image placed under "files/". Just add ?type={type} to its url, and the image will be resized, stored for further use, and returned resized instead of its original image.</p>
+<p>Now what happens to the images that are selected with the jsnbt image controls? They are picked, and a cropper is used to grab the actual part of the image that will be resized upon render.
+<br />Saving such an image to the database results to an object containing all the generating properties for the resize and crop functions to be used on the original image
+</p>
+<pre>{
+    "src" : "files/image.jpg",
+    "gen" : [ 
+        {
+            "type" : "crop",
+            "options" : {
+                "x" : 60,
+                "y" : 116,
+                "width" : 480,
+                "height" : 218
+            }
+        }, 
+        {
+            "type" : "fit",
+            "options" : {
+                "width" : 550,
+                "height" : 250
+            }
+        }
+    ]
+}
+</pre>
+<p>Now, the combination of those processors have not been declared as an image type. In such a case we specify the type as "custom" and also specify the processors in the url</p>
+<pre>
+    var obj = {
+        "src": "files/...",
+        "gen": []
+    };
+    var imageSrc = obj.src + "?type=custom&processors=" + encodeURIComponent(JSON.stringify(obj.gen));
+</pre>

@@ -1,0 +1,15 @@
+﻿{
+    "_id" : "b1fae84aa4441a95",
+    "layout" : "eshop",
+    "content" : {
+        "localized" : {
+            "en" : {
+                "title" : "title goes here"
+            },
+            "el" : {
+                "title" : "τίτλος εδώ"
+            }
+        },
+        "filepath": '/files/file.png'
+    }
+}
