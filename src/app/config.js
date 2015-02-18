@@ -6,12 +6,12 @@ module.exports = {
 
     domain: 'core',
     browsable: false,
-    public: true,
-    ssl: true,
-    //locale: 'el',
 
-    // common module configs
+    public: false,
 
+    // ssl: true,
+    // locale: 'el',
+    
     images: [{
         name: 'admin-explorer-thumb',
         processors: [{
