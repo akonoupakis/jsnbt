@@ -28,7 +28,10 @@
                     
                     scope.$watch('ngDisabled', function (newValue) {
                         scope.enabled = !newValue;
-                        element.find('input[type="checkbox"]').bootstrapSwitch('disabled', !scope.enabled);
+
+                        setTimeout(function () {
+                            element.find('input[type="checkbox"]').bootstrapSwitch('disabled', !scope.enabled);
+                        }, 200);
                     });
                     
                     scope.$watch('ngModel', function (newValue, prevValue) {

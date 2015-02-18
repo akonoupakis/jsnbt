@@ -12,7 +12,7 @@ var _ = require('underscore');
 _.str = require('underscore.string');
 
 var stardardRouterNames = [
-    './routers/base.js',
+    //'./routers/base.js',
     './routers/api.js',
     './routers/image.js',
     './routers/jsnbt.js',
@@ -23,6 +23,12 @@ var stardardRouterNames = [
 ];
 
 var routers = [];
+routers.push(require('./routers/base.js')());
+
+_.each(app.modules, function (module) {
+    if (typeof (module.route) === 'function')
+        routers.push(module);
+});
 
 for (var i = 0; i < stardardRouterNames.length; i++) {
     var router = require(stardardRouterNames[i])();
@@ -30,7 +36,6 @@ for (var i = 0; i < stardardRouterNames.length; i++) {
 }
 
 routers.push({
-    sync: false,
     route: function (ctx, next) {
         error.render(ctx, 404);
     }

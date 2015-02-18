@@ -15,6 +15,8 @@ exports.cache = null;
 exports.logger = null;
 exports.server = null;
 
+exports.modules = [];
+
 exports.init = function (env, hosts, module) {
     var self = this;
 
@@ -71,6 +73,8 @@ exports.init = function (env, hosts, module) {
 
             if (moduleConfig.domain && moduleConfig.domain !== 'core')
                 jsnbt.register(moduleConfig.domain, module);
+
+            self.modules.push(module);
         }
         catch (err) {
             this.logger.error(err.toString());
@@ -90,6 +94,8 @@ exports.init = function (env, hosts, module) {
                 
                 if (installedModuleConfig.domain && installedModuleConfig.domain !== 'core')
                     jsnbt.register(installedPackages[i], installedModule);
+
+                self.modules.push(installedModule);
             }
             catch (err) {
                 this.logger.error(err.toString());

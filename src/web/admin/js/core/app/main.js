@@ -126,7 +126,7 @@
                 controller: 'SettingsController',
                 section: 'settings',
                 domain: 'core',
-                tmpl: 'tmpl/core/specs/settings.html'
+                tmpl: 'tmpl/core/forms/settings.html'
             }).
             otherwise({
                 redirectTo: '/'

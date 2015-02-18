@@ -100,7 +100,11 @@ module.exports = function () {
                                     ctx.layout = resolved.getLayout();
                                     ctx.language = jsnbt.localization ? resolved.language || 'en' : jsnbt.locale;
                                     ctx.template = resolved.template || '';
-                                    ctx.meta = resolved.page.meta || {};
+                               
+                                    ctx.meta = {};
+                                    if (resolved.page.meta && resolved.page.meta[ctx.language])
+                                        ctx.meta = resolved.page.meta[ctx.language] || {};
+
                                     ctx.uri.scheme = resolved.page.secure === true ? 'https' : 'http';
 
                                     if (_.filter(resolved.getPermissions(), function (x) { return x !== 'public' }).length > 0) {

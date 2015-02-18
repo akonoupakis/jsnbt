@@ -10,8 +10,11 @@ module.exports = {
     public: false,
 
     // ssl: true,
+
     // locale: 'el',
     
+    restricted: true,
+
     images: [{
         name: 'admin-explorer-thumb',
         processors: [{

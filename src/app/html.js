@@ -84,11 +84,13 @@ exports.parse = function (ctx, tmpl, model) {
         findJsFiles('../' + app.root + '/public/js/lib/', libFiles, false);
         mdl.js.lib = libFiles;
     }
-
-    if (!mdl.meta.title || mdl.meta.title === '')
+    
+    if (!mdl.meta.title || mdl.meta.title === '') {
         mdl.meta.title = app.title;
-    else
-        mdl.meta.title = app.title + (app.title ? ' | ' : '') + mdl.meta.title;
+    }
+    else {
+        mdl.meta.title = mdl.meta.title;
+    }
 
     html = _.template(tmpl, mdl);
 
