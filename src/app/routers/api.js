@@ -5,11 +5,11 @@ module.exports = function () {
 
     return {
         route: function (ctx, next) {
-            if (ctx.uri.first === 'jsnbt-api') {
+            if (ctx.uri.first === 'jsnbt-api' && ctx.uri.parts.length > 1 && ctx.uri.parts[1] === 'core') {
                 if (ctx.req.method !== 'POST') {
                     ctx.error(405);
                 }
-                if (ctx.uri.parts.length != 3) {
+                else if (ctx.uri.parts.length != 3) {
                     ctx.error(400);
                 }
                 else {
@@ -25,24 +25,18 @@ module.exports = function () {
                                 var domainName = ctx.uri.parts[1];
                                 var serviceName = ctx.uri.parts[2];
 
-                                if (domainName == 'core') {
-                                    var service = null;
-                                    try {
-                                        service = require('../api/' + serviceName + '.js');
-                                    }
-                                    catch (e) { }
+                                var service = null;
+                                try {
+                                    service = require('../api/' + serviceName + '.js');
+                                }
+                                catch (e) { }
 
-                                    if (service !== null && fields.fn) {
-                                        if (typeof (service[fields.fn]) === 'function') {
-                                            var result = service[fields.fn].apply(service[fields.fn], [ctx.req.session.user, fields]);
-                                            ctx.res.writeHead(200, { "Content-Type": "application/json" });
-                                            ctx.res.write(JSON.stringify({ d: result }, null, app.dbg ? '\t' : ''));
-                                            ctx.res.end();
-                                        }
-                                        else {
-                                            ctx.res.writeHead(404, { "Content-Type": "application/json" });
-                                            ctx.res.end();
-                                        }
+                                if (service !== null && fields.fn) {
+                                    if (typeof (service[fields.fn]) === 'function') {
+                                        var result = service[fields.fn].apply(service[fields.fn], [ctx.req.session.user, fields]);
+                                        ctx.res.writeHead(200, { "Content-Type": "application/json" });
+                                        ctx.res.write(JSON.stringify({ d: result }, null, app.dbg ? '\t' : ''));
+                                        ctx.res.end();
                                     }
                                     else {
                                         ctx.res.writeHead(404, { "Content-Type": "application/json" });
@@ -50,19 +44,8 @@ module.exports = function () {
                                     }
                                 }
                                 else {
-                                    //ctx.params = fields;
-
-                                    //var nextIndex = 0;
-                                    //var nextInternal = function () {
-                                    //    nextIndex++;
-                                    //    var router = moduleRouters[nextIndex];
-                                    //    router.route(ctx, nextInternal);
-                                    //};
-
-                                    //var first = _.first(moduleRouters);
-                                    //first.route(ctx, nextInternal);
-
-                                    throw new Error('not implemented');
+                                    ctx.res.writeHead(404, { "Content-Type": "application/json" });
+                                    ctx.res.end();
                                 }
                             }
                             catch (err) {

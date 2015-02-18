@@ -18,6 +18,7 @@
             $scope.current.initiated = false;
             $scope.current.restoreFn = undefined;
             $scope.current.breadcrumb = [];
+            $scope.current.modules = $jsnbt.modules;
 
             $scope.application.version = $jsnbt.version;
             $scope.application.languages = [];
@@ -224,7 +225,6 @@
                 });
             });
 
-            
             fn.setDefaultLanguages().then(function () {
                 fn.setApplicationLanguages().then(function () {
                     fn.setDefaultLanguage().then(function () { }, function (dlError) {

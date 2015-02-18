@@ -14,8 +14,13 @@ var getEntity = function (name) {
 module.exports = function(name) {
 
     var entity = getEntity(name);
-    if (!entity)
-        return undefined;
+    if (!entity) {
+        return {
+            isLocalized: function () { return false },
+            hasProperty: function () { return false },
+            isSeoNamed: function () { return false }
+        };
+    }
 
     return {
 

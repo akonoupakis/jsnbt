@@ -28,7 +28,7 @@ module.exports = {
 
     ssl: false,
 
-    restricted: true,
+    restricted: false,
 
     jsModules: [],
 
