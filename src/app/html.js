@@ -92,23 +92,32 @@ exports.parse = function (ctx, tmpl, model) {
         mdl.meta.title = mdl.meta.title;
     }
 
-    if (!ctx.error) {
+    var prerenderContext = {
+        model: mdl,
+        tmpl: tmpl
+    };
+
+    if (!ctx.halt) {
         _.each(app.modules, function (module) {
             if (_.isObject(module.view) && _.isFunction(module.view.prerender))
-                module.view.prerender(mdl, tmpl);
+                module.view.prerender(prerenderContext);
         });
     }
 
-    html = _.template(tmpl, mdl);
+    html = _.template(prerenderContext.tmpl, prerenderContext.model);
 
-    if (!ctx.error) {
+    var renderContext = {
+        html: html
+    };
+
+    if (!ctx.halt) {
         _.each(app.modules, function (module) {
             if (_.isObject(module.view) && _.isFunction(module.view.render))
-                module.view.render(html);
+                module.view.render(renderContext);
         });
     }
 
-    return html;
+    return renderContext.html;
 };
 
 var findJsFiles = function (paths, files, isAdmin) {
