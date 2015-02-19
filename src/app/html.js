@@ -92,7 +92,21 @@ exports.parse = function (ctx, tmpl, model) {
         mdl.meta.title = mdl.meta.title;
     }
 
+    if (!ctx.error) {
+        _.each(app.modules, function (module) {
+            if (_.isObject(module.view) && _.isFunction(module.view.prerender))
+                module.view.prerender(mdl, tmpl);
+        });
+    }
+
     html = _.template(tmpl, mdl);
+
+    if (!ctx.error) {
+        _.each(app.modules, function (module) {
+            if (_.isObject(module.view) && _.isFunction(module.view.render))
+                module.view.render(html);
+        });
+    }
 
     return html;
 };
