@@ -19,7 +19,7 @@
     angular.module("jsnbt")
         .controller('AppController', function ($scope, $data) {
 
-            $data.get({}).then(function (results) {
+            $data.nodes.get({}).then(function (results) {
                 $scope.nodes = results;
             }, function (error) {
                 throw error;
