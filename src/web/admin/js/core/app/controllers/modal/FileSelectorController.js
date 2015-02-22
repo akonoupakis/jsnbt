@@ -10,6 +10,8 @@
             if (['single', 'multiple'].indexOf($scope.mode) === -1)
                 $scope.mode = 'single';
 
+            $scope.fileGroup = $scope.group ? $scope.group : 'public';
+
             $scope.selected = $scope.selected || [];
 
             $scope.path = '/';

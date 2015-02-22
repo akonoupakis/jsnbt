@@ -12,6 +12,7 @@
                 replace: true,
                 scope: {
                     ngModel: '=',
+                    ngFileGroup: '=',
                     ngDisabled: '=',
                     ngRequired: '=',
                     ngLabel: '@',
@@ -43,6 +44,8 @@
                             scope.$emit(CONTROL_EVENTS.valueChanged, scope.ngModel);
                         }, 50);
                     };
+
+                    var fileGroup = scope.ngFileGroup ? scope.ngFileGroup : 'public';
 
                     var isValid = function () {
                         var valid = true;
@@ -138,6 +141,7 @@
                             title: 'select the file you want',
                             controller: 'FileSelectorController',
                             selected: item,
+                            group: fileGroup,
                             template: 'tmpl/core/modals/FileSelector.html',
                             mode: 'single',
                             extensions: scope.ngExtensions || []
@@ -157,6 +161,7 @@
                             title: 'select the files you want',
                             controller: 'FileSelectorController',
                             template: 'tmpl/core/modals/FileSelector.html',
+                            group: fileGroup,
                             mode: 'multiple',
                             extensions: scope.ngExtensions || []
                         }).then(function (results) {

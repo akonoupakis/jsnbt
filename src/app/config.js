@@ -7,13 +7,18 @@ module.exports = {
     domain: 'core',
     browsable: false,
 
-    public: false,
+    public: true,
 
     // ssl: true,
 
     // locale: 'el',
     
     restricted: true,
+
+    fileGroups: [
+        'users',
+        'public'
+    ],
 
     images: [{
         name: 'admin-explorer-thumb',

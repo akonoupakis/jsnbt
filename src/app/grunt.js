@@ -34,7 +34,68 @@ module.exports = function (grunt) {
         return results;
     };
 
+    var getFileGroups = function (folder)
+    {
+        var results = [];
+        
+        var packInfoPath = server.getPath('package.json');
+        if (fs.existsSync(packInfoPath)) {
+            var packInfo = require(packInfoPath);
+            if (packInfo.main) {
+                var packIndexPath = server.getPath(packInfo.main);
+                if (fs.existsSync(packIndexPath)) {
+                    var packObject = require(packIndexPath);
+                    if (packObject) {
+                        var packConfig = typeof (packObject.getConfig) === 'function' ? packObject.getConfig() : {};
+                        if (_.isArray(packConfig.fileGroups)) {
+                            _.each(packConfig.fileGroups, function (fileGroup) {
+                                results.push(fileGroup);
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
+        if (fs.existsSync(server.getPath('src/pck'))) {
+            var packages = fs.readdirSync(server.getPath('src/pck'));
+            _.each(packages, function (packageItem) {
+                
+                var nodeModulePackagePath = server.getPath('node_modules/' + packageItem + '/package.json');
+                if (fs.existsSync(nodeModulePackagePath)) {
+                    var nodeModulePackage = require(nodeModulePackagePath);
+
+                    if (nodeModulePackage.main) {
+                        var nodeModuleIndexPath = server.getPath('node_modules/' + packageItem + '/' + nodeModulePackage.main);
+                        if (fs.existsSync(nodeModuleIndexPath)) {
+                            var nodeModulePackObject = require(nodeModuleIndexPath);
+
+                            if (nodeModulePackObject) {
+                                var nodeModulePackConfig = typeof (nodeModulePackObject.getConfig) === 'function' ? nodeModulePackObject.getConfig() : {};
+                                if (_.isArray(nodeModulePackConfig.fileGroups)) {
+                                    _.each(nodeModulePackConfig.fileGroups, function (fileGroup) {
+                                        results.push(fileGroup);
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+
+            });
+        }
+
+        return results;
+    };
+
     var getFilesToCopy = function (folder) {
+
+        var fileGroups = getFileGroups(folder);
+
+        var publicCopyfiles = ['img/**', 'js/**', 'font/**', 'css/**', 'tmpl/**', 'error/**', 'tmp/', 'files/'];
+        _.each(fileGroups, function (fileGroup) {
+            publicCopyfiles.push('files/' + fileGroup + '/');
+        });
 
         var files = [{
             expand: true,
@@ -45,7 +106,7 @@ module.exports = function (grunt) {
 		{
 		    expand: true,
 		    cwd: 'src/web/public/',
-		    src: ['img/**', 'js/**', 'font/**', 'css/**', 'tmpl/**', 'error/**', 'tmp/', 'files/'],
+		    src: publicCopyfiles,
 		    dest: folder + '/public/'
 		},
 		{

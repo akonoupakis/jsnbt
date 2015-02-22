@@ -24,8 +24,8 @@ module.exports = function () {
                 }
                 else {
 
-                    var filePath = ctx.uri.path;
-
+                    var filePath = decodeURIComponent(ctx.uri.path);
+                    
                     if (filePath.length > 4) {
                         var targetFilePath = server.getPath(app.root + '/public' + filePath);
 

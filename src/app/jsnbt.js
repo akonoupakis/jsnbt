@@ -34,8 +34,10 @@ module.exports = {
 
     scripts: [],
 
-    images: [],
+    fileGroups: [],
 
+    images: [],
+    
     entities: [],
 
     roles: [],
@@ -171,6 +173,13 @@ module.exports = {
             });
         }
 
+        if (_.isArray(moduleConfig.fileGroups)) {
+            _.each(moduleConfig.fileGroups, function (fileGroup) {
+                if (self.fileGroups.indexOf(fileGroup) === -1)
+                    self.fileGroups.push(fileGroup);
+            });
+        }
+
         if (moduleConfig.domain !== 'core' || (moduleConfig.domain === 'core' && moduleConfig.public)) {
             
             if (_.isArray(moduleConfig.lists)) {
@@ -289,14 +298,16 @@ module.exports = {
             enabled: self.localization,
             locale: self.locale
         };
-
+        
         if (site === 'admin') {
-
+            
             result.jsModules = self.jsModules;
 
             result.version = getVersion();
             result.restricted = self.restricted;
             result.ssl = self.ssl;
+
+            result.fileGroups = self.fileGroups;
 
             var modules = [];
             _.each(self.modules, function (module) {
