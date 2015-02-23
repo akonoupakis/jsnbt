@@ -7,7 +7,7 @@ Features:
 	The default group is "public" having its files under "files/public/". 
 	The file and image controls can specify the ngFileGroup for the target group needed per case.
 	The file groups are defined in each module's config.js file.
-  
+  - dpd.collection.count supported
 Bugfixes:
 
   - 
