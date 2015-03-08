@@ -74,6 +74,9 @@ exports.init = function (env, hosts, module) {
             if (moduleConfig.domain && moduleConfig.domain !== 'core')
                 jsnbt.register(moduleConfig.domain, module);
 
+            module.domain = moduleConfig.domain;
+            module.public = moduleConfig.public;
+
             self.modules.push(module);
         }
         catch (err) {
@@ -94,6 +97,9 @@ exports.init = function (env, hosts, module) {
                 
                 if (installedModuleConfig.domain && installedModuleConfig.domain !== 'core')
                     jsnbt.register(installedPackages[i], installedModule);
+
+                installedModule.domain = installedModuleConfig.domain;
+                installedModule.public = installedModuleConfig.public;
 
                 self.modules.push(installedModule);
             }

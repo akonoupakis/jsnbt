@@ -132,14 +132,14 @@ module.exports = function () {
                                     
                                     if (resolved.pointer) {
 
-                                        var moduleRouter = _.first(_.filter(jsnbt.modules, function (x) {
+                                        var moduleRouter = _.first(_.filter(app.modules, function (x) {
                                             return x.domain === resolved.pointer.pointer.domain
-                                                && x.index.point && _.isFunction(x.index.point);
+                                                && x.point && _.isFunction(x.point);
                                         }));
 
                                         if (moduleRouter) {
                                             applyTemplate(ctx);
-                                            moduleRouter.index.point(ctx);
+                                            moduleRouter.point(ctx);
                                         }
                                         else {
                                             if (ctx.node) {
@@ -156,16 +156,16 @@ module.exports = function () {
                                         
                                         var configRouteFn = configRoute !== undefined ? configRoute.fn : '';
 
-                                        var moduleRouter = configRoute !== undefined ?  _.first(_.filter(jsnbt.modules, function (x) {
+                                        var moduleRouter = configRoute !== undefined ?  _.first(_.filter(app.modules, function (x) {
                                             return x.public === true
-                                                && x.index[configRouteFn] && _.isFunction(x.index[configRouteFn]);
+                                                && x[configRouteFn] && _.isFunction(x[configRouteFn]);
                                         })) : undefined;
 
                                         if (moduleRouter) {
                                             applyTemplate(ctx);
                                             ctx.dpd = resolved.dpd;
                                             ctx.url = resolved.url;
-                                            moduleRouter.index[configRouteFn](ctx);
+                                            moduleRouter[configRouteFn](ctx);
                                         }
                                         else {
                                             ctx.error(500, 'custom route not found in public module: ' + resolved.route);
