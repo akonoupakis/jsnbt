@@ -172,6 +172,7 @@ module.exports = function(dpd) {
                 });
 
                 var matchedNode = undefined;
+                console.log('match', foundAllMatches);
                 if (foundAllMatches) {
                     matchedNode = _.last(foundNodes);
                 }
@@ -185,6 +186,11 @@ module.exports = function(dpd) {
                     }
                     else {
                         returnObj.page = matchedNode;
+
+                        if (matchedNode.entity === 'custom') {
+                            returnObj.route = matchedNode.route;
+                        }
+
                         returnObj.nodes = foundNodes;
                         returnObj.language = language;
                         returnObj.template = matchedNode.template;
@@ -193,6 +199,7 @@ module.exports = function(dpd) {
                 }
                 else {
                     var pointerNode = _.last(_.filter(foundNodes, function (x) { return x.entity === 'pointer' }));
+                    var customNode = _.last(_.filter(foundNodes, function (x) { return x.entity === 'custom' }));
 
                     if (pointerNode) {
                         var trimmedUrl = url.length > buildUrl.length ? url.substring(buildUrl.length) : '';
@@ -205,6 +212,20 @@ module.exports = function(dpd) {
                         returnObj.nodes = foundNodes;
                         returnObj.pointer = pointerNode;
                         resolvePointerUrl(returnObj, urlSeoNodes, trimmedUrl, fullUrlPart, cb);
+                    }
+                    else if (customNode) {
+                        var trimmedUrl = url.length > buildUrl.length ? url.substring(buildUrl.length) : '';
+                        if (trimmedUrl === '')
+                            trimmedUrl = '/';
+
+                        var fullUrlPart = trimmedUrl + query;
+
+                        returnObj.page = customNode;
+                        returnObj.language = language;
+                        returnObj.nodes = foundNodes;
+                        returnObj.route = customNode.route;
+                        returnObj.template = customNode.template;
+                        cb(returnObj);
                     }
                     else {
                         cb();
@@ -226,6 +247,7 @@ module.exports = function(dpd) {
             var returnObj = {
                 page: undefined,
                 pointer: undefined,
+                route: undefined,
                 nodes: [],
                 language: undefined,
                 template: undefined,
@@ -313,6 +335,11 @@ module.exports = function(dpd) {
                                                 });
 
                                                 returnObj.page = resolvedNode;
+
+                                                if (resolvedNode.entity == 'custom') {
+                                                    returnObj.route = resolvedNode.route;
+                                                }
+
                                                 returnObj.nodes = resolvedNodes;
                                                 returnObj.language = defaultLanguage;
                                                 returnObj.template = resolvedNode.template;

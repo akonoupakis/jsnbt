@@ -33,9 +33,9 @@
             <hr />
         </div>
 
-        <div id="page-type" ng-show="node.domain === 'core' && types.length &gt; 1" data-scrollspy="type">
+        <div id="page-type" ng-show="node.domain === 'core' && entities.length &gt; 1" data-scrollspy="type">
             <div class="row">
-                <ctrl-select class="col-md-12" ng-model="node.entity" ng-required="true" ng-label="type" ng-options="types" ng-disabled="node.domain !== 'core'"></ctrl-select>
+                <ctrl-select class="col-md-12" ng-model="node.entity" ng-required="true" ng-label="type" ng-options="entities" ng-disabled="node.domain !== 'core'"></ctrl-select>
             </div>
 
             <hr />
@@ -80,6 +80,13 @@
                 </div>
             </div>
 
+            <hr />
+        </div>
+
+        <div id="page-route" data-scrollspy="route" ng-show="node.entity === 'custom'">
+            <div class="row">
+                <ctrl-select class="col-md-12" ng-model="node.route" ng-required="true" ng-disabled="node.entity !== 'custom'" ng-label="route" ng-default="true" ng-options="routes" ng-name-field="name" ng-value-field="id"></ctrl-select>
+            </div>
             <hr />
         </div>
 

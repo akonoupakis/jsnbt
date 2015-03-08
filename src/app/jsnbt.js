@@ -46,6 +46,8 @@ module.exports = {
 
     permissions: [],
 
+    lists: [],
+
     injects: {},
 
     layouts: [],
@@ -54,8 +56,8 @@ module.exports = {
 
     templates: [],
 
-    lists: [],
-            
+    routes: [],
+
     register: function (name, module) {
         
         var self = this;
@@ -276,6 +278,18 @@ module.exports = {
                     });
                 }
 
+                if (_.isArray(moduleConfig.routes)) {
+                    _.each(moduleConfig.routes, function (moduleRoute) {
+                        var matchedRoute = _.first(_.filter(self.routes, function (x) { return x.id === moduleRoute.id; }));
+                        if (matchedRoute) {
+                            extend(true, matchedRoute, moduleRoute);
+                        }
+                        else {
+                            self.routes.push(clone(moduleRoute));
+                        }
+                    });
+                }
+
             }
         }
     },
@@ -342,6 +356,7 @@ module.exports = {
             result.injects = self.injects;
             result.layouts = self.layouts;
             result.containers = self.containers;
+            result.routes = self.routes;
         }
 
         result.languages = self.languages;

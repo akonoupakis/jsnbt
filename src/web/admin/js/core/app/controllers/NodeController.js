@@ -32,7 +32,8 @@
             
             $scope.siblingSeoNames = [];
 
-            $scope.types = [];
+            $scope.entities = [];
+            $scope.routes = [];
             $scope.languages = [];
             $scope.templates = [];
             $scope.modules = [];
@@ -525,17 +526,29 @@
                     return deferred.promise;
                 },
 
-                setTypes: function () {
+                setEntities: function () {
                     var deferred = $q.defer();
 
                     var types = [];
                     types.push({ value: 'page', name: 'page' });
                     if (_.filter($jsnbt.modules, function (x) { return x.type === 'addon' && x.pointed === true; }).length > 0)
                         types.push({ value: 'pointer', name: 'pointer' });
+                    if ($jsnbt.routes.length > 0)
+                        types.push({ value: 'custom', name: 'custom' });
 
-                    $scope.types = types;
+                    $scope.entities = types;
 
                     deferred.resolve(types);
+
+                    return deferred.promise;
+                },
+
+                setRoutes: function () {
+                    var deferred = $q.defer();
+
+                    $scope.routes = $jsnbt.routes;
+
+                    deferred.resolve($jsnbt.routes);
 
                     return deferred.promise;
                 },
@@ -1070,7 +1083,7 @@
 
 
             $timeout(function () {
-                $q.all(fn.setLayouts(), fn.setRoles(), fn.setRobots(), fn.setModules(), fn.setLanguages(), fn.setLanguage(), fn.setTypes()).then(function () {
+                $q.all(fn.setLayouts(), fn.setRoles(), fn.setRobots(), fn.setModules(), fn.setLanguages(), fn.setLanguage(), fn.setEntities(), fn.setRoutes()).then(function () {
                     fn.set().then(function (setResponse) {
                         fn.getHierarchyNodes().then(function (hierarchyNodes) {
                             $q.all(fn.setSelectedSSL(hierarchyNodes), fn.setSelectedLayout(hierarchyNodes), fn.setSelectedRoles(hierarchyNodes), fn.setSelectedRobots(hierarchyNodes)).then(function () {

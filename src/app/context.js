@@ -27,7 +27,7 @@ module.exports = function (req, res) {
     var ctx = {
         req: req,
         res: res,
-        node: {
+        page: {
             id: ''
         },
         meta: {

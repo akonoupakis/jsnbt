@@ -119,19 +119,17 @@ module.exports = function () {
                                         });
                                     }
                                     
-                                    var renderInternal = function (ctxInternal) {
+                                    var applyTemplate = function (ctxInternal) {
                                         var installedTemplate = _.first(_.filter(jsnbt.templates, function (x) { return x.id === ctxInternal.template; }));
                                         if (installedTemplate) {
                                             ctxInternal.template = installedTemplate.html;
-                                            ctxInternal.render();
                                         }
                                         else {
                                             ctxInternal.error(500, 'template not installed: ' + ctxInternal.template);
                                         }
                                     };
-
+                                    
                                     if (resolved.pointer) {
-
                                         var moduleRouter = _.first(_.filter(jsnbt.modules, function (x) {
                                             return x.domain === resolved.pointer.pointer.domain
                                                 && x.point && _.isFunction(x.point);
@@ -142,15 +140,34 @@ module.exports = function () {
                                         }
                                         else {
                                             if (ctx.node) {
-                                                renderInternal(ctx);
+                                                applyTemplate(ctx);                                                
+                                                ctx.render();
                                             }
                                             else {
                                                 ctx.error(404);
                                             }
                                         }
                                     }
+                                    else if (resolved.route) {
+                                        var configRoute = _.find(jsnbt.routes, function (x) { return x.id === resolved.route; });
+
+                                        var configRouteFn = configRoute !== undefined ? configRoute.fn : '';
+
+                                        var moduleRouter = configRoute !== undefined ? _.first(_.filter(jsnbt.modules, function (x) {
+                                            return x.public === true
+                                                && x[configRouteFn] && _.isFunction(x[configRouteFn]);
+                                        })) : undefined;
+
+                                        if (moduleRouter) {
+                                            moduleRouter[configRouteFn](ctx);
+                                        }
+                                        else {
+                                            ctx.error(500, 'custom route not found in public module: ' + resolved.route);
+                                        }
+                                    }
                                     else {
-                                        renderInternal(ctx);
+                                        applyTemplate(ctx);
+                                        ctx.render();
                                     }
                                 }
                             }
