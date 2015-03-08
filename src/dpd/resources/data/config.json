@@ -48,14 +48,6 @@
 			"required": true,
 			"id": "modifiedOn",
 			"order": 5
-		},
-		"published": {
-			"name": "published",
-			"type": "boolean",
-			"typeLabel": "boolean",
-			"required": false,
-			"id": "published",
-			"order": 6
 		}
 	}
 }

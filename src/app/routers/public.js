@@ -17,7 +17,7 @@ module.exports = function () {
                     
                     node.resolveUrl(ctx.uri.url, function (resolved) {
 
-                        if (resolved && resolved.page && resolved.isActive() && resolved.isPublished()) {
+                        if (resolved && resolved.page && resolved.isActive()) {
                           
                             var restricted = false;
 

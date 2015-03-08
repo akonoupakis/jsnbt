@@ -27,41 +27,7 @@
 
                     return deferred.promise;
                 },
-
-                create: function () {
-                    var deferred = $q.defer();
-
-                    var available = _.filter($scope.defaults.languages, function (x) { return _.pluck($scope.data.items, 'code').indexOf(x.code) === -1; });
-                    ModalService.open({
-                        title: 'select a language',
-                        controller: 'LanguageSelectorController',
-                        data: available,
-                        template: 'tmpl/core/modals/languageSelector.html'
-                    }).then(function (language) {
-                        $data.languages.get({ code: language.code }).then(function (results) {
-                            if (results.length === 0) {
-                                var newLang = $data.create('languages', { code: language.code, name: language.name });
-                                if ($scope.application.languages.length === 0) {
-                                    newLang.active = true;
-                                    newLang.default = true;
-                                }
-                                $data.languages.post(newLang).then(function (result) {
-                                    deferred.resolve(result);
-                                }, function (error) {
-                                    deferred.reject(error);
-                                });
-                            }
-                            else {
-                                deferred.resolve(_.first(results));
-                            }
-                        }, function (ex) {
-                            deferred.reject(ex);
-                        });
-                    });
-
-                    return deferred.promise;
-                },
-
+                
                 setDefault: function (data) {
                     var deferred = $q.defer();
 
@@ -153,11 +119,7 @@
             };
 
             $scope.create = function () {
-                fn.create().then(function (result) {
-                    $location.next('/content/languages/' + result.id);
-                }, function (error) {
-                    logger.error(error);
-                });
+                $location.next('/content/languages/new');
             };
 
             $scope.gridFn = {

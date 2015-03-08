@@ -9,6 +9,7 @@
             var logger = $logger.create('TextController');
 
             $scope.id = $routeParams.id;
+            $scope.new = $scope.id === 'new';
             $scope.name = undefined;
             $scope.text = undefined;
 
@@ -21,6 +22,7 @@
             };
 
             $scope.published = true;
+            $scope.draft = false;
 
 
             var fn = {
@@ -28,21 +30,41 @@
                 set: function () {
                     var deferred = $q.defer();
 
-                    $data.texts.get($scope.id).then(function (result) {
+                    $scope.languages = $scope.application.localization.enabled ? $scope.application.languages : _.filter($scope.application.languages, function (x) { return x.code === 'en'; });
 
-                        $scope.name = result.key;
-                        $scope.text = result;
+                    if ($scope.new) {
+                        $scope.name = '';
 
-                        $scope.languages = $scope.application.localization.enabled ? $scope.application.languages : _.filter($scope.application.languages, function (x) { return x.code === 'en'; });
+                        $scope.text = $data.create('texts', {
+                            key: '',
+                            group: '',
+                            value: {},
+                        });
                         
                         $scope.valid = true;
-                        $scope.published = true;
+
+                        $scope.published = false;
+                        $scope.draft = true;
 
                         deferred.resolve();
+                    }
+                    else {
+                        $data.texts.get($scope.id).then(function (result) {
 
-                    }, function (error) {
-                        deferred.reject(error);
-                    });
+                            $scope.name = result.key;
+                            $scope.text = result;
+
+                            $scope.valid = true;
+
+                            $scope.published = true;
+                            $scope.draft = false;
+
+                            deferred.resolve();
+
+                        }, function (error) {
+                            deferred.reject(error);
+                        });
+                    }
 
                     return deferred.promise;
                 },
@@ -52,10 +74,18 @@
 
                     var breadcrumb = LocationService.getBreadcrumb();
                     breadcrumb = breadcrumb.slice(0, breadcrumb.length - 1);
-                    breadcrumb.push({
-                        name: $scope.name,
-                        active: true
-                    });
+                    if ($scope.new) {
+                        breadcrumb.push({
+                            name: 'new',
+                            active: true
+                        });
+                    }
+                    else {
+                        breadcrumb.push({
+                            name: $scope.name,
+                            active: true
+                        });
+                    }
                     $scope.current.setBreadcrumb(breadcrumb);
 
                     deferred.resolve(breadcrumb);
@@ -142,13 +172,22 @@
                             deferred.resolve(false);
                         }
                         else {
-                            $scope.text.published = true;
-                            $data.texts.put($scope.id, $scope.text).then(function (result) {
-                                $scope.name = result.key;
-                                deferred.resolve(true);
-                            }, function (error) {
-                                deferred.reject(error);
-                            });
+                            if ($scope.new) {
+                                $data.texts.post($scope.text).then(function (result) {
+                                    $scope.id = result.id;
+                                    deferred.resolve(true);
+                                }, function (error) {
+                                    deferred.reject(error);
+                                });
+                            }
+                            else {
+                                $data.texts.put($scope.id, $scope.text).then(function (result) {
+                                    $scope.name = result.key;
+                                    deferred.resolve(true);
+                                }, function (error) {
+                                    deferred.reject(error);
+                                });
+                            }
                         }
                     });
 
@@ -181,8 +220,14 @@
                 fn.publish().then(function (success) {
                     $scope.published = success;
 
-                    if (!success)
+                    if (!success) {
                         $scope.scroll2error();
+                    }
+                    else {
+                        if ($scope.new) {
+                            $location.goto('/content/texts/' + $scope.id);
+                        }
+                    }
                 }, function (ex) {
                     logger.error(ex);
                 });

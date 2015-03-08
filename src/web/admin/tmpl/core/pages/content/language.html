@@ -9,8 +9,8 @@
                 <span ng-click="back()" class="glyphicon glyphicon-arrow-left back-button"></span>
                 <h1 class="title">{{ name }}</h1>
                 <div class="buttons">
-                    <button type="button" ng-show="!published" class="btn btn-danger" ng-click="discard()">discard</button>
-                    <button type="button" ng-disabled="published" class="btn btn-success" ng-click="publish()">save</button>
+                    <button type="button" ng-show="!published && !draft" class="btn btn-danger" ng-click="discard()">discard</button>
+                    <button type="button" ng-disabled="published && !draft" class="btn btn-success" ng-click="publish()">save</button>
                 </div>
             </div>
         </div>
@@ -18,7 +18,7 @@
         <hr />
 
         <div class="row" id="page-language" data-scrollspy="language">
-            <ctrl-select class="col-md-10" ng-model="language.code" ng-disabled="true" ng-label="language" ng-options="languages" ng-name-field="name" ng-value-field="code" ng-auto-focus="true"></ctrl-select>
+            <ctrl-select class="col-md-10" ng-model="language.code" ng-label="language" ng-options="languages" ng-name-field="name" ng-value-field="code" ng-auto-focus="true"></ctrl-select>
             <ctrl-check class="col-md-2" ng-model="language.active" ng-disabled="language.default" ng-label="active"></ctrl-check>
         </div>
 

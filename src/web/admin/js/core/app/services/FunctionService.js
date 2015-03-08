@@ -9,6 +9,13 @@
             
             FunctionService = {
 
+                getCreateUrl: function (node) {
+                    if (node)
+                        return '/content/nodes/new-' + node.id;
+                    else
+                        return '/content/nodes/new';
+                },
+
                 getEditUrl: function (node) {
                     return '/content/nodes/' + node.id;
                 },

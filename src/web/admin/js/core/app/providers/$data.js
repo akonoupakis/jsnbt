@@ -139,7 +139,6 @@
                 domain: 'core',                
                 entity: 'page',
                 parent: '',
-                published: false,
                 layout: {
                     inherits: true,
                     value: ''
@@ -182,15 +181,13 @@
                     localized: {}
                 },
                 createdOn: new Date().getTime(),
-                modifiedOn: new Date().getTime(),
-                published: false
+                modifiedOn: new Date().getTime()
             });
 
             $data.register('texts', {
                 key: '',
                 value: {},
-                group: undefined,
-                published: false
+                group: undefined
             });
 
             $data.register('settings', {

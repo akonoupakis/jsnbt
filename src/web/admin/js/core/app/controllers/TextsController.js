@@ -25,42 +25,6 @@
                     return deferred.promise;
                 },
 
-                create: function () {
-                    var deferred = $q.defer();
-
-                    ModalService.open({
-                        title: 'type a text identifier',
-                        controller: 'TextPromptController',
-                        template: 'tmpl/core/modals/textPrompt.html'
-                    }).then(function (result) {
-                        if (result && !!result.key && result.key !== '') {
-                            $data.texts.get({
-                                group: result.group,
-                                key: result.key
-                            }).then(function (getResponse) {
-                                var first = _.first(getResponse);
-                                if (first) {
-                                    deferred.resolve(first);
-                                }
-                                else {
-                                    $data.texts.post($data.create('texts', {
-                                        group: result.group,
-                                        key: result.key
-                                    })).then(function (response) {
-                                        deferred.resolve(response);
-                                    }, function (error) {
-                                        deferred.reject(error);
-                                    });
-                                }
-                            }, function (getError) {
-                                deferred.reject(getError);
-                            });
-                        }
-                    });
-
-                    return deferred.promise;
-                },
-
                 delete: function (data) {
                     var deferred = $q.defer();
 
@@ -89,11 +53,7 @@
             };
             
             $scope.create = function () {
-                fn.create().then(function (result) {
-                    $location.next('/content/texts/' + result.id);
-                }, function (ex) {
-                    logger.error(ex);
-                });
+                $location.next('/content/texts/new');
             };
 
             $scope.gridFn = {

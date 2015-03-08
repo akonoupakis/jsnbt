@@ -10,6 +10,8 @@ Features:
 
   - dpd.collection.count supported
 
+  - no longer pre-creating nodes or data in admin before the initial save click
+
 Bugfixes:
 
   - 

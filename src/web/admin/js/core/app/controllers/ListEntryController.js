@@ -9,6 +9,7 @@
             var logger = $logger.create('ListEntryController');
 
             $scope.id = $routeParams.id;
+            $scope.new = $scope.id === 'new';
             $scope.name = undefined;
             $scope.item = undefined;
 
@@ -17,7 +18,9 @@
             $scope.language = undefined;
             
             $scope.valid = true;
+
             $scope.published = true;
+            $scope.draft = false;
 
             $scope.tmpl = null;
             
@@ -27,25 +30,44 @@
                 set: function () {
                     var deferred = $q.defer();
 
-                    $data.data.get($scope.id).then(function (result) {
+                    var list = _.first(_.filter($jsnbt.lists, function (x) { return x.id === $routeParams.list && x.domain === $routeParams.domain; }));
+                    $scope.localized = $scope.application.localization.enabled && (list.localized === undefined || list.localized === true);
 
-                        $scope.name = result.name;
-                        $scope.item = result;
+                    $scope.languages = $scope.application.languages;
+                    $scope.language = $scope.application.localization.enabled ? ($scope.defaults.language ? $scope.defaults.language : _.first($scope.application.languages).code) : 'en';
 
-                        var list = _.first(_.filter($jsnbt.lists, function (x) { return x.id === $routeParams.list && x.domain === $routeParams.domain; }));
-                        $scope.localized = $scope.application.localization.enabled && (list.localized === undefined || list.localized === true);
+                    if ($scope.new) {
+                        $scope.name = '';
 
-                        $scope.languages = $scope.application.languages;
-                        $scope.language = $scope.application.localization.enabled  ? ($scope.defaults.language ? $scope.defaults.language : _.first($scope.application.languages).code) : 'en';
-
+                        $scope.item = $data.create('data', {
+                            domain: $routeParams.domain,
+                            list: $routeParams.list
+                        });
+                        
                         $scope.valid = true;
 
-                        $scope.published = true;
+                        $scope.published = false;
+                        $scope.draft = true;
 
                         deferred.resolve();
-                    }, function (error) {
-                        deferred.reject(error);
-                    });
+                    }
+                    else {
+                        $data.data.get($scope.id).then(function (result) {
+
+                            $scope.name = result.name;
+                            $scope.item = result;
+
+                            $scope.valid = true;
+
+                            $scope.published = true;
+                            $scope.draft = false;
+
+                            deferred.resolve();
+
+                        }, function (error) {
+                            deferred.reject(error);
+                        });
+                    }
 
                     return deferred.promise;
                 },
@@ -57,10 +79,18 @@
                     var breadcrumbLast = breadcrumb[breadcrumb.length - 2];
                     breadcrumb = breadcrumb.slice(0, breadcrumb.length - 3);
                     breadcrumb.push(breadcrumbLast);
-                    breadcrumb.push({
-                        name: $scope.name,
-                        active: true
-                    });
+                    if ($scope.new) {
+                        breadcrumb.push({
+                            name: 'new',
+                            active: true
+                        });
+                    }
+                    else {
+                        breadcrumb.push({
+                            name: $scope.name,
+                            active: true
+                        });
+                    }
                     $scope.current.setBreadcrumb(breadcrumb);
                     
                     deferred.resolve(breadcrumb);
@@ -179,13 +209,22 @@
                             deferred.resolve(false);
                         }
                         else {
-                            $scope.item.published = true;
-                            $data.data.put($scope.id, $scope.item).then(function (result) {
-                                $scope.name = result.name;
-                                deferred.resolve(true);
-                            }, function (error) {
-                                deferred.reject(error);
-                            });
+                            if ($scope.new) {
+                                $data.data.post($scope.item).then(function (result) {
+                                    $scope.id = result.id;
+                                    deferred.resolve(true);
+                                }, function (error) {
+                                    deferred.reject(error);
+                                });
+                            }
+                            else {
+                                $data.data.put($scope.id, $scope.item).then(function (result) {
+                                    $scope.name = result.name;
+                                    deferred.resolve(true);
+                                }, function (error) {
+                                    deferred.reject(error);
+                                });
+                            }
                         }
                     });
 
@@ -219,8 +258,19 @@
                 fn.publish().then(function (success) {
                     $scope.published = success;
 
-                    if (!success)
+                    if (!success) {
                         $scope.scroll2error();
+                    }
+                    else {
+                        if ($scope.new) {
+                            if ($scope.current.breadcrumb[0].name === 'modules') {
+                                $location.goto('/modules/' + $routeParams.domain + '/list/' + $routeParams.list + '/' + $scope.id);
+                            }
+                            else {
+                                $location.goto('/content/data/' + $routeParams.domain + '/' + $routeParams.list + '/' + $scope.id);
+                            }
+                        }
+                    }
                 }, function (ex) {
                     logger.error(ex);
                 });

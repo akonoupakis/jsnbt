@@ -9,6 +9,7 @@
             var logger = $logger.create('ListController');
 
             $scope.name = undefined;
+            $scope.domain = $routeParams.domain;
             $scope.data = {};
             
             $scope.list = _.first(_.filter($jsnbt.lists, function (x) { return x.domain === $routeParams.domain && x.id === $routeParams.list; }));
@@ -42,34 +43,6 @@
                     $scope.current.setBreadcrumb(breadcrumb);
 
                     deferred.resolve(breadcrumb);
-
-                    return deferred.promise;
-                },
-
-                create: function () {
-                    var deferred = $q.defer();
-
-                    ModalService.open({
-                        title: 'type a name',
-                        controller: 'NamePromptController',
-                        template: 'tmpl/core/modals/namePrompt.html'
-                    }).then(function (result) {
-                        if (!!result && result !== '') {
-                            $data.data.post($data.create('data', {
-                                domain: $routeParams.domain,
-                                list: $routeParams.list,
-                                name: result,
-                                localization: {
-                                    enabled: $scope.list.localized ? true : false,
-                                    language: !$scope.list.localized ? 'en' : ''
-                                }
-                            })).then(function (response) {
-                                deferred.resolve(response);                                
-                            }, function (error) {
-                                deferred.reject(error);
-                            });
-                        }
-                    });
 
                     return deferred.promise;
                 },
@@ -115,16 +88,13 @@
             };
                        
             $scope.create = function () {
-                fn.create().then(function (result) {
-                    if ($scope.current.breadcrumb[0].name === 'modules') {
-                        $location.next('/modules/' + result.domain + '/list/' + result.list + '/' + result.id);
-                    }
-                    else {
-                        $location.next('/content/data/' + result.domain + '/' + result.list + '/' + result.id);
-                    }
-                }, function (ex) {
-                    logger.error(ex);
-                });
+
+                if ($scope.current.breadcrumb[0].name === 'modules') {
+                    $location.next('/modules/' + $routeParams.domain + '/list/' + $routeParams.list + '/new');
+                }
+                else {
+                    $location.next('/content/data/' + $routeParams.domain + '/' + $routeParams.list + '/new');
+                }
             };
 
             $scope.gridFn = {
