@@ -1,4 +1,10 @@
-## 1.0.81 (unreleashed)
+## 1.0.82 (2015-03-09)
+
+Fixes:
+
+	- Minor fixes on config.routes. Added a "fn" property that is a function name placed in the index file of a module
+
+## 1.0.81 (2015-03-09)
 
 Features:
 

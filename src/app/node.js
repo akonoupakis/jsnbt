@@ -172,7 +172,6 @@ module.exports = function(dpd) {
                 });
 
                 var matchedNode = undefined;
-                console.log('match', foundAllMatches);
                 if (foundAllMatches) {
                     matchedNode = _.last(foundNodes);
                 }
@@ -194,6 +193,8 @@ module.exports = function(dpd) {
                         returnObj.nodes = foundNodes;
                         returnObj.language = language;
                         returnObj.template = matchedNode.template;
+                        returnObj.dpd = dpd;
+                        returnObj.url = '/';
                         cb(returnObj);
                     }
                 }
@@ -225,6 +226,8 @@ module.exports = function(dpd) {
                         returnObj.nodes = foundNodes;
                         returnObj.route = customNode.route;
                         returnObj.template = customNode.template;
+                        returnObj.dpd = dpd;
+                        returnObj.url = fullUrlPart;
                         cb(returnObj);
                     }
                     else {
@@ -251,6 +254,7 @@ module.exports = function(dpd) {
                 nodes: [],
                 language: undefined,
                 template: undefined,
+                url: url,
                 isActive: function () {
                     var rSelf = this;
                     return _.every(rSelf.nodes, function (x) { return x.active[rSelf.language] === true; });

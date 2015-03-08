@@ -12,9 +12,6 @@
 <pre>{
     baseHref: 'http://www.domain.com/',
     language: "en",
-    layout: "3875fd69e1f2c9dd",
-    page: "178627f90a002832",
-    pointer: "",
     robots: "index,follow",
     meta: {
         title: "meta title",
@@ -24,7 +21,17 @@
     js: { 
         lib: [],
         app: []
-    }
+    },
+    params: [{
+        name: "layout",
+        content: ""
+    }, {
+        name: "page",
+        content: "178627f90a002832"
+    }, {
+        name: "pointer",
+        content: ""
+    }]
 }</pre>
 
 <p>Let's have a look at each needed part of the head section</p>
@@ -44,20 +51,13 @@
 &lt;meta name="keywords" content="&lt;%= meta.keywords %&gt;" /&gt;
 &lt;meta name="description" content="&lt;%= meta.description %&gt;" /&gt;
 </pre>
-<h4>layout</h4>
-<p>This is the layout id selected for this node.</p>
+<h4>params</h4>
+<p>These meta parameters are driven from the routing procedures.<br />
+These include the current layout, page id, pointer id and any others that might be injected by any module.</p>
 <pre>
-&lt;meta name="layout" content="&lt;%= layout %&gt;" /&gt;
-</pre>
-<h4>page</h4>
-<p>This is the current node id.</p>
-<pre>
-&lt;meta name="page" content="&lt;%= nodeId %&gt;" /&gt;
-</pre>
-<h4>pointer</h4>
-<p>This is the pointer leading to the current node (if the node is not of the core engine).</p>
-<pre>
-&lt;meta name="pointer" content="&lt;%= pointerId %&gt;" /&gt;
+    &lt;% _.each(params, function(p) { %&gt;
+    &lt;meta name="&lt;%= p.name %&gt;" content="&lt;%= p.content %&gt;" /&gt;
+    &lt;% }); %&gt;
 </pre>
 <h4>js.lib</h4>
 <p>In production environment, all the js files in "/js/lib" are merged and minified to a /js/lib.min.js file.<br />
@@ -102,9 +102,9 @@
     &lt;meta name="keywords" content="&lt;%= meta.keywords %&gt;" /&gt;
     &lt;meta name="description" content="&lt;%= meta.description %&gt;" /&gt;
 
-    &lt;meta name="layout" content="&lt;%= layout %&gt;" /&gt;
-    &lt;meta name="page" content="&lt;%= nodeId %&gt;" /&gt;
-    &lt;meta name="pointer" content="&lt;%= pointerId %&gt;" /&gt;
+    &lt;% _.each(params, function(p) { %&gt;
+    &lt;meta name="&lt;%= p.name %&gt;" content="&lt;%= p.content %&gt;" /&gt;
+    &lt;% }); %&gt;
 
     &lt;!-- @if NODE_ENV='DEVELOPMENT' --&gt;
     &lt;link rel="stylesheet" href="css/style.css" /&gt;

@@ -66,6 +66,7 @@ module.exports = {
         this.setConfig(name, moduleConfig);
         
         moduleConfig.name = name;
+        moduleConfig.index = module;
         this.modules.push(moduleConfig);
         
         var clone = function (obj) {
