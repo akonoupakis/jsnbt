@@ -31,31 +31,6 @@
                     return deferred.promise;
                 },
 
-                create: function (parent) {
-                    var deferred = $q.defer();
-
-                    ModalService.open({
-                        title: 'type a name',
-                        controller: 'NamePromptController',
-                        template: 'tmpl/core/modals/namePrompt.html'
-                    }).then(function (result) {
-                        if (!!result && result !== '') {
-                            $data.nodes.post($data.create('nodes', {
-                                domain: 'core',
-                                name: result,
-                                entity: 'page',
-                                parent: parent,
-                            })).then(function (nodeResult) {
-                                deferred.resolve(nodeResult);
-                            }, function (error) {
-                                deferred.reject(error);
-                            });
-                        }
-                    });
-
-                    return deferred.promise;
-                }
-
             };
 
 
@@ -64,11 +39,7 @@
             };
 
             $scope.create = function () {
-                fn.create('').then(function (result) {
-                    $location.next($fn.invoke(result.domain, 'getEditUrl', [result]));
-                }, function (ex) {
-                    logger.error(ex);
-                });
+                $location.next($fn.invoke('core', 'getCreateUrl'));
             };
 
             $scope.treeFn = {
@@ -78,11 +49,7 @@
                 },
 
                 create: function (node) {
-                    fn.create(node.id).then(function (result) {
-                        $location.next($fn.invoke(node.domain, 'getEditUrl', [result]));
-                    }, function (ex) {
-                        logger.error(ex);
-                    });
+                    $location.next($fn.invoke(node.domain, 'getCreateUrl', [node]));
                 },
 
                 canEdit: function (node) {

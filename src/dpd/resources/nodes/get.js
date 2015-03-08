@@ -29,7 +29,6 @@ if (!internal) {
 
             hide('createdOn');
             hide('modifiedOn');
-            hide('published');
         }
     }
 }

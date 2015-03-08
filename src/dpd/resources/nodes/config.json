@@ -33,14 +33,6 @@
 			"id": "parent",
 			"order": 3
 		},
-		"published": {
-			"name": "published",
-			"type": "boolean",
-			"typeLabel": "boolean",
-			"required": false,
-			"id": "published",
-			"order": 4
-		},
 		"createdOn": {
 			"name": "createdOn",
 			"type": "number",

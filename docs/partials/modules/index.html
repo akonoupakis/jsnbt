@@ -26,18 +26,79 @@
                     returns the module's cofiguration as a json object
                 </td>
             </tr>
+
+            <tr class="data-title">
+                <td>route(ctx, next)</td>
+                <td>function</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    could intercept the routing process here, or trigger the next router
+                </td>
+            </tr>
+
+            <tr class="data-title">
+                <td>view.prerender(ctx)</td>
+                <td>function</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    could change the ctx.model and the ctx.tmpl before rendering
+                </td>
+            </tr>
+
+            <tr class="data-title">
+                <td>view.render(ctx)</td>
+                <td>function</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    could change the ctx.html upon render
+                </td>
+            </tr>
+
+            <tr class="data-title">
+                <td>point(ctx)</td>
+                <td>function</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    specify a custom pointer routing process
+                    the system invokes this method on a specific module if a pointer points to a node of the module
+                </td>
+            </tr>
         </tbody>
     </table>
     <div class="panel-body">
         <p>sample:</p>
         <pre>module.exports = {
 
-init: function (application) {
-},
+    init: function (application) {
+    },
 
-getConfig: function () {
-    return require('./config.js');
-}
+    getConfig: function () {
+        return require('./config.js');
+    },
+
+    route: function (ctx, next) {
+        next();
+    },
+
+    view: {
+
+        prerender: function (ctx) {
+
+        },
+
+        render: function (ctx) {
+
+        }
+
+    },
+
+    point: function(ctx) {
+
+    }
 
 };</pre>
     </div>

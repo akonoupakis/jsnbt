@@ -15,6 +15,11 @@ module.exports = {
     
     restricted: true,
 
+    fileGroups: [
+        'users',
+        'public'
+    ],
+
     images: [{
         name: 'admin-explorer-thumb',
         processors: [{

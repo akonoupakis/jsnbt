@@ -16,7 +16,7 @@ module.exports = function () {
                     var node = require('../node.js')(ctx.dpd);
                     
                     node.resolveUrl(ctx.uri.url, function (resolved) {
-                        if (resolved && resolved.page && resolved.isActive() && resolved.isPublished()) {
+                        if (resolved && resolved.page && resolved.isActive()) {
                             var restricted = false;
 
                             var prerender = false;
@@ -134,11 +134,11 @@ module.exports = function () {
 
                                         var moduleRouter = _.first(_.filter(jsnbt.modules, function (x) {
                                             return x.domain === resolved.pointer.pointer.domain
-                                                && x.route && _.isObject(x.route) && _.isFunction(x.route.process);
+                                                && x.point && _.isFunction(x.point);
                                         }));
 
                                         if (moduleRouter) {
-                                            moduleRouter.route.process(ctx);
+                                            moduleRouter.point(ctx);
                                         }
                                         else {
                                             if (ctx.node) {

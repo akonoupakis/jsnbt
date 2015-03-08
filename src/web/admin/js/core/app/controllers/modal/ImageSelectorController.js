@@ -12,6 +12,8 @@
             if ($scope.selected && typeof ($scope.selected) === 'object' && $scope.selected.src && $scope.selected.gen)
                 $.extend(true, $scope.ngModel, $scope.selected);
 
+            $scope.fileGroup = $scope.group ? $scope.group : 'public';
+
             $scope.path = '/';
             
             if ($scope.ngModel.src) {

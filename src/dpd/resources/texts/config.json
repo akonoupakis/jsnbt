@@ -24,14 +24,6 @@
 			"required": false,
 			"id": "group",
 			"order": 2
-		},
-		"published": {
-			"name": "published",
-			"type": "boolean",
-			"typeLabel": "boolean",
-			"required": false,
-			"id": "published",
-			"order": 3
 		}
 	}
 }

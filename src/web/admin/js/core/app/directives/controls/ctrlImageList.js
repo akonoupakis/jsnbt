@@ -12,6 +12,7 @@
                 replace: true,
                 scope: {
                     ngModel: '=',
+                    ngFileGroup: '@',
                     ngDisabled: '=',
                     ngRequired: '=',
                     ngLabel: '@',
@@ -45,6 +46,8 @@
                             scope.$emit(CONTROL_EVENTS.valueChanged, scope.ngModel);
                         }, 50);
                     };
+
+                    var fileGroup = scope.ngFileGroup ? scope.ngFileGroup : 'public';
 
                     var isValid = function () {
                         var valid = true;
@@ -156,6 +159,7 @@
                             controller: 'ImageSelectorController',
                             selected: item,
                             template: 'tmpl/core/modals/ImageSelector.html',
+                            group: fileGroup,
                             mode: 'single',
                             extensions: scope.extensions,
                             step: 1,
@@ -180,6 +184,7 @@
                             controller: 'ImageSelectorController',
                             selected: item,
                             template: 'tmpl/core/modals/ImageSelector.html',
+                            group: fileGroup,
                             mode: 'single',
                             extensions: scope.extensions,
                             step: 2,
@@ -201,6 +206,7 @@
                             title: 'select and crop the image you want',
                             controller: 'ImageSelectorController',
                             template: 'tmpl/core/modals/ImageSelector.html',
+                            group: fileGroup,
                             mode: 'single',
                             extensions: scope.extensions,
                             step: 1,

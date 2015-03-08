@@ -9,6 +9,7 @@
             var logger = $logger.create('NodeController');
 
             $scope.id = $routeParams.id;
+            $scope.new = $scope.id === 'new' || _.str.startsWith($scope.id, 'new-');
             $scope.name = undefined;
             $scope.node = undefined;
             $scope.entity = undefined;
@@ -17,8 +18,7 @@
             $scope.nodeRoles = [];
             $scope.draftRoles = [];
 
-            $scope.robots = [];
-            $scope.nodeRobots = [];
+            $scope.robots = [];$scope.nodeRobots = [];
             $scope.draftRobots = [];
 
             $scope.layouts = [];
@@ -46,6 +46,7 @@
             };
 
             $scope.published = true;
+            $scope.draft = false;
 
             $scope.tmpl = null;
             
@@ -74,43 +75,93 @@
                 set: function () {
                     var deferred = $q.defer();
 
-                    $data.nodes.get($scope.id).then(function (result) {
+                    if ($scope.new) {
+                        if (_.str.startsWith($scope.id, 'new-')) {
+                            var parentNodeId = $scope.id.substring(4);
+                            $data.nodes.get(parentNodeId).then(function (parentResult) {
+                                var entity = parentResult.entity; // resolve from parent, have it as preselected the first option available, in case the domain is not core!
 
-                        $scope.node = result;
+                                $scope.node = $data.create('nodes', {
+                                    domain: parentResult.domain,
+                                    name: '',
+                                    entity: entity,
+                                    parent: parentNodeId,
+                                    hierarchy: parentResult.hierarchy
+                                });
 
-                        if ($route.current.$$route.name && result.content.localized['en'] && result.content.localized['en'][$route.current.$$route.name]) {
-                            $scope.name = result.content.localized['en'][$route.current.$$route.name];
+                                $scope.name = '';
+
+                                $scope.localized = $scope.application.localization.enabled && (entity.localized === undefined || entity.localized === true);
+
+                                $scope.valid = true;
+                                $scope.published = false;
+                                $scope.draft = true;
+
+                                deferred.resolve($scope.node);
+                            }, function (error) {
+                                deferred.reject(error);
+                            });
                         }
                         else {
-                            $scope.name = result.name;
+                            var entity = 'page';
+
+                            $scope.node = $data.create('nodes', {
+                                domain: 'core',
+                                name: '',
+                                entity: entity,
+                                parent: '',
+                            });
+
+                            $scope.name = '';
+
+                            $scope.localized = $scope.application.localization.enabled && (entity.localized === undefined || entity.localized === true);
+
+                            $scope.valid = true;
+                            $scope.published = false;
+                            $scope.draft = true;
+
+                            deferred.resolve($scope.node);
                         }
+                    }
+                    else {
+                        $data.nodes.get($scope.id).then(function (result) {
+                            $scope.node = result;
 
-                        var entity = _.first(_.filter($jsnbt.entities, function (x) { return x.name === result.entity; }));
+                            if ($route.current.$$route.name && result.content.localized['en'] && result.content.localized['en'][$route.current.$$route.name]) {
+                                $scope.name = result.content.localized['en'][$route.current.$$route.name];
+                            }
+                            else {
+                                $scope.name = result.name;
+                            }
 
-                        $scope.localized = $scope.application.localization.enabled && (entity.localized === undefined || entity.localized === true);
+                            var entity = _.first(_.filter($jsnbt.entities, function (x) { return x.name === result.entity; }));
 
-                        $scope.parentOptions.restricted = [$scope.id];
+                            $scope.localized = $scope.application.localization.enabled && (entity.localized === undefined || entity.localized === true);
 
-                        $scope.valid = true;
-                        $scope.published = true;
+                            $scope.parentOptions.restricted = [$scope.id];
 
-                        $scope.nodeLayout = result.layout.value;
-                        $scope.draftLayout = result.layout.value;
+                            $scope.valid = true;
+                            $scope.published = true;
+                            $scope.draft = false;
 
-                        $scope.nodeRoles = result.roles.values;
-                        $scope.draftRoles = result.roles.values;
+                            $scope.nodeLayout = result.layout.value;
+                            $scope.draftLayout = result.layout.value;
 
-                        $scope.nodeRobots = result.robots.values;
-                        $scope.draftRobots = result.robots.values;
+                            $scope.nodeRoles = result.roles.values;
+                            $scope.draftRoles = result.roles.values;
 
-                        $scope.nodeSSL = result.secure.value;
-                        $scope.draftSSL = result.secure.value;
-                        
-                        deferred.resolve(result);
-                        
-                    }, function (error) {
-                        deferred.reject(error);
-                    });
+                            $scope.nodeRobots = result.robots.values;
+                            $scope.draftRobots = result.robots.values;
+
+                            $scope.nodeSSL = result.secure.value;
+                            $scope.draftSSL = result.secure.value;
+
+                            deferred.resolve(result);
+
+                        }, function (error) {
+                            deferred.reject(error);
+                        });
+                    }
 
                     return deferred.promise;
                 },
@@ -150,6 +201,14 @@
                                         });
                                     }
                                 });
+
+                                if ($scope.new) {
+                                    breadcrumb.push({
+                                        name: 'new',
+                                        url: '',
+                                        active: true
+                                    });
+                                }
 
                                 $scope.current.setBreadcrumb(breadcrumb);
                                 deferred.resolve(breadcrumb);
@@ -547,7 +606,6 @@
 
                     if ($scope.node && $scope.node.parent && $scope.node.parent !== '') {
                         $data.nodes.get({ id: $scope.node.parent }).then(function (parentResult) {
-
                             var nodeIds = parentResult.hierarchy;
 
                             if (nodeIds.length > 0) {
@@ -739,8 +797,6 @@
                             deferred.resolve(false);
                         }
                         else {
-                            $scope.node.published = true;
-
                             var publishNode = {};
                             $.extend(true, publishNode, $scope.node);
 
@@ -748,13 +804,24 @@
                             publishNode.robots.values = !publishNode.robots.inherits ? $scope.nodeRobots : [];
                             publishNode.layout.value = !publishNode.layout.inherits ? $scope.nodeLayout : '';
                             publishNode.secure.value = !publishNode.secure.inherits ? $scope.nodeSSL : false;
-
-                            $data.nodes.put($scope.id, publishNode).then(function (result) {
-                                $scope.name = result.name;
-                                deferred.resolve(true);
-                            }, function (error) {
-                                deferred.reject(error);
-                            });
+                            
+                            if ($scope.new) {
+                                $data.nodes.post(publishNode).then(function (result) {
+                                    $scope.node = result;
+                                    $scope.name = result.name;
+                                    deferred.resolve(true);
+                                }, function (error) {
+                                    deferred.reject(error);
+                                });
+                            }
+                            else {
+                                $data.nodes.put($scope.id, publishNode).then(function (result) {
+                                    $scope.name = result.name;
+                                    deferred.resolve(true);
+                                }, function (error) {
+                                    deferred.reject(error);
+                                });
+                            }
                         }
                     });
 
@@ -804,9 +871,14 @@
                         $scope.scroll2error();
                     }
                     else {
-                        fn.setLocation().catch(function (locEx) {
-                            logger.error(locEx);
-                        });
+                        if ($scope.new) {
+                            $location.goto($fn.invoke($scope.node.domain, 'getEditUrl', [$scope.node]));
+                        }
+                        else {
+                            fn.setLocation().catch(function (locEx) {
+                                logger.error(locEx);
+                            });
+                        }
                     }
                 }, function (ex) {
                     logger.error(ex);

@@ -233,10 +233,6 @@ module.exports = function(dpd) {
                     var rSelf = this;
                     return _.every(rSelf.nodes, function (x) { return x.active[rSelf.language] === true; });
                 },
-                isPublished: function () {
-                    var rSelf = this;
-                    return _.every(rSelf.nodes, function (x) { return x.published === true; });
-                },
                 getLayout: function () {
                     var rSelf = this;
 

@@ -12,6 +12,7 @@
                 replace: true,
                 scope: {
                     ngPath: '=',
+                    ngGroup: '=',
                     ngSelectable: '=',
                     ngSelectMode: '=',
                     ngSelected: '=',
@@ -29,6 +30,8 @@
                     scope.contents = [];
                     scope.selected = {};
 
+                    var fileGroup = scope.ngGroup ? scope.ngGroup : 'public';
+                    
                     if (scope.ngSelectable) {
                         if (scope.ngSelectMode === 'single') {
                             if (scope.ngSelected && scope.ngSelected !== '')
@@ -55,22 +58,24 @@
 
                     var loadBreadcrumb = function (path) {
 
-                        if (path === '/') {
+                        var internalPath = path.substring(fileGroup.length + 1);
+
+                        if (internalPath === '/') {
                             scope.breadcrumb = [{
                                 name: 'root',
-                                url: '/',
+                                url: '/' + fileGroup,
                                 active: true
                             }];
                         }
                         else {
-                            var paths = _.string.trim(path, '/').split('/');
+                            var paths = _.string.trim(internalPath, '/').split('/');
                             var breadcrumbs = [{
                                 name: 'root',
-                                url: '/',
+                                url: '/' + fileGroup,
                                 active: false
                             }];
 
-                            var urlPart = '';
+                            var urlPart = '/' + fileGroup;
 
                             $(paths).each(function (i, item) {
                                 urlPart += '/' + item;
@@ -212,6 +217,7 @@
                             title: 'edit this ' + item.type,
                             controller: 'FileSystemEditorController',
                             template: 'tmpl/core/modals/fsEditor.html',
+                            group: fileGroup,
                             data: item
                         }).then(function (result) {
                             if (result !== '' && result !== item.path) {
@@ -276,7 +282,11 @@
                         }
                     });
 
-                    scope.current = (scope.ngPath || '/').replace(/\\/, '/');
+                    var currentPath = scope.ngPath || '/';
+                    if (currentPath == '/')
+                        currentPath += fileGroup + '/';
+
+                    scope.current = currentPath.replace(/\\/, '/');
                 },
                 templateUrl: 'tmpl/core/controls/ctrlExplorer.html'
             };

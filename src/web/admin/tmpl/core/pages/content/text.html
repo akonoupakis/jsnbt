@@ -9,8 +9,8 @@
                 <span ng-click="back()" class="glyphicon glyphicon-arrow-left back-button"></span>
                 <h1 class="title">{{ name }}</h1>
                 <div class="buttons">
-                    <button type="button" ng-show="!published" class="btn btn-danger" ng-click="discard()">discard</button>
-                    <button type="button" ng-disabled="published && text.published" class="btn btn-success" ng-click="publish()">publish</button>
+                    <button type="button" ng-show="!published && !draft" class="btn btn-danger" ng-click="discard()">discard</button>
+                    <button type="button" ng-disabled="published && !draft" class="btn btn-success" ng-click="publish()">publish</button>
                 </div>
             </div>
         </div>
