@@ -132,11 +132,12 @@ module.exports = function () {
                                     if (resolved.pointer) {
                                         var moduleRouter = _.first(_.filter(jsnbt.modules, function (x) {
                                             return x.domain === resolved.pointer.pointer.domain
-                                                && x.point && _.isFunction(x.point);
+                                                && x.index.point && _.isFunction(x.index.point);
                                         }));
 
                                         if (moduleRouter) {
-                                            moduleRouter.point(ctx);
+                                            applyTemplate(ctx);
+                                            moduleRouter.index.point(ctx);
                                         }
                                         else {
                                             if (ctx.node) {
@@ -155,11 +156,12 @@ module.exports = function () {
 
                                         var moduleRouter = configRoute !== undefined ? _.first(_.filter(jsnbt.modules, function (x) {
                                             return x.public === true
-                                                && x[configRouteFn] && _.isFunction(x[configRouteFn]);
+                                                && x.index[configRouteFn] && _.isFunction(x.index[configRouteFn]);
                                         })) : undefined;
 
                                         if (moduleRouter) {
-                                            moduleRouter[configRouteFn](ctx);
+                                            applyTemplate(ctx);
+                                            moduleRouter.index[configRouteFn](ctx);
                                         }
                                         else {
                                             ctx.error(500, 'custom route not found in public module: ' + resolved.route);

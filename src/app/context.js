@@ -35,6 +35,7 @@ module.exports = function (req, res) {
             description: '',
             keywords: ''
         },
+        params: [],
         robots: {
             noindex: false,
             nofollow: false,

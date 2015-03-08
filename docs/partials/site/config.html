@@ -179,6 +179,26 @@
 }]</pre>
                 </td>
             </tr>
+
+            <tr class="data-title">
+                <td>routes</td>
+                <td>array of objects</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    custom routes implemented by the public module<br />
+                    a route must define an id and a display name, as well as a function ("fn") name that exists in the public module's index file.
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <pre>routes: [{
+    id: 'search',
+    name: 'Search results',
+    fn: 'routeSearch'
+}]</pre>
+                </td>
+            </tr>
         </tbody>
     </table>
 </div>

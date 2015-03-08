@@ -10,7 +10,6 @@ exports.parse = function (ctx, tmpl, model) {
     var mdl = {
         baseHref: ctx.uri.getBaseHref(),
         language: ctx.language || 'en',
-        view: ctx.view || '',
         node: ctx.node || {},
         pointer: ctx.pointer || {},
         layout: ctx.layout || '',
@@ -19,14 +18,28 @@ exports.parse = function (ctx, tmpl, model) {
             keywords: '',
             description: ''
         },
+        params: [],
         robots: ''
     };
 
     extend(true, mdl.meta, ctx.meta);
     extend(true, mdl, model);
+    
+    mdl.params = mdl.params || [];
+    
+    var nodeId = (mdl.node || {}).id;
+    var pointerId = (mdl.pointer || {}).id;
 
-    mdl.nodeId = (mdl.node || {}).id;
-    mdl.pointerId = (mdl.pointer || {}).id;
+    mdl.params = _.union([{
+        name: 'layout',
+        content: mdl.layout
+    }, {
+        name: 'page',
+        content: nodeId
+    }, {
+        name: 'pointer',
+        content: pointerId
+    }], ctx.params);
 
     var isAdmin = ctx.uri.first === 'admin';
 
