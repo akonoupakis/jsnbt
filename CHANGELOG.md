@@ -1,3 +1,12 @@
+## 1.0.81 (unreleashed)
+
+Features:
+
+  - config.routes
+  - "custom" entity triggering a custom route
+  -
+
+
 ## 1.0.80 (2015-03-08)
 
 Features:

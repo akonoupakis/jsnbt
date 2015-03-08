@@ -11,7 +11,6 @@ if (!internal) {
         if (!auth.isInRole(me, 'admin')) {
             hide('createdOn');
             hide('modifiedOn');
-            hide('published');
         }
     }
 

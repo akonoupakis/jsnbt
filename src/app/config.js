@@ -68,12 +68,18 @@ module.exports = {
     
     entities: [{
         name: 'page',
-        allowed: ['page', 'pointer'],
+        allowed: ['page', 'pointer', 'custom'],
     }, {
         name: 'pointer',
         allowed: [],
         properties: {
             template: false,
+            meta: false
+        }
+    }, {
+        name: 'custom',
+        allowed: [],
+        properties: {
             meta: false
         }
     }],
@@ -254,6 +260,15 @@ module.exports = {
         name: 'images page',
         html: '/tmpl/images.html',
         form: 'tmpl/public/forms/page/images.html'
+    }, {
+        id: 'search',
+        name: 'search',
+        html: '/tmpl/search.html'
+    }, {
+        id: 'facilities',
+        name: 'facilities',
+        html: '/tmpl/facilities.html',
+        form: 'tmpl/public/forms/page/facilities.html'
     }],
 
     lists: [{
@@ -278,6 +293,16 @@ module.exports = {
         name: 'Telephones',
         form: 'tmpl/public/forms/list/telephones.html',
         localized: true
+    }],
+
+    routes: [{
+        id: 'search',
+        name: 'Search results',
+        fn: 'routeSearch'
+    }, {
+        id: 'facilities',
+        name: 'Facilities',
+        fn: 'routeFacility'
     }]
 
 }
