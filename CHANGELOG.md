@@ -1,4 +1,4 @@
-## 1.0.80 (unreleased)
+## 1.0.80 (2015-03-08)
 
 Features:
 
@@ -11,26 +11,6 @@ Features:
   - dpd.collection.count supported
 
   - no longer pre-creating nodes or data in admin before the initial save click
-
-Bugfixes:
-
-  - 
-  - 
-  - 
-
-Breaking Changes:
-
-  - 
-  - 
-  - 
-  
-## 1.0.65 (2014-08-23)
-
-Features:
-
-  - 
-  - 
-  - 
 
 Bugfixes:
 
