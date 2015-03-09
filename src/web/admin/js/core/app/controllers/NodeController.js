@@ -534,7 +534,7 @@
                     if (_.filter($jsnbt.modules, function (x) { return x.type === 'addon' && x.pointed === true; }).length > 0)
                         types.push({ value: 'pointer', name: 'pointer' });
                     if ($jsnbt.routes.length > 0)
-                        types.push({ value: 'custom', name: 'custom' });
+                        types.push({ value: 'router', name: 'router' });
 
                     $scope.entities = types;
 

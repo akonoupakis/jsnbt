@@ -53,17 +53,17 @@
     "underscore.string": "2.3.3"
   },
   "devDependencies": {
-	"serve-static": "*",
+    "argv": "*",
     "grunt": "*",
     "grunt-contrib-clean": "*",
-    "grunt-contrib-uglify": "*",
-    "grunt-contrib-jshint": "*",
-    "grunt-contrib-watch": "*",
-    "grunt-contrib-less": "*",
-    "grunt-contrib-cssmin": "*",
     "grunt-contrib-copy": "*",
-    "grunt-preprocess": "*",
+    "grunt-contrib-cssmin": "*",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-less": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-watch": "*",
     "grunt-env": "*",
-    "argv": "*"
+    "grunt-preprocess": "*",
+    "serve-static": "*"
   }
 }

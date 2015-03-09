@@ -123,26 +123,28 @@ module.exports = function () {
                                         var installedTemplate = _.first(_.filter(jsnbt.templates, function (x) { return x.id === ctxInternal.template; }));
                                         if (installedTemplate) {
                                             ctxInternal.template = installedTemplate.html;
+                                            return true;
                                         }
                                         else {
                                             ctxInternal.error(500, 'template not installed: ' + ctxInternal.template);
+                                            return false;
                                         }
                                     };
                                     
                                     if (resolved.pointer) {
-                                        var moduleRouter = _.first(_.filter(jsnbt.modules, function (x) {
+                                        var moduleRouter = _.first(_.filter(app.modules, function (x) {
                                             return x.domain === resolved.pointer.pointer.domain
-                                                && x.index.point && _.isFunction(x.index.point);
+                                                && x.point && _.isFunction(x.point);
                                         }));
 
                                         if (moduleRouter) {
                                             applyTemplate(ctx);
-                                            moduleRouter.index.point(ctx);
+                                            moduleRouter.point(ctx);
                                         }
                                         else {
                                             if (ctx.node) {
-                                                applyTemplate(ctx);                                                
-                                                ctx.render();
+                                                if (applyTemplate(ctx))
+                                                    ctx.render();
                                             }
                                             else {
                                                 ctx.error(404);
@@ -154,22 +156,25 @@ module.exports = function () {
 
                                         var configRouteFn = configRoute !== undefined ? configRoute.fn : '';
 
-                                        var moduleRouter = configRoute !== undefined ? _.first(_.filter(jsnbt.modules, function (x) {
+                                        var moduleRouter = configRoute !== undefined ? _.first(_.filter(app.modules, function (x) {
                                             return x.public === true
-                                                && x.index[configRouteFn] && _.isFunction(x.index[configRouteFn]);
+                                                && x[configRouteFn] && _.isFunction(x[configRouteFn]);
                                         })) : undefined;
 
                                         if (moduleRouter) {
-                                            applyTemplate(ctx);
-                                            moduleRouter.index[configRouteFn](ctx);
+                                            if (applyTemplate(ctx)) {
+                                                ctx.dpd = resolved.dpd;
+                                                ctx.url = resolved.url;
+                                                moduleRouter[configRouteFn](ctx);
+                                            }
                                         }
                                         else {
-                                            ctx.error(500, 'custom route not found in public module: ' + resolved.route);
+                                            ctx.error(500, 'custom route not found in public module: ' + (configRouteFn ? configRouteFn : resolved.route));
                                         }
                                     }
                                     else {
-                                        applyTemplate(ctx);
-                                        ctx.render();
+                                        if (applyTemplate(ctx))
+                                            ctx.render();
                                     }
                                 }
                             }
