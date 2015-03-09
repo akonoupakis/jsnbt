@@ -59,15 +59,15 @@ module.exports = {
     routes: [],
 
     register: function (name, module) {
-        
+
         var self = this;
 
         var moduleConfig = typeof (module.getConfig) === 'function' ? module.getConfig() : {};
         this.setConfig(name, moduleConfig);
-        
+
         moduleConfig.name = name;
         this.modules.push(moduleConfig);
-        
+
         var clone = function (obj) {
             var resultObj = {};
             extend(true, resultObj, obj);
@@ -182,14 +182,13 @@ module.exports = {
             });
         }
 
-        if (moduleConfig.domain !== 'core' || (moduleConfig.domain === 'core' && moduleConfig.public)) {
-            
-            if (_.isArray(moduleConfig.lists)) {
-                _.each(moduleConfig.lists, function (moduleList) {
-                    var fileName = moduleList.form.substring(0, moduleList.form.lastIndexOf('.'));
-                    fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
+        if (_.isArray(moduleConfig.lists)) {
+            _.each(moduleConfig.lists, function (moduleList) {
+                var fileName = moduleList.form.substring(0, moduleList.form.lastIndexOf('.'));
+                fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
 
-                    var moduleListDomain = moduleConfig.type === 'addon' ? moduleConfig.domain : 'core';
+                if (moduleConfig.domain) {
+                    var moduleListDomain = moduleConfig.public ? 'public' : moduleConfig.domain;
 
                     var matchedList = _.first(_.filter(self.lists, function (x) { return x.id === fileName && x.domain == moduleListDomain; }));
                     if (matchedList) {
@@ -208,88 +207,87 @@ module.exports = {
 
                         self.lists.push(newListSpec);
                     }
+                }
+            });
+        }
+
+        if (moduleConfig.public) {
+
+            if (moduleConfig.ssl !== undefined) {
+                self.ssl = moduleConfig.ssl === true;
+            }
+
+            if (moduleConfig.locale !== undefined) {
+                var language = _.first(_.filter(this.languages, function (x) { return x.code === moduleConfig.locale; }));
+                if (language) {
+                    self.localization = false;
+                    self.locale = language.code;
+                }
+            }
+
+            if (moduleConfig.restricted !== undefined) {
+                self.restricted = moduleConfig.restricted;
+            }
+
+            if (_.isArray(moduleConfig.templates)) {
+                _.each(moduleConfig.templates, function (moduleTemplate) {
+                    var matchedTemplate = _.first(_.filter(self.templates, function (x) { return x.id === moduleTemplate.id; }));
+                    if (matchedTemplate) {
+                        extend(true, matchedTemplate, moduleTemplate);
+                    }
+                    else {
+                        self.templates.push(clone(moduleTemplate));
+                    }
                 });
             }
 
-            if (moduleConfig.public) {
+            if (_.isObject(moduleConfig.injects)) {
+                var injects = {};
 
-                if (moduleConfig.ssl !== undefined) {
-                    self.ssl = moduleConfig.ssl === true;
-                }
+                extend(true, injects, {
+                    navigation: [],
+                    dashboard: undefined,
+                    content: undefined,
+                    settings: undefined
+                }, moduleConfig.injects);
 
-                if (moduleConfig.locale !== undefined) {
-                    var language = _.first(_.filter(this.languages, function (x) { return x.code === moduleConfig.locale; }));
-                    if (language) {
-                        self.localization = false;
-                        self.locale = language.code;
+                self.injects = injects;
+            }
+
+            if (_.isArray(moduleConfig.layouts)) {
+                _.each(moduleConfig.layouts, function (moduleLayout) {
+                    var matchedLayout = _.first(_.filter(self.layouts, function (x) { return x.id === moduleLayout.id; }));
+                    if (matchedLayout) {
+                        extend(true, matchedLayout, moduleLayout);
                     }
-                }
+                    else {
+                        self.layouts.push(clone(moduleLayout));
+                    }
+                });
+            }
 
-                if (moduleConfig.restricted !== undefined) {
-                    self.restricted = moduleConfig.restricted;
-                }
+            if (_.isArray(moduleConfig.containers)) {
+                _.each(moduleConfig.containers, function (moduleContainer) {
+                    var matchedContainer = _.first(_.filter(self.containers, function (x) { return x.id === moduleContainer.id; }));
+                    if (matchedContainer) {
+                        extend(true, matchedContainer, moduleContainer);
+                    }
+                    else {
+                        self.containers.push(clone(moduleContainer));
+                    }
+                });
+            }
 
-                if (_.isArray(moduleConfig.templates)) {
-                    _.each(moduleConfig.templates, function (moduleTemplate) {
-                        var matchedTemplate = _.first(_.filter(self.templates, function (x) { return x.id === moduleTemplate.id; }));
-                        if (matchedTemplate) {
-                            extend(true, matchedTemplate, moduleTemplate);
-                        }
-                        else {
-                            self.templates.push(clone(moduleTemplate));
-                        }
-                    });
-                }
-
-                if (_.isObject(moduleConfig.injects)) {
-                    var injects = {};
-
-                    extend(true, injects, {
-                        navigation: [],
-                        dashboard: undefined,
-                        content: undefined,
-                        settings: undefined
-                    }, moduleConfig.injects);
-
-                    self.injects = injects;
-                }
-
-                if (_.isArray(moduleConfig.layouts)) {
-                    _.each(moduleConfig.layouts, function (moduleLayout) {
-                        var matchedLayout = _.first(_.filter(self.layouts, function (x) { return x.id === moduleLayout.id; }));
-                        if (matchedLayout) {
-                            extend(true, matchedLayout, moduleLayout);
-                        }
-                        else {
-                            self.layouts.push(clone(moduleLayout));
-                        }
-                    });
-                }
-
-                if (_.isArray(moduleConfig.containers)) {
-                    _.each(moduleConfig.containers, function (moduleContainer) {
-                        var matchedContainer = _.first(_.filter(self.containers, function (x) { return x.id === moduleContainer.id; }));
-                        if (matchedContainer) {
-                            extend(true, matchedContainer, moduleContainer);
-                        }
-                        else {
-                            self.containers.push(clone(moduleContainer));
-                        }
-                    });
-                }
-
-                if (_.isArray(moduleConfig.routes)) {
-                    _.each(moduleConfig.routes, function (moduleRoute) {
-                        var matchedRoute = _.first(_.filter(self.routes, function (x) { return x.id === moduleRoute.id; }));
-                        if (matchedRoute) {
-                            extend(true, matchedRoute, moduleRoute);
-                        }
-                        else {
-                            self.routes.push(clone(moduleRoute));
-                        }
-                    });
-                }
-
+            if (_.isArray(moduleConfig.routes)) {
+                _.each(moduleConfig.routes, function (moduleRoute) {
+                    var matchedRoute = _.first(_.filter(self.routes, function (x) { return x.id === moduleRoute.id; }));
+                    if (matchedRoute) {
+                        extend(true, matchedRoute, moduleRoute);
+                    }
+                    else {
+                        self.routes.push(clone(moduleRoute));
+                    }
+                });
             }
         }
     },

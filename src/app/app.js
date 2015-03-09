@@ -55,14 +55,13 @@ exports.init = function (env, hosts, module) {
         fs.createWriteStream('fatal.log', { 'flags': 'a' }).write(moment().format() + ' ' + err.toString() + "\n");
     };
 
-    var jsnbtModule = {
-        domain: 'core',
+    var coreModule = {
         getConfig: function () {
             return require('./config.js');
         }
     };
 
-    jsnbt.register('jsnbt', jsnbtModule);
+    jsnbt.register('core', coreModule);
 
     if (module) {
         try {
@@ -73,7 +72,7 @@ exports.init = function (env, hosts, module) {
 
             if (moduleConfig.domain && moduleConfig.domain !== 'core')
                 jsnbt.register(moduleConfig.domain, module);
-
+            
             module.domain = moduleConfig.domain;
             module.public = moduleConfig.public;
 
@@ -83,7 +82,7 @@ exports.init = function (env, hosts, module) {
             this.logger.error(err.toString());
         }
     }
-
+   
     var installedPackages = pack.npm.getInstalled();
     for (var i in installedPackages) {
         if (installedPackages[i] !== 'jsnbt') {

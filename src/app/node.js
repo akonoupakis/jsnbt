@@ -186,7 +186,7 @@ module.exports = function(dpd) {
                     else {
                         returnObj.page = matchedNode;
 
-                        if (matchedNode.entity === 'custom') {
+                        if (matchedNode.entity === 'router') {
                             returnObj.route = matchedNode.route;
                         }
 
@@ -200,7 +200,7 @@ module.exports = function(dpd) {
                 }
                 else {
                     var pointerNode = _.last(_.filter(foundNodes, function (x) { return x.entity === 'pointer' }));
-                    var customNode = _.last(_.filter(foundNodes, function (x) { return x.entity === 'custom' }));
+                    var routerNode = _.last(_.filter(foundNodes, function (x) { return x.entity === 'router' }));
 
                     if (pointerNode) {
                         var trimmedUrl = url.length > buildUrl.length ? url.substring(buildUrl.length) : '';
@@ -214,18 +214,18 @@ module.exports = function(dpd) {
                         returnObj.pointer = pointerNode;
                         resolvePointerUrl(returnObj, urlSeoNodes, trimmedUrl, fullUrlPart, cb);
                     }
-                    else if (customNode) {
+                    else if (routerNode) {
                         var trimmedUrl = url.length > buildUrl.length ? url.substring(buildUrl.length) : '';
                         if (trimmedUrl === '')
                             trimmedUrl = '/';
 
                         var fullUrlPart = trimmedUrl + query;
 
-                        returnObj.page = customNode;
+                        returnObj.page = routerNode;
                         returnObj.language = language;
                         returnObj.nodes = foundNodes;
-                        returnObj.route = customNode.route;
-                        returnObj.template = customNode.template;
+                        returnObj.route = routerNode.route;
+                        returnObj.template = routerNode.template;
                         returnObj.dpd = dpd;
                         returnObj.url = fullUrlPart;
                         cb(returnObj);
@@ -340,7 +340,7 @@ module.exports = function(dpd) {
 
                                                 returnObj.page = resolvedNode;
 
-                                                if (resolvedNode.entity == 'custom') {
+                                                if (resolvedNode.entity == 'router') {
                                                     returnObj.route = resolvedNode.route;
                                                 }
 

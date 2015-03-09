@@ -45,7 +45,7 @@
             $scope.treeFn = {
 
                 canCreate: function (node) {
-                    return node.domain === 'core' && node.entity !== 'pointer' && node.entity !== 'custom';
+                    return node.domain === 'core' && node.entity !== 'pointer' && node.entity !== 'router';
                 },
 
                 create: function (node) {

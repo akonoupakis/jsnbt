@@ -18,7 +18,7 @@
             };
 
             $scope.data = {
-                items: _.sortBy(_.filter($jsnbt.lists, function (x) { return x.domain === 'core'; }), 'name')
+                items: _.sortBy(_.filter($jsnbt.lists, function (x) { return x.domain === 'public'; }), 'name')
             };
             
             $scope.gridFn = {

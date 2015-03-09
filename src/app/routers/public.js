@@ -124,9 +124,11 @@ module.exports = function () {
                                         var installedTemplate = _.first(_.filter(jsnbt.templates, function (x) { return x.id === ctxInternal.template; }));
                                         if (installedTemplate) {
                                             ctxInternal.template = installedTemplate.html;
+                                            return true;
                                         }
                                         else {
                                             ctxInternal.error(500, 'template not installed: ' + ctxInternal.template);
+                                            return false;
                                         }
                                     };
                                     
@@ -143,8 +145,8 @@ module.exports = function () {
                                         }
                                         else {
                                             if (ctx.node) {
-                                                applyTemplate(ctx);
-                                                ctx.render();
+                                                if (applyTemplate(ctx))
+                                                    ctx.render();
                                             }
                                             else {
                                                 ctx.error(404);
@@ -162,18 +164,19 @@ module.exports = function () {
                                         })) : undefined;
 
                                         if (moduleRouter) {
-                                            applyTemplate(ctx);
-                                            ctx.dpd = resolved.dpd;
-                                            ctx.url = resolved.url;
-                                            moduleRouter[configRouteFn](ctx);
+                                            if (applyTemplate(ctx)) {
+                                                ctx.dpd = resolved.dpd;
+                                                ctx.url = resolved.url;
+                                                moduleRouter[configRouteFn](ctx);
+                                            }
                                         }
                                         else {
-                                            ctx.error(500, 'custom route not found in public module: ' + resolved.route);
+                                            ctx.error(500, 'custom route not found in public module: ' + (configRouteFn ? configRouteFn : resolved.route));
                                         }                                        
                                     }
                                     else {
-                                        applyTemplate(ctx);
-                                        ctx.render();
+                                        if (applyTemplate(ctx))
+                                            ctx.render();
                                     }
                                 }
                             }
