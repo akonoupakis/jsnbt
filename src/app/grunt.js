@@ -817,6 +817,36 @@ module.exports = function (grunt) {
             ]
         }
     };
+
+    gruntConfig.gitFlowBump = {
+        options: {
+            files: ['package.json'],
+            updateConfigs: [], // array of config properties to update (with files) 
+
+            majorBranch: 'release',
+            minorBranch: 'develop',
+            patchBranch: '*',
+            masterOnly: true,
+
+            forceGitVersion: false,
+            gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d',
+
+            postBumpTasks: [], //tasks to run between versioning and git tag, commit, push 
+
+            commit: true,
+            commitMessage: 'Release v%VERSION%',
+            commitFiles: ['package.json'],
+
+            createTag: true,
+            tagName: 'v%VERSION%',
+            tagMessage: 'Version %VERSION%',
+
+            push: true,
+            pushTo: 'upstream'
+
+
+        }
+    };
     
     grunt.initConfig(gruntConfig);
 
@@ -831,7 +861,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-preprocess');
-    
+
+    grunt.loadNpmTasks('grunt-git-flow-bump');
 
     grunt.registerTask('default', ['jshint']);
 
