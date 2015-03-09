@@ -63,7 +63,6 @@
     "grunt-contrib-uglify": "*",
     "grunt-contrib-watch": "*",
     "grunt-env": "*",
-    "grunt-git-flow-bump": "0.0.8",
     "grunt-preprocess": "*",
     "serve-static": "*"
   }
