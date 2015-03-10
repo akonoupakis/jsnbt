@@ -165,7 +165,6 @@ module.exports = function () {
 
                                         if (moduleRouter) {
                                             if (applyTemplate(ctx)) {
-                                                ctx.dpd = resolved.dpd;
                                                 ctx.url = resolved.url;
                                                 moduleRouter[configRouteFn](ctx);
                                             }

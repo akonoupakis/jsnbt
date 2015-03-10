@@ -4,32 +4,48 @@ var file = require('../file.js');
 
 module.exports = {
     
-    get: function (user, fields) {
-        if (!auth.isInRole(user, 'admin'))
+    get: function (ctx, fields) {
+        if (!auth.isInRole(ctx.req.session.user, 'admin'))
             return null;
 
-        return file.get(fields);
+        var result = file.get(fields);
+
+        ctx.res.writeHead(200, { "Content-Type": "application/json" });
+        ctx.res.write(JSON.stringify({ d: result }, null, app.dbg ? '\t' : ''));
+        ctx.res.end();
     },
 
-    delete: function (user, fields) {
-        if (!auth.isInRole(user, 'admin'))
+    delete: function (ctx, fields) {
+        if (!auth.isInRole(ctx.req.session.user, 'admin'))
             return null;
 
-        return file.delete(fields);
+        var result = file.delete(fields);
+
+        ctx.res.writeHead(200, { "Content-Type": "application/json" });
+        ctx.res.write(JSON.stringify({ d: result }, null, app.dbg ? '\t' : ''));
+        ctx.res.end();
     },
 
-    create: function (user, fields) {
-        if (!auth.isInRole(user, 'admin'))
+    create: function (ctx, fields) {
+        if (!auth.isInRole(ctx.req.session.user, 'admin'))
             return null;
 
-        return file.create(fields);
+        var result = file.create(fields);
+
+        ctx.res.writeHead(200, { "Content-Type": "application/json" });
+        ctx.res.write(JSON.stringify({ d: result }, null, app.dbg ? '\t' : ''));
+        ctx.res.end();
     },
 
-    move: function (user, fields) {
-        if (!auth.isInRole(user, 'admin'))
+    move: function (ctx, fields) {
+        if (!auth.isInRole(ctx.req.session.user, 'admin'))
             return null;
 
-        return file.move(fields);
+        var result = file.move(fields);
+
+        ctx.res.writeHead(200, { "Content-Type": "application/json" });
+        ctx.res.write(JSON.stringify({ d: result }, null, app.dbg ? '\t' : ''));
+        ctx.res.end();
     }
 
 };

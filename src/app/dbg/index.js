@@ -1,7 +1,9 @@
-﻿module.exports = {
+﻿var app = null;
 
-    init: function (appplication) {
-        // init here
+module.exports = {
+
+    init: function (application) {
+        app = application;
     },
 
     getConfig: function () {
@@ -19,6 +21,27 @@
 
     routeSearch: function (ctx) {
         ctx.error(500, 'not implemented');
+    },
+
+    routeApi: function (ctx, fields) {
+        if (ctx.uri.parts.length === 3) {
+            var domain = ctx.uri.parts[1];
+
+            try {
+                ctx.res.writeHead(200, { "Content-Type": "application/json" });
+                ctx.res.write(JSON.stringify({ d: fields }, null, app.dbg ? '\t' : ''));
+                ctx.res.end();
+            }
+            catch (err) {
+                ctx.res.writeHead(500, { "Content-Type": "application/text" });
+                ctx.res.write(err.toString());
+                ctx.res.end();
+            }
+        }
+        else {
+            ctx.res.writeHead(404, { "Content-Type": "application/json" });
+            ctx.res.end();
+        }
     },
 
     view: {
