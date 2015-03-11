@@ -1,0 +1,18 @@
+﻿<div class="row" id="page-content-file" data-scrollspy="File">
+    <ctrl-file class="col-md-12" ng-disabled="!node.active[language]" ng-model="node.content.contentFileId" ng-required="false" ng-label="File"></ctrl-file>
+</div>
+<div class="row" id="page-content-filerequired" data-scrollspy="File Required">
+    <ctrl-file class="col-md-12" ng-disabled="!node.active[language]" ng-model="node.content.contentNodeId2" ng-required="true" ng-label="File *"></ctrl-file>
+</div>      
+<div class="row" id="page-content-files" data-scrollspy="Files">
+    <ctrl-file-list class="col-md-12" ng-disabled="!node.active[language]" ng-model="node.content.contentFileIds" ng-required="false" ng-label="Files"></ctrl-file-list>
+</div>      
+<div class="row" id="page-content-filesrequired" data-scrollspy="Files required">
+    <ctrl-file-list class="col-md-12" ng-disabled="!node.active[language]" ng-model="node.content.contentFileIds2" ng-required="true" ng-label="Files *"></ctrl-file-list>
+</div>
+<div class="row" id="page-content-fileima" data-scrollspy="File image">
+    <ctrl-file class="col-md-12" ng-disabled="!node.active[language]" ng-model="node.content.contentFileId321" ng-extensions="['.png']" ng-required="false" ng-label="File image"></ctrl-file>
+</div>      
+<div class="row" id="page-content-filesimages" data-scrollspy="Files images">
+    <ctrl-file-list class="col-md-12" ng-disabled="!node.active[language]" ng-model="node.content.contentFileIds4" ng-extensions="['.jpg']" ng-required="false" ng-label="Files Images"></ctrl-file-list>
+</div>    

@@ -1,0 +1,7 @@
+﻿<div ng-class="{ invalid: enabled && !valid }">
+    <div class="form-group" ng-class="{ 'has-error': enabled && !valid, 'has-feedback': enabled && !valid }">
+        <label ng-show="ngLabel" class="control-label">{{ngLabel}}<small ng-show="ngTip">({{ngTip}})</small></label>
+        <textarea ui-tinymce class="form-control" ng-model="ngModel" ng-required="ngRequired" ng-change="changed()"></textarea>
+        <span ng-show="enabled && !valid" class="glyphicon glyphicon-remove form-control-feedback"></span>
+    </div>
+</div>

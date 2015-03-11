@@ -1,4 +1,5 @@
 var app = require('../app.js');
+var auth = require('../auth.js');
 var jsnbt = require('../jsnbt.js');
 
 module.exports = function () {
@@ -14,16 +15,21 @@ module.exports = function () {
                     ctx.error(405);
                 }
                 else {
-                    try {
-                        ctx.writeHead(200, { "Content-Type": "application/javascript" });
-
-                        var jsnbtValue = ctx.uri.first === 'jsnbt.js' ? jsnbt.getClientData('public') : jsnbt.getClientData('admin');
-                        ctx.write('var jsnbt = ' + JSON.stringify(jsnbtValue, null, app.dbg ? '\t' : ''));
-                        ctx.end();
+                    if (ctx.uri.path === '/admin/jsnbt.js' && !auth.isInRole(ctx.user, 'admin')) {
+                        ctx.error(403);
                     }
-                    catch (err) {
-                        app.logger.error(err);
-                        ctx.error(500, err);
+                    else {
+                        try {
+                            ctx.writeHead(200, { "Content-Type": "application/javascript" });
+
+                            var jsnbtValue = ctx.uri.first === 'jsnbt.js' ? jsnbt.getClientData('public') : jsnbt.getClientData('admin');
+                            ctx.write('var jsnbt = ' + JSON.stringify(jsnbtValue, null, app.dbg ? '\t' : ''));
+                            ctx.end();
+                        }
+                        catch (err) {
+                            app.logger.error(err);
+                            ctx.error(500, err);
+                        }
                     }
                 }
             }

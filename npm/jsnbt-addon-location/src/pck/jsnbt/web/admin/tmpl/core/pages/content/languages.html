@@ -1,0 +1,55 @@
+﻿<div class="container">
+
+    <section class="col-md-12">
+
+        <ctrl-breadcrumb ng-model="current.breadcrumb" ng-title="you are here:"></ctrl-breadcrumb>    
+
+        <div class="row title-container">
+            <div class="col-md-12">
+                <span ng-click="back()" class="glyphicon glyphicon-arrow-left back-button"></span>
+                <h1 class="title">languages</h1>
+                <div class="buttons">
+                    <button title="create new" class="btn btn-default glyphicon glyphicon-plus-sign" type="button" value="create" ng-click="create()" ng-disabled="available.length === 0"></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <ctrl-grid class="table-striped" ng-model="data" ng-fn="gridFn">
+                    <ctrl-grid-header>
+                        <ctrl-grid-header-column>code</ctrl-grid-header-column>
+                        <ctrl-grid-header-column>name</ctrl-grid-header-column>
+                        <ctrl-grid-header-column>active</ctrl-grid-header-column>
+                        <ctrl-grid-header-column>default</ctrl-grid-header-column>
+                        <ctrl-grid-header-column></ctrl-grid-header-column>
+                    </ctrl-grid-header>
+                    <ctrl-grid-footer>
+                        <ctrl-grid-infinite-scroll></ctrl-grid-infinite-scroll>
+                        <ctrl-grid-empty>no languages</ctrl-grid-empty>
+                    </ctrl-grid-footer>
+                    <ctrl-grid-body>
+                        <ctrl-grid-column>
+                            {{ row.code }}
+                        </ctrl-grid-column>
+                        <ctrl-grid-column>
+                            {{ row.name }}
+                        </ctrl-grid-column>
+                        <ctrl-grid-column>
+                            <input type="checkbox" ng-disabled="true" ng-checked="row.active" />
+                        </ctrl-grid-column>
+                        <ctrl-grid-column>
+                            <input type="checkbox" ng-disabled="row.default || !row.active" ng-checked="row.default" ng-click="fn.setDefault(row)" />
+                        </ctrl-grid-column>
+                        <ctrl-grid-buttons-column>
+                            <button class="btn btn-default glyphicon glyphicon-edit btn-sm" ng-click="fn.edit(row)" />
+                            <button class="btn btn-default glyphicon glyphicon-remove btn-sm" ng-disabled="row.default" ng-click="fn.delete(row)" />
+                        </ctrl-grid-buttons-column>
+                    </ctrl-grid-body>
+                </ctrl-grid>
+            </div>
+        </div>
+
+    </section>
+
+</div>

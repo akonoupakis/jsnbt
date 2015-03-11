@@ -163,6 +163,19 @@ module.exports = function (grunt) {
                             }
                         }
                     }
+
+                    var packIndexDbgPath = server.getPath('src/app/dbg/index.js');
+                    if (fs.existsSync(packIndexDbgPath)) {
+                        var packDbgObject = require(packIndexDbgPath);
+                        if (packDbgObject) {
+                            var packDbgConfig = typeof (packDbgObject.getConfig) === 'function' ? packDbgObject.getConfig() : {};
+                            if (_.isArray(packDbgConfig.templates)) {
+                                _.each(packDbgConfig.templates, function (packDbgTemplate) {
+                                    addFile('src/web/public/' + _.str.ltrim(packDbgTemplate.html, '/'));
+                                });
+                            }
+                        }
+                    }
                 }
             }
         }
