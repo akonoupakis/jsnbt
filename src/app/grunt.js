@@ -435,12 +435,30 @@ module.exports = function (grunt) {
 
         bowerConfigs.push(require(server.getPath('bower.json')));
 
+        var packageNames = [];
+
         var installedPackages = pack.npm.getInstalled();
         _.each(installedPackages, function (installedPackage) {
-            if (fs.existsSync(server.getPath('node_modules/' + installedPackage + '/bower.json'))) {
-                bowerConfigs.push(require(server.getPath('node_modules/' + installedPackage + '/bower.json')));
+            if (packageNames.indexOf(installedPackage) === -1) {
+                if (fs.existsSync(server.getPath('node_modules/' + installedPackage + '/bower.json'))) {
+                    bowerConfigs.push(require(server.getPath('node_modules/' + installedPackage + '/bower.json')));
+                }
+                packageNames.push(installedPackage);
             }
         });
+
+        if (fs.existsSync(server.getPath('src/pck'))) {
+            var npmPackages = fs.readdirSync(server.getPath('src/pck'));
+            _.each(npmPackages, function (packageItem) {
+                if (packageNames.indexOf(packageItem) === -1) {
+                    if (fs.lstatSync(server.getPath('src/pck/' + packageItem)).isDirectory()) {
+                        if (fs.existsSync(server.getPath('src/pck/' + packageItem + '/bower.json'))) {
+                            bowerConfigs.push(require(server.getPath('src/pck/' + packageItem + '/bower.json')));
+                        }
+                    }
+                }
+            });
+        }
 
         _.each(bowerConfigs, function (bowerConfig) {
             if (bowerConfig.dependencies) {
