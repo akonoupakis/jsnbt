@@ -146,6 +146,9 @@ module.exports = function (req, res) {
             if (html === undefined)
                 html = true;
 
+            if (this.uri.first === 'jsnbt-api')
+                html = false;
+
             if (html) {
                 errorRenderer.render(this, code, stack);
             }
