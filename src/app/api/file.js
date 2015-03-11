@@ -4,32 +4,55 @@ var file = require('../file.js');
 
 module.exports = {
     
-    get: function (user, fields) {
-        if (!auth.isInRole(user, 'admin'))
+    get: function (ctx, fields) {
+        if (!auth.isInRole(ctx.user, 'admin'))
             return null;
 
-        return file.get(fields);
+        try {
+            var result = file.get(fields);
+            ctx.json(result);
+        }
+        catch (ex) {
+            ctx.error(500, ex, false);
+        }
     },
 
-    delete: function (user, fields) {
-        if (!auth.isInRole(user, 'admin'))
+    delete: function (ctx, fields) {
+        if (!auth.isInRole(ctx.user, 'admin'))
             return null;
 
-        return file.delete(fields);
+        try {
+            var result = file.delete(fields);
+            ctx.json(result);
+        }
+        catch (ex) {
+            ctx.error(500, ex, false);
+        }
     },
 
-    create: function (user, fields) {
-        if (!auth.isInRole(user, 'admin'))
+    create: function (ctx, fields) {
+        if (!auth.isInRole(ctx.user, 'admin'))
             return null;
 
-        return file.create(fields);
+        try {
+            var result = file.create(fields);
+            ctx.json(result);
+        }
+        catch (ex) {
+            ctx.error(500, ex, false);
+        }
     },
 
-    move: function (user, fields) {
-        if (!auth.isInRole(user, 'admin'))
+    move: function (ctx, fields) {
+        if (!auth.isInRole(ctx.user, 'admin'))
             return null;
 
-        return file.move(fields);
+        try {
+            var result = file.move(fields);
+        }
+        catch (ex) {
+            ctx.error(500, ex, false);
+        }
     }
 
 };

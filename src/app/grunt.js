@@ -1,4 +1,4 @@
-var fs = require('./utils/fs.js');
+var fs = require('./util/fs.js');
 var pack = require('./package.js');
 var path = require('path');
 var bower = require('bower');
@@ -163,6 +163,19 @@ module.exports = function (grunt) {
                             }
                         }
                     }
+
+                    var packIndexDbgPath = server.getPath('src/app/dbg/index.js');
+                    if (fs.existsSync(packIndexDbgPath)) {
+                        var packDbgObject = require(packIndexDbgPath);
+                        if (packDbgObject) {
+                            var packDbgConfig = typeof (packDbgObject.getConfig) === 'function' ? packDbgObject.getConfig() : {};
+                            if (_.isArray(packDbgConfig.templates)) {
+                                _.each(packDbgConfig.templates, function (packDbgTemplate) {
+                                    addFile('src/web/public/' + _.str.ltrim(packDbgTemplate.html, '/'));
+                                });
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -310,10 +323,10 @@ module.exports = function (grunt) {
 
     grunt.registerMultiTask('mod', 'Install & pack modules', function () {
         var runFn = function (mod) {
-            if (fs.existsSync(server.getPath(mod))) {
+            if (fs.existsSync(server.getPath(mod))) {                
                 var found = fs.readdirSync(server.getPath(mod));
                 _.each(found, function (f) {
-                    pack[mod].install(f, false);
+                    pack[mod].install(f, true);
                 });
             }
         };

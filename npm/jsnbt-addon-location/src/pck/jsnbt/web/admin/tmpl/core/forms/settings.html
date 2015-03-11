@@ -1,0 +1,9 @@
+﻿<div class="row" id="settings-homepage" data-scrollspy="home page">
+    <ctrl-node class="col-md-12" ng-model="settings.homepage" ng-domain="'core'" ng-required="true" ng-options="{entities: ['page']}" ng-label="home page"></ctrl-node>
+</div>
+
+<hr ng-show="application.restricted" />
+
+<div class="row" id="settings-auth" data-scrollspy="login page" ng-show="application.restricted">
+    <ctrl-node class="col-md-12" ng-model="settings.loginpage" ng-domain="'core'" ng-required="true" ng-options="{entities: ['page']}" ng-label="login page" ng-disabled="!application.restricted"></ctrl-node>
+</div>

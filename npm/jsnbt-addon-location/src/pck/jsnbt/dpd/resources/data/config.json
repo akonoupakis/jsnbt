@@ -1,0 +1,61 @@
+{
+	"type": "Collection",
+	"properties": {
+		"domain": {
+			"name": "domain",
+			"type": "string",
+			"typeLabel": "string",
+			"required": true,
+			"id": "domain",
+			"order": 0
+		},
+		"list": {
+			"name": "list",
+			"type": "string",
+			"typeLabel": "string",
+			"required": true,
+			"id": "list",
+			"order": 1
+		},
+		"name": {
+			"name": "name",
+			"type": "string",
+			"typeLabel": "string",
+			"required": true,
+			"id": "name",
+			"order": 2
+		},
+		"content": {
+			"name": "content",
+			"type": "object",
+			"typeLabel": "object",
+			"required": true,
+			"id": "content",
+			"order": 3
+		},
+		"createdOn": {
+			"name": "createdOn",
+			"type": "number",
+			"typeLabel": "number",
+			"required": true,
+			"id": "createdOn",
+			"order": 4
+		},
+		"modifiedOn": {
+			"name": "modifiedOn",
+			"type": "number",
+			"typeLabel": "number",
+			"required": true,
+			"id": "modifiedOn",
+			"order": 5
+		},
+		"published": {
+			"name": "published",
+			"type": "boolean",
+			"typeLabel": "boolean",
+			"required": false,
+			"id": "published",
+			"order": 6
+		}
+	}
+}

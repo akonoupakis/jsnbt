@@ -1,0 +1,12 @@
+﻿<div class="fs-edit">
+    <ctrl-text class="file-editor-name" ng-model="ngModel" ng-required="true" ng-label="name" ng-auto-focus="true"></ctrl-text>
+
+    <div class="file-editor-path">
+        <label>path</label>
+        <ctrl-tree ng-model="nodes" ng-selectable="true" ng-select-mode="'single'">
+            <ctrl-tree-node>
+                <ctrl-tree-node-content>{{ node.name }}</ctrl-tree-node-content>
+            </ctrl-tree-node>
+        </ctrl-tree>
+    </div>
+</div>

@@ -1,0 +1,32 @@
+﻿<div class="container-fluid file-upload" flow-prevent-drop>
+
+    <div class="row" flow-init="{target: '/jsnbt-upload?path=' + path}" flow-files-submitted="$flow.upload()" flow-drag-enter="dropClass='drag-over'" flow-drag-leave="dropClass=''">
+
+        <div class="drop" flow-drop ng-class="dropClass">
+            drag and drop any files here
+        </div>
+
+        <div class="contents">
+            <div ng-repeat="file in $flow.files" class="transfer-box">                
+                <div class="row">
+                    <div class="col-md-11">
+                        <div class="progress progress-striped" ng-class="{active: file.isUploading()}">
+                            <div class="progress-bar" role="progressbar"
+                                 aria-valuenow="{{file.progress() * 100}}"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100"
+                                 ng-style="{width: (file.progress() * 100) + '%'}">{{file.relativePath}} ({{file.size}} bytes)
+                                <span class="sr-only">{{file.progress()}}% Complete</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <button title="Delete" class="btn btn-default btn-sm glyphicon glyphicon-remove" ng-click="file.cancel()"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

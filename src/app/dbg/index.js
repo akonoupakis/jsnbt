@@ -1,7 +1,9 @@
-﻿module.exports = {
+﻿var app = null;
 
-    init: function (appplication) {
-        // init here
+module.exports = {
+
+    init: function (application) {
+        app = application;
     },
 
     getConfig: function () {
@@ -17,18 +19,44 @@
             next();
     },
 
-    routeSearch: function (ctx) {
-        ctx.error(500, 'not implemented');
+    routeSearch: function (ctx, next) {
+
+        var notimp = true;
+
+        if (notimp) {
+            ctx.error(500, 'not implemented');
+        }
+        else {
+            next();
+        }
+
+    },
+
+    routeApi: function (ctx, serviceName, fnName, fields, files, next) {
+
+        var service = null;
+        try {
+            service = require('./api/' + serviceName + '.js');
+        }
+        catch (e) { }
+
+        if (service && typeof (service[fnName]) === 'function') {
+            service[fnName](ctx, fields);
+        }
+        else {
+            next();
+        }
+
     },
 
     view: {
 
-        prerender: function (ctx) {
-            // change here the ctx.model and the ctx.tmpl before rendering
+        preparse: function (ctx, preparsingContext) {
+            // change here the preparsingContext.model and the preparsingContext.tmpl before rendering
         },
 
-        render: function (ctx) {
-            // change here the ctx.html upon render
+        postparse: function (ctx, postparsingContext) {
+            // change here the postparsingContext.html upon render
         }
 
     }

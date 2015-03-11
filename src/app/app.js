@@ -1,7 +1,7 @@
 var deployd = require('deployd');
 var jsnbt = require('./jsnbt.js');
 var pack = require('./package.js');
-var fs = require('./utils/fs.js');
+var fs = require('./util/fs.js');
 var path = require('path');
 var moment = require('moment');
 

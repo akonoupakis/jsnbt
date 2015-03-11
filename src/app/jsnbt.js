@@ -1,14 +1,17 @@
 var app = require('./app.js');
 var path = require('path');
 var server = require('server-root');
-var fs = require('./utils/fs.js');
+var fs = require('./util/fs.js');
 var extend = require('extend');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
 
 var getVersion = function () {
-    var versionInfo = fs.existsSync(server.getPath('node_modules/jsnbt/package.json')) ? require(server.getPath('node_modules/jsnbt/package.json')) : require(server.getPath('package.json'));
+    var versionInfo = fs.existsSync(server.getPath('node_modules/jsnbt/package.json')) ?
+        require(server.getPath('node_modules/jsnbt/package.json')) :
+        require(server.getPath('package.json'));
+
     return versionInfo.version;
 };
 
@@ -48,7 +51,12 @@ module.exports = {
 
     lists: [],
 
-    injects: {},
+    injects: {
+        navigation: [],
+        dashboard: undefined,
+        content: undefined,
+        settings: undefined
+    },
 
     layouts: [],
 
@@ -63,10 +71,6 @@ module.exports = {
         var self = this;
 
         var moduleConfig = typeof (module.getConfig) === 'function' ? module.getConfig() : {};
-        this.setConfig(name, moduleConfig);
-
-        moduleConfig.name = name;
-        this.modules.push(moduleConfig);
 
         var clone = function (obj) {
             var resultObj = {};
@@ -74,26 +78,39 @@ module.exports = {
             return resultObj
         }
 
-        if (moduleConfig.jsModule) {
-            if (_.isString(moduleConfig.jsModule)) {
-                if (self.jsModules.indexOf(moduleConfig.jsModule) === -1)
-                    self.jsModules.push(moduleConfig.jsModule);
-            }
-            else if (_.isArray(moduleConfig.jsModule)) {
-                _.each(moduleConfig.jsModule, function (mod2) {
-                    if (self.jsModules.indexOf(mod2) === -1)
-                        self.jsModules.push(mod2);
+        var applyArray = function (configName, matchName) {
+            if (_.isArray(moduleConfig[configName])) {
+                _.each(moduleConfig[configName], function (moduleItem) {
+                    var matchedItem = _.first(_.filter(self[configName], function (x) { return x[matchName] === moduleItem[matchName]; }));
+                    if (matchedItem) {
+                        extend(true, matchedItem, moduleItem);
+                    }
+                    else {
+                        self[configName] = self[configName] || [];
+                        self[configName].push(clone(moduleItem));
+                    }
                 });
             }
-        }
+        };
 
-        if (_.isArray(moduleConfig.scripts)) {
-            _.each(moduleConfig.scripts, function (moduleScript) {
-                if (self.scripts.indexOf(moduleScript) === -1)
-                    self.scripts.push(moduleScript);
-            });
-        }
+        var applyTextArray = function (configName) {
+            if (_.isArray(moduleConfig[configName])) {
+                _.each(moduleConfig[configName], function (moduleItem) {
+                    self[configName] = self[configName] || [];
+                    if (self[configName].indexOf(moduleItem) === -1)
+                        self[configName].push(moduleItem);
+                });
+            }
+        };
 
+        var applyObject = function (configName) {
+            if (_.isObject(moduleConfig[configName])) {
+                var newObj = {};
+                extend(true, newObj, moduleConfig[configName]);
+                self[configName] = newObj;
+            }
+        };
+        
         var entityDefaults = {
             name: '',
             allowed: [],
@@ -113,6 +130,24 @@ module.exports = {
             }
         };
 
+       
+
+
+        if (moduleConfig.jsModule) {
+            if (_.isString(moduleConfig.jsModule)) {
+                if (self.jsModules.indexOf(moduleConfig.jsModule) === -1)
+                    self.jsModules.push(moduleConfig.jsModule);
+            }
+            else if (_.isArray(moduleConfig.jsModule)) {
+                _.each(moduleConfig.jsModule, function (mod2) {
+                    if (self.jsModules.indexOf(mod2) === -1)
+                        self.jsModules.push(mod2);
+                });
+            }
+        }
+
+        applyTextArray('scripts');
+
         if (_.isArray(moduleConfig.entities)) {
             _.each(moduleConfig.entities, function (moduleEntity) {
                 var matchedEntity = _.first(_.filter(self.entities, function (x) { return x.name === moduleEntity.name; }));
@@ -127,60 +162,15 @@ module.exports = {
             });
         }
 
-        if (_.isArray(moduleConfig.roles)) {
-            _.each(moduleConfig.roles, function (moduleRole) {
-                var matchedRole = _.first(_.filter(self.roles, function (x) { return x.name === moduleRole.name; }));
-                if (matchedRole) {
-                    extend(true, matchedRole, moduleRole);
-                }
-                else {
-                    self.roles.push(clone(moduleRole));
-                }
-            });
-        }
+        applyArray('roles', 'name');
 
-        if (_.isArray(moduleConfig.sections)) {
-            _.each(moduleConfig.sections, function (moduleSection) {
-                var matchedSection = _.first(_.filter(self.sections, function (x) { return x.name === moduleSection.name; }));
-                if (matchedSection) {
-                    extend(true, matchedSection, moduleSection);
-                }
-                else {
-                    self.sections.push(clone(moduleSection));
-                }
-            });
-        }
+        applyArray('sections', 'name');
 
-        if (_.isArray(moduleConfig.permissions)) {
-            _.each(moduleConfig.permissions, function (modulePermission) {
-                var matchedPermission = _.first(_.filter(self.permissions, function (x) { return x.collection === modulePermission.collection; }));
-                if (matchedPermission) {
-                    extend(true, matchedPermission, modulePermission);
-                }
-                else {
-                    self.permissions.push(clone(modulePermission));
-                }
-            });
-        }
+        applyArray('permissions', 'collection');
 
-        if (_.isArray(moduleConfig.images)) {
-            _.each(moduleConfig.images, function (moduleImage) {
-                var matchedImage = _.first(_.filter(self.images, function (x) { return x.name === moduleImage.name; }));
-                if (matchedImage) {
-                    extend(true, matchedImage, moduleImage);
-                }
-                else {
-                    self.images.push(clone(moduleImage));
-                }
-            });
-        }
+        applyArray('images', 'name');
 
-        if (_.isArray(moduleConfig.fileGroups)) {
-            _.each(moduleConfig.fileGroups, function (fileGroup) {
-                if (self.fileGroups.indexOf(fileGroup) === -1)
-                    self.fileGroups.push(fileGroup);
-            });
-        }
+        applyTextArray('fileGroups');
 
         if (_.isArray(moduleConfig.lists)) {
             _.each(moduleConfig.lists, function (moduleList) {
@@ -229,67 +219,21 @@ module.exports = {
                 self.restricted = moduleConfig.restricted;
             }
 
-            if (_.isArray(moduleConfig.templates)) {
-                _.each(moduleConfig.templates, function (moduleTemplate) {
-                    var matchedTemplate = _.first(_.filter(self.templates, function (x) { return x.id === moduleTemplate.id; }));
-                    if (matchedTemplate) {
-                        extend(true, matchedTemplate, moduleTemplate);
-                    }
-                    else {
-                        self.templates.push(clone(moduleTemplate));
-                    }
-                });
-            }
+            applyArray('templates', 'id');
 
-            if (_.isObject(moduleConfig.injects)) {
-                var injects = {};
+            applyObject('injects');
 
-                extend(true, injects, {
-                    navigation: [],
-                    dashboard: undefined,
-                    content: undefined,
-                    settings: undefined
-                }, moduleConfig.injects);
+            applyArray('layouts', 'id');
 
-                self.injects = injects;
-            }
+            applyArray('containers', 'id');
 
-            if (_.isArray(moduleConfig.layouts)) {
-                _.each(moduleConfig.layouts, function (moduleLayout) {
-                    var matchedLayout = _.first(_.filter(self.layouts, function (x) { return x.id === moduleLayout.id; }));
-                    if (matchedLayout) {
-                        extend(true, matchedLayout, moduleLayout);
-                    }
-                    else {
-                        self.layouts.push(clone(moduleLayout));
-                    }
-                });
-            }
-
-            if (_.isArray(moduleConfig.containers)) {
-                _.each(moduleConfig.containers, function (moduleContainer) {
-                    var matchedContainer = _.first(_.filter(self.containers, function (x) { return x.id === moduleContainer.id; }));
-                    if (matchedContainer) {
-                        extend(true, matchedContainer, moduleContainer);
-                    }
-                    else {
-                        self.containers.push(clone(moduleContainer));
-                    }
-                });
-            }
-
-            if (_.isArray(moduleConfig.routes)) {
-                _.each(moduleConfig.routes, function (moduleRoute) {
-                    var matchedRoute = _.first(_.filter(self.routes, function (x) { return x.id === moduleRoute.id; }));
-                    if (matchedRoute) {
-                        extend(true, matchedRoute, moduleRoute);
-                    }
-                    else {
-                        self.routes.push(clone(moduleRoute));
-                    }
-                });
-            }
+            applyArray('routes', 'id');
         }
+
+        this.setConfig(name, moduleConfig);
+
+        moduleConfig.name = name;
+        this.modules.push(moduleConfig);
     },
 
     setConfig: function (name, config) {

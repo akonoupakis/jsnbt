@@ -1,0 +1,13 @@
+﻿<div ng-class="{ 'ng-required': ngRequired, invalid: !ngDisabled && !valid }">
+    <div class="form-group" ng-class="{ 'has-error': !ngDisabled && !valid, 'has-feedback': !ngDisabled && !valid }">
+        <label ng-show="ngLabel" class="control-label" for="data{{id}}">{{ngLabel}}<small ng-show="ngTip">({{ngTip}})</small></label>
+        <div class="input-group form-control-feedback-container">
+            <input type="text" class="form-control" id="data{{id}}" value="{{ wrong ? (missing ? '-- not found -- (' + value + ')' : '-- invalid value --') : value }}" disabled="disabled" />
+            <span ng-show="!ngDisabled && !valid" class="glyphicon glyphicon-remove form-control-feedback"></span>
+            <div class="input-group-btn">
+                <button class="btn btn-default glyphicon glyphicon-th" type="button" ng-click="select()" ng-disabled="ngDisabled"></button>
+                <button class="btn btn-default glyphicon glyphicon-remove" type="button" ng-show="!ngRequired" ng-click="clear()" ng-disabled="ngDisabled || !ngModel"></button>
+            </div>
+        </div>
+    </div>
+</div> 

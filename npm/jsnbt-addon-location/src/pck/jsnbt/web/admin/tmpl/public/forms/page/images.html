@@ -1,0 +1,12 @@
+﻿<div class="row" id="page-content-image" data-scrollspy="image">
+    <ctrl-image class="col-md-12" ng-disabled="!node.active[language]" ng-height="250" ng-width="550" ng-tip="550x250" ng-model="node.content.contentImageId" ng-extensions="['.png', '.jpg', 'jpeg']" ng-required="false" ng-label="image"></ctrl-image>
+</div>
+<div class="row" id="page-content-imagerequired" data-scrollspy="image required">
+    <ctrl-image class="col-md-12" ng-disabled="!node.active[language]" ng-height="250" ng-width="550" ng-tip="550x250" ng-model="node.content.contentImageId2" ng-extensions="['.png', '.jpg', 'jpeg']" ng-required="true" ng-label="image *"></ctrl-image>
+</div>
+<div class="row" id="page-content-images" data-scrollspy="images">
+    <ctrl-image-list class="col-md-12" ng-disabled="!node.active[language]" ng-height="200" ng-width="500" ng-tip="500x200" ng-model="node.content.contentImageIds" ng-extensions="['.png', '.jpg', 'jpeg']" ng-required="false" ng-label="images"></ctrl-image-list>
+</div>
+<div class="row" id="page-content-imagesrequired" data-scrollspy="images required">
+    <ctrl-image-list class="col-md-12" ng-disabled="!node.active[language]" ng-height="200" ng-width="500" ng-tip="500x200" ng-model="node.content.contentImageIds2" ng-extensions="['.png', '.jpg', 'jpeg']" ng-required="true" ng-label="images *"></ctrl-image-list>
+</div>
