@@ -1,4 +1,5 @@
 var fs = require('./util/fs.js');
+var jsnbt = require('./jsnbt.js');
 var pack = require('./package.js');
 var path = require('path');
 var bower = require('bower');
@@ -9,6 +10,85 @@ var _ = require('underscore');
 _.str = require('underscore.string');
 
 module.exports = function (grunt) {
+
+    var self = this;
+
+    this.modules = [];
+    
+    var registerJsnbtConfig = function (indexPath) {
+        if (fs.existsSync(indexPath)) {
+            var packObject = require(indexPath);
+            if (packObject) {
+                var moduleConfig = typeof (packObject.getConfig) === 'function' ? packObject.getConfig() : {};
+
+                if (moduleConfig.domain)
+                    jsnbt.register(moduleConfig.domain, packObject);
+
+                packObject.domain = moduleConfig.domain;
+                packObject.public = moduleConfig.public;
+
+                self.modules.push(packObject);
+            }
+        }
+    }
+
+    var packInfoPath = server.getPath('package.json');
+    if (fs.existsSync(packInfoPath)) {
+        var packInfo = require(packInfoPath);
+        if (packInfo.main) {
+            registerJsnbtConfig(server.getPath(packInfo.main))
+        }
+    }
+
+    registerJsnbtConfig(server.getPath('src/app/dbg/index.js'));
+
+    this.moduleNames = [];
+
+    if (fs.existsSync(server.getPath('src/pck'))) {
+        var packages = fs.readdirSync(server.getPath('src/pck'));
+        _.each(packages, function (packageItem) {
+            
+            if (self.moduleNames.indexOf(packageItem) === -1) {
+                if (fs.lstatSync(server.getPath('src/pck/' + packageItem)).isDirectory()) {
+                    var nodeModulePackagePath = server.getPath('src/pck/' + packageItem + '/package.json');
+                    if (fs.existsSync(nodeModulePackagePath)) {
+                        var nodeModulePackage = require(nodeModulePackagePath);
+
+                        if (nodeModulePackage.main) {
+                            var nodeModuleIndexPath = server.getPath('src/pack/' + packageItem + '/' + nodeModulePackage.main);
+                            registerJsnbtConfig(nodeModuleIndexPath);
+                        }
+                    }
+                }
+
+                self.moduleNames.push(packageItem);
+            }
+        });
+    }
+
+    if (fs.existsSync(server.getPath('node_modules'))) {
+        var packages = fs.readdirSync(server.getPath('node_modules'));
+        _.each(packages, function (packageItem) {
+
+            if (_.str.startsWith(packageItem, 'jsnbt')) {
+                if (self.moduleNames.indexOf(packageItem) === -1) {
+                    if (fs.lstatSync(server.getPath('node_modules/' + packageItem)).isDirectory()) {
+                        var nodeModulePackagePath = server.getPath('node_modules/' + packageItem + '/package.json');
+                        if (fs.existsSync(nodeModulePackagePath)) {
+                            var nodeModulePackage = require(nodeModulePackagePath);
+
+                            if (nodeModulePackage.main) {
+                                var nodeModuleIndexPath = server.getPath('node_modules/' + packageItem + '/' + nodeModulePackage.main);
+                                registerJsnbtConfig(nodeModuleIndexPath);
+                            }
+                        }
+                    }
+
+                    self.moduleNames.push(packageItem);
+                }
+            }
+        });
+    }
 
     var getFilesToClean = function (folder) {
         var results = [];
@@ -33,67 +113,11 @@ module.exports = function (grunt) {
 
         return results;
     };
-
-    var getFileGroups = function (folder)
-    {
-        var results = [];
-        
-        var packInfoPath = server.getPath('package.json');
-        if (fs.existsSync(packInfoPath)) {
-            var packInfo = require(packInfoPath);
-            if (packInfo.main) {
-                var packIndexPath = server.getPath(packInfo.main);
-                if (fs.existsSync(packIndexPath)) {
-                    var packObject = require(packIndexPath);
-                    if (packObject) {
-                        var packConfig = typeof (packObject.getConfig) === 'function' ? packObject.getConfig() : {};
-                        if (_.isArray(packConfig.fileGroups)) {
-                            _.each(packConfig.fileGroups, function (fileGroup) {
-                                results.push(fileGroup);
-                            });
-                        }
-                    }
-                }
-            }
-        }
-
-        if (fs.existsSync(server.getPath('src/pck'))) {
-            var packages = fs.readdirSync(server.getPath('src/pck'));
-            _.each(packages, function (packageItem) {
-                
-                var nodeModulePackagePath = server.getPath('node_modules/' + packageItem + '/package.json');
-                if (fs.existsSync(nodeModulePackagePath)) {
-                    var nodeModulePackage = require(nodeModulePackagePath);
-
-                    if (nodeModulePackage.main) {
-                        var nodeModuleIndexPath = server.getPath('node_modules/' + packageItem + '/' + nodeModulePackage.main);
-                        if (fs.existsSync(nodeModuleIndexPath)) {
-                            var nodeModulePackObject = require(nodeModuleIndexPath);
-
-                            if (nodeModulePackObject) {
-                                var nodeModulePackConfig = typeof (nodeModulePackObject.getConfig) === 'function' ? nodeModulePackObject.getConfig() : {};
-                                if (_.isArray(nodeModulePackConfig.fileGroups)) {
-                                    _.each(nodeModulePackConfig.fileGroups, function (fileGroup) {
-                                        results.push(fileGroup);
-                                    });
-                                }
-                            }
-                        }
-                    }
-                }
-
-            });
-        }
-
-        return results;
-    };
-
+    
     var getFilesToCopy = function (folder) {
-
-        var fileGroups = getFileGroups(folder);
-
+        
         var publicCopyfiles = ['img/**', 'js/**', 'font/**', 'css/**', 'tmpl/**', 'error/**', 'tmp/', 'files/'];
-        _.each(fileGroups, function (fileGroup) {
+        _.each(jsnbt.fileGroups, function (fileGroup) {
             publicCopyfiles.push('files/' + fileGroup + '/');
         });
 
@@ -147,77 +171,81 @@ module.exports = function (grunt) {
         if (site === undefined || site === 'public') {
             addPath('src/web/public/error');
 
-            var packInfoPath = server.getPath('package.json');
-            if (fs.existsSync(packInfoPath)) {
-                var packInfo = require(packInfoPath);
-                if (packInfo.main) {
-                    var packIndexPath = server.getPath(packInfo.main);
-                    if (fs.existsSync(packIndexPath)) {
-                        var packObject = require(packIndexPath);
-                        if (packObject) {
-                            var packConfig = typeof (packObject.getConfig) === 'function' ? packObject.getConfig() : {};
-                            if (_.isArray(packConfig.templates)) {
-                                _.each(packConfig.templates, function (packTemplate) {
-                                    addFile('src/web/public/' + _.str.ltrim(packTemplate.html, '/'));
-                                });
-                            }
-                        }
-                    }
-
-                    var packIndexDbgPath = server.getPath('src/app/dbg/index.js');
-                    if (fs.existsSync(packIndexDbgPath)) {
-                        var packDbgObject = require(packIndexDbgPath);
-                        if (packDbgObject) {
-                            var packDbgConfig = typeof (packDbgObject.getConfig) === 'function' ? packDbgObject.getConfig() : {};
-                            if (_.isArray(packDbgConfig.templates)) {
-                                _.each(packDbgConfig.templates, function (packDbgTemplate) {
-                                    addFile('src/web/public/' + _.str.ltrim(packDbgTemplate.html, '/'));
-                                });
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        if (fs.existsSync(server.getPath('src/pck'))) {
-            var packages = fs.readdirSync(server.getPath('src/pck'));
-            _.each(packages, function (packageItem) {
-
-                if (fs.lstatSync(server.getPath('src/pck/' + packageItem)).isDirectory()) {
-                    if (site === undefined || site === 'admin') {
-                        addPath('src/pck/' + packageItem + '/web/admin/error');
-                        addFile('src/pck/' + packageItem + '/web/admin/index.html');
-                    }
-
-                    if (site === undefined || site === 'public') {
-                        addPath('src/pck/' + packageItem + '/web/public/error');
-
-                        var nodeModulePackagePath = server.getPath('node_modules/' + packageItem + '/package.json');
-                        if (fs.existsSync(nodeModulePackagePath)) {
-                            var nodeModulePackage = require(nodeModulePackagePath);
-
-                            if (nodeModulePackage.main) {
-                                var nodeModuleIndexPath = server.getPath('node_modules/' + packageItem + '/' + nodeModulePackage.main);
-                                if (fs.existsSync(nodeModuleIndexPath)) {
-                                    var nodeModulePackObject = require(nodeModuleIndexPath);
-
-                                    if (nodeModulePackObject) {
-                                        var nodeModulePackConfig = typeof (nodeModulePackObject.getConfig) === 'function' ? nodeModulePackObject.getConfig() : {};
-                                        if (_.isArray(nodeModulePackConfig.templates)) {
-                                            _.each(nodeModulePackConfig.templates, function (packTemplate) {
-                                                addFile('src/pck/' + packageItem + '/web/public/' + _.str.ltrim(packTemplate.html, '/'));
-                                            });
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
+            _.each(jsnbt.templates, function (tmpl) {
+                addFile('src/web/public/' + _.str.ltrim(tmpl.html, '/'));
             });
+            
+            //var packInfoPath = server.getPath('package.json');
+            //if (fs.existsSync(packInfoPath)) {
+            //    var packInfo = require(packInfoPath);
+            //    if (packInfo.main) {
+            //        var packIndexPath = server.getPath(packInfo.main);
+            //        if (fs.existsSync(packIndexPath)) {
+            //            var packObject = require(packIndexPath);
+            //            if (packObject) {
+            //                var packConfig = typeof (packObject.getConfig) === 'function' ? packObject.getConfig() : {};
+            //                if (_.isArray(packConfig.templates)) {
+            //                    _.each(packConfig.templates, function (packTemplate) {
+            //                        addFile('src/web/public/' + _.str.ltrim(packTemplate.html, '/'));
+            //                    });
+            //                }
+            //            }
+            //        }
+
+            //        var packIndexDbgPath = server.getPath('src/app/dbg/index.js');
+            //        if (fs.existsSync(packIndexDbgPath)) {
+            //            var packDbgObject = require(packIndexDbgPath);
+            //            if (packDbgObject) {
+            //                var packDbgConfig = typeof (packDbgObject.getConfig) === 'function' ? packDbgObject.getConfig() : {};
+            //                if (_.isArray(packDbgConfig.templates)) {
+            //                    _.each(packDbgConfig.templates, function (packDbgTemplate) {
+            //                        addFile('src/web/public/' + _.str.ltrim(packDbgTemplate.html, '/'));
+            //                    });
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
         }
+
+        //if (fs.existsSync(server.getPath('src/pck'))) {
+        //    var packages = fs.readdirSync(server.getPath('src/pck'));
+        //    _.each(packages, function (packageItem) {
+
+        //        if (fs.lstatSync(server.getPath('src/pck/' + packageItem)).isDirectory()) {
+        //            if (site === undefined || site === 'admin') {
+        //                addPath('src/pck/' + packageItem + '/web/admin/error');
+        //                addFile('src/pck/' + packageItem + '/web/admin/index.html');
+        //            }
+
+        //            if (site === undefined || site === 'public') {
+        //                addPath('src/pck/' + packageItem + '/web/public/error');
+
+        //                var nodeModulePackagePath = server.getPath('node_modules/' + packageItem + '/package.json');
+        //                if (fs.existsSync(nodeModulePackagePath)) {
+        //                    var nodeModulePackage = require(nodeModulePackagePath);
+
+        //                    if (nodeModulePackage.main) {
+        //                        var nodeModuleIndexPath = server.getPath('node_modules/' + packageItem + '/' + nodeModulePackage.main);
+        //                        if (fs.existsSync(nodeModuleIndexPath)) {
+        //                            var nodeModulePackObject = require(nodeModuleIndexPath);
+
+        //                            if (nodeModulePackObject) {
+        //                                var nodeModulePackConfig = typeof (nodeModulePackObject.getConfig) === 'function' ? nodeModulePackObject.getConfig() : {};
+        //                                if (_.isArray(nodeModulePackConfig.templates)) {
+        //                                    _.each(nodeModulePackConfig.templates, function (packTemplate) {
+        //                                        addFile('src/pck/' + packageItem + '/web/public/' + _.str.ltrim(packTemplate.html, '/'));
+        //                                    });
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+
+        //    });
+        //}
 
         var denormalize = function (text) {
             return text.replace(/\\/g, '/');
@@ -276,28 +304,42 @@ module.exports = function (grunt) {
         var adminLibPaths = [];
         var adminAppPaths = [];
 
-        adminLibPaths.push('./' + folder + '/public/admin/js/core/lib/*.js');
-        adminLibPaths.push('./' + folder + '/public/admin/js/core/lib/**/**.js');
-        
-        adminAppPaths.push('./' + folder + '/public/admin/js/core/app/*.js');
-        adminAppPaths.push('./' + folder + '/public/admin/js/core/app/**/**.js');
+        var appendJsFiles = function (domain) {
+            adminLibPaths.push('./' + folder + '/public/admin/js/' + domain + '/lib/*.js');
+            adminLibPaths.push('./' + folder + '/public/admin/js/' + domain + '/lib/**/**.js');
+            adminLibPaths.push('./' + folder + '/public/admin/js/' + domain + '/lib/**/**/**.js');
 
-        var packagesList = fs.readdirSync(server.getPath('node_modules'));
-        _.each(packagesList, function (packageName) {
-            if (_.str.startsWith(packageName, 'jsnbt-')) {
-                if (fs.existsSync(server.getPath('node_modules/' + packageName + '/package.json')))
-                {
-                    var modJson = require(server.getPath('node_modules/' + packageName + '/package.json'));
-                    if (modJson && modJson.domain && modJson.domain !== 'core') {
-                        adminLibPaths.push('./' + folder + '/public/admin/js/' + modJson.domain + '/lib/*.js');
-                        adminLibPaths.push('./' + folder + '/public/admin/js/' + modJson.domain + '/lib/**/**.js');
+            adminAppPaths.push('./' + folder + '/public/admin/js/' + domain + '/app/*.js');
+            adminAppPaths.push('./' + folder + '/public/admin/js/' + domain + '/app/**/**.js');
+            adminAppPaths.push('./' + folder + '/public/admin/js/' + domain + '/app/**/**/**.js');
+        }
 
-                        adminAppPaths.push('./' + folder + '/public/admin/js/' + modJson.domain + '/app/*.js');
-                        adminAppPaths.push('./' + folder + '/public/admin/js/' + modJson.domain + '/app/**/**.js');
-                    }
-                }
+        appendJsFiles('core');
+
+        _.each(self.modules, function (module) {
+            if (module.domain !== 'core') {
+                appendJsFiles(module.domain);
             }
         });
+
+        //var packagesList = fs.readdirSync(server.getPath('node_modules'));
+        //_.each(packagesList, function (packageName) {
+        //    if (_.str.startsWith(packageName, 'jsnbt-')) {
+        //        if (fs.existsSync(server.getPath('node_modules/' + packageName + '/package.json')))
+        //        {
+        //            var modJson = require(server.getPath('node_modules/' + packageName + '/package.json'));
+        //            if (modJson && modJson.domain && modJson.domain !== 'core') {
+        //                adminLibPaths.push('./' + folder + '/public/admin/js/' + modJson.domain + '/lib/*.js');
+        //                adminLibPaths.push('./' + folder + '/public/admin/js/' + modJson.domain + '/lib/**/**.js');
+        //                adminLibPaths.push('./' + folder + '/public/admin/js/' + modJson.domain + '/lib/**/**/**.js');
+
+        //                adminAppPaths.push('./' + folder + '/public/admin/js/' + modJson.domain + '/app/*.js');
+        //                adminAppPaths.push('./' + folder + '/public/admin/js/' + modJson.domain + '/app/**/**.js');
+        //                adminAppPaths.push('./' + folder + '/public/admin/js/' + modJson.domain + '/app/**/**/**.js');
+        //            }
+        //        }
+        //    }
+        //});
 
         return [{
             src: adminLibPaths, 
@@ -310,10 +352,18 @@ module.exports = function (grunt) {
             dest: './' + folder + '/public/admin/js/init.min.js'
         },
 		{
-		    src: ['./' + folder + '/public/js/lib/*.js', './' + folder + '/public/js/lib/**/**.js'],
+		    src: [
+                './' + folder + '/public/js/lib/*.js',
+                './' + folder + '/public/js/lib/**/**.js',
+                './' + folder + '/public/js/lib/**/**/**.js'
+		    ],
 		    dest: './' + folder + '/public/js/lib.min.js'
 		}, {
-		    src: ['./' + folder + '/public/js/app/main.js', './' + folder + '/public/js/app/**/*.js'],
+		    src: [
+                './' + folder + '/public/js/app/main.js',
+                './' + folder + '/public/js/app/**/**.js',
+                './' + folder + '/public/js/app/**/**/**.js'
+		    ],
 		    dest: './' + folder + '/public/js/app.min.js'
 		}, {
 		    src: ['./' + folder + '/public/js/init.js'],
