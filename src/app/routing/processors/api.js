@@ -5,7 +5,7 @@ var _ = require('underscore');
 module.exports = function (domain) {
     
     var moduleRouter = _.first(_.filter(app.modules, function (x) {
-        return x.domain === domain
+        return x.domain.toLowerCase() === domain.toLowerCase()
             && x.routeApi && _.isFunction(x.routeApi);
     }));
 

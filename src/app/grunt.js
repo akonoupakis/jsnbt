@@ -310,10 +310,10 @@ module.exports = function (grunt) {
 
     grunt.registerMultiTask('mod', 'Install & pack modules', function () {
         var runFn = function (mod) {
-            if (fs.existsSync(server.getPath(mod))) {
+            if (fs.existsSync(server.getPath(mod))) {                
                 var found = fs.readdirSync(server.getPath(mod));
                 _.each(found, function (f) {
-                    pack[mod].install(f, false);
+                    pack[mod].install(f, true);
                 });
             }
         };

@@ -31,7 +31,7 @@ module.exports = function () {
         route: function (ctx, next) {
             if (ctx.uri.first === 'jsnbt-api' && ctx.uri.parts.length == 4) {
 
-                var domain = ctx.uri.parts[1];
+                var domain = ctx.uri.parts[1].toLowerCase();
                 var serviceName = ctx.uri.parts[2];
                 var fnName = ctx.uri.parts[3];
 

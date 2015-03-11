@@ -78,11 +78,6 @@ module.exports = function (req, res) {
     uri.first = uri.parts.length > 0 ? _.first(uri.parts).toLowerCase() : '';
     uri.last = uri.parts.length > 0 ? _.last(uri.parts).toLowerCase() : '';
 
-  //  req.cookies = new cookies(req, res);
-
- //   var session = req.session;
-    //var user = session ? session.user : null;
-
     req.cookies = new cookies(req, res);
 
     var ctx = {
