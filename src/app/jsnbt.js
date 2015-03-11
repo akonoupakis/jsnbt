@@ -1,7 +1,7 @@
 var app = require('./app.js');
 var path = require('path');
 var server = require('server-root');
-var fs = require('./utils/fs.js');
+var fs = require('./util/fs.js');
 var extend = require('extend');
 var _ = require('underscore');
 

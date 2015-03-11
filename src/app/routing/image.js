@@ -1,5 +1,5 @@
 var app = require('../app.js');
-var fs = require('../utils/fs.js');
+var fs = require('../util/fs.js');
 var jsnbt = require('../jsnbt.js');
 var server = require('server-root');
 var easyimg = require('easyimage');
@@ -14,16 +14,30 @@ _.str = require('underscore.string');
 module.exports = function () {
 
     return {
+        canRoute: function (ctx) {
+            var result = ctx.uri.first === 'files' && ctx.uri.query.type;
+
+            if (result) {
+                var imageType = _.first(_.filter(jsnbt.images, function (x) { return x.name === ctx.uri.query.type; }));
+                if (imageType || ctx.uri.query.type === 'custom') {
+                    var imageFileExtension = path.extname(ctx.uri.path).toLowerCase();
+                    if (['.png', '.jpg', 'jpeg', 'gif', 'tiff'].indexOf(imageFileExtension) === -1)
+                        result = false;
+                }
+            }
+
+            return result;
+        },
+
         route: function (ctx, next) {
             if (ctx.uri.first === 'files') {
-                if (ctx.req.method !== 'GET') {
+                if (ctx.method !== 'GET') {
                     ctx.error(405);
                 }
                 else if (!ctx.uri.query.type) {
                     ctx.error(400);
                 }
                 else {
-
                     var filePath = decodeURIComponent(ctx.uri.path);
                     
                     if (filePath.length > 4) {
@@ -91,9 +105,9 @@ var renderImage = function (ctx, src, gen) {
                             ctx.error(500, readErr);
                         }
                         else {
-                            ctx.res.writeHead(200, { 'Content-Type': 'image/' + image.type.toLowerCase() });
-                            ctx.res.write(img);
-                            ctx.res.end();
+                            ctx.writeHead(200, { 'Content-Type': 'image/' + image.type.toLowerCase() });
+                            ctx.write(img);
+                            ctx.end();
                         }
                     });
                 }, function (err) {
@@ -181,9 +195,9 @@ var renderImage = function (ctx, src, gen) {
                                 ctx.error(500, readErr);
                             }
                             else {
-                                ctx.res.writeHead(200, { 'Content-Type': 'image/' + ctxInternal.imageObj.type.toLowerCase() });
-                                ctx.res.write(img);
-                                ctx.res.end();
+                                ctx.writeHead(200, { 'Content-Type': 'image/' + ctxInternal.imageObj.type.toLowerCase() });
+                                ctx.write(img);
+                                ctx.end();
                             }
                         });
                     }

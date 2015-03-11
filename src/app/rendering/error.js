@@ -1,6 +1,6 @@
-var app = require('./app.js');
-var fs = require('./utils/fs.js');
-var html = require('./html.js');
+var app = require('../app.js');
+var fs = require('../util/fs.js');
+var tmplParser = require('../parsing/tmpl.js');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
@@ -51,12 +51,12 @@ exports.render = function (ctx, error, stack) {
         ctx.meta.title = app.title + (app.title ? ' | ' : '') + ctx.meta.title;
 
     ctx.halt = true;
-    errorContent = html.parse(ctx, errorContent, {
+    errorContent = tmplParser.parse(ctx, errorContent, {
         error: error,
         text: text,
         stack: stack || ''
     });
 
-    ctx.res.write(errorContent);
-    ctx.res.end();
+    ctx.write(errorContent);
+    ctx.end();
 };

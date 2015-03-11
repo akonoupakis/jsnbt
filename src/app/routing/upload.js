@@ -1,7 +1,7 @@
 var app = require('../app.js');
 var auth = require('../auth.js');
 var fs = require('fs');
-var error = require('../error.js');
+var error = require('../rendering/error.js');
 var jsnbt = require('../jsnbt.js');
 var _ = require('underscore');
 
@@ -14,17 +14,19 @@ var formidable = require('formidable'),
 module.exports = function () {
 
     return {
+        canRoute: function (ctx) {
+            return ctx.uri.first === 'jsnbt-upload';
+        },
+
         route: function (ctx, next) {
             if (ctx.uri.first === 'jsnbt-upload') {
 
                 var current = flow('public/tmp');
 
-                if (ctx.req.method === 'POST') {
+                if (ctx.method === 'POST') {
 
-                    if (!auth.isInRole(ctx.req.session.user, 'admin')) {
-                        ctx.res.writeHead(401, { "Content-Type": "application/text" });
-                        ctx.res.write(401);
-                        ctx.res.end();
+                    if (!auth.isInRole(ctx.user, 'admin')) {
+                        ctx.error(401, null, false);
                     }
                     else {
                         var internalPath = './public/files' + (ctx.uri.query.path || '/');
@@ -47,12 +49,12 @@ module.exports = function () {
                                                 s.close();
                                             }
                                         });
-                                        ctx.res.end();
+                                        ctx.end();
                                     }
                                 });
                             }
                             else {
-                                ctx.res.end();
+                                ctx.end();
                             }
 
                         });
@@ -60,8 +62,8 @@ module.exports = function () {
                 }
                 else {
                     current.get(ctx, ctx.req, function (status, filename, original_filename, identifier) {
-                        ctx.res.writeHead(status === 'found' ? 200 : 204, { "Content-Type": "application/text" });
-                        ctx.res.end();
+                        ctx.writeHead(status === 'found' ? 200 : 204, { "Content-Type": "application/text" });
+                        ctx.end();
                     });
                 }
             }

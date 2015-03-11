@@ -19,39 +19,44 @@ module.exports = {
             next();
     },
 
-    routeSearch: function (ctx) {
-        ctx.error(500, 'not implemented');
-    },
+    routeSearch: function (ctx, next) {
 
-    routeApi: function (ctx, fields) {
-        if (ctx.uri.parts.length === 3) {
-            var domain = ctx.uri.parts[1];
+        var notimp = true;
 
-            try {
-                ctx.res.writeHead(200, { "Content-Type": "application/json" });
-                ctx.res.write(JSON.stringify({ d: fields }, null, app.dbg ? '\t' : ''));
-                ctx.res.end();
-            }
-            catch (err) {
-                ctx.res.writeHead(500, { "Content-Type": "application/text" });
-                ctx.res.write(err.toString());
-                ctx.res.end();
-            }
+        if (notimp) {
+            ctx.error(500, 'not implemented');
         }
         else {
-            ctx.res.writeHead(404, { "Content-Type": "application/json" });
-            ctx.res.end();
+            next();
         }
+
+    },
+
+    routeApi: function (ctx, serviceName, fnName, fields, files, next) {
+
+        var service = null;
+        try {
+            service = require('./api/' + serviceName + '.js');
+        }
+        catch (e) { }
+
+        if (service && typeof (service[fnName]) === 'function') {
+            service[fnName](ctx, fields);
+        }
+        else {
+            next();
+        }
+
     },
 
     view: {
 
-        prerender: function (ctx) {
-            // change here the ctx.model and the ctx.tmpl before rendering
+        preparse: function (ctx, preparsingContext) {
+            // change here the preparsingContext.model and the preparsingContext.tmpl before rendering
         },
 
-        render: function (ctx) {
-            // change here the ctx.html upon render
+        postparse: function (ctx, postparsingContext) {
+            // change here the postparsingContext.html upon render
         }
 
     }

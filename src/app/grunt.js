@@ -1,4 +1,4 @@
-var fs = require('./utils/fs.js');
+var fs = require('./util/fs.js');
 var pack = require('./package.js');
 var path = require('path');
 var bower = require('bower');

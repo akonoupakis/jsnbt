@@ -1,5 +1,5 @@
-var app = require('./app.js');
-var jsnbt = require('./jsnbt.js');
+var app = require('../app.js');
+var jsnbt = require('../jsnbt.js');
 var path = require('path')
 var childProcess = require('child_process')
 
@@ -11,7 +11,7 @@ _.str = require('underscore.string');
 exports.crawl = function(url, cb) {
 
     var childArgs = [
-        path.join(__dirname, 'phantom.js'),
+        path.join(__dirname, 'phantomScript.js'),
         url
     ];
 

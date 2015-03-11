@@ -7,9 +7,13 @@ _.str = require('underscore.string');
 module.exports = function () {
 
     return {
+        canRoute: function (ctx) {
+            return ctx.uri.first === 'jsnbt-pck';
+        },
+
         route: function (ctx, next) {
             if (ctx.uri.first === 'jsnbt-pck') {
-                if (ctx.req.method !== 'GET') {
+                if (ctx.method !== 'GET') {
                     ctx.error(405);
                 }
                 else if (ctx.uri.parts.length != 2) {
@@ -17,9 +21,9 @@ module.exports = function () {
                 }
                 else {
                     try {
-                        ctx.res.writeHead(200, { "Content-Type": "application/json" });
-                        ctx.res.write(JSON.stringify(jsnbt.getConfiguration(ctx.uri.last), null, app.dbg ? '\t' : ''));
-                        ctx.res.end();
+                        ctx.writeHead(200, { "Content-Type": "application/json" });
+                        ctx.write(JSON.stringify(jsnbt.getConfiguration(ctx.uri.last), null, app.dbg ? '\t' : ''));
+                        ctx.end();
                     }
                     catch (err) {
                         app.logger.error(err);

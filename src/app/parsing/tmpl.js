@@ -1,6 +1,6 @@
-var app = require('./app.js');
-var jsnbt = require('./jsnbt.js');
-var fs = require('./utils/fs.js');
+var app = require('../app.js');
+var jsnbt = require('../jsnbt.js');
+var fs = require('../util/fs.js');
 var extend = require('extend');
 var _ = require('underscore');
 
@@ -10,9 +10,6 @@ exports.parse = function (ctx, tmpl, model) {
     var mdl = {
         baseHref: ctx.uri.getBaseHref(),
         language: ctx.language || 'en',
-        node: ctx.node || {},
-        pointer: ctx.pointer || {},
-        layout: ctx.layout || '',
         meta: {
             title: '',
             keywords: '',
@@ -26,19 +23,16 @@ exports.parse = function (ctx, tmpl, model) {
     extend(true, mdl, model);
     
     mdl.params = mdl.params || [];
-    
-    var nodeId = (mdl.node || {}).id;
-    var pointerId = (mdl.pointer || {}).id;
 
     mdl.params = _.union([{
         name: 'layout',
-        content: mdl.layout
+        content: ctx.layout
     }, {
         name: 'page',
-        content: nodeId
+        content: (ctx.node || {}).id
     }, {
         name: 'pointer',
-        content: pointerId
+        content: (ctx.pointer || {}).id
     }], ctx.params);
 
     var isAdmin = ctx.uri.first === 'admin';
@@ -105,32 +99,28 @@ exports.parse = function (ctx, tmpl, model) {
         mdl.meta.title = mdl.meta.title;
     }
 
-    var prerenderContext = {
+    var preparsingContext = {
         model: mdl,
         tmpl: tmpl
     };
 
     if (!ctx.halt) {
-        _.each(app.modules, function (module) {
-            if (_.isObject(module.view) && _.isFunction(module.view.prerender))
-                module.view.prerender(prerenderContext);
-        });
+        var preparser = require('./processors/preparser.js')(ctx);
+        preparser.process(preparsingContext);
     }
 
-    html = _.template(prerenderContext.tmpl, prerenderContext.model);
+    html = _.template(preparsingContext.tmpl, preparsingContext.model);
 
-    var renderContext = {
+    var postparsingContext = {
         html: html
     };
 
     if (!ctx.halt) {
-        _.each(app.modules, function (module) {
-            if (_.isObject(module.view) && _.isFunction(module.view.render))
-                module.view.render(renderContext);
-        });
+        var postparser = require('./processors/postparser.js')(ctx);
+        postparser.process(postparsingContext);
     }
 
-    return renderContext.html;
+    return postparsingContext.html;
 };
 
 var findJsFiles = function (paths, files, isAdmin) {

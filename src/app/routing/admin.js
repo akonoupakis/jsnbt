@@ -6,6 +6,11 @@ _.str = require('underscore.string');
 module.exports = function () {
 
     return {
+
+        canRoute: function (ctx) {
+            return ctx.uri.first === 'admin';
+        },
+
         route: function (ctx, next) {
             if (ctx.uri.first === 'admin') {
                 try {
@@ -35,7 +40,7 @@ module.exports = function () {
                             ctx.robots.noindex = true;
                             ctx.robots.nofollow = true;
 
-                            ctx.render();
+                            ctx.view();
                         }
                         else {
                             next();
