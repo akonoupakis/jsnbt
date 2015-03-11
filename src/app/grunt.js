@@ -175,77 +175,7 @@ module.exports = function (grunt) {
                 addFile('src/web/public/' + _.str.ltrim(tmpl.html, '/'));
             });
             
-            //var packInfoPath = server.getPath('package.json');
-            //if (fs.existsSync(packInfoPath)) {
-            //    var packInfo = require(packInfoPath);
-            //    if (packInfo.main) {
-            //        var packIndexPath = server.getPath(packInfo.main);
-            //        if (fs.existsSync(packIndexPath)) {
-            //            var packObject = require(packIndexPath);
-            //            if (packObject) {
-            //                var packConfig = typeof (packObject.getConfig) === 'function' ? packObject.getConfig() : {};
-            //                if (_.isArray(packConfig.templates)) {
-            //                    _.each(packConfig.templates, function (packTemplate) {
-            //                        addFile('src/web/public/' + _.str.ltrim(packTemplate.html, '/'));
-            //                    });
-            //                }
-            //            }
-            //        }
-
-            //        var packIndexDbgPath = server.getPath('src/app/dbg/index.js');
-            //        if (fs.existsSync(packIndexDbgPath)) {
-            //            var packDbgObject = require(packIndexDbgPath);
-            //            if (packDbgObject) {
-            //                var packDbgConfig = typeof (packDbgObject.getConfig) === 'function' ? packDbgObject.getConfig() : {};
-            //                if (_.isArray(packDbgConfig.templates)) {
-            //                    _.each(packDbgConfig.templates, function (packDbgTemplate) {
-            //                        addFile('src/web/public/' + _.str.ltrim(packDbgTemplate.html, '/'));
-            //                    });
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
         }
-
-        //if (fs.existsSync(server.getPath('src/pck'))) {
-        //    var packages = fs.readdirSync(server.getPath('src/pck'));
-        //    _.each(packages, function (packageItem) {
-
-        //        if (fs.lstatSync(server.getPath('src/pck/' + packageItem)).isDirectory()) {
-        //            if (site === undefined || site === 'admin') {
-        //                addPath('src/pck/' + packageItem + '/web/admin/error');
-        //                addFile('src/pck/' + packageItem + '/web/admin/index.html');
-        //            }
-
-        //            if (site === undefined || site === 'public') {
-        //                addPath('src/pck/' + packageItem + '/web/public/error');
-
-        //                var nodeModulePackagePath = server.getPath('node_modules/' + packageItem + '/package.json');
-        //                if (fs.existsSync(nodeModulePackagePath)) {
-        //                    var nodeModulePackage = require(nodeModulePackagePath);
-
-        //                    if (nodeModulePackage.main) {
-        //                        var nodeModuleIndexPath = server.getPath('node_modules/' + packageItem + '/' + nodeModulePackage.main);
-        //                        if (fs.existsSync(nodeModuleIndexPath)) {
-        //                            var nodeModulePackObject = require(nodeModuleIndexPath);
-
-        //                            if (nodeModulePackObject) {
-        //                                var nodeModulePackConfig = typeof (nodeModulePackObject.getConfig) === 'function' ? nodeModulePackObject.getConfig() : {};
-        //                                if (_.isArray(nodeModulePackConfig.templates)) {
-        //                                    _.each(nodeModulePackConfig.templates, function (packTemplate) {
-        //                                        addFile('src/pck/' + packageItem + '/web/public/' + _.str.ltrim(packTemplate.html, '/'));
-        //                                    });
-        //                                }
-        //                            }
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
-
-        //    });
-        //}
 
         var denormalize = function (text) {
             return text.replace(/\\/g, '/');
@@ -321,25 +251,6 @@ module.exports = function (grunt) {
                 appendJsFiles(module.domain);
             }
         });
-
-        //var packagesList = fs.readdirSync(server.getPath('node_modules'));
-        //_.each(packagesList, function (packageName) {
-        //    if (_.str.startsWith(packageName, 'jsnbt-')) {
-        //        if (fs.existsSync(server.getPath('node_modules/' + packageName + '/package.json')))
-        //        {
-        //            var modJson = require(server.getPath('node_modules/' + packageName + '/package.json'));
-        //            if (modJson && modJson.domain && modJson.domain !== 'core') {
-        //                adminLibPaths.push('./' + folder + '/public/admin/js/' + modJson.domain + '/lib/*.js');
-        //                adminLibPaths.push('./' + folder + '/public/admin/js/' + modJson.domain + '/lib/**/**.js');
-        //                adminLibPaths.push('./' + folder + '/public/admin/js/' + modJson.domain + '/lib/**/**/**.js');
-
-        //                adminAppPaths.push('./' + folder + '/public/admin/js/' + modJson.domain + '/app/*.js');
-        //                adminAppPaths.push('./' + folder + '/public/admin/js/' + modJson.domain + '/app/**/**.js');
-        //                adminAppPaths.push('./' + folder + '/public/admin/js/' + modJson.domain + '/app/**/**/**.js');
-        //            }
-        //        }
-        //    }
-        //});
 
         return [{
             src: adminLibPaths, 
