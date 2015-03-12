@@ -90,48 +90,69 @@ module.exports = function () {
                     if (processRequest) {
                         req._routed = true;
                   
+                        var continueRequest = function (ctxInteral, reqInternal, resInternal, sessionInternal, dpdInternal) {
+
+                            reqInternal.cookies.set('sid', sessionInternal.sid);
+                            
+                            reqInternal.dpd = dpdInternal;
+                            ctxInteral.dpd = dpdInternal;
+
+                            reqInternal.session = sessionInternal;
+                            ctxInteral.session = sessionInternal;
+
+                            ctxInteral.user = sessionInternal.user;
+                            
+                            if (_.filter(formPaths, function (x) { return _.str.startsWith(ctxInteral.uri.path, x); }).length > 0) {
+                                if (!(sessionInternal.user && auth.isInRole(sessionInternal.user, 'admin'))) {
+                                    ctxInteral.error(404);
+                                }
+                                else {
+                                    fs.readFile(server.getPath(app.root + '/public' + ctxInteral.uri.path), function (readErr, readResults) {
+                                        if (readErr) {
+                                            ctxInteral.error(500, readErr);
+                                        }
+                                        else {
+                                            ctxInteral.writeHead(200, { 'Content-Type': 'text/html' });
+                                            ctxInteral.write(readResults);
+                                            ctxInteral.end();
+                                        }
+                                    });
+                                }
+                            }
+                            else {
+                                var nextIndex = 0;
+                                var next = function () {
+                                    nextIndex++;
+                                    var router = routers[nextIndex];
+                                    router.route(ctxInteral, next);
+                                };
+
+                                var first = _.first(routers);
+                                first.route(ctxInteral, next);
+                            }
+                        };
+
                         app.server.sessions.createSession(req.cookies.get('sid'), function (err, session) {
+
                             if (err) {
                                 throw err;
                             } else {
-                                req.cookies.set('sid', session.sid);
-                                ctx.cookies = req.cookies;
-
-                                req.session = session;
-                                ctx.session = session;
-
-                                ctx.user = session.user;
                                 
-                                req.dpd = require('deployd/lib/internal-client').build(app.server, session, req.stack);
-                                ctx.dpd = req.dpd;
+                                dpd = require('deployd/lib/internal-client').build(app.server, session, req.stack);
                                 
-                                if (_.filter(formPaths, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length > 0) {
-                                    if (!(session.user && auth.isInRole(session.user, 'admin'))) {
-                                        ctx.error(404);
-                                    }
-                                    else {
-                                        fs.readFile(server.getPath(app.root + '/public' + ctx.uri.path), function (readErr, readResults) {
-                                            if (readErr) {
-                                                ctx.error(500, readErr);
-                                            }
-                                            else {
-                                                ctx.writeHead(200, { 'Content-Type': 'text/html' });
-                                                ctx.write(readResults);
-                                                ctx.end();
-                                            }
-                                        });
-                                    }
+                                if ((session.data && session.data.uid) && !session.user) {
+                                    
+                                    dpd.users.get(session.data.uid, function (user, err) {
+                                        if (user) {
+                                            session.user = user;
+                                            continueRequest(ctx, req, res, session, dpd);
+                                        }
+                                        else
+                                            throw new Error('user not found');
+                                    });
                                 }
                                 else {
-                                    var nextIndex = 0;
-                                    var next = function () {
-                                        nextIndex++;
-                                        var router = routers[nextIndex];
-                                        router.route(ctx, next);
-                                    };
-
-                                    var first = _.first(routers);
-                                    first.route(ctx, next);
+                                    continueRequest(ctx, req, res, session, dpd);
                                 }
                             }
                         });

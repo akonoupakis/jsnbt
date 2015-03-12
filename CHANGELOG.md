@@ -1,4 +1,10 @@
-## 1.0.88 (unreleashed)
+## 1.0.91 (unreleashed)
+
+Bugfixes:
+	
+	- null user fix. On the first request after an application start the user was null
+
+## 1.0.90 (2015-03-12)
 
 Improvements:
 
