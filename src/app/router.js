@@ -19,23 +19,23 @@ var routerNames = [
     './routing/public.js'
 ];
 
+var routers = [];
+
+for (var i = 0; i < routerNames.length; i++) {
+    var router = require(routerNames[i])();
+    routers.push(router);
+}
+
+routers.push({
+    route: function (ctx, next) {
+        ctx.error(404);
+    }
+});
+
 module.exports = function () {
     return {
         process: function (req, res) {
             var ctx = require('./context.js')(req, res);
-
-            var routers = [];
-
-            for (var i = 0; i < routerNames.length; i++) {
-                var router = require(routerNames[i])();
-                routers.push(router);
-            }
-
-            routers.push({
-                route: function (ctx, next) {
-                    ctx.error(404);
-                }
-            });
 
             var ignoredPaths = ['dashboard', 'dpd.js', '__resources', 'socket.io', 'favicon.ico', 'app-offline.htm', 'dpd'];
 
@@ -89,7 +89,7 @@ module.exports = function () {
                     
                     if (processRequest) {
                         req._routed = true;
-                  
+                        
                         var continueRequest = function (ctxInteral, reqInternal, resInternal, sessionInternal, dpdInternal) {
 
                             reqInternal.cookies.set('sid', sessionInternal.sid);
