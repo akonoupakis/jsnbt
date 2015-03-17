@@ -1,6 +1,6 @@
 ﻿<div class="bs-sidebar bs-docs-sidebar affix" role="complementary">
     <ul class="nav">
-        <li ng-repeat="node in data" data-target="{{node.target}}">
+        <li ng-repeat="node in ngModel" data-target="{{node.target}}">
             <a href="{{node.target}}">{{node.name}}</a>
             <ul class="nav" ng-show="node.children.length !== 0">
                 <li ng-repeat="child in node.children" data-target="{{child.target}}">

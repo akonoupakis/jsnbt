@@ -19,17 +19,16 @@
 
         <div id="page-text-key" data-scrollspy="key">
             <div class="row">
-                <ctrl-text class="col-md-6" ng-model="text.group" ng-validate="validateKey" ng-valid="validation.key" ng-characters="abcdefghijklmnopqrstuvwxyz_" ng-label="group"></ctrl-text>
-                <ctrl-text class="col-md-6" ng-model="text.key" ng-required="true" ng-validate="validateKey" ng-valid="validation.key" ng-characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_" ng-label="key"></ctrl-text>                
+                <ctrl-text class="col-md-6" ng-model="item.group" ng-characters="abcdefghijklmnopqrstuvwxyz_" ng-label="group"></ctrl-text>
+                <ctrl-text class="col-md-6" ng-model="item.key" ng-required="true" ng-characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_" ng-label="key"></ctrl-text>                
             </div>
-            <span class="row-validator" ng-show="!validation.key">combination of group and key already exists</span>
         </div>
 
         <hr />
 
         <div id="page-text-value" data-scrollspy="value">
             <div ng-repeat="language in languages" class="row" id="page-text-value-{{language.code}}" data-scrollspy="{{language.name}}">
-                <ctrl-text-area class="col-md-12" ng-model="text.value[language.code]" ng-required="true" ng-label="{{application.localization.enabled ? language.name : 'value'}}"></ctrl-text-area>
+                <ctrl-text-area class="col-md-12" ng-model="item.value[language.code]" ng-required="true" ng-label="{{application.localization.enabled ? language.name : 'value'}}"></ctrl-text-area>
             </div>
         </div>
 

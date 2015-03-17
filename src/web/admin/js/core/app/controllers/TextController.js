@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('TextController', function ($scope, $rootScope, $routeParams, $location, $timeout, $logger, $queue, $q, $data, ScrollSpyService, LocationService, CONTROL_EVENTS) {
+        .controller('TextController', function ($scope, $controller, $rootScope, $routeParams, $location, $timeout, $logger, $queue, $q, $data, ScrollSpyService, LocationService, CONTROL_EVENTS) {
            
             var logger = $logger.create('TextController');
 
@@ -12,7 +12,7 @@
             $scope.new = $scope.id === 'new';
             $scope.name = undefined;
             $scope.text = undefined;
-
+            
             $scope.siblingKeys = [];
             $scope.languages = [];
 
