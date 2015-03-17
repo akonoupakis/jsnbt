@@ -177,6 +177,23 @@ module.exports = function (grunt) {
             
         }
 
+        if (fs.existsSync(server.getPath('src/pck'))) {
+            var packages = fs.readdirSync(server.getPath('src/pck'));
+            _.each(packages, function (packageItem) {
+
+                if (fs.lstatSync(server.getPath('src/pck/' + packageItem)).isDirectory()) {
+                    if (site === undefined || site === 'admin') {
+                        addPath('src/pck/' + packageItem + '/web/admin/error');
+                        addFile('src/pck/' + packageItem + '/web/admin/index.html');
+                    }
+
+                    if (site === undefined || site === 'public') {
+                        addPath('src/pck/' + packageItem + '/web/public/error');
+                    }
+                }
+            });
+        }
+
         var denormalize = function (text) {
             return text.replace(/\\/g, '/');
         };
