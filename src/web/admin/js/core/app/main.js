@@ -128,6 +128,14 @@
                 domain: 'core',
                 tmpl: 'tmpl/core/forms/settings.html'
             }).
+             //when('/content/test', {
+             //    templateUrl: 'tmpl/core/pages/content/texts.html',
+             //    controller: 'TestListController'
+             //}).
+             // when('/content/test/:id', {
+             //     templateUrl: 'tmpl/core/pages/content/test.html',
+             //     controller: 'TestItemController'
+             // }).
             otherwise({
                 redirectTo: '/'
             });

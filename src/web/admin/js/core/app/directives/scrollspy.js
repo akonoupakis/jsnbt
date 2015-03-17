@@ -10,13 +10,13 @@
                 restrict: 'E',
                 replace: true,
                 scope: {
-                    data: '='
+                    ngModel: '='
                 },
                 link: function (scope, element, attrs) {
                     if (angular.scrollspy) {
                         $('body').scrollspy('refresh');
                     }
-
+                    
                     var spy = function (cb) {
                         $('body').scrollspy({
                             target: '.bs-sidebar',
@@ -31,7 +31,8 @@
                         }
                     };
                     
-                    scope.$watch('data', function (newValue, prevValue) {
+                    scope.$watch('ngModel', function (newValue, prevValue) {
+                        
                         if (newValue && newValue.length > 0) {
                             var activeId = element.find('li.active').data('target');
 
