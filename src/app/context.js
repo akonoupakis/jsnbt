@@ -80,6 +80,8 @@ module.exports = function (req, res) {
 
     req.cookies = new cookies(req, res);
 
+    var completing = false;
+
     var ctx = {
         req: req,
         res: res,
@@ -141,6 +143,10 @@ module.exports = function (req, res) {
         restricted: false,
 
         error: function (code, stack, html) {
+            if (completing)
+                return;
+
+            completing = true;
             req._routed = true;
 
             if (html === undefined)
@@ -159,6 +165,10 @@ module.exports = function (req, res) {
             }
         },
         view: function () {
+            if (completing)
+                return;
+
+            completing = true;
             req._routed = true;
 
             if (shouldRenderCrawled(this, req, res))
@@ -172,12 +182,20 @@ module.exports = function (req, res) {
             }
         },
         json: function (data) {
+            if (completing)
+                return;
+
+            completing = true;
             req._routed = true;
             res.writeHead(200, { "Content-Type": "application/json" });
             res.write(JSON.stringify({ d: data }, null, app.dbg ? '\t' : ''));
             res.end();
         },
         redirect: function (url, mode) {
+            if (completing)
+                return;
+
+            completing = true;
             req._routed = true;
             res.writeHead(mode || 302, { "Location": url });
             res.end();
