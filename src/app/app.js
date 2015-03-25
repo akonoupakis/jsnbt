@@ -135,9 +135,13 @@ exports.init = function (env, hosts, module) {
     delete this.init;
 };
 
+exports.getBower = function () {
+    return require('../../bower.json');
+};
+
 exports.getConfig = function () {
     return require('./config.js');
-}
+};
 
 exports.start = function (title) {
     this.title = title;

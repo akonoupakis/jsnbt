@@ -1,3 +1,9 @@
+## 1.0.96 (2015-03-26)
+
+Improvements:
+	
+	- different bower component directories for public and admin configs
+
 ## 1.0.95 (2015-03-18)
 
 Bugfixes:

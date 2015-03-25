@@ -318,14 +318,15 @@
         }
       ]
     },
-	"cropper": {
+    "cropper": {
       "files": [
         {
           "src": "cropper/dist/cropper.js",
           "dest": [
             "admin/js/core/lib/cropper/cropper.js"
           ]
-        }, {
+        },
+        {
           "src": "cropper/dist/cropper.css",
           "dest": [
             "admin/css/core/lib/cropper/cropper.css"

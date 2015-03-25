@@ -80,6 +80,8 @@ module.exports = function (req, res) {
 
     req.cookies = new cookies(req, res);
 
+    var completing = false;
+
     var ctx = {
         req: req,
         res: res,
@@ -141,24 +143,34 @@ module.exports = function (req, res) {
         restricted: false,
 
         error: function (code, stack, html) {
+            if (completing)
+                return;
+
+            completing = true;
             req._routed = true;
 
             if (html === undefined)
                 html = true;
-
-            if (this.uri.first === 'jsnbt-api')
-                html = false;
 
             if (html) {
                 errorRenderer.render(this, code, stack);
             }
             else {
                 res.writeHead(code, { "Content-Type": 'application/text' });
-                res.write(stack.toString());
-                res.end();
+
+                if (typeof (stack) === 'string')
+                    this.write(stack);
+                else if (typeof (stack) === typeof (Error))
+                    this.write(stack.toString());
+
+                this.end();
             }
         },
         view: function () {
+            if (completing)
+                return;
+
+            completing = true;
             req._routed = true;
 
             if (shouldRenderCrawled(this, req, res))
@@ -172,12 +184,20 @@ module.exports = function (req, res) {
             }
         },
         json: function (data) {
+            if (completing)
+                return;
+
+            completing = true;
             req._routed = true;
             res.writeHead(200, { "Content-Type": "application/json" });
             res.write(JSON.stringify({ d: data }, null, app.dbg ? '\t' : ''));
             res.end();
         },
         redirect: function (url, mode) {
+            if (completing)
+                return;
+
+            completing = true;
             req._routed = true;
             res.writeHead(mode || 302, { "Location": url });
             res.end();
