@@ -1,0 +1,63 @@
+{
+  "name": "jsnbt-dbg-site",
+  "version": "1.0.0",
+  "homepage": "",
+  "authors": [
+    "akon <konoupakis@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "jquery": "2.1.3",
+	"angular": "1.3.14",
+	"underscore": "1.7.0",
+	"underscore.string": "2.3.3"
+  },
+  "deploy": {
+    "jquery": {
+      "files": [
+        {
+          "src": "jquery/dist/jquery.js",
+          "dest": [
+            "js/lib/jquery.js"
+          ]
+        }
+      ]
+    },
+	"angular": {
+      "files": [
+        {
+          "src": "angular/angular.js",
+          "dest": [
+            "js/lib/angular.js"
+          ]
+        }
+      ]
+    },
+	"underscore": {
+      "files": [
+        {
+          "src": "underscore/underscore.js",
+          "dest": [
+            "js/lib/underscore.js"
+          ]
+        }
+      ]
+    },
+    "underscore.string": {
+      "files": [
+        {
+          "src": "underscore.string/lib/underscore.string.js",
+          "dest": [
+            "js/lib/underscore.string.js"
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -152,16 +152,18 @@ module.exports = function (req, res) {
             if (html === undefined)
                 html = true;
 
-            if (this.uri.first === 'jsnbt-api')
-                html = false;
-
             if (html) {
                 errorRenderer.render(this, code, stack);
             }
             else {
                 res.writeHead(code, { "Content-Type": 'application/text' });
-                res.write(stack.toString());
-                res.end();
+
+                if (typeof (stack) === 'string')
+                    this.write(stack);
+                else if (typeof (stack) === typeof (Error))
+                    this.write(stack.toString());
+
+                this.end();
             }
         },
         view: function () {

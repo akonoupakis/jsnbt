@@ -10,9 +10,8 @@
             FileService.get = function (paths) {
                 var deferred = $q.defer();
 
-                var url = '../jsnbt-api/core/file';
+                var url = '../jsnbt-api/core/file/get';
                 $http.post(url, {
-                    fn: 'get',
                     path: typeof (paths) === 'string' ? paths : undefined,
                     paths: typeof (paths) !== 'string' ? paths : undefined
                 }).then(function (data) {
@@ -29,9 +28,8 @@
             FileService.create = function (path, name) {
                 var deferred = $q.defer();
 
-                var url = '../jsnbt-api/core/file';
+                var url = '../jsnbt-api/core/file/create';
                 $http.post(url, {
-                    fn: 'create',
                     path: path,
                     name: name
                 }).then(function (data) {
@@ -48,9 +46,8 @@
             FileService.move = function (path, newPath) {
                 var deferred = $q.defer();
                 
-                var url = '../jsnbt-api/core/file';
+                var url = '../jsnbt-api/core/file/move';
                 $http.post(url, {
-                    fn: 'move',
                     from: path,
                     to: newPath
                 }).then(function (data) {
@@ -67,9 +64,8 @@
             FileService.delete = function (path) {
                 var deferred = $q.defer();
 
-                var url = '../jsnbt-api/core/file';
+                var url = '../jsnbt-api/core/file/delete';
                 $http.post(url, {
-                    fn: 'delete',
                     path: path
                 }).then(function (data) {
                     if (!!data && !!data.data) {

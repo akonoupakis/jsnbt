@@ -10,6 +10,10 @@ module.exports = {
         return require('./config.js');
     },
 
+    getBower: function () {
+        return require('./bower.json');
+    },
+
     route: function (ctx, next) {
         // intercept the routing process here, or trigger the next router        
 

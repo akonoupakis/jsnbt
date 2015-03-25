@@ -55,7 +55,7 @@ module.exports = function (grunt) {
                         var nodeModulePackage = require(nodeModulePackagePath);
 
                         if (nodeModulePackage.main) {
-                            var nodeModuleIndexPath = server.getPath('src/pack/' + packageItem + '/' + nodeModulePackage.main);
+                            var nodeModuleIndexPath = server.getPath('src/pck/' + packageItem + '/' + nodeModulePackage.main);
                             registerJsnbtConfig(nodeModuleIndexPath);
                         }
                     }
@@ -342,9 +342,9 @@ module.exports = function (grunt) {
         var tasks = [];
         var done = this.async();
 
-        var add = function (successMessage, bowerPackageName) {
+        var add = function (successMessage, bowerPackage) {
             tasks.push(function (callback) {
-                exec('bower install ' + bowerPackageName, { cwd: './' }, function (err, stdout, stderr) {
+                exec('bower install ' + bowerPackage.name + ' --config.directory=' + bowerPackage.folder, { cwd: './' }, function (err, stdout, stderr) {
                     if (err)
                         throw err;
 
@@ -356,45 +356,41 @@ module.exports = function (grunt) {
             });
         };
 
-        var bowerPackageNames = [];
+        var bowerPackageNames = {
+            public: [],
+            admin: []
+        };
         var bowerPackages = [];
 
         var bowerConfigs = [];
-
-        bowerConfigs.push(require(server.getPath('bower.json')));
-
+        
         var packageNames = [];
 
-        var installedPackages = pack.npm.getInstalled();
-        _.each(installedPackages, function (installedPackage) {
-            if (packageNames.indexOf(installedPackage) === -1) {
-                if (fs.existsSync(server.getPath('node_modules/' + installedPackage + '/bower.json'))) {
-                    bowerConfigs.push(require(server.getPath('node_modules/' + installedPackage + '/bower.json')));
-                }
-                packageNames.push(installedPackage);
+        _.each(self.modules, function (module) {
+            if (typeof (module.getBower) === 'function') {
+                var bowerConfig = module.getBower();
+                bowerConfigs.push({
+                    public: module.public,
+                    config: bowerConfig
+                });
             }
         });
 
-        if (fs.existsSync(server.getPath('src/pck'))) {
-            var npmPackages = fs.readdirSync(server.getPath('src/pck'));
-            _.each(npmPackages, function (packageItem) {
-                if (packageNames.indexOf(packageItem) === -1) {
-                    if (fs.lstatSync(server.getPath('src/pck/' + packageItem)).isDirectory()) {
-                        if (fs.existsSync(server.getPath('src/pck/' + packageItem + '/bower.json'))) {
-                            bowerConfigs.push(require(server.getPath('src/pck/' + packageItem + '/bower.json')));
-                        }
-                    }
-                }
-            });
-        }
-
         _.each(bowerConfigs, function (bowerConfig) {
-            if (bowerConfig.dependencies) {
-                for (var dep in bowerConfig.dependencies) {
-                    if (!fs.existsSync(server.getPath('bower_components/' + dep))) {
-                        if (bowerPackageNames.indexOf(dep) === -1) {
-                            bowerPackages.push(dep + '#' + bowerConfig.dependencies[dep]);
-                            bowerPackageNames.push(dep);
+            if (bowerConfig.config.dependencies) {
+                for (var dep in bowerConfig.config.dependencies) {
+                    var targetDirectory = bowerConfig.public ? 'bower_components/public' : 'bower_components/admin';
+
+                    var dictName = bowerConfig.public ? 'public' : 'admin';
+
+                    if (!fs.existsSync(server.getPath(targetDirectory + '/' + dep))) {
+                        if (bowerPackageNames[dictName].indexOf(dep) === -1) {
+                            bowerPackages.push({
+                                public: bowerConfig.public,
+                                name: dep + '#' + bowerConfig.config.dependencies[dep],
+                                folder: targetDirectory
+                            });
+                            bowerPackageNames[dictName].push(dep);
                         }
                     }
                 }
@@ -402,7 +398,7 @@ module.exports = function (grunt) {
         });
 
         _.each(bowerPackages, function (bowerPackage) {
-            add('installed bower package ' + bowerPackage, bowerPackage);
+            add('installed bower package ' + bowerPackage.name, bowerPackage);
         });
 
         async.series(tasks, done);
@@ -410,27 +406,29 @@ module.exports = function (grunt) {
 
     grunt.registerMultiTask('deploybower', 'Deploy bower components', function () {
         var folder = this.target == 'prod' ? 'dist' : 'dev';
-
-        var bowerComponents = "bower_components";
-
+        
         var bowerConfigs = [];
-        bowerConfigs.push(require(server.getPath('bower.json')));
 
-        var installedPackages = pack.npm.getInstalled();
-        _.each(installedPackages, function (installedPack) {
-            if (fs.existsSync(server.getPath('node_modules/' + installedPack + '/bower.json'))) {
-                bowerConfigs.push(require(server.getPath('node_modules/' + installedPack + '/bower.json')));
+        _.each(self.modules, function (module) {
+            if (typeof (module.getBower) === 'function') {
+                var bowerConfig = module.getBower();
+
+                bowerConfigs.push({
+                    public: module.public,
+                    config: bowerConfig
+                });
             }
         });
-
+                
         _.each(bowerConfigs, function (bowerConfig) {
-            if (bowerConfig.dependencies) {
-                if (bowerConfig.deploy) {
-                    var bowerConfigKeys = _.keys(bowerConfig.deploy);
+            var bowerComponents = bowerConfig.public ? 'bower_components/public' : 'bower_components/admin';
+            if (bowerConfig.config.dependencies) {
+                if (bowerConfig.config.deploy) {
+                    var bowerConfigKeys = _.keys(bowerConfig.config.deploy);
                     _.each(bowerConfigKeys, function (deployd) {
                         var packName = deployd;
-                        if (bowerConfig.dependencies[packName]) {
-                            var packSpecs = bowerConfig.deploy[packName];
+                        if (bowerConfig.config.dependencies[packName]) {
+                            var packSpecs = bowerConfig.config.deploy[packName];
 
                             if (packSpecs.folders) {
                                 _.each(packSpecs.folders, function (folderSpecs) {
