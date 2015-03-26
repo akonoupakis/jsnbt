@@ -336,30 +336,37 @@ module.exports = function (grunt) {
 
     grunt.registerMultiTask('bower', 'Install bower components', function () {
 
-        var exec = require('child_process').exec,
-			sys = require('sys');
+        var exec = require('child_process').exec;
 
         var tasks = [];
+
         var done = this.async();
 
         var add = function (successMessage, bowerPackage) {
-            tasks.push(function (callback) {
-                exec('bower install ' + bowerPackage.name + ' --config.directory=' + bowerPackage.folder, { cwd: './' }, function (err, stdout, stderr) {
+            tasks.push(function (cb) {
+                exec('bower install ' + bowerPackage.name + '-' + bowerPackage.version + '=' + bowerPackage.name + '#' + bowerPackage.version
+                    // + ' --config.directory=bower_components'
+                    + ' --config.analytics=false',
+                    { cwd: './' }, function (err, stdout, stderr) {
                     if (err)
                         throw err;
 
-                    grunt.log.ok(stdout);
+                    //grunt.log.ok(stdout);
 
                     grunt.log.ok(successMessage);
-                    callback();
+                    cb();
                 });
             });
         };
 
-        var bowerPackageNames = {
-            public: [],
-            admin: []
+        var runTasks = function () {
+            var task = tasks.shift();
+            if (task)
+                task(runTasks);
+            else
+                done();
         };
+
         var bowerPackages = [];
 
         var bowerConfigs = [];
@@ -369,39 +376,29 @@ module.exports = function (grunt) {
         _.each(self.modules, function (module) {
             if (typeof (module.getBower) === 'function') {
                 var bowerConfig = module.getBower();
-                bowerConfigs.push({
-                    public: module.public,
-                    config: bowerConfig
-                });
+                bowerConfigs.push(bowerConfig);
             }
         });
 
         _.each(bowerConfigs, function (bowerConfig) {
-            if (bowerConfig.config.dependencies) {
-                for (var dep in bowerConfig.config.dependencies) {
-                    var targetDirectory = bowerConfig.public ? 'bower_components/public' : 'bower_components/admin';
-
-                    var dictName = bowerConfig.public ? 'public' : 'admin';
-
-                    if (!fs.existsSync(server.getPath(targetDirectory + '/' + dep))) {
-                        if (bowerPackageNames[dictName].indexOf(dep) === -1) {
-                            bowerPackages.push({
-                                public: bowerConfig.public,
-                                name: dep + '#' + bowerConfig.config.dependencies[dep],
-                                folder: targetDirectory
-                            });
-                            bowerPackageNames[dictName].push(dep);
-                        }
+            if (bowerConfig.dependencies) {
+                for (var dep in bowerConfig.dependencies) {
+                    var packOptions = {
+                        name: dep,
+                        version: bowerConfig.dependencies[dep]
+                    };
+                    if (!fs.existsSync(server.getPath('bower_components/' + packOptions.name + '-' + packOptions.version))) {
+                        bowerPackages.push(packOptions);
                     }
                 }
             }
         });
 
         _.each(bowerPackages, function (bowerPackage) {
-            add('installed bower package ' + bowerPackage.name, bowerPackage);
+            add('installed bower package ' + bowerPackage.name + ' v' + bowerPackage.version, bowerPackage);
         });
 
-        async.series(tasks, done);
+        runTasks();
     });
 
     grunt.registerMultiTask('deploybower', 'Deploy bower components', function () {
@@ -412,23 +409,19 @@ module.exports = function (grunt) {
         _.each(self.modules, function (module) {
             if (typeof (module.getBower) === 'function') {
                 var bowerConfig = module.getBower();
-
-                bowerConfigs.push({
-                    public: module.public,
-                    config: bowerConfig
-                });
+                bowerConfigs.push(bowerConfig);
             }
         });
                 
         _.each(bowerConfigs, function (bowerConfig) {
-            var bowerComponents = bowerConfig.public ? 'bower_components/public' : 'bower_components/admin';
-            if (bowerConfig.config.dependencies) {
-                if (bowerConfig.config.deploy) {
-                    var bowerConfigKeys = _.keys(bowerConfig.config.deploy);
+            var bowerComponents = 'bower_components';
+            if (bowerConfig.dependencies) {
+                if (bowerConfig.deploy) {
+                    var bowerConfigKeys = _.keys(bowerConfig.deploy);
                     _.each(bowerConfigKeys, function (deployd) {
                         var packName = deployd;
-                        if (bowerConfig.config.dependencies[packName]) {
-                            var packSpecs = bowerConfig.config.deploy[packName];
+                        if (bowerConfig.dependencies[packName]) {
+                            var packSpecs = bowerConfig.deploy[packName];
 
                             if (packSpecs.folders) {
                                 _.each(packSpecs.folders, function (folderSpecs) {

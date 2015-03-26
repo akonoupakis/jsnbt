@@ -1,3 +1,10 @@
+## 1.0.97 (2015-03-26)
+
+Improvements:
+	
+	- common bower components directory, version number in folder names!
+	- the bower.json file contents should be returned in a getBower() function in the index file
+
 ## 1.0.96 (2015-03-26)
 
 Improvements:

@@ -1,23 +1,11 @@
 {
-  "name": "jsnbt",
-  "version": "1.0.0",
-  "homepage": "",
-  "authors": [
-    "akon <konoupakis@gmail.com>"
-  ],
-  "license": "MIT",
-  "private": true,
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components"
-  ],
   "dependencies": {
     "jquery": "2.1.3",
-    "angular": "1.3.14",
-    "angular-route": "1.3.14",
-    "angular-animate": "1.3.14",
-    "angular-sanitize": "1.3.14",
+    "angular": "1.3.15",
+    "angular-route": "1.3.15",
+    "angular-animate": "1.3.15",
+	"angular-motion": "0.3.4",
+    "angular-sanitize": "1.3.15",
     "underscore": "1.7.0",
     "underscore.string": "2.3.3",
     "bootstrap": "3.2.0",
@@ -27,7 +15,7 @@
     "jquery.scrollTo": "1.4.14",
     "jquery-ui": "1.11.4",
     "angular-ui-sortable": "0.13.3",
-    "ngInfiniteScroll": "v1.1.2",
+    "ngInfiniteScroll": "1.1.2",
     "ng-flow": "2.5.1",
     "tinymce": "4.0.0",
     "angular-ui-tinymce": "0.0.5",
@@ -37,7 +25,7 @@
     "jquery": {
       "files": [
         {
-          "src": "jquery/dist/jquery.js",
+          "src": "jquery-2.1.3/dist/jquery.js",
           "dest": [
             "admin/js/core/lib/a-jquery.js"
           ]
@@ -47,7 +35,7 @@
     "angular": {
       "files": [
         {
-          "src": "angular/angular.js",
+          "src": "angular-1.3.15/angular.js",
           "dest": [
             "admin/js/core/lib/b-angular.js"
           ]
@@ -57,7 +45,7 @@
     "angular-route": {
       "files": [
         {
-          "src": "angular-route/angular-route.js",
+          "src": "angular-route-1.3.15/angular-route.js",
           "dest": [
             "admin/js/core/lib/angular-lib/angular.route.js"
           ]
@@ -67,7 +55,7 @@
     "angular-animate": {
       "files": [
         {
-          "src": "angular-animate/angular-animate.js",
+          "src": "angular-animate-1.3.15/angular-animate.js",
           "dest": [
             "admin/js/core/lib/angular-lib/angular.animate.js"
           ]
@@ -77,7 +65,7 @@
     "angular-sanitize": {
       "files": [
         {
-          "src": "angular-sanitize/angular-sanitize.js",
+          "src": "angular-sanitize-1.3.15/angular-sanitize.js",
           "dest": [
             "admin/js/core/lib/angular-lib/angular.sanitize.js"
           ]
@@ -87,7 +75,7 @@
     "angular-strap": {
       "files": [
         {
-          "src": "angular-strap/dist/angular-strap.js",
+          "src": "angular-strap-2.1.6/dist/angular-strap.js",
           "dest": [
             "admin/js/core/lib/angular-lib/angular.strap.js"
           ]
@@ -97,7 +85,7 @@
     "angular-ui-sortable": {
       "files": [
         {
-          "src": "angular-ui-sortable/sortable.js",
+          "src": "angular-ui-sortable-0.13.3/sortable.js",
           "dest": [
             "admin/js/core/lib/angular-lib/angular-ui-sortable.js"
           ]
@@ -107,7 +95,7 @@
     "jquery-ui": {
       "files": [
         {
-          "src": "jquery-ui/jquery-ui.js",
+          "src": "jquery-ui-1.11.4/jquery-ui.js",
           "dest": [
             "admin/js/core/lib/jquery/jquery-ui.js"
           ]
@@ -117,7 +105,7 @@
     "jquery.scrollTo": {
       "files": [
         {
-          "src": "jquery.scrollTo/jquery.scrollTo.js",
+          "src": "jquery.scrollTo-1.4.14/jquery.scrollTo.js",
           "dest": [
             "admin/js/core/lib/jquery/jquery.scrollTo.js"
           ]
@@ -127,7 +115,7 @@
     "underscore": {
       "files": [
         {
-          "src": "underscore/underscore.js",
+          "src": "underscore-1.7.0/underscore.js",
           "dest": [
             "admin/js/core/lib/underscore/underscore.js"
           ]
@@ -137,7 +125,7 @@
     "underscore.string": {
       "files": [
         {
-          "src": "underscore.string/lib/underscore.string.js",
+          "src": "underscore.string-2.3.3/lib/underscore.string.js",
           "dest": [
             "admin/js/core/lib/underscore/underscore.string.js"
           ]
@@ -147,25 +135,25 @@
     "bootstrap": {
       "files": [
         {
-          "src": "bootstrap/dist/css/bootstrap.css",
+          "src": "bootstrap-3.2.0/dist/css/bootstrap.css",
           "dest": [
             "admin/css/core/lib/bootstrap/css/bootstrap.css"
           ]
         },
         {
-          "src": "bootstrap/dist/css/bootstrap.css.map",
+          "src": "bootstrap-3.2.0/dist/css/bootstrap.css.map",
           "dest": [
             "admin/css/core/lib/bootstrap/css/bootstrap.css.map"
           ]
         },
         {
-          "src": "bootstrap/dist/css/bootstrap.min.css",
+          "src": "bootstrap-3.2.0/dist/css/bootstrap.min.css",
           "dest": [
             "admin/css/core/lib/bootstrap/css/bootstrap.min.css"
           ]
         },
         {
-          "src": "bootstrap/dist/js/bootstrap.js",
+          "src": "bootstrap-3.2.0/dist/js/bootstrap.js",
           "dest": [
             "admin/js/core/lib/bootstrap/bootstrap.js"
           ]
@@ -173,7 +161,7 @@
       ],
       "folders": [
         {
-          "src": "bootstrap/dist/fonts",
+          "src": "bootstrap-3.2.0/dist/fonts",
           "dest": [
             "admin/css/core/lib/bootstrap/fonts"
           ]
@@ -183,13 +171,13 @@
     "bootstrap-switch": {
       "files": [
         {
-          "src": "bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css",
+          "src": "bootstrap-switch-3.0.2/dist/css/bootstrap3/bootstrap-switch.css",
           "dest": [
             "admin/css/core/lib/bootstrap/css/bootstrap.switch.css"
           ]
         },
         {
-          "src": "bootstrap-switch/dist/js/bootstrap-switch.js",
+          "src": "bootstrap-switch-3.0.2/dist/js/bootstrap-switch.js",
           "dest": [
             "admin/js/core/lib/bootstrap/bootstrap.switch.js"
           ]
@@ -199,7 +187,7 @@
     "angular-bootstrap": {
       "files": [
         {
-          "src": "angular-bootstrap/ui-bootstrap.js",
+          "src": "angular-bootstrap-0.11.2/ui-bootstrap.js",
           "dest": [
             "admin/js/core/lib/angular-lib/angular-bootstrap.js"
           ]
@@ -209,7 +197,7 @@
     "ngInfiniteScroll": {
       "files": [
         {
-          "src": "ngInfiniteScroll/build/ng-infinite-scroll.js",
+          "src": "ngInfiniteScroll-1.1.2/build/ng-infinite-scroll.js",
           "dest": [
             "admin/js/core/lib/ngInfiniteScroll/ngInfiniteScroll.js"
           ]
@@ -219,13 +207,13 @@
     "ng-flow": {
       "files": [
         {
-          "src": "flow.js/dist/flow.js",
+          "src": "flow.js-2.5.1/dist/flow.js",
           "dest": [
             "admin/js/core/lib/flow/flow.js"
           ]
         },
         {
-          "src": "ng-flow/dist/ng-flow.js",
+          "src": "ng-flow-2.5.1/dist/ng-flow.js",
           "dest": [
             "admin/js/core/lib/ng-flow/ng-flow.js"
           ]
@@ -235,73 +223,73 @@
     "tinymce": {
       "files": [
         {
-          "src": "tinymce/tinymce.min.js",
+          "src": "tinymce-4.0.0/tinymce.min.js",
           "dest": [
             "admin/js/core/lib/tinymce/a-tinymce.js"
           ]
         },
         {
-          "src": "tinymce/themes/modern/theme.min.js",
+          "src": "tinymce-4.0.0/themes/modern/theme.min.js",
           "dest": [
             "admin/js/core/lib/tinymce/themes/theme.js"
           ]
         },
         {
-          "src": "tinymce/skins/lightgray/skin.min.css",
+          "src": "tinymce-4.0.0/skins/lightgray/skin.min.css",
           "dest": [
             "admin/css/core/lib/tinymce/skins/lightgray/skin.min.css"
           ]
         },
         {
-          "src": "tinymce/skins/lightgray/content.min.css",
+          "src": "tinymce-4.0.0/skins/lightgray/content.min.css",
           "dest": [
             "admin/css/core/lib/tinymce/skins/lightgray/content.min.css"
           ]
         },
         {
-          "src": "tinymce/skins/lightgray/fonts/icomoon.eot",
+          "src": "tinymce-4.0.0/skins/lightgray/fonts/icomoon.eot",
           "dest": [
             "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon.eot"
           ]
         },
         {
-          "src": "tinymce/skins/lightgray/fonts/icomoon.svg",
+          "src": "tinymce-4.0.0/skins/lightgray/fonts/icomoon.svg",
           "dest": [
             "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon.svg"
           ]
         },
         {
-          "src": "tinymce/skins/lightgray/fonts/icomoon.ttf",
+          "src": "tinymce-4.0.0/skins/lightgray/fonts/icomoon.ttf",
           "dest": [
             "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon.ttf"
           ]
         },
         {
-          "src": "tinymce/skins/lightgray/fonts/icomoon.woff",
+          "src": "tinymce-4.0.0/skins/lightgray/fonts/icomoon.woff",
           "dest": [
             "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon.woff"
           ]
         },
         {
-          "src": "tinymce/skins/lightgray/fonts/icomoon-small.eot",
+          "src": "tinymce-4.0.0/skins/lightgray/fonts/icomoon-small.eot",
           "dest": [
             "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon-small.eot"
           ]
         },
         {
-          "src": "tinymce/skins/lightgray/fonts/icomoon-small.svg",
+          "src": "tinymce-4.0.0/skins/lightgray/fonts/icomoon-small.svg",
           "dest": [
             "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon-small.svg"
           ]
         },
         {
-          "src": "tinymce/skins/lightgray/fonts/icomoon-small.ttf",
+          "src": "tinymce-4.0.0/skins/lightgray/fonts/icomoon-small.ttf",
           "dest": [
             "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon-small.ttf"
           ]
         },
         {
-          "src": "tinymce/skins/lightgray/fonts/icomoon-small.woff",
+          "src": "tinymce-4.0.0/skins/lightgray/fonts/icomoon-small.woff",
           "dest": [
             "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon-small.woff"
           ]
@@ -311,7 +299,7 @@
     "angular-ui-tinymce": {
       "files": [
         {
-          "src": "angular-ui-tinymce/src/tinymce.js",
+          "src": "angular-ui-tinymce-0.0.5/src/tinymce.js",
           "dest": [
             "admin/js/core/lib/tinymce/b-angular-ui-tinymce.js"
           ]
@@ -321,13 +309,13 @@
     "cropper": {
       "files": [
         {
-          "src": "cropper/dist/cropper.js",
+          "src": "cropper-0.7.9/dist/cropper.js",
           "dest": [
             "admin/js/core/lib/cropper/cropper.js"
           ]
         },
         {
-          "src": "cropper/dist/cropper.css",
+          "src": "cropper-0.7.9/dist/cropper.css",
           "dest": [
             "admin/css/core/lib/cropper/cropper.css"
           ]
