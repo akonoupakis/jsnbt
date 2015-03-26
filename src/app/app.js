@@ -136,7 +136,7 @@ exports.init = function (env, hosts, module) {
 };
 
 exports.getBower = function () {
-    return require('../../bower.json');
+    return require('../web/bower.json');
 };
 
 exports.getConfig = function () {
