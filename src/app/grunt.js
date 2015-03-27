@@ -50,18 +50,19 @@ module.exports = function (grunt) {
             
             if (self.moduleNames.indexOf(packageItem) === -1) {
                 if (fs.lstatSync(server.getPath('src/pck/' + packageItem)).isDirectory()) {
-                    var nodeModulePackagePath = server.getPath('src/pck/' + packageItem + '/package.json');
-                    if (fs.existsSync(nodeModulePackagePath)) {
-                        var nodeModulePackage = require(nodeModulePackagePath);
+                    if (fs.existsSync(server.getPath('node_modules/' + packageItem))) {
+                        var nodeModulePackagePath = server.getPath('src/pck/' + packageItem + '/package.json');
+                        if (fs.existsSync(nodeModulePackagePath)) {
+                            var nodeModulePackage = require(nodeModulePackagePath);
 
-                        if (nodeModulePackage.main) {
-                            var nodeModuleIndexPath = server.getPath('src/pck/' + packageItem + '/' + nodeModulePackage.main);
-                            registerJsnbtConfig(nodeModuleIndexPath);
+                            if (nodeModulePackage.main) {
+                                var nodeModuleIndexPath = server.getPath('src/pck/' + packageItem + '/' + nodeModulePackage.main);
+                                registerJsnbtConfig(nodeModuleIndexPath);
+                                self.moduleNames.push(packageItem);
+                            }
                         }
                     }
                 }
-
-                self.moduleNames.push(packageItem);
             }
         });
     }
@@ -80,11 +81,10 @@ module.exports = function (grunt) {
                             if (nodeModulePackage.main) {
                                 var nodeModuleIndexPath = server.getPath('node_modules/' + packageItem + '/' + nodeModulePackage.main);
                                 registerJsnbtConfig(nodeModuleIndexPath);
+                                self.moduleNames.push(packageItem);
                             }
                         }
                     }
-
-                    self.moduleNames.push(packageItem);
                 }
             }
         });

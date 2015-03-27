@@ -16,11 +16,7 @@ module.exports = {
 
     route: function (ctx, next) {
         // intercept the routing process here, or trigger the next router        
-
-        if (ctx.uri.path === '/test')
-            ctx.error(500, 'not implemented');
-        else
-            next();
+        next();
     },
 
     routeSearch: function (ctx, next) {
