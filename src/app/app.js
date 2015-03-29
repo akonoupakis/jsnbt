@@ -40,19 +40,16 @@ exports.init = function (env, hosts, module) {
     this.logger.debug('initiating app');
 
     var errorFn = this.logger.error;
-    this.logger.error = function (err) {
-        this.debug(arguments.callee.caller.toString());
-        errorFn(err.toString());
-
-        fs.createWriteStream('error.log', { 'flags': 'a' }).write(moment().format() + ' ' + err.toString() + "\n");
+    this.logger.error = function (method, path, err) {
+        errorFn(method, path, err);
+        fs.appendFileSync('error.log', moment().format() + '-' + method + ' - ' + path + '\n' + err + '\n\n');
     };
 
     var fatalFn = this.logger.fatal;
     this.logger.fatal = function (err) {
         this.debug(arguments.callee.caller.toString());
-        fatalFn(err.toString());
-
-        fs.createWriteStream('fatal.log', { 'flags': 'a' }).write(moment().format() + ' ' + err.toString() + "\n");
+        fatalFn(method, path, err);
+        fs.appendFileSync('fatal.log', moment().format() + '-' + method + ' - ' + path + '\n' + err + '\n\n');
     };
 
     var coreModule = {
