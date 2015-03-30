@@ -315,7 +315,7 @@ module.exports = function(dpd) {
                     var languagePart = defaultLanguage;
                     var urlPart = uri.path;
 
-                    dpd.settings.get({ domain: 'core' }, function (settingNodes, settingNodesError) {
+                    dpd.settings.getCached({ domain: 'core' }, function (settingNodes, settingNodesError) {
                         if (settingNodesError)
                             throw settingNodesError;
                         else {

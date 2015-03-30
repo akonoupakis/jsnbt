@@ -190,7 +190,7 @@ module.exports = function (req, res) {
             completing = true;
             req._routed = true;
             res.writeHead(200, { "Content-Type": "application/json" });
-            res.write(JSON.stringify({ d: data }, null, app.dbg ? '\t' : ''));
+            res.write(JSON.stringify(data, null, app.dbg ? '\t' : ''));
             res.end();
         },
         redirect: function (url, mode) {

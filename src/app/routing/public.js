@@ -30,7 +30,7 @@ module.exports = function () {
                             
                             if (ctx.restricted) {
                           
-                                ctx.dpd.settings.get({ domain: 'core' }, function (settingNodes, settingNodesError) {
+                                ctx.dpd.settings.getCached({ domain: 'core' }, function (settingNodes, settingNodesError) {
                                     if (settingNodesError) {
                                         ctx.error(500, settingNodesError);
                                     }

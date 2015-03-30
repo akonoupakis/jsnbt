@@ -15,8 +15,19 @@ module.exports = {
     },
 
     route: function (ctx, next) {
-        // intercept the routing process here, or trigger the next router        
-        next();
+        if (ctx.uri.path == '/test') {
+            ctx.dpd.settings.getCached({}, function (res, err) {
+                if (err) {
+                    ctx.error(500, err);
+                }
+                else {
+                    ctx.json(res);
+                }
+            });
+        }
+        else {
+            next();
+        }
     },
 
     routeSearch: function (ctx, next) {
