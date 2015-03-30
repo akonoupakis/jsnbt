@@ -1,3 +1,9 @@
+## 1.0.99 (2015-13-31)
+
+Features:
+
+	- deployd data caching: dpd.collection.getCached() function caching by query, invalidated on POST/PUT/DELETE requests of the same collection.
+
 ## 1.0.97 (2015-03-26)
 
 Improvements:
