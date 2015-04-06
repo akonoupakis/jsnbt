@@ -91,6 +91,10 @@ module.exports = {
                     deployFiles(server.getPath('src/pck/' + name + '/web/admin'), server.getPath(folder + '/public/admin'));
                 }
 
+                if (fs.existsSync(server.getPath('src/pck/' + name + '/upd/data'))) {
+                    deployFiles(server.getPath('src/pck/' + name + '/upd/data'), server.getPath(folder + '/migrations/' + name));
+                }
+
                 var resourcesFolder = server.getPath('src/pck/' + name + '/dpd/resources');
                 if (fs.existsSync(resourcesFolder)) {
 

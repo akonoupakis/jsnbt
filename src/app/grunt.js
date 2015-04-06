@@ -32,12 +32,9 @@ module.exports = function (grunt) {
         }
     }
 
-    var packInfoPath = server.getPath('package.json');
-    if (fs.existsSync(packInfoPath)) {
-        var packInfo = require(packInfoPath);
-        if (packInfo.main) {
-            registerJsnbtConfig(server.getPath(packInfo.main))
-        }
+    var packInfo = require(server.getPath('package.json'));
+    if (packInfo.main) {
+        registerJsnbtConfig(server.getPath(packInfo.main))
     }
 
     registerJsnbtConfig(server.getPath('src/app/dbg/index.js'));
@@ -121,11 +118,17 @@ module.exports = function (grunt) {
             publicCopyfiles.push('files/' + fileGroup + '/');
         });
 
+
         var files = [{
             expand: true,
             cwd: 'src/dpd/',
             src: ['app.dpd', 'node_modules/**', 'resources/**'],
             dest: folder + '/'
+        }, {
+            expand: true,
+            cwd: 'src/upd/data/',
+            src: ['**'],
+            dest: folder + '/migrations/' + packInfo.name
         },
 		{
 		    expand: true,
@@ -298,7 +301,7 @@ module.exports = function (grunt) {
 		    dest: './' + folder + '/public/js/init.min.js'
 		}];
     };
-
+    
     grunt.registerMultiTask('mod', 'Install & pack modules', function () {
         var runFn = function (mod) {
             if (fs.existsSync(server.getPath(mod))) {                
@@ -483,6 +486,8 @@ module.exports = function (grunt) {
     fs.create('./src');
     fs.create('./src/app');
     fs.create('./src/dpd');
+    fs.create('./src/upd');
+    fs.create('./src/upd/data');
     fs.create('./src/pck');
     fs.create('./src/web');
     fs.create('./src/web/public');
@@ -495,6 +500,10 @@ module.exports = function (grunt) {
     fs.create('./src/web/public/tmpl');
 
     gruntConfig.pkg = grunt.file.readJSON('package.json');
+
+    gruntConfig.data = {
+        migrate: {}
+    },
 
     gruntConfig.mod = {
         bower: {
@@ -839,9 +848,7 @@ module.exports = function (grunt) {
     // 'jshint'
     grunt.registerTask('dev', ['mod:bower', 'mod:npm', 'bower:dev', 'env:dev', 'clean:dev', 'copy:dev', 'patch:dev', 'deploybower:dev', 'less:dev', 'preprocess:dev', 'clean:devLess', 'cleanempty:dev']);
     grunt.registerTask('prod', ['mod:bower', 'mod:npm', 'bower:prod', 'env:prod', 'clean:prod', 'copy:prod', 'patch:prod', 'deploybower:prod', 'less:prod', 'preprocess:prod', 'clean:prodLess', 'cssmin:prod', 'clean:prodMinified', 'uglify:prod', 'clean:prodUglified', 'cleanempty:prod']);
-
-    grunt.registerTask('upd-data', []);
-
+    
     grunt.registerTask('watch-public-css', ['watch:publicCss']);
     grunt.registerTask('watch-public-js', ['watch:publicJs']);
     grunt.registerTask('watch-public-img', ['watch:publicImg']);
