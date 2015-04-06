@@ -157,6 +157,7 @@ exports.update = function (env, hosts) {
     registerModules(self, module);
 
     var migrations = [];
+    var migrationsCount = 0;
 
     var migrationsPort = hosts.port - 1;
 
@@ -171,10 +172,46 @@ exports.update = function (env, hosts) {
     var runMigration = function (dpd) {
         var migration = migrations.shift();
         if (migration) {
-            console.log(migration.module, migration.name);
-            migration.fn.process(dpd, runMigration, error);
+            dpd.migrations.count({
+                module: migration.module,
+                name: migration.name
+            }, function (result, err) {
+                if (err) {
+                    runMigration(dpd);
+                }
+                else {
+                    if (result.count === 0) {
+                        migration.fn.process(dpd, function () {
+                            dpd.migrations.post({
+                                module: migration.module,
+                                name: migration.name,
+                                processedOn: new Date().getTime()
+                            }, function (response, err) {
+                                if (err) {
+                                    self.logger.error(err);
+                                    error(err);
+                                }
+                                else {
+                                    self.logger.info('migration processed: ' + migration.module + ', ' + migration.name);
+                                    migrationsCount++;
+                                    runMigration(dpd);
+                                }
+                            });                            
+                        }, function (err) {
+                            self.logger.error(err);
+                            error(err);
+                        });
+                    }
+                    else {
+                        runMigration(dpd);
+                    }
+                }
+            });
+            
+            
         }
         else {
+            self.logger.info('total migrations processed: ' + migrationsCount);
             done();
         }
     };
@@ -189,8 +226,6 @@ exports.update = function (env, hosts) {
         },
         events: {
             listening: function () {
-                self.logger.info('server is updating migrations on ' + hosts.host + ':' + migrationsPort);
-
                 var dpd = require('deployd/lib/internal-client').build(self.server);
 
                 var migrationsPath = self.root + '/migrations';
@@ -201,6 +236,7 @@ exports.update = function (env, hosts) {
                         var packageItemPath = migrationsPath + '/' + packageItem;
                         if (fs.lstatSync(server.getPath(packageItemPath)).isDirectory()) {
                             var packageMigrationItems = fs.readdirSync(server.getPath(packageItemPath));
+                            
                             _.each(packageMigrationItems, function (packageMigrationItem) {
                                 var packageMigrationItemPath = migrationsPath + '/' + packageItem + '/' + packageMigrationItem;
                                 if (fs.lstatSync(server.getPath(packageMigrationItemPath)).isFile()) {
@@ -213,15 +249,16 @@ exports.update = function (env, hosts) {
                                         });
                                     }
                                     catch (err) {
-                                        
+                                        self.logger.error(err);
                                     }
-
-                                    runMigration(dpd);
                                 }
                             });
                         }
                     });
                 }
+
+                self.logger.info('server is updating migrations on ' + hosts.host + ':' + migrationsPort);
+                runMigration(dpd);
             }
         },
         appPath: __dirname
