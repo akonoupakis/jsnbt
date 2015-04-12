@@ -3,7 +3,6 @@ var jsnbt = require('./jsnbt.js');
 var pack = require('./package.js');
 var fs = require('./util/fs.js');
 var path = require('path');
-var moment = require('moment');
 var server = require('server-root');
 var _ = require('underscore');
 
@@ -18,31 +17,6 @@ exports.logger = null;
 exports.server = null;
 
 exports.modules = [];
-
-var startLogging = function (self) { 
-    self.logger = require('custom-logger').config({ level: 0 });
-    self.logger.new({
-        debug: { event: "debug", level: 0, color: "yellow" },
-        info: { color: 'cyan', level: 1, event: 'info' },
-        notice: { color: 'yellow', level: 2, event: 'notice' },
-        warn: { color: 'yellow', level: 3, event: 'warning' },
-        error: { color: 'red', level: 4, event: 'error' },
-        fatal: { color: 'red', level: 5, event: 'fatal' }
-    });
-    self.logger.debug('initiating app');
-
-    var errorFn = self.logger.error;
-    self.logger.error = function (method, path, err) {
-        errorFn(method, path, err);
-        fs.appendFileSync('error.log', moment().format() + '-' + method + ' - ' + path + '\n' + err + '\n\n');
-    };
-
-    var fatalFn = self.logger.fatal;
-    self.logger.fatal = function (err) {
-        fatalFn(method, path, err);
-        fs.appendFileSync('fatal.log', moment().format() + '-' + method + ' - ' + path + '\n' + err + '\n\n');
-    };
-}
 
 var registerModules = function (self, module) {
     var coreModule = {
@@ -110,7 +84,8 @@ exports.init = function (env, hosts, module) {
     this.path = path.join(__dirname, this.root, 'public');
     this.dbg = env != 'prod';
 
-    startLogging(self);
+    self.logger = require('./logger.js')();
+    self.logger.debug('initiating app');
     
     registerModules(self, module);
     
@@ -152,7 +127,8 @@ exports.update = function (env, hosts) {
     this.path = path.join(__dirname, this.root, 'migrations');
     this.dbg = env != 'prod';
 
-    startLogging(self);
+    self.logger = require('./logger.js')();
+    self.logger.debug('initiating app');
 
     registerModules(self, module);
 
