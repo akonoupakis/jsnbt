@@ -56,19 +56,21 @@ module.exports = {
     },
 
     route: function (ctx, next) {
-        if (ctx.uri.path == '/test') {
-            ctx.dpd.settings.getCached({}, function (res, err) {
-                if (err) {
-                    ctx.error(500, err);
-                }
-                else {
-                    ctx.json(res);
-                }
-            });
-        }
-        else {
-            next();
-        }
+        //if (ctx.uri.path == '/test') {
+        //    ctx.dpd.settings.getCached({}, function (res, err) {
+        //        if (err) {
+        //            ctx.error(500, err);
+        //        }
+        //        else {
+        //            ctx.json(res);
+        //        }
+        //    });
+        //}
+        //else {
+        //    next();
+        //}
+
+        next();
     },
 
     routeSearch: function (ctx, next) {
