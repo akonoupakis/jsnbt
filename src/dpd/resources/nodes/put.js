@@ -1,6 +1,5 @@
 var auth = requireApp('auth.js');
 var node = requireApp('node.js')(dpd);
-var cache = requireApp('cache.js');
 
 var _ = require('underscore');
 
@@ -76,13 +75,11 @@ else {
             var hierarchyNodeIds = _.pluck(hierarchyNodes, 'id');
             self.hierarchy = hierarchyNodeIds;
 
-            cache.purge(self.id);
+            node.purgeCache(self.id);
 
             processChildren(self.domain, self.hierarchy);
         });
     }
-
-    cache.purge(self.id);
 
     emit('nodeUpdated', self);
 }

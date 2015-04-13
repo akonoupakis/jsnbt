@@ -1,12 +1,12 @@
 var auth = requireApp('auth.js');
-var cache = requireApp('cache.js');
+var node = requireApp('node.js')(dpd);
 
 var self = this;
 
 if (!internal && !auth.isAuthorized(me, 'nodes', 'D'))
     cancel('access denied', 500);
 
-cache.purge(self.id);
+node.purgeCache(self.id);
 
 if (!internal)
     emit('nodeDeleted', self);

@@ -1,5 +1,4 @@
 var app = require('./app.js');
-var cache = require('./cache.js');
 var jsnbt = require('./jsnbt.js');
 var entity = require('./entity.js');
 var parseUri = require('parseUri');
@@ -240,6 +239,23 @@ module.exports = function(dpd) {
     
     return {
 
+        purgeCache: function (nodeId) {
+            var self = this;
+
+            var urlCacheKeys = app.cache.getKeys('node.url');
+            var filteredUrlKeys = _.filter(urlCacheKeys, function (x) { return x.indexOf(nodeId) !== -1; });
+            _.each(filteredUrlKeys, function (key) {
+                app.cache.purge('node.url.' + key);
+            });
+
+            var activeCacheKeys = app.cache.getKeys('node.active');
+            var filteredActiveKeys = _.filter(activeCacheKeys, function (x) { return x.indexOf(nodeId) !== -1; });
+            _.each(filteredActiveKeys, function (key) {
+                app.cache.purge('node.active.' + key);
+            });
+
+        },
+
         getHierarchy: function (node, cb) {
 
             resolveHierarchy([node], node, cb);
@@ -404,117 +420,123 @@ module.exports = function(dpd) {
             }
 
             if (parentHierarchy.length > 0) {
-                var parentCacheKey = parentHierarchy.join('.');
-                if (cache.url[parentCacheKey]) {
-                    var cachedUrl = cache.url[parentCacheKey];
+                var parentCacheKey = parentHierarchy.join('-');
 
-                    var newUrl = {};
-                    extend(true, newUrl, node.seo);
-                    for (var langItem in node.seo) {
-                        var seoName = node.seo[langItem];
-                        if (cachedUrl[langItem]) {
-                            newUrl[langItem] = cachedUrl[langItem] + '/' + seoName
-                        }
-                        else {
-                            delete newUrl[langItem];
-                        }
-                    }
+                app.cache.get('node.url.' + parentCacheKey, function (parentCachedValue) {
 
-                    cb(newUrl);
-                }
-                else {
-                    dpd.nodes.get({ id: { $in: parentHierarchy } }, function (results, error) {
-                        if (error) {
-                            throw error;
-                        }
-                        else {
-                            var hierarchyNodes = [];
-                            var allHierarchyNodes = true;
-
-                            _.each(parentHierarchy, function (selfHierarchy) {
-                                var hNode = _.first(_.filter(results, function (x) { return x.id == selfHierarchy; }));
-                                if (hNode)
-                                    hierarchyNodes.push(hNode);
-                                else {
-                                    allHierarchyNodes = false;
-                                    return false;
-                                }
-                            });
-
-                            if (allHierarchyNodes) {
-                                var parentUrl = {};
-                                var firstNode = _.first(hierarchyNodes);
-
-                                var lastNode = _.last(hierarchyNodes);
-
-                                extend(true, parentUrl, lastNode.seo);
-
-                                var urlKeys = getEntity(node.entity).isSeoNamed() ? node.seo : lastNode.seo;
-                                
-                                for (var langItem in urlKeys) {
-                                    var langUrl = '';
-                                    var fullyResolved = true;
-                                    if (_.filter(jsnbt.languages, function (x) { return x.code === langItem; }).length > 0) {
-                                        _.each(hierarchyNodes, function (hnode) {
-                                            if (hnode.seo[langItem]) {
-                                                langUrl += '/' + hnode.seo[langItem];
-                                            }
-                                            else {
-                                                langUrl = '';
-                                                fullyResolved = false;
-                                                return false;
-                                            }
-                                        });
-                                    }
-
-                                    if (langUrl !== '' && fullyResolved) {
-                                        var resolvedLangUrl = '';
-                                        if (lastNode.domain === 'core' && jsnbt.localization && getEntity(lastNode.entity).isLocalized()) {
-                                            resolvedLangUrl += '/' + langItem;
-                                        }
-
-                                        resolvedLangUrl += langUrl;
-                                        parentUrl[langItem] = resolvedLangUrl;
-                                    }
-                                    else {
-                                        delete parentUrl[langItem];
-                                    }
-                                }
-
-                                var newUrl = {};                                
-                                cache.url[parentCacheKey] = parentUrl;
-
-                                var pack = _.first(_.filter(jsnbt.modules, function (x) {
-                                    return x.domain === firstNode.domain
-                                          && x.url && _.isObject(x.url) && _.isFunction(x.url.build);
-                                }));
-                                if (pack) {
-                                    extend(true, newUrl, parentUrl);
-                                    
-                                    pack.url.build({
-                                        nodes: hierarchyNodes,
-                                        node: node,
-                                        url: newUrl
-                                    }, cb);
-                                }
-                                else {
-                                    extend(true, newUrl, node.seo);
-                                    for (var langItem in node.seo) {
-                                        if (parentUrl[langItem])
-                                            newUrl[langItem] = parentUrl[langItem] + '/' + node.seo[langItem];
-                                        else
-                                            delete newUrl[langItem];
-                                    }
-
-                                    cb(newUrl);
-                                }
+                    if (parentCachedValue) {
+                        var newUrl = {};
+                        extend(true, newUrl, node.seo);
+                        for (var langItem in node.seo) {
+                            var seoName = node.seo[langItem];
+                            if (parentCachedValue[langItem]) {
+                                newUrl[langItem] = parentCachedValue[langItem] + '/' + seoName
                             }
                             else {
-                                cb({});
+                                delete newUrl[langItem];
                             }
                         }
-                    });
-                }
+
+                        cb(newUrl);
+                    }
+                    else {
+                        dpd.nodes.get({ id: { $in: parentHierarchy } }, function (results, error) {
+                            if (error) {
+                                throw error;
+                            }
+                            else {
+                                var hierarchyNodes = [];
+                                var allHierarchyNodes = true;
+
+                                _.each(parentHierarchy, function (selfHierarchy) {
+                                    var hNode = _.first(_.filter(results, function (x) { return x.id == selfHierarchy; }));
+                                    if (hNode)
+                                        hierarchyNodes.push(hNode);
+                                    else {
+                                        allHierarchyNodes = false;
+                                        return false;
+                                    }
+                                });
+
+                                if (allHierarchyNodes) {
+                                    var parentUrl = {};
+                                    var firstNode = _.first(hierarchyNodes);
+
+                                    var lastNode = _.last(hierarchyNodes);
+
+                                    extend(true, parentUrl, lastNode.seo);
+
+                                    var urlKeys = getEntity(node.entity).isSeoNamed() ? node.seo : lastNode.seo;
+
+                                    for (var langItem in urlKeys) {
+                                        var langUrl = '';
+                                        var fullyResolved = true;
+                                        if (_.filter(jsnbt.languages, function (x) { return x.code === langItem; }).length > 0) {
+                                            _.each(hierarchyNodes, function (hnode) {
+                                                if (hnode.seo[langItem]) {
+                                                    langUrl += '/' + hnode.seo[langItem];
+                                                }
+                                                else {
+                                                    langUrl = '';
+                                                    fullyResolved = false;
+                                                    return false;
+                                                }
+                                            });
+                                        }
+
+                                        if (langUrl !== '' && fullyResolved) {
+                                            var resolvedLangUrl = '';
+                                            if (lastNode.domain === 'core' && jsnbt.localization && getEntity(lastNode.entity).isLocalized()) {
+                                                resolvedLangUrl += '/' + langItem;
+                                            }
+
+                                            resolvedLangUrl += langUrl;
+                                            parentUrl[langItem] = resolvedLangUrl;
+                                        }
+                                        else {
+                                            delete parentUrl[langItem];
+                                        }
+                                    }
+
+                                    var newUrl = {};
+
+                                    app.cache.add('node.url.' + parentCacheKey, parentUrl, function (parentCachedValue) {
+
+                                        var pack = _.first(_.filter(jsnbt.modules, function (x) {
+                                            return x.domain === firstNode.domain
+                                                  && x.url && _.isObject(x.url) && _.isFunction(x.url.build);
+                                        }));
+                                        if (pack) {
+                                            extend(true, newUrl, parentUrl);
+
+                                            pack.url.build({
+                                                nodes: hierarchyNodes,
+                                                node: node,
+                                                url: newUrl
+                                            }, cb);
+                                        }
+                                        else {
+                                            extend(true, newUrl, node.seo);
+                                            for (var langItem in node.seo) {
+                                                if (parentUrl[langItem])
+                                                    newUrl[langItem] = parentUrl[langItem] + '/' + node.seo[langItem];
+                                                else
+                                                    delete newUrl[langItem];
+                                            }
+
+                                            cb(newUrl);
+                                        }
+
+                                    });
+                                }
+                                else {
+                                    cb({});
+                                }
+                            }
+                        });
+                    }
+
+                });
             }
             else {
 
@@ -556,84 +578,88 @@ module.exports = function(dpd) {
             }
 
             if (parentHierarchy.length > 0) {
-                var parentCacheKey = parentHierarchy.join('.');
-                if (cache.active[parentCacheKey]) {
-                    var cachedValue = cache.active[parentCacheKey];
+                var parentCacheKey = parentHierarchy.join('-');
 
-                    var newValue = {};
-                    extend(true, newValue, node.active);
-                    for (var langItem in node.active) {
-                        var seoName = node.active[langItem];
-                        if (cachedValue[langItem] && node.active[langItem]) {
-                            newValue[langItem] = true;
-                        }
-                        else {
-                            newValue[langItem] = false;
-                        }
-                    }
+                app.cache.get('node.active.' + parentCacheKey, function (parentCachedValue) {
 
-                    cb(newValue);
-                }
-                else {
-                    dpd.nodes.get({ id: { $in: parentHierarchy } }, function (results, error) {
-                        if (error) {
-                            throw error;
-                        }
-                        else {
-                            var hierarchyNodes = [];
-                            var allHierarchyNodes = true;
-
-                            _.each(parentHierarchy, function (selfHierarchy) {
-                                var hNode = _.first(_.filter(results, function (x) { return x.id == selfHierarchy; }));
-                                if (hNode)
-                                    hierarchyNodes.push(hNode);
-                                else {
-                                    allHierarchyNodes = false;
-                                    return false;
-                                }
-                            });
-
-                            if (allHierarchyNodes) {
-                                var parentActive = {};
-                                var firstNode = _.first(hierarchyNodes);
-
-                                var lastNode = _.last(hierarchyNodes);
-
-                                extend(true, parentActive, lastNode.active);
-
-                                for (var langItem in lastNode.active) {
-                                    var langActive = true;
-                                    if (_.filter(jsnbt.languages, function (x) { return x.code === langItem; }).length > 0) {
-                                        _.each(hierarchyNodes, function (hnode) {
-                                            if (!hnode.active[langItem]) {
-                                                langActive = false;
-                                                return false;
-                                            }
-                                        });
-                                    }
-
-                                    parentActive[langItem] = langActive;
-                                }
-
-                                var newActive = {};
-                                cache.active[parentCacheKey] = parentActive;
-
-                                extend(true, newActive, node.active);
-                                for (var langItem in node.active) {
-                                    if (parentActive[langItem] && node.active[langItem])
-                                        newActive[langItem] = true;
-                                    else
-                                        newActive[langItem] = false;
-                                }
-
-                                cb(newActive);
+                    if (parentCachedValue) {
+                        var newValue = {};
+                        extend(true, newValue, node.active);
+                        for (var langItem in node.active) {
+                            var seoName = node.active[langItem];
+                            if (parentCachedValue[langItem] && node.active[langItem]) {
+                                newValue[langItem] = true;
                             }
                             else {
-                                cb({});
+                                newValue[langItem] = false;
                             }
                         }
-                    });
-                }
+
+                        cb(newValue);
+                    }
+                    else {
+                        dpd.nodes.get({ id: { $in: parentHierarchy } }, function (results, error) {
+                            if (error) {
+                                throw error;
+                            }
+                            else {
+                                var hierarchyNodes = [];
+                                var allHierarchyNodes = true;
+
+                                _.each(parentHierarchy, function (selfHierarchy) {
+                                    var hNode = _.first(_.filter(results, function (x) { return x.id == selfHierarchy; }));
+                                    if (hNode)
+                                        hierarchyNodes.push(hNode);
+                                    else {
+                                        allHierarchyNodes = false;
+                                        return false;
+                                    }
+                                });
+
+                                if (allHierarchyNodes) {
+                                    var parentActive = {};
+                                    var firstNode = _.first(hierarchyNodes);
+
+                                    var lastNode = _.last(hierarchyNodes);
+
+                                    extend(true, parentActive, lastNode.active);
+
+                                    for (var langItem in lastNode.active) {
+                                        var langActive = true;
+                                        if (_.filter(jsnbt.languages, function (x) { return x.code === langItem; }).length > 0) {
+                                            _.each(hierarchyNodes, function (hnode) {
+                                                if (!hnode.active[langItem]) {
+                                                    langActive = false;
+                                                    return false;
+                                                }
+                                            });
+                                        }
+
+                                        parentActive[langItem] = langActive;
+                                    }
+
+                                    var newActive = {};
+
+                                    app.cache.add('node.active.' + parentCacheKey, parentActive, function (parentCachedValue) {
+                                        extend(true, newActive, node.active);
+                                        for (var langItem in node.active) {
+                                            if (parentActive[langItem] && node.active[langItem])
+                                                newActive[langItem] = true;
+                                            else
+                                                newActive[langItem] = false;
+                                        }
+
+                                        cb(newActive);
+                                    });                                    
+                                }
+                                else {
+                                    cb({});
+                                }
+                            }
+                        });
+                    }
+
+                });
             }
             else {
                 var newActive = {};

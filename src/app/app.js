@@ -83,12 +83,14 @@ exports.init = function (env, hosts, module) {
     this.root = env == 'prod' ? 'dist' : 'dev';
     this.path = path.join(__dirname, this.root, 'public');
     this.dbg = env != 'prod';
-
+    
     self.logger = require('./logger.js')();
     self.logger.debug('initiating app');
     
-    registerModules(self, module);
+    self.cache = require('./cache.js')();
     
+    registerModules(self, module);
+
     this.server = deployd({
         port: hosts.port,
         env: env === 'prod' ? 'production' : 'development',
@@ -126,10 +128,12 @@ exports.update = function (env, hosts) {
     this.root = env == 'prod' ? 'dist' : 'dev';
     this.path = path.join(__dirname, this.root, 'migrations');
     this.dbg = env != 'prod';
-
+    
     self.logger = require('./logger.js')();
     self.logger.debug('initiating app');
 
+    self.cache = require('./cache.js')();
+    
     registerModules(self, module);
 
     var migrations = [];
