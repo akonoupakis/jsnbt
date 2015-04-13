@@ -99,6 +99,7 @@ exports.init = function (env, hosts, module) {
             port: hosts.db.port,
             name: hosts.db.name
         },
+        cache: self.cache,
         events: {
             request: function (req, res) {
                 var router = new require('./router.js')();
@@ -204,6 +205,7 @@ exports.update = function (env, hosts) {
             port: hosts.db.port,
             name: hosts.db.name
         },
+        cache: self.cache,
         events: {
             listening: function () {
                 var dpd = require('deployd/lib/internal-client').build(self.server);
