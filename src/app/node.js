@@ -242,16 +242,18 @@ module.exports = function(dpd) {
         purgeCache: function (nodeId) {
             var self = this;
 
-            var urlCacheKeys = app.cache.getKeys('node.url');
-            var filteredUrlKeys = _.filter(urlCacheKeys, function (x) { return x.indexOf(nodeId) !== -1; });
-            _.each(filteredUrlKeys, function (key) {
-                app.cache.purge('node.url.' + key);
+            app.cache.getKeys('node.url', function (urlCacheKeys) {
+                var filteredUrlKeys = _.filter(urlCacheKeys, function (x) { return x.indexOf(nodeId) !== -1; });
+                _.each(filteredUrlKeys, function (key) {
+                    app.cache.purge('node.url.' + key);
+                });
             });
 
-            var activeCacheKeys = app.cache.getKeys('node.active');
-            var filteredActiveKeys = _.filter(activeCacheKeys, function (x) { return x.indexOf(nodeId) !== -1; });
-            _.each(filteredActiveKeys, function (key) {
-                app.cache.purge('node.active.' + key);
+            app.cache.getKeys('node.active', function (activeCacheKeys) {
+                var filteredActiveKeys = _.filter(activeCacheKeys, function (x) { return x.indexOf(nodeId) !== -1; });
+                _.each(filteredActiveKeys, function (key) {
+                    app.cache.purge('node.active.' + key);
+                });
             });
 
         },
