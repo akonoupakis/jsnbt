@@ -56,21 +56,26 @@ module.exports = {
     },
 
     route: function (ctx, next) {
-        //if (ctx.uri.path == '/test') {
-        //    ctx.dpd.settings.getCached({}, function (res, err) {
-        //        if (err) {
-        //            ctx.error(500, err);
-        //        }
-        //        else {
-        //            ctx.json(res);
-        //        }
-        //    });
-        //}
-        //else {
-        //    next();
-        //}
+        if (ctx.uri.path == '/test') {
 
-        next();
+            ctx.dpd.settings.get('62e0ed500548799a', function (res, err) {
+                if (err)
+                    ctx.error(500, err);
+                else
+                {
+                    ctx.dpd.settings.get({}, function (res2, err2) {
+                        if (err2)
+                            ctx.error(500, err2);
+                        else
+                            ctx.json({ data: res });
+                    });
+                }
+            });
+
+        }
+        else {
+            next();
+        }
     },
 
     routeSearch: function (ctx, next) {

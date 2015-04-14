@@ -1,4 +1,4 @@
-var fs = require('./util/fs.js');
+var fs = require('../util/fs.js');
 var moment = require('moment');
 
 module.exports = function () {

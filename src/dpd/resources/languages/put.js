@@ -1,9 +1,4 @@
-var auth = requireApp('auth.js');
-
 var self = this;
-
-if (!internal && !auth.isAuthorized(me, 'languages', 'U'))
-    cancel('access denied', 500);
 
 if (changed('code')) {
     dpd.languages.get({ code: self.code, id: { $nin: [self.id] } }, function (matched, matchedError) {
@@ -32,6 +27,3 @@ if (changed('default')) {
         });
     }
 }
-
-if (!internal)
-    emit('languageUpdated', self);

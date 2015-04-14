@@ -7,8 +7,6 @@ if (me && me.id == self.id) {
     if (changed('roles') && !_.isEmpty(_.difference(previous.roles, self.roles))) {
         error('roles', 'cannot assign own roles');
     }
-    if (!internal)
-        emit('userUpdated', self);
 }
 else {
     if (!internal && !auth.isAuthorized(me, 'users', 'U'))
@@ -24,8 +22,5 @@ else {
                 error('roles', 'access denied for role "' + role + '"');
             }
         });
-
-        if (!internal)
-            emit('userUpdated', self);
     }
 }

@@ -1,4 +1,3 @@
-var auth = requireApp('auth.js');
 var node = requireApp('node.js')(dpd);
 
 var _ = require('underscore');
@@ -35,9 +34,6 @@ if (internal) {
         processChildren(this.domain, this.hierarchy);
 }
 else {
-    if (!auth.isAuthorized(me, 'nodes', 'U'))
-        cancel('access denied', 500);
-
     self.modifiedOn = new Date().getTime();
 
     var hierarchyChange = false;
@@ -80,6 +76,4 @@ else {
             processChildren(self.domain, self.hierarchy);
         });
     }
-
-    emit('nodeUpdated', self);
 }

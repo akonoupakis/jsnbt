@@ -10,8 +10,8 @@ var anyUsers = function (cb) {
         cb(app.anyUsers);
     }
     else {
-        dpd.users.get({}, function (users) {
-            app.anyUsers = users.length > 0;
+        dpd.users.count({}, function (result) {
+            app.anyUsers = result.count > 0;
             cb(app.anyUsers);
         });
     }
@@ -28,9 +28,6 @@ anyUsers(function (anyUsersResult) {
         }
 
         app.anyUsers = true;
-
-        if (!internal)
-            emit('userCreated', self);
     }
     else {
         if (!internal && !auth.isAuthorized(me, 'users', 'C'))
@@ -44,9 +41,6 @@ anyUsers(function (anyUsersResult) {
                 error('roles', 'access denied for role "' + role + '"');
             }
         });
-
-        if (!internal)
-            emit('userCreated', self);
     }
 
 });

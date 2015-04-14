@@ -1,12 +1,8 @@
-var auth = requireApp('auth.js');
 var node = requireApp('node.js')(dpd);
 
 var _ = require('underscore');
 
 var self = this;
-
-if (!internal && !auth.isAuthorized(me, 'nodes', 'C'))
-    cancel('access denied', 500);
     
 var entity = requireApp('entity.js')(self.entity);
 if (!entity)
@@ -33,6 +29,3 @@ self.modifiedOn = new Date().getTime();
 node.getHierarchy(self, function (hierarchyNodes) {
     self.hierarchy = _.pluck(hierarchyNodes, 'id');
 });
-    
-if (!internal)
-    emit('nodeCreated', self);

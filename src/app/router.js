@@ -32,7 +32,8 @@ routers.push({
     }
 });
 
-module.exports = function () {
+module.exports = function (server) {
+
     return {
         process: function (req, res) {
             var ctx = require('./context.js')(req, res);
@@ -132,13 +133,13 @@ module.exports = function () {
                             }
                         };
 
-                        app.server.sessions.createSession(req.cookies.get('sid'), function (err, session) {
+                        server.sessions.createSession(req.cookies.get('sid'), function (err, session) {
 
                             if (err) {
                                 throw err;
                             } else {
                                 
-                                dpd = require('deployd/lib/internal-client').build(app.server, session, req.stack);
+                                dpd = require('deployd/lib/internal-client').build(server, session, req.stack);
                                 
                                 if ((session.data && session.data.uid) && !session.user) {
                                     

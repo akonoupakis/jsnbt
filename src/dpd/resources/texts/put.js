@@ -1,9 +1,4 @@
-var auth = requireApp('auth.js');
-
 var self = this;
-
-if (!internal && !auth.isAuthorized(me, 'texts', 'U'))
-    cancel('access denied', 500);
 
 if (changed('key')) {
     dpd.texts.get({
@@ -18,6 +13,3 @@ if (changed('key')) {
                 cancel('combination of group and key already exists', 400);
     });
 }
-
-if (!internal)
-    emit('textUpdated', self);

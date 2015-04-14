@@ -6,10 +6,6 @@ var _ = require('underscore');
 
 var self = this;
 
-if (!internal && !auth.isAuthorized(me, 'nodes', 'R')) {
-    cancel('access denied', 500);
-}
-
 if (!internal) {
     if (self.id) {
         node.buildUrl(self, function (response) {

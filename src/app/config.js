@@ -168,6 +168,7 @@ module.exports = {
         }]
     }, {
         collection: 'users',
+        auth: false,
         roles: [{
             role: 'admin',
             crud: ['C', 'R', 'U']

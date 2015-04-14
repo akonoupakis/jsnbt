@@ -1,1 +1,0 @@
-cancel('access denied', 500);

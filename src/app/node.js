@@ -242,17 +242,19 @@ module.exports = function(dpd) {
         purgeCache: function (nodeId) {
             var self = this;
 
-            app.cache.getKeys('node.url', function (urlCacheKeys) {
+            var cache = app.getCache();
+
+            cache.getKeys('node.url', function (urlCacheKeys) {
                 var filteredUrlKeys = _.filter(urlCacheKeys, function (x) { return x.indexOf(nodeId) !== -1; });
                 _.each(filteredUrlKeys, function (key) {
-                    app.cache.purge('node.url.' + key);
+                    cache.purge('node.url.' + key);
                 });
             });
 
-            app.cache.getKeys('node.active', function (activeCacheKeys) {
+            cache.getKeys('node.active', function (activeCacheKeys) {
                 var filteredActiveKeys = _.filter(activeCacheKeys, function (x) { return x.indexOf(nodeId) !== -1; });
                 _.each(filteredActiveKeys, function (key) {
-                    app.cache.purge('node.active.' + key);
+                    cache.purge('node.active.' + key);
                 });
             });
 
@@ -424,7 +426,9 @@ module.exports = function(dpd) {
             if (parentHierarchy.length > 0) {
                 var parentCacheKey = parentHierarchy.join('-');
 
-                app.cache.get('node.url.' + parentCacheKey, function (parentCachedValue) {
+                var cache = app.getCache();
+
+                cache.get('node.url.' + parentCacheKey, function (parentCachedValue) {
 
                     if (parentCachedValue) {
                         var newUrl = {};
@@ -502,7 +506,7 @@ module.exports = function(dpd) {
 
                                     var newUrl = {};
 
-                                    app.cache.add('node.url.' + parentCacheKey, parentUrl, function (parentCachedValue) {
+                                    cache.add('node.url.' + parentCacheKey, parentUrl, function (parentCachedValue) {
 
                                         var pack = _.first(_.filter(jsnbt.modules, function (x) {
                                             return x.domain === firstNode.domain
@@ -582,7 +586,9 @@ module.exports = function(dpd) {
             if (parentHierarchy.length > 0) {
                 var parentCacheKey = parentHierarchy.join('-');
 
-                app.cache.get('node.active.' + parentCacheKey, function (parentCachedValue) {
+                var cache = app.getCache();
+
+                cache.get('node.active.' + parentCacheKey, function (parentCachedValue) {
 
                     if (parentCachedValue) {
                         var newValue = {};
@@ -642,7 +648,7 @@ module.exports = function(dpd) {
 
                                     var newActive = {};
 
-                                    app.cache.add('node.active.' + parentCacheKey, parentActive, function (parentCachedValue) {
+                                    cache.add('node.active.' + parentCacheKey, parentActive, function (parentCachedValue) {
                                         extend(true, newActive, node.active);
                                         for (var langItem in node.active) {
                                             if (parentActive[langItem] && node.active[langItem])

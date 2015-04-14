@@ -61,9 +61,6 @@ var isUserAuthorized = function (user, section, permission) {
             }
         });
     }
-    else {
-        result = true;
-    }
 
     return result;
 }
