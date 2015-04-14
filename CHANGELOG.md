@@ -1,3 +1,13 @@
+## 1.0.100 (unreleashed)
+
+Features
+
+	- Buintin cache provider (memory based). can be overriden on application.init();
+	- dpd pre & post events fed upon server options. 
+	- dpd authorization engine upon pre events. Add { auth: false } to the config.permissions collection to avoid the main auth check.
+	- dpd action logging upon post events
+	- Messager infrastructure for sending mail and sms messages
+
 ## 1.0.99 (2015-13-31)
 
 Features:
