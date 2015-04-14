@@ -115,6 +115,13 @@ exports.parse = function (ctx, tmpl, model) {
         html: html
     };
 
+    if ((ctx.uri.query.dbg || '').toLowerCase() === 'true' && app.dbg) {
+        var injectedDbgHtml = '\t<script type="text/javascript">console.log("dbg uri", JSON.parse(\'' + JSON.stringify(ctx.uri, null, '') + '\')); </script>\n' + 
+            '\t<script type="text/javascript">console.log("dbg watch", JSON.parse(\'' + JSON.stringify(ctx.timer.get(), null, '') + '\')); </script>';
+
+        postparsingContext.html = postparsingContext.html.replace('</body>', injectedDbgHtml +'\n</body>');
+    }
+
     if (!ctx.halt) {
         var postparser = require('./processors/postparser.js')(ctx);
         postparser.process(postparsingContext);

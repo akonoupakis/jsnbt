@@ -7,6 +7,8 @@ Features
 	- dpd authorization engine upon pre events. Add { auth: false } to the config.permissions collection to avoid the main auth check.
 	- dpd action logging upon post events
 	- Messager infrastructure for sending mail and sms messages
+	- Data migrations
+	- Stopwatch timer in ctx
 
 ## 1.0.99 (2015-13-31)
 

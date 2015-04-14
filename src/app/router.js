@@ -132,18 +132,24 @@ module.exports = function (server) {
                                 first.route(ctxInteral, next);
                             }
                         };
-
+                        
+                        ctx.timer.start('session built');
                         server.sessions.createSession(req.cookies.get('sid'), function (err, session) {
+                            ctx.timer.stop('session built');
 
                             if (err) {
                                 throw err;
                             } else {
-                                
+                        
+                                ctx.timer.start('dpd internal client built');
                                 dpd = require('deployd/lib/internal-client').build(server, session, req.stack);
-                                
+                                ctx.timer.stop('dpd internal client built');
+
                                 if ((session.data && session.data.uid) && !session.user) {
-                                    
+                                
+                                    ctx.timer.start('current user retrieval');
                                     dpd.users.get(session.data.uid, function (user, err) {
+                                        ctx.timer.stop('current user retrieval');
                                         if (user) {
                                             session.user = user;
                                             continueRequest(ctx, req, res, session, dpd);

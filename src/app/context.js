@@ -68,12 +68,15 @@ module.exports = function (req, res) {
 
     uri = new parseUri(('http://' + app.hosts.host + ':' + app.hosts.port + uri.path).toLowerCase() + (uri.query !== '' ? '?' + uri.query : ''));
 
+    var timer = require('./timer.js')('context: ' + uri.relative);
+    timer.start();
+
     if (uri.path === '/' || uri.path.toLowerCase() === '/index.html')
         uri.path = '/';
     else {
         uri.path = _.str.rtrim(uri.path, '/').toLowerCase();
     }
-
+    
     uri.parts = _.str.trim(uri.path, '/').split('/');
     uri.first = uri.parts.length > 0 ? _.first(uri.parts).toLowerCase() : '';
     uri.last = uri.parts.length > 0 ? _.last(uri.parts).toLowerCase() : '';
@@ -81,6 +84,10 @@ module.exports = function (req, res) {
     req.cookies = new cookies(req, res);
 
     var completing = false;
+
+    var stopTimer = function () {
+        timer.stop();
+    };
 
     var ctx = {
         req: req,
@@ -91,6 +98,8 @@ module.exports = function (req, res) {
         cookies: req.cookies,
 
         user: undefined,
+
+        timer: timer,
 
         node: undefined,
         pointer: undefined,
@@ -166,27 +175,37 @@ module.exports = function (req, res) {
                 this.end();
             }
         },
-        view: function () {
-            if (completing)
-                return;
-
-            completing = true;
-            req._routed = true;
-
-            if (shouldRenderCrawled(this, req, res))
-                renderCrawled(ctx);
+        view: function () {            
+            if ((ctx.uri.query.dbg || '').toLowerCase() === 'true' && (ctx.uri.query.type || '').toLowerCase() === 'json' && app.dbg) {
+                ctx.json({
+                    uri: ctx.uri,
+                    timer: ctx.timer.get()
+                });
+            }
             else {
-                if (_.str.startsWith(this.template, '/'))
-                    viewRenderer.render(this);
-                else
-                    if (applyTemplate(this))
+                if (completing)
+                    return;
+
+                completing = true;
+                req._routed = true;
+
+                if (shouldRenderCrawled(this, req, res))
+                    renderCrawled(ctx);
+                else {
+                    if (_.str.startsWith(this.template, '/'))
                         viewRenderer.render(this);
+                    else
+                        if (applyTemplate(this))
+                            viewRenderer.render(this);
+                }
             }
         },
         json: function (data) {
             if (completing)
                 return;
 
+            stopTimer();
+            
             completing = true;
             req._routed = true;
             res.writeHead(200, { "Content-Type": "application/json" });
@@ -196,6 +215,8 @@ module.exports = function (req, res) {
         redirect: function (url, mode) {
             if (completing)
                 return;
+
+            stopTimer();
 
             completing = true;
             req._routed = true;
@@ -209,6 +230,10 @@ module.exports = function (req, res) {
             res.write(obj);
         },
         end: function () {
+            timer.stop();
+
+            stopTimer();
+
             req._routed = true;
             res.end();
         }

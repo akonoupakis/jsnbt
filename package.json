@@ -25,7 +25,7 @@
   "files": [
     "src/app/**",
     "src/dpd/**",
-	"src/upd/**",
+    "src/upd/**",
     "src/web/admin/**",
     "scripts/**",
     "bower.json"

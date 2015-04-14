@@ -18,8 +18,10 @@ module.exports = function () {
             if (ctx.uri.path === '/') {
                 try {
                     var node = require('../node.js')(ctx.dpd);
-                    
+
+                    ctx.timer.start('node retrieval');
                     node.resolveUrl(ctx.uri.url, function (resolved) {
+                        ctx.timer.stop('node retrieval');
                         if (resolved && resolved.page && resolved.isActive()) {
                             
                             if (!ctx.restricted && jsnbt.restricted) {
