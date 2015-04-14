@@ -2,7 +2,7 @@
 
 Features
 
-	- Buintin cache provider (memory based). can be overriden on application.init();
+	- Builtin cache provider (memory based). can be overriden on application.init();
 	- dpd pre & post events fed upon server options. 
 	- dpd authorization engine upon pre events. Add { auth: false } to the config.permissions collection to avoid the main auth check.
 	- dpd action logging upon post events

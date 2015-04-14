@@ -4,47 +4,6 @@ module.exports = {
 
     init: function (application) {
         app = application;
-
-        //var cacheKey1 = 'node.alpha';
-        //var cacheKey2 = 'node.vita';
-
-
-        //app.cache.add(cacheKey1, 'cacheKey1Value', function (cacheKey1Response) {
-        //    console.log('cacheKey1added', cacheKey1Response);
-
-        //    app.cache.add(cacheKey2, 'cacheKey2Value', function (cacheKey2Response) {
-        //        console.log('cacheKey2added', cacheKey2Response);
-
-
-        //        app.cache.get(cacheKey1, function (cacheKey1GotResponse) {
-        //            console.log('cacheKey1got', cacheKey1GotResponse);
-
-        //            app.cache.get(cacheKey2, function (cacheKey2GotResponse) {
-        //                console.log('cacheKey2got', cacheKey2GotResponse);
-
-        //                app.cache.purge('node', function (purgeResponse) {
-
-        //                    console.log('purged');
-
-        //                    app.cache.get(cacheKey1, function (cacheKey1Got2Response) {
-        //                        console.log('cacheKey1got', cacheKey1Got2Response);
-
-        //                        app.cache.get(cacheKey2, function (cacheKey2Got2Response) {
-        //                            console.log('cacheKey2got', cacheKey2Got2Response);
-        //                        });
-
-        //                    });
-
-        //                });
-
-        //            });
-
-        //        });
-
-        //    });
-
-        //});
-
     },
 
     getConfig: function () {
@@ -56,22 +15,27 @@ module.exports = {
     },
 
     route: function (ctx, next) {
-        if (ctx.uri.path == '/test') {
+        
+        if (ctx.uri.first === 'dbg' && ctx.uri.parts.length === 3) {
 
-            //ctx.dpd.settings.get('62e0ed500548799a', function (res, err) {
-            //    if (err)
-            //        ctx.error(500, err);
-            //    else
-            //    {
-            //        ctx.dpd.settings.get({}, function (res2, err2) {
-            //            if (err2)
-            //                ctx.error(500, err2);
-            //            else
-                            ctx.json(ctx.timer.get());
-            //        });
-            //    }
-            //});
+            var taskService = ctx.uri.parts[1];
+            var taskMethod = ctx.uri.parts[2];
 
+            var service = undefined;
+
+            try {
+                service = require('./tests/' + taskService + '.js')();
+            }
+            catch (err) {
+                ctx.error(404);
+            }
+
+            if (service && typeof (service[taskMethod]) === 'function') {
+                service[taskMethod](ctx, next);
+            }
+            else {
+                ctx.error(404);
+            }
         }
         else {
             next();
