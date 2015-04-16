@@ -1,7 +1,10 @@
 var app = require('./src/app/app.js');
-var dbgIndex = require('./src/app/dbg/index.js');
+var dbgSite = require('./src/dbg/index.js');
 
-app.init('dev', {
+app.init({}, dbgSite);
+
+app.createServer({
+    env: 'dev',
     host: 'localhost',
     port: 3000,
     db: {
@@ -9,5 +12,4 @@ app.init('dev', {
         port: 27017,
         name: 'jsnbt-dev'
     }
-}, dbgIndex);
-app.start('jsnbt dev');
+}).start();

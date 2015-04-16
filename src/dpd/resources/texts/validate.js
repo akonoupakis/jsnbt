@@ -1,5 +1,3 @@
-var jsnbt = requireApp('jsnbt.js');
-
 var _ = require('underscore');
 
 var self = this;

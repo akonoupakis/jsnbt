@@ -1,16 +1,14 @@
-var app = require('./app.js');
-var jsnbt = require('./jsnbt.js');
-var entity = require('./entity.js');
+var app = require('../app.js');
 var parseUri = require('parseUri');
 var extend = require('extend');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
 
-module.exports = function(dpd) {
+module.exports = function(server, dpd) {
 
     var getEntity = function (name) {
-        return entity(name);
+        return require('./entityMngr.js')(server, name);
     };
 
     var resolveHierarchy = function (nodes, node, cb) {
@@ -34,7 +32,7 @@ module.exports = function(dpd) {
 
     var getDefaultLanguage = function (cb) {
 
-        if (jsnbt.localization) {
+        if (server.jsnbt.localization) {
             var defaultLanguage = 'en';
 
             dpd.languages.get({ active: true, "default": true }, function (defaultLanguages, defaultLanguagesError) {
@@ -56,7 +54,7 @@ module.exports = function(dpd) {
 
     var getActiveLanguages = function (cb) {
 
-        if (jsnbt.localization) {
+        if (server.jsnbt.localization) {
             dpd.languages.get({ active: true }, function (dbLanguages, dbLanguagesError) {
                 if (dbLanguagesError)
                     throw dbLanguagesError;
@@ -78,7 +76,7 @@ module.exports = function(dpd) {
                 throw new Error('pointed node not found');
             else {
                 var pointedSeoNames = _.str.trim(urlPath, '/') !== '' ? _.str.trim(urlPath, '/').split('/') : [];
-                var pack = _.first(_.filter(jsnbt.modules, function (x) {
+                var pack = _.first(_.filter(server.jsnbt.modules, function (x) {
                     return x.domain === pointedNode.domain
                       && x.url && _.isObject(x.url) && _.isFunction(x.url.resolve);
                 }));
@@ -102,7 +100,7 @@ module.exports = function(dpd) {
 
                         _.each(pointedSeoNames, function (pointedSeoName) {
                             var matchedPointedSeoNode = _.first(_.filter(seoNodes, function (x) {
-                                return x.seo[jsnbt.localization ? returnObj.language : 'en'].toLowerCase() === pointedSeoName.toLowerCase() &&
+                                return x.seo[server.jsnbt.localization ? returnObj.language : 'en'].toLowerCase() === pointedSeoName.toLowerCase() &&
                                     x.parent === pointedLoopParentId &&
                                     x.domain === pointedNode.domain;
                             }));
@@ -142,7 +140,7 @@ module.exports = function(dpd) {
         var seoNames = _.str.trim(url, '/').split('/');
 
         var seoNamesQuery = {};
-        seoNamesQuery['seo.' + (jsnbt.localization ? language : 'en')] = { $in: seoNames };
+        seoNamesQuery['seo.' + (server.jsnbt.localization ? language : 'en')] = { $in: seoNames };
 
         dpd.nodes.get(seoNamesQuery, function (urlSeoNodes, urlSeoNodesError) {
             if (urlSeoNodesError)
@@ -155,7 +153,7 @@ module.exports = function(dpd) {
 
                 _.each(seoNames, function (seoName) {
                     var matchedSeoNode = _.first(_.filter(urlSeoNodes, function (x) {
-                        return x.seo[jsnbt.localization ? language : 'en'].toLowerCase() === seoName.toLowerCase() &&
+                        return x.seo[server.jsnbt.localization ? language : 'en'].toLowerCase() === seoName.toLowerCase() &&
                             x.parent === loopParentId &&
                             x.domain === 'core';
                     }));
@@ -242,7 +240,7 @@ module.exports = function(dpd) {
         purgeCache: function (nodeId) {
             var self = this;
 
-            var cache = app.getCache();
+            var cache = server.cache;
 
             cache.getKeys('node.url', function (urlCacheKeys) {
                 var filteredUrlKeys = _.filter(urlCacheKeys, function (x) { return x.indexOf(nodeId) !== -1; });
@@ -381,7 +379,7 @@ module.exports = function(dpd) {
                     });
                 }
                 else {
-                    if (jsnbt.localization) {
+                    if (server.jsnbt.localization) {
                         getActiveLanguages(function (activeLanguages) {
                             if (activeLanguages.length > 0) {
                                 var parts = _.str.trim(uri.path, '/').split('/');
@@ -426,7 +424,7 @@ module.exports = function(dpd) {
             if (parentHierarchy.length > 0) {
                 var parentCacheKey = parentHierarchy.join('-');
 
-                var cache = app.getCache();
+                var cache = server.cache;
 
                 cache.get('node.url.' + parentCacheKey, function (parentCachedValue) {
 
@@ -477,7 +475,7 @@ module.exports = function(dpd) {
                                     for (var langItem in urlKeys) {
                                         var langUrl = '';
                                         var fullyResolved = true;
-                                        if (_.filter(jsnbt.languages, function (x) { return x.code === langItem; }).length > 0) {
+                                        if (_.filter(server.jsnbt.languages, function (x) { return x.code === langItem; }).length > 0) {
                                             _.each(hierarchyNodes, function (hnode) {
                                                 if (hnode.seo[langItem]) {
                                                     langUrl += '/' + hnode.seo[langItem];
@@ -492,7 +490,7 @@ module.exports = function(dpd) {
 
                                         if (langUrl !== '' && fullyResolved) {
                                             var resolvedLangUrl = '';
-                                            if (lastNode.domain === 'core' && jsnbt.localization && getEntity(lastNode.entity).isLocalized()) {
+                                            if (lastNode.domain === 'core' && server.jsnbt.localization && getEntity(lastNode.entity).isLocalized()) {
                                                 resolvedLangUrl += '/' + langItem;
                                             }
 
@@ -508,7 +506,7 @@ module.exports = function(dpd) {
 
                                     cache.add('node.url.' + parentCacheKey, parentUrl, function (parentCachedValue) {
 
-                                        var pack = _.first(_.filter(jsnbt.modules, function (x) {
+                                        var pack = _.first(_.filter(server.jsnbt.modules, function (x) {
                                             return x.domain === firstNode.domain
                                                   && x.url && _.isObject(x.url) && _.isFunction(x.url.build);
                                         }));
@@ -546,7 +544,7 @@ module.exports = function(dpd) {
             }
             else {
 
-                var pack = _.first(_.filter(jsnbt.modules, function (x) { return x.domain === node.domain && typeof (x.build) === 'function'; }));
+                var pack = _.first(_.filter(server.jsnbt.modules, function (x) { return x.domain === node.domain && typeof (x.build) === 'function'; }));
                 if (pack) {
                     pack.build({
                         nodes: [],
@@ -560,7 +558,7 @@ module.exports = function(dpd) {
                     for (var langItem in node.seo) {
                         var seoName = node.seo[langItem];
                         var resolvedLangUrl = '';
-                        if (node.domain === 'core' && jsnbt.localization && getEntity(node.entity).isLocalized()) {
+                        if (node.domain === 'core' && server.jsnbt.localization && getEntity(node.entity).isLocalized()) {
                             resolvedLangUrl += '/' + langItem;
                         }
                         resolvedLangUrl += '/' + seoName;
@@ -586,7 +584,7 @@ module.exports = function(dpd) {
             if (parentHierarchy.length > 0) {
                 var parentCacheKey = parentHierarchy.join('-');
 
-                var cache = app.getCache();
+                var cache = server.cache;
 
                 cache.get('node.active.' + parentCacheKey, function (parentCachedValue) {
 
@@ -634,7 +632,7 @@ module.exports = function(dpd) {
 
                                     for (var langItem in lastNode.active) {
                                         var langActive = true;
-                                        if (_.filter(jsnbt.languages, function (x) { return x.code === langItem; }).length > 0) {
+                                        if (_.filter(server.jsnbt.languages, function (x) { return x.code === langItem; }).length > 0) {
                                             _.each(hierarchyNodes, function (hnode) {
                                                 if (!hnode.active[langItem]) {
                                                     langActive = false;

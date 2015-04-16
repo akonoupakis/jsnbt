@@ -24,6 +24,7 @@
   "main": "src/app/app.js",
   "files": [
     "src/app/**",
+	"src/lib/**",
     "src/dpd/**",
     "src/upd/**",
     "src/web/admin/**",

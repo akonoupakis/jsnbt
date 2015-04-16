@@ -1,6 +1,5 @@
-var auth = requireApp('auth.js');
-var node = requireApp('node.js')(dpd);
-var jsnbt = requireApp('jsnbt.js');
+var authMngr = requireApp('cms/authMngr.js')(server);
+var node = requireApp('cms/nodeMngr.js')(server, dpd);
 
 var _ = require('underscore');
 
@@ -16,7 +15,7 @@ if (!internal) {
             self.enabled = response;
         });
 
-        if (!auth.isInRole(me, 'admin')) {
+        if (!authMngr.isInRole(me, 'admin')) {
             hide('roles');
             hide('robots');
             hide('template');

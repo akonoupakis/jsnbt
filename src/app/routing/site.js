@@ -1,28 +1,20 @@
 var app = require('../app.js');
-var _ = require('underscore');
 
-module.exports = function () {
-  
+var SiteRouter = function (server) {
+    
     return {
-        canRoute: function (ctx) {
-            var moduleRouter = _.find(app.modules, function (x) {
-                return x.public === true && x.route && _.isFunction(x.route);
-            });
 
-            return moduleRouter !== undefined;
-        },
-        
         route: function (ctx, next) {
-            var moduleRouter = _.find(app.modules, function (x) {
-                return x.public === true && x.route && _.isFunction(x.route);
-            });
-
-            if (moduleRouter) {
-                moduleRouter.route(ctx, next);
+            if (app.modules.public && typeof (app.modules.public.route) === 'function') {
+                app.modules.public.route(server, ctx, next);
             }
             else {
                 next();
             }
         }
+
     };
+
 };
+
+module.exports = SiteRouter;

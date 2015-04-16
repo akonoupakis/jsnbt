@@ -1,9 +1,11 @@
+var authMngr = requireApp('cms/authMngr.js')(server);
+
 var self = this;
 
 if (!internal) {
 
     if (self.id) {
-        if (!auth.isInRole(me, 'admin')) {
+        if (!authMngr.isInRole(me, 'admin')) {
             hide('createdOn');
             hide('modifiedOn');
         }

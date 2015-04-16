@@ -43,7 +43,7 @@ var getDiff = function(earlierDate, laterDate) {
     return oDiff;
 }
 
-module.exports = function (name) {
+var Timer = function (name) {
 
     var watches = [];
 
@@ -120,3 +120,5 @@ module.exports = function (name) {
     }
 
 };
+
+module.exports = Timer;

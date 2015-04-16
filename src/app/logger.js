@@ -1,7 +1,4 @@
-var fs = require('../util/fs.js');
-var moment = require('moment');
-
-module.exports = function () {
+module.exports = function (scope) {
 
     var logger = require('custom-logger').config({ level: 0 });
     logger.new({
@@ -15,13 +12,13 @@ module.exports = function () {
     
     var errorFn = logger.error;
     logger.error = function (method, path, err) {
-        fs.appendFileSync('error.log', moment().format() + '-' + method + ' - ' + path + '\n' + err + '\n\n');
+        require('./logging/fileLogger.js')('error').log(method, path, err);        
         errorFn(method, path, err);
     };
 
     var fatalFn = logger.fatal;
-    logger.fatal = function (err) {
-        fs.appendFileSync('fatal.log', moment().format() + '-' + method + ' - ' + path + '\n' + err + '\n\n');
+    logger.fatal = function (method, path, err) {
+        require('./logging/fileLogger.js')('fatal').log(method, path, err);
         fatalFn(method, path, err);
     };
 

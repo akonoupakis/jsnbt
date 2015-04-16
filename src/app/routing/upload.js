@@ -1,8 +1,8 @@
 var app = require('../app.js');
-var auth = require('../auth.js');
 var fs = require('fs');
-var error = require('../rendering/error.js');
-var jsnbt = require('../jsnbt.js');
+var path = require('path');
+var util = require('util');
+var Stream = require('stream').Stream;
 var _ = require('underscore');
 
 _.str = require('underscore.string');
@@ -11,12 +11,11 @@ var formidable = require('formidable'),
     http = require('http'),
     util = require('util');
 
-module.exports = function () {
+var UploadRouter = function (server) {
+
+    var authMngr = require('../cms/authMngr.js')(server);
 
     return {
-        canRoute: function (ctx) {
-            return ctx.uri.first === 'jsnbt-upload';
-        },
 
         route: function (ctx, next) {
             if (ctx.uri.first === 'jsnbt-upload') {
@@ -25,7 +24,7 @@ module.exports = function () {
 
                 if (ctx.method === 'POST') {
 
-                    if (!auth.isInRole(ctx.user, 'admin')) {
+                    if (!authMngr.isInRole(ctx.user, 'admin')) {
                         ctx.error(401, null, false);
                     }
                     else {
@@ -72,11 +71,8 @@ module.exports = function () {
             }
         }
     };
-};
 
-var path = require('path'),
-    util = require('util'),
-    Stream = require('stream').Stream;
+};
 
 var flow = function (temporaryFolder) {
     var $ = this;
@@ -285,3 +281,5 @@ var flow = function (temporaryFolder) {
 
     return $;
 };
+
+module.exports = UploadRouter;

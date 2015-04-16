@@ -1,10 +1,10 @@
-var node = requireApp('node.js')(dpd);
+var node = requireApp('cms/nodeMngr.js')(server, dpd);
 
 var _ = require('underscore');
 
 var self = this;
     
-var entity = requireApp('entity.js')(self.entity);
+var entity = requireApp('cms/entityMngr.js')(server, self.entity);
 if (!entity)
     error('entity', 'not a known entity');
 

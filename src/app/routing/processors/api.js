@@ -1,10 +1,9 @@
 var app = require('../../app.js');
-var jsnbt = require('../../jsnbt.js');
 var _ = require('underscore');
 
-module.exports = function (domain) {
+var ApiRouteProcessor = function (server, domain) {
     
-    var moduleRouter = _.first(_.filter(app.modules, function (x) {
+    var moduleRouter = _.first(_.filter(app.modules.all, function (x) {
         return x.domain.toLowerCase() === domain.toLowerCase()
             && x.routeApi && _.isFunction(x.routeApi);
     }));
@@ -20,9 +19,11 @@ module.exports = function (domain) {
                 return nextRouter(ctx);
             }
 
-            moduleRouter.routeApi(ctx, serviceName, fnName, fields, files, next);
+            moduleRouter.routeApi(server, ctx, serviceName, fnName, fields, files, next);
         }
 
     } : undefined
 
 };
+
+module.exports = ApiRouteProcessor;

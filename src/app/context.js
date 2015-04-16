@@ -1,9 +1,7 @@
 var app = require('./app.js');
-var auth = require('./auth.js');
-var jsnbt = require('./jsnbt.js');
-var errorRenderer = require('./rendering/error.js');
-var viewRenderer = require('./rendering/view.js');
-var crawler = require('./crawl/phantom.js');
+var error = require('./error.js');
+var view = require('./view.js');
+var crawler = require('../lib/phantom.js');
 var parseUri = require('parseUri');
 var cookies = require('cookies');
 var jsuri = require('jsuri');
@@ -11,64 +9,67 @@ var _ = require('underscore');
 
 _.str = require('underscore.string');
 
-var applyTemplate = function (ctxInternal) {
-    var installedTemplate = _.first(_.filter(jsnbt.templates, function (x) { return x.id === ctxInternal.template; }));
-    if (installedTemplate) {
-        ctxInternal.template = installedTemplate.html;
-        return true;
-    }
-    else {
-        ctxInternal.error(500, 'text/html', 'template not installed: ' + ctxInternal.template);
-        return false;
-    }
-};
+var Context = function (server, req, res) {
 
-var shouldRenderCrawled = function (ctx, req, res) {
-    var prerender = false;
+    var authMngr = require('./cms/authMngr.js')(server);
 
-    if (req.headers["user-agent"]) {
-        var userAgent = req.headers["user-agent"];
-        var searchbots = ['google', 'googlebot', 'yahoo', 'baiduspider', 'bingbot', 'yandexbot', 'teoma'];
-        _.each(searchbots, function (searchbot) {
-            if (userAgent.toLowerCase().indexOf(searchbot) !== -1) {
-                prerender = true;
-                return false;
-            }
-        });
-    }
-
-    if (!prerender)
-        if (ctx.uri.query.prerender)
-            if (auth.isInRole(ctx.user, 'admin'))
-                prerender = true;
-
-    return prerender;
-};
-
-var renderCrawled = function (ctx) {
-    var targetUrl = new jsuri(_.str.rtrim(ctx.uri.getBaseHref(), '/') + ctx.uri.url).deleteQueryParam('prerender').toString();
-
-    crawler.crawl(targetUrl, function (crawlErr, crawlData) {
-        if (crawlErr) {
-            ctx.error(500, crawlErr);
+    var applyTemplate = function (ctx) {
+        var installedTemplate = _.first(_.filter(server.jsnbt.templates, function (x) { return x.id === ctx.template; }));
+        if (installedTemplate) {
+            ctx.template = installedTemplate.html;
+            return true;
         }
         else {
-            ctx.writeHead(200, { "Content-Type": "text/html" });
-            ctx.write(crawlData);
-            ctx.end();
+            ctx.error(500, 'text/html', 'template not installed: ' + ctx.template);
+            return false;
         }
-    });
-};
+    };
 
-module.exports = function (req, res) {
-    var uri = new parseUri('http://' + app.hosts.host + ':' + app.hosts.port + req.url);
+    var shouldRenderCrawled = function (ctx) {
+        var prerender = false;
+
+        if (ctx.req.headers["user-agent"]) {
+            var userAgent = ctx.req.headers["user-agent"];
+            var searchbots = ['google', 'googlebot', 'yahoo', 'baiduspider', 'bingbot', 'yandexbot', 'teoma'];
+            _.each(searchbots, function (searchbot) {
+                if (userAgent.toLowerCase().indexOf(searchbot) !== -1) {
+                    prerender = true;
+                    return false;
+                }
+            });
+        }
+
+        if (!prerender)
+            if (ctx.uri.query.prerender)
+                if (authMngr.isInRole(ctx.user, 'admin'))
+                    prerender = true;
+
+        return prerender;
+    };
+
+    var renderCrawled = function (ctx) {
+        var targetUrl = new jsuri(_.str.rtrim(ctx.uri.getBaseHref(), '/') + ctx.uri.url).deleteQueryParam('prerender').toString();
+
+        crawler.crawl(targetUrl, function (crawlErr, crawlData) {
+            if (crawlErr) {
+                ctx.error(500, crawlErr);
+            }
+            else {
+                ctx.writeHead(200, { "Content-Type": "text/html" });
+                ctx.write(crawlData);
+                ctx.end();
+            }
+        });
+    };
+
+    var uri = new parseUri('http://' + server.host + ':' + server.port + req.url);
 
     if (!_.str.endsWith(uri.path, '/'))
         uri.path += '/';
 
-    uri = new parseUri(('http://' + app.hosts.host + ':' + app.hosts.port + uri.path).toLowerCase() + (uri.query !== '' ? '?' + uri.query : ''));
+    uri = new parseUri(('http://' + server.host + ':' + server.port + uri.path).toLowerCase() + (uri.query !== '' ? '?' + uri.query : ''));
 
-    var timer = require('./timer.js')('context: ' + uri.relative);
+    var timer = require('./logging/timer.js')('context: ' + uri.relative);
     timer.start();
 
     if (uri.path === '/' || uri.path.toLowerCase() === '/index.html')
@@ -88,7 +89,7 @@ module.exports = function (req, res) {
     var stopTimer = function () {
         timer.stop();
     };
-
+    
     var ctx = {
         req: req,
         res: res,
@@ -162,15 +163,17 @@ module.exports = function (req, res) {
                 html = true;
 
             if (html) {
-                errorRenderer.render(this, code, stack);
+                error(server, this, code, stack);
             }
             else {
-                res.writeHead(code, { "Content-Type": 'application/text' });
+                res.writeHead(code, { "Content-Type": 'text/plain' });
 
                 if (typeof (stack) === 'string')
                     this.write(stack);
                 else if (typeof (stack) === typeof (Error))
                     this.write(stack.toString());
+                else
+                    this.write(code.toString());
 
                 this.end();
             }
@@ -188,15 +191,20 @@ module.exports = function (req, res) {
 
                 completing = true;
                 req._routed = true;
-
+                
                 if (shouldRenderCrawled(this, req, res))
                     renderCrawled(ctx);
                 else {
                     if (_.str.startsWith(this.template, '/'))
-                        viewRenderer.render(this);
-                    else
-                        if (applyTemplate(this))
-                            viewRenderer.render(this);
+                        view(server, this);
+                    else {
+                        if (applyTemplate(this)) {
+                            view(server, this);
+                        }
+                        else {
+                            error(server, this, 500, 'template not found: ' + this.template);
+                        }
+                    }
                 }
             }
         },
@@ -241,4 +249,7 @@ module.exports = function (req, res) {
     };
 
     return ctx;
+
 };
+
+module.exports = Context;

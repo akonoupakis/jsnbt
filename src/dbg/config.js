@@ -1,10 +1,5 @@
 module.exports = {
     
-    domain: 'public',
-    browsable: false,
-
-    public: true,
-
     ssl: true,
 
     // locale: 'el',

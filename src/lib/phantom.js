@@ -1,5 +1,3 @@
-var app = require('../app.js');
-var jsnbt = require('../jsnbt.js');
 var path = require('path')
 var childProcess = require('child_process')
 

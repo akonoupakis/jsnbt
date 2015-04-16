@@ -1,10 +1,8 @@
-var jsnbt = requireApp('jsnbt.js');
-
 var _ = require('underscore');
 
 var self = this;
 
-var layout = _.find(jsnbt.layouts, function (x) {
+var layout = _.find(server.jsnbt.layouts, function (x) {
     return x.id === self.layout;
 });
 if (!layout)

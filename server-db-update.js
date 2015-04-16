@@ -1,6 +1,9 @@
 var app = require('./src/app/app.js');
 
-app.update('dev', {
+app.init();
+
+var server = app.createServer({
+    env: 'dev',
     host: 'localhost',
     port: 2999,
     db: {
@@ -8,4 +11,14 @@ app.update('dev', {
         port: 27017,
         name: 'jsnbt-dev'
     }
+});
+
+server.start(function () {
+    var migrator = require('./src/app/migrator.js')(server);
+    migrator.process(function () {
+        process.exit(0);
+    }, function (err) {
+        throw err;
+        process.exit(1);
+    });
 });

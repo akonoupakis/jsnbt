@@ -1,5 +1,4 @@
-var fs = require('./util/fs.js');
-var jsnbt = require('./jsnbt.js');
+var fs = require('./fs.js');
 var pack = require('./package.js');
 var path = require('path');
 var bower = require('bower');
@@ -13,6 +12,8 @@ module.exports = function (grunt) {
 
     var self = this;
 
+    var jsnbt = require('../app/jsnbt.js')();
+
     this.modules = [];
     
     var registerJsnbtConfig = function (indexPath) {
@@ -21,11 +22,7 @@ module.exports = function (grunt) {
             if (packObject) {
                 var moduleConfig = typeof (packObject.getConfig) === 'function' ? packObject.getConfig() : {};
 
-                if (moduleConfig.domain)
-                    jsnbt.register(moduleConfig.domain, packObject);
-
-                packObject.domain = moduleConfig.domain;
-                packObject.public = moduleConfig.public;
+                jsnbt.register(packObject.domain, packObject);
 
                 self.modules.push(packObject);
             }
@@ -37,8 +34,8 @@ module.exports = function (grunt) {
         registerJsnbtConfig(server.getPath(packInfo.main))
     }
 
-    registerJsnbtConfig(server.getPath('src/app/dbg/index.js'));
-
+    registerJsnbtConfig(server.getPath('src/dbg/index.js'));
+    
     this.moduleNames = [];
 
     if (fs.existsSync(server.getPath('src/pck'))) {
@@ -126,7 +123,7 @@ module.exports = function (grunt) {
             dest: folder + '/'
         }, {
             expand: true,
-            cwd: 'src/upd/data/',
+            cwd: 'src/dat/',
             src: ['**'],
             dest: folder + '/migrations/' + packInfo.name
         },
@@ -500,11 +497,7 @@ module.exports = function (grunt) {
     fs.create('./src/web/public/tmpl');
 
     gruntConfig.pkg = grunt.file.readJSON('package.json');
-
-    gruntConfig.data = {
-        migrate: {}
-    },
-
+    
     gruntConfig.mod = {
         bower: {
             force: true

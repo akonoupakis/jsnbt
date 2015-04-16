@@ -1,4 +1,4 @@
-var fs = require('./util/fs.js');
+var fs = require('./fs.js');
 var path = require('path');
 var server = require('server-root');
 var _ = require('underscore');

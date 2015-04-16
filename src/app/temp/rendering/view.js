@@ -1,7 +1,7 @@
 var app = require('../app.js');
 var jsnbt = require('../jsnbt.js');
 var error = require('./error.js');
-var fs = require('../util/fs.js');
+var fs = require('fs');
 var tmplParser = require('../parsing/tmpl.js');
 var _ = require('underscore');
 
@@ -12,7 +12,8 @@ exports.render = function (ctx) {
         error.render(ctx, 500, 'template not defined');
     }
     else {
-        var tmplFilePath = '../' + app.root + '/public' + ctx.template;
+        var tmplFilePath = '../' + app.directory + '/public' + ctx.template;
+        
         if (fs.existsSync(tmplFilePath)) {
             var tmplContent = fs.readFileSync(tmplFilePath, 'utf-8');
 

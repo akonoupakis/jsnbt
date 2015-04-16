@@ -1,4 +1,4 @@
-var node = requireApp('node.js')(dpd);
+var node = requireApp('cms/nodeMngr.js')(server, dpd);
 
 var _ = require('underscore');
 
@@ -27,7 +27,7 @@ var processChildren = function (domain, hierarchy) {
     }
 };
 
-var entity = requireApp('entity.js')(self.entity);
+var entity = requireApp('cms/entityMngr.js')(server, self.entity);
 
 if (internal) {
     if (entity.hasProperty('parent'))

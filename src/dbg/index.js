@@ -2,6 +2,9 @@
 
 module.exports = {
 
+    domain: 'public',
+    public: true,
+
     init: function (application) {
         app = application;
     },
@@ -14,7 +17,7 @@ module.exports = {
         return require('./bower.json');
     },
 
-    route: function (ctx, next) {
+    route: function (server, ctx, next) {
         
         if (ctx.uri.first === 'dbg' && ctx.uri.parts.length === 3) {
 
@@ -24,7 +27,7 @@ module.exports = {
             var service = undefined;
 
             try {
-                service = require('./tests/' + taskService + '.js')();
+                service = require('./tests/' + taskService + '.js')(server);
             }
             catch (err) {
                 ctx.error(404);
@@ -42,7 +45,7 @@ module.exports = {
         }
     },
 
-    routeSearch: function (ctx, next) {
+    routeSearch: function (server, ctx, next) {
 
         var notimp = true;
 
@@ -55,11 +58,11 @@ module.exports = {
 
     },
 
-    routeApi: function (ctx, serviceName, fnName, fields, files, next) {
+    routeApi: function (server, ctx, serviceName, fnName, fields, files, next) {
 
         var service = null;
         try {
-            service = require('./api/' + serviceName + '.js');
+            service = require('./api/' + serviceName + '.js')(server);
         }
         catch (e) { }
 
@@ -74,11 +77,11 @@ module.exports = {
 
     view: {
 
-        preparse: function (ctx, preparsingContext) {
+        preparse: function (server, ctx, preparsingContext) {
             // change here the preparsingContext.model and the preparsingContext.tmpl before rendering
         },
 
-        postparse: function (ctx, postparsingContext) {
+        postparse: function (server, ctx, postparsingContext) {
             // change here the postparsingContext.html upon render
         }
 

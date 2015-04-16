@@ -1,0 +1,171 @@
+var app = require('./app.js');
+var fs = require('fs');
+var extend = require('extend');
+var _ = require('underscore');
+
+_.str = require('underscore.string');
+
+var Parser = function (server) {
+
+    var findJsFiles = function (paths, files, isAdmin) {
+        if (!_.str.endsWith(paths, '/'))
+            paths += '/';
+
+        if (fs.existsSync(paths)) {
+            var filesInternal = fs.readdirSync(paths);
+            filesInternal.forEach(function (file) {
+
+                if (fs.lstatSync(paths + file).isFile()) {
+
+                    var targetFile = (paths + file);
+                    if (isAdmin)
+                        targetFile = targetFile.substring(targetFile.indexOf('/public/admin/') + '/public/admin/'.length);
+                    else
+                        targetFile = targetFile.substring(targetFile.indexOf('/public/') + '/public/'.length);
+
+                    files.push(targetFile);
+                }
+            });
+
+            filesInternal.forEach(function (file) {
+                if (fs.lstatSync(paths + file).isDirectory()) {
+                    findJsFiles(paths + file + '/', files, isAdmin);
+                }
+            });
+        }
+    }
+
+    return {
+
+        parse: function (ctx, tmpl, model) {
+            
+            var mdl = {
+                baseHref: ctx.uri.getBaseHref(),
+                language: ctx.language || 'en',
+                meta: {
+                    title: '',
+                    keywords: '',
+                    description: ''
+                },
+                params: [],
+                robots: ''
+            };
+
+            extend(true, mdl.meta, ctx.meta);
+            extend(true, mdl, model);
+    
+            mdl.params = mdl.params || [];
+
+            mdl.params = _.union([{
+                name: 'layout',
+                content: ctx.layout
+            }, {
+                name: 'page',
+                content: (ctx.node || {}).id
+            }, {
+                name: 'pointer',
+                content: (ctx.pointer || {}).id
+            }], ctx.params);
+
+            var isAdmin = ctx.uri.first === 'admin';
+
+            if (isAdmin) {
+                mdl.baseHref += 'admin/';
+            }
+
+            var robotNames = [];
+            for (var robotName in ctx.robots) {
+                if (ctx.robots[robotName] === true)
+                    robotNames.push(robotName);
+            }
+
+            if (robotNames.length > 0)
+                mdl.robots = robotNames.join(',');
+
+            mdl.js = {};
+
+            mdl.scripts = isAdmin ? server.jsnbt.scripts : [];
+            
+            if (isAdmin) {
+                var appFiles = [];
+                findJsFiles('../' + app.directory + '/public/admin/js/core/app/', appFiles, true);
+
+                _.each(server.jsnbt.modules.all, function (pack) {
+                    if (pack.domain !== 'core') {
+                        if (fs.existsSync('../' + app.directory + '/public/admin/js/' + pack.domain + '/app/')) {
+                            findJsFiles('../' + app.directory + '/public/admin/js/' + pack.domain + '/app/', appFiles, true);
+                        }
+                    }
+                });
+
+                mdl.js.app = appFiles;
+
+
+                var libFiles = [];
+                findJsFiles('../' + app.directory + '/public/admin/js/core/lib/', libFiles, true);
+
+                _.each(server.jsnbt.modules.all, function (pack) {
+                    if (pack.domain !== 'core') {
+                        if (fs.existsSync('../' + app.directory + '/public/admin/js/' + pack.domain + '/lib/')) {
+                            findJsFiles('../' + app.directory + '/public/admin/js/' + pack.domain + '/lib/', libFiles, true);
+                        }
+                    }
+                });
+
+                mdl.js.lib = libFiles;
+            }
+            else {
+                var appFiles = [];
+                findJsFiles('../' + app.directory + '/public/js/app/', appFiles, false);
+                mdl.js.app = appFiles;
+
+                var libFiles = [];
+                findJsFiles('../' + app.directory + '/public/js/lib/', libFiles, false);
+                mdl.js.lib = libFiles;
+            }
+    
+            if (!mdl.meta.title || mdl.meta.title === '') {
+                mdl.meta.title = app.title;
+            }
+            else {
+                mdl.meta.title = mdl.meta.title;
+            }
+
+            var preparsingContext = {
+                model: mdl,
+                tmpl: tmpl
+            };
+
+            if (!ctx.halt) {
+                var preparser = require('./parsing/preparser.js')(server, ctx);
+                preparser.process(preparsingContext);
+            }
+
+            html = _.template(preparsingContext.tmpl, preparsingContext.model);
+
+            var postparsingContext = {
+                html: html
+            };
+
+       
+
+            if ((ctx.uri.query.dbg || '').toLowerCase() === 'true' && app.dbg) {
+                var injectedDbgHtml = '\t<script type="text/javascript">console.log("dbg uri", JSON.parse(\'' + JSON.stringify(ctx.uri, null, '') + '\')); </script>\n' + 
+                    '\t<script type="text/javascript">console.log("dbg watch", JSON.parse(\'' + JSON.stringify(ctx.timer.get(), null, '') + '\')); </script>';
+
+                postparsingContext.html = postparsingContext.html.replace('</body>', injectedDbgHtml +'\n</body>');
+            }
+
+            if (!ctx.halt) {
+                var postparser = require('./parsing/postparser.js')(server, ctx);
+                postparser.process(postparsingContext);
+            }
+
+            return postparsingContext.html;
+        }
+
+    };
+
+};
+
+module.exports = Parser;

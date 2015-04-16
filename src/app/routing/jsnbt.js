@@ -1,13 +1,10 @@
 var app = require('../app.js');
-var auth = require('../auth.js');
-var jsnbt = require('../jsnbt.js');
 
-module.exports = function () {
+var JsnbtRouter = function (server) {
+
+    var logger = require('../logger.js')(this);
 
     return {
-        canRoute: function (ctx) {
-            return ctx.uri.path === '/jsnbt.js' || ctx.uri.path === '/admin/jsnbt.js';
-        },
 
         route: function (ctx, next) {
             if (ctx.uri.path === '/jsnbt.js' || ctx.uri.path === '/admin/jsnbt.js') {
@@ -18,13 +15,13 @@ module.exports = function () {
                     try {
                         ctx.writeHead(200, { "Content-Type": "application/javascript" });
 
-                        var jsnbtValue = ctx.uri.first === 'jsnbt.js' ? jsnbt.getClientData('public') : jsnbt.getClientData('admin');
+                        var jsnbtValue = ctx.uri.first === 'jsnbt.js' ? server.jsnbt.getClientData('public') : server.jsnbt.getClientData('admin');
                         ctx.write('var jsnbt = ' + JSON.stringify(jsnbtValue, null, app.dbg ? '\t' : ''));
                         ctx.end();
                     }
                     catch (err) {
-                        app.logger.error(err);
-                        ctx.error(500, err);
+                        logger.error(ctx.req.method, ctx.req.url, err);
+                        ctx.error(500, err, 'application/text');
                     }
                 }
             }
@@ -32,5 +29,9 @@ module.exports = function () {
                 next();
             }
         }
+
     };
+
 };
+
+module.exports = JsnbtRouter;

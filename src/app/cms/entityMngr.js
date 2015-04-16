@@ -1,17 +1,15 @@
-var app = require('./app.js');
-var jsnbt = require('./jsnbt.js');
-
+var app = require('../app.js');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
 
-var getEntity = function (name) {
+var EntityManager = function(server, name) {
 
-    return _.first(_.filter(jsnbt.entities, function (x) { return x.name === name; }));
+    var getEntity = function (name) {
 
-};
+        return _.first(_.filter(server.jsnbt.entities, function (x) { return x.name === name; }));
 
-module.exports = function(name) {
+    };
 
     var entity = getEntity(name);
     if (!entity) {
@@ -45,3 +43,5 @@ module.exports = function(name) {
     }
 
 };
+
+module.exports = EntityManager;

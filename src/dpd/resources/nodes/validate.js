@@ -1,12 +1,10 @@
-var jsnbt = requireApp('jsnbt.js');
-
 var _ = require('underscore');
 
 var self = this;
 
-var knownLanguageCodes = _.pluck(jsnbt.languages, 'code');
+var knownLanguageCodes = _.pluck(server.jsnbt.languages, 'code');
 
-var entity = requireApp('entity.js')(self.entity);
+var entity = requireApp('cms/entityMngr.js')(server, self.entity);
 
 if (!entity) {
     error('entity', 'not a known entity');

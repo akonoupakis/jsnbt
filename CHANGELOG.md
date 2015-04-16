@@ -9,6 +9,7 @@ Features
 	- Messager infrastructure for sending mail and sms messages
 	- Data migrations
 	- Stopwatch timer in ctx
+	- Test tasks on /dbg/{service}/{fn} endpoints through the dbg/index.js main route
 
 ## 1.0.99 (2015-13-31)
 

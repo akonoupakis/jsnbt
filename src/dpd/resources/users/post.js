@@ -1,5 +1,5 @@
 var app = requireApp('app.js');
-var auth = requireApp('auth.js');
+var authMngr = requireApp('cms/authMngr.js')(server);
 
 var _ = require('underscore');
 
@@ -30,14 +30,14 @@ anyUsers(function (anyUsersResult) {
         app.anyUsers = true;
     }
     else {
-        if (!internal && !auth.isAuthorized(me, 'users', 'C'))
+        if (!internal && !authMngr.isAuthorized(me, 'users', 'C'))
             cancel('access denied', 500);
         else if (self.roles.length === 0) {
             error('roles', 'at least one role is required');
         }
 
         _.each(self.roles, function (role) {
-            if (!auth.isInRole(me, role)) {
+            if (!authMngr.isInRole(me, role)) {
                 error('roles', 'access denied for role "' + role + '"');
             }
         });

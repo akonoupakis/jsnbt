@@ -1,14 +1,13 @@
 var app = require('../../app.js');
-var jsnbt = require('../../jsnbt.js');
 var _ = require('underscore');
 
-module.exports = function (routeId) {
-    
-    var configRoute = _.find(jsnbt.routes, function (x) { return x.id === routeId; });
+var RouterRouteProcessor = function (server, routeId) {
+
+    var configRoute = _.find(server.jsnbt.routes, function (x) { return x.id === routeId; });
 
     var configRouteFn = configRoute !== undefined ? configRoute.fn : '';
 
-    var moduleRouter = configRoute !== undefined ? _.first(_.filter(app.modules, function (x) {
+    var moduleRouter = configRoute !== undefined ? _.first(_.filter(app.modules.all, function (x) {
         return x.public === true
             && x[configRouteFn] && _.isFunction(x[configRouteFn]);
     })) : undefined;
@@ -30,3 +29,5 @@ module.exports = function (routeId) {
     } : undefined;
 
 };
+
+module.exports = RouterRouteProcessor;

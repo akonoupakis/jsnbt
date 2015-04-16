@@ -1,6 +1,6 @@
 var _ = require('underscore');
 
-module.exports = function() {
+module.exports = function(scope) {
 
     var cache = {};
         

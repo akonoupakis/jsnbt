@@ -1,8 +1,5 @@
 module.exports = {
-
-    domain: 'core',
-    browsable: false,
-
+    
     fileGroups: [
         'users',
         'public'
