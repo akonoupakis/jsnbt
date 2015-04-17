@@ -19,9 +19,7 @@ function Server(app, options) {
     extend(true, opts, defOpts, options);
     
     var logger = require('./logger.js')(this);
-
-    var cache = require('./cache.js')(this);
-
+    
     var nonLoggedCollections = ['actions', 'migrations'];
     var logAction = function (dpd, user, collection, action, objectId, objectData, callback) {
         if (nonLoggedCollections.indexOf(collection) === -1) {
@@ -121,7 +119,7 @@ function Server(app, options) {
                 });
             }
         },
-        cache: cache,
+        cache: require('./cache.js')(this),
         events: {
             listening: function () {
                 

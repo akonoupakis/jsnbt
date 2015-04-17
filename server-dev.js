@@ -3,7 +3,7 @@ var dbgSite = require('./src/dbg/index.js');
 
 app.init({}, dbgSite);
 
-app.createServer({
+var server = app.createServer({
     env: 'dev',
     host: 'localhost',
     port: 3000,
@@ -12,4 +12,6 @@ app.createServer({
         port: 27017,
         name: 'jsnbt-dev'
     }
-}).start();
+});
+
+server.start();

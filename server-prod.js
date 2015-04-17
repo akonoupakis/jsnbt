@@ -2,7 +2,7 @@ var app = require('./src/app/app.js');
 
 app.init();
 
-app.createServer({
+var server = app.createServer({
     env: 'prod',
     host: 'localhost',
     port: 3000,
@@ -11,4 +11,6 @@ app.createServer({
         port: 27017,
         name: 'jsnbt-dev'
     }
-}).start();
+});
+
+server.start();
