@@ -1,4 +1,3 @@
-var app = require('../app.js');
 var fs = require('fs');
 var easyimg = require('easyimage');
 var md5 = require('MD5');
@@ -23,8 +22,8 @@ var ImageRouter = function (server) {
 
             var fileExt = path.extname(src);
 
-            var targetFilePath = server.getPath(app.directory + '/public' + src);
-            var destFilePath = server.getPath(app.directory + '/public/tmp/' + fileKey + fileExt);
+            var targetFilePath = server.getPath(server.app.directory + '/public' + src);
+            var destFilePath = server.getPath(server.app.directory + '/public/tmp/' + fileKey + fileExt);
 
             fs.exists(destFilePath, function (cbExists) {
                 if (cbExists) {
@@ -173,7 +172,7 @@ var ImageRouter = function (server) {
                     var filePath = decodeURIComponent(ctx.uri.path);
 
                     if (filePath.length > 4) {
-                        var targetFilePath = server.getPath(app.directory + '/public' + filePath);
+                        var targetFilePath = server.getPath(server.app.directory + '/public' + filePath);
 
                         fs.exists(targetFilePath, function (cbExists) {
                             if (!cbExists) {

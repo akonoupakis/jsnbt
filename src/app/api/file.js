@@ -1,5 +1,3 @@
-var app = require('../app.js');
-
 var FileApi = function (server) {
 
     var authMngr = require('../cms/authMngr.js')(server);

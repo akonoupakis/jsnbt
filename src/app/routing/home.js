@@ -1,6 +1,4 @@
-var app = require('../app.js');
 var _ = require('underscore');
-
 _.str = require('underscore.string');
 
 var HomeRouter = function (server) {

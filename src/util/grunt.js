@@ -1,5 +1,4 @@
 var fs = require('./fs.js');
-var pack = require('./package.js');
 var path = require('path');
 var bower = require('bower');
 var async = require('async');
@@ -118,8 +117,8 @@ module.exports = function (grunt) {
 
         var files = [{
             expand: true,
-            cwd: 'src/dpd/',
-            src: ['app.dpd', 'node_modules/**', 'resources/**'],
+            cwd: 'src/cfg/dpd/',
+            src: ['app.dpd', 'resources/**'],
             dest: folder + '/'
         }, {
             expand: true,
@@ -301,10 +300,11 @@ module.exports = function (grunt) {
     
     grunt.registerMultiTask('mod', 'Install & pack modules', function () {
         var runFn = function (mod) {
+            var modMngr = require(mod === 'bower' ? './npm.js' : './npm.js');
             if (fs.existsSync(server.getPath(mod))) {                
                 var found = fs.readdirSync(server.getPath(mod));
                 _.each(found, function (f) {
-                    pack[mod].install(f, true);
+                    modMngr.install(f, true);
                 });
             }
         };
@@ -315,11 +315,11 @@ module.exports = function (grunt) {
     grunt.registerMultiTask('patch', 'Patch the copied with the package files', function () {
 
         var folder = this.target == 'prod' ? 'dist' : 'dev';
-        
+        var modMngr = require('./npm.js');
         if (fs.existsSync(server.getPath('src/pck'))) {
             var found = fs.readdirSync(server.getPath('src/pck'));
             _.each(found, function (f) {
-                pack.npm.deploy(f, folder);
+                modMngr.deploy(f, folder);
             });
         }
     });
@@ -482,9 +482,9 @@ module.exports = function (grunt) {
 
     fs.create('./src');
     fs.create('./src/app');
-    fs.create('./src/dpd');
-    fs.create('./src/upd');
-    fs.create('./src/upd/data');
+    fs.create('./src/cfg');
+    fs.create('./src/cfg/dpd');
+    fs.create('./src/dat');
     fs.create('./src/pck');
     fs.create('./src/web');
     fs.create('./src/web/public');

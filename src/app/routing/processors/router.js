@@ -1,4 +1,3 @@
-var app = require('../../app.js');
 var _ = require('underscore');
 
 var RouterRouteProcessor = function (server, routeId) {
@@ -7,7 +6,7 @@ var RouterRouteProcessor = function (server, routeId) {
 
     var configRouteFn = configRoute !== undefined ? configRoute.fn : '';
 
-    var moduleRouter = configRoute !== undefined ? _.first(_.filter(app.modules.all, function (x) {
+    var moduleRouter = configRoute !== undefined ? _.first(_.filter(server.app.modules.all, function (x) {
         return x.public === true
             && x[configRouteFn] && _.isFunction(x[configRouteFn]);
     })) : undefined;

@@ -1,4 +1,3 @@
-var app = require('../app.js');
 var parseUri = require('parseUri');
 var extend = require('extend');
 var _ = require('underscore');

@@ -1,7 +1,5 @@
-var app = require('./app.js');
 var error = require('./error.js');
 var view = require('./view.js');
-var crawler = require('../lib/phantom.js');
 var parseUri = require('parseUri');
 var cookies = require('cookies');
 var jsuri = require('jsuri');
@@ -50,15 +48,13 @@ var Context = function (server, req, res) {
     var renderCrawled = function (ctx) {
         var targetUrl = new jsuri(_.str.rtrim(ctx.uri.getBaseHref(), '/') + ctx.uri.url).deleteQueryParam('prerender').toString();
 
-        crawler.crawl(targetUrl, function (crawlErr, crawlData) {
-            if (crawlErr) {
-                ctx.error(500, crawlErr);
-            }
-            else {
-                ctx.writeHead(200, { "Content-Type": "text/html" });
-                ctx.write(crawlData);
-                ctx.end();
-            }
+        var crawler = require('./crawler.js')(server);
+        crawler.crawl(targetUrl, function (crawlData) {
+            ctx.writeHead(200, { "Content-Type": "text/html" });
+            ctx.write(crawlData);
+            ctx.end();
+        }, function (crawlErr) {
+            ctx.error(500, crawlErr);
         });
     };
 
@@ -179,7 +175,7 @@ var Context = function (server, req, res) {
             }
         },
         view: function () {            
-            if ((ctx.uri.query.dbg || '').toLowerCase() === 'true' && (ctx.uri.query.type || '').toLowerCase() === 'json' && app.dbg) {
+            if ((ctx.uri.query.dbg || '').toLowerCase() === 'true' && (ctx.uri.query.type || '').toLowerCase() === 'json' && server.app.dbg) {
                 ctx.json({
                     uri: ctx.uri,
                     timer: ctx.timer.get()
@@ -217,7 +213,7 @@ var Context = function (server, req, res) {
             completing = true;
             req._routed = true;
             res.writeHead(200, { "Content-Type": "application/json" });
-            res.write(JSON.stringify(data, null, app.dbg ? '\t' : ''));
+            res.write(JSON.stringify(data, null, server.app.dbg ? '\t' : ''));
             res.end();
         },
         redirect: function (url, mode) {

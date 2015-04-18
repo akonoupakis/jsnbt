@@ -1,9 +1,8 @@
-var app = require('../../app.js');
 var _ = require('underscore');
 
 var ApiRouteProcessor = function (server, domain) {
     
-    var moduleRouter = _.first(_.filter(app.modules.all, function (x) {
+    var moduleRouter = _.first(_.filter(server.app.modules.all, function (x) {
         return x.domain.toLowerCase() === domain.toLowerCase()
             && x.routeApi && _.isFunction(x.routeApi);
     }));

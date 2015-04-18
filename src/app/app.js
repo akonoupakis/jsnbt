@@ -1,4 +1,4 @@
-var pack = require('../lib/package.js');
+var fs = require('fs');
 var path = require('path');
 var extend = require('extend');
 var _ = require('underscore');
@@ -34,13 +34,12 @@ exports.modules = {
 var getInstalledModules = function () {
     var modules = [];
 
-    var installedPackages = pack.npm.getInstalled();
-    for (var i in installedPackages) {
-        if (installedPackages[i] !== 'jsnbt') {
+    var found = fs.readdirSync(require('server-root').getPath('node_modules'));
+    for (var i in found) {
+        if (found[i].indexOf('jsnbt-') === 0) {
             try {
-                var installedModule = require(installedPackages[i]);
-                if (installedModule.domain !== 'core')
-                    modules.push(installedModule);
+                var installedModule = require(found[i]);
+                modules.push(installedModule);
             }
             catch (err) {
                 logger.fatal(err);
@@ -185,5 +184,5 @@ exports.getBower = function () {
 };
 
 exports.getConfig = function () {
-    return require('./config.js');
+    return require('../cfg/config.js');
 };

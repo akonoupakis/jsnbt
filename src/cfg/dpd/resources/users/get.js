@@ -1,9 +1,8 @@
-var app = requireApp('app.js');
 var authMngr = requireApp('cms/authMngr.js')(server);
 
 var self = this;
 
-if (app.anyUsers) {
+if (server.app.anyUsers) {
     if (!me) {
         cancel('Access denied', 500);
     }

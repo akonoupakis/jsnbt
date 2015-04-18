@@ -1,4 +1,3 @@
-var app = require('./app.js');
 var fs = require('fs');
 var _ = require('underscore');
 
@@ -162,7 +161,7 @@ var Router = function(server, req, res) {
                 ctxInteral.error(404);
             }
             else {
-                fs.readFile(server.getPath(app.directory + '/public' + ctx.uri.path), function (readErr, readResults) {
+                fs.readFile(server.getPath(server.app.directory + '/public' + ctx.uri.path), function (readErr, readResults) {
                     if (readErr) {
                         ctx.error(500, readErr);
                     }

@@ -1,4 +1,3 @@
-var app = require('./app.js');
 var fs = require('fs');
 var _ = require('underscore');
 
@@ -17,9 +16,9 @@ var errors = {
 
 var ErrorRenderer = function (server, ctx, error, stack) {
 
-    var tmplPath = '../' + app.directory + '/public/error/';
+    var tmplPath = '../' + server.app.directory + '/public/error/';
     if (ctx.uri.first === 'admin')
-        tmplPath = '../' + app.directory + '/public/admin/error/';
+        tmplPath = '../' + server.app.directory + '/public/admin/error/';
 
     var tmplFilePath = tmplPath + error + '.html';
     var tmplDefaultFilePath = tmplPath + 'error.html';
@@ -46,9 +45,9 @@ var ErrorRenderer = function (server, ctx, error, stack) {
         text = errors[error];
 
     if (!ctx.meta.title || ctx.meta.title === '')
-        ctx.meta.title = app.title;
+        ctx.meta.title = server.app.title;
     else
-        ctx.meta.title = app.title + (app.title ? ' | ' : '') + ctx.meta.title;
+        ctx.meta.title = server.app.title + (server.app.title ? ' | ' : '') + ctx.meta.title;
 
     ctx.halt = true;
     errorContent = require('./parser.js')(server).parse(ctx, errorContent, {

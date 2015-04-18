@@ -206,7 +206,7 @@ function Server(app, options) {
 
     server.jsnbt = jsnbt;
 
-    server.application = app;
+    server.app = app;
 
     return server;
 

@@ -72,7 +72,7 @@ var Migrator = function (server) {
 
             var dpd = require('deployd/lib/internal-client').build(server);
 
-            var migrationsPath = server.application.directory + '/migrations';
+            var migrationsPath = server.app.directory + '/migrations';
 
             if (fs.existsSync(server.getPath(migrationsPath))) {
                 var packageItems = fs.readdirSync(server.getPath(migrationsPath));

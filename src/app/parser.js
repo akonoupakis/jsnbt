@@ -1,4 +1,3 @@
-var app = require('./app.js');
 var fs = require('fs');
 var extend = require('extend');
 var _ = require('underscore');
@@ -88,12 +87,12 @@ var Parser = function (server) {
             
             if (isAdmin) {
                 var appFiles = [];
-                findJsFiles('../' + app.directory + '/public/admin/js/core/app/', appFiles, true);
+                findJsFiles('../' + server.app.directory + '/public/admin/js/core/app/', appFiles, true);
 
                 _.each(server.jsnbt.modules.all, function (pack) {
                     if (pack.domain !== 'core') {
-                        if (fs.existsSync('../' + app.directory + '/public/admin/js/' + pack.domain + '/app/')) {
-                            findJsFiles('../' + app.directory + '/public/admin/js/' + pack.domain + '/app/', appFiles, true);
+                        if (fs.existsSync('../' + server.app.directory + '/public/admin/js/' + pack.domain + '/app/')) {
+                            findJsFiles('../' + server.app.directory + '/public/admin/js/' + pack.domain + '/app/', appFiles, true);
                         }
                     }
                 });
@@ -102,12 +101,12 @@ var Parser = function (server) {
 
 
                 var libFiles = [];
-                findJsFiles('../' + app.directory + '/public/admin/js/core/lib/', libFiles, true);
+                findJsFiles('../' + server.app.directory + '/public/admin/js/core/lib/', libFiles, true);
 
                 _.each(server.jsnbt.modules.all, function (pack) {
                     if (pack.domain !== 'core') {
-                        if (fs.existsSync('../' + app.directory + '/public/admin/js/' + pack.domain + '/lib/')) {
-                            findJsFiles('../' + app.directory + '/public/admin/js/' + pack.domain + '/lib/', libFiles, true);
+                        if (fs.existsSync('../' + server.app.directory + '/public/admin/js/' + pack.domain + '/lib/')) {
+                            findJsFiles('../' + server.app.directory + '/public/admin/js/' + pack.domain + '/lib/', libFiles, true);
                         }
                     }
                 });
@@ -116,16 +115,16 @@ var Parser = function (server) {
             }
             else {
                 var appFiles = [];
-                findJsFiles('../' + app.directory + '/public/js/app/', appFiles, false);
+                findJsFiles('../' + server.app.directory + '/public/js/app/', appFiles, false);
                 mdl.js.app = appFiles;
 
                 var libFiles = [];
-                findJsFiles('../' + app.directory + '/public/js/lib/', libFiles, false);
+                findJsFiles('../' + server.app.directory + '/public/js/lib/', libFiles, false);
                 mdl.js.lib = libFiles;
             }
     
             if (!mdl.meta.title || mdl.meta.title === '') {
-                mdl.meta.title = app.title;
+                mdl.meta.title = server.app.title;
             }
             else {
                 mdl.meta.title = mdl.meta.title;
@@ -149,7 +148,7 @@ var Parser = function (server) {
 
        
 
-            if ((ctx.uri.query.dbg || '').toLowerCase() === 'true' && app.dbg) {
+            if ((ctx.uri.query.dbg || '').toLowerCase() === 'true' && server.app.dbg) {
                 var injectedDbgHtml = '\t<script type="text/javascript">console.log("dbg uri", JSON.parse(\'' + JSON.stringify(ctx.uri, null, '') + '\')); </script>\n' + 
                     '\t<script type="text/javascript">console.log("dbg watch", JSON.parse(\'' + JSON.stringify(ctx.timer.get(), null, '') + '\')); </script>';
 

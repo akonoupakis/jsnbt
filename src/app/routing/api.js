@@ -1,4 +1,3 @@
-var app = require('../app.js');
 var formidable = require('formidable');
 var _ = require('underscore');
 

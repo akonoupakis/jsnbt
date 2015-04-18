@@ -1,4 +1,3 @@
-var app = require('../app.js');
 var fs = require('fs');
 var path = require('path');
 var util = require('util');

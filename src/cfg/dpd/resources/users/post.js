@@ -1,4 +1,3 @@
-var app = requireApp('app.js');
 var authMngr = requireApp('cms/authMngr.js')(server);
 
 var _ = require('underscore');
@@ -6,13 +5,13 @@ var _ = require('underscore');
 var self = this;
 
 var anyUsers = function (cb) {
-    if (app.anyUsers !== undefined) {
-        cb(app.anyUsers);
+    if (server.app.anyUsers !== undefined) {
+        cb(server.app.anyUsers);
     }
     else {
         dpd.users.count({}, function (result) {
-            app.anyUsers = result.count > 0;
-            cb(app.anyUsers);
+            server.app.anyUsers = result.count > 0;
+            cb(server.app.anyUsers);
         });
     }
 };
@@ -27,7 +26,7 @@ anyUsers(function (anyUsersResult) {
             error('roles', 'first time user should be on the "sa" role');
         }
 
-        app.anyUsers = true;
+        server.app.anyUsers = true;
     }
     else {
         if (!internal && !authMngr.isAuthorized(me, 'users', 'C'))

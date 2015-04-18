@@ -1,5 +1,3 @@
-var app = require('./app.js');
-
 var Messager = function (server) {
 
     return {
@@ -42,7 +40,7 @@ var Messager = function (server) {
                                 success(mailSender);
                         }
                         else {
-                            var firstMatchedModule = _.find(app.modules.all, function (x) { return x.domain === opts.provider; });
+                            var firstMatchedModule = _.find(server.app.modules.all, function (x) { return x.domain === opts.provider; });
                             if (firstMatchedModule && typeof (firstMatchedModule.createMailSender) === 'function') {
 
                                 firstMatchedModule.createMailSender(opts, dpd, function (mailSender) {
@@ -105,7 +103,7 @@ var Messager = function (server) {
                                 success(mailSender);
                         }
                         else {
-                            var firstMatchedModule = _.find(app.modules.all, function (x) { return x.domain === opts.provider; });
+                            var firstMatchedModule = _.find(server.app.modules.all, function (x) { return x.domain === opts.provider; });
                             if (firstMatchedModule && typeof (firstMatchedModule.createSmsSender) === 'function') {
 
                                 firstMatchedModule.createSmsSender(opts, dpd, function (mailSender) {

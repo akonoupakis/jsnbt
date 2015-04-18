@@ -1,8 +1,7 @@
-var app = require('../../app.js');
 var _ = require('underscore');
 
 var PointerRouterProcessor = function (server, domain) {
-    var moduleRouter = _.first(_.filter(app.modules.rest, function (x) {
+    var moduleRouter = _.first(_.filter(server.app.modules.rest, function (x) {
         return x.domain.toLowerCase() === domain.toLowerCase()
             && x.routePointer && _.isFunction(x.routePointer);
     }));

@@ -1,4 +1,3 @@
-var app = require('../app.js');
 var jsuri = require('jsuri');
 var _ = require('underscore');
 

@@ -1,5 +1,3 @@
-var app = require('../app.js');
-
 var JsnbtRouter = function (server) {
 
     var logger = require('../logger.js')(this);
@@ -16,7 +14,7 @@ var JsnbtRouter = function (server) {
                         ctx.writeHead(200, { "Content-Type": "application/javascript" });
 
                         var jsnbtValue = ctx.uri.first === 'jsnbt.js' ? server.jsnbt.getClientData('public') : server.jsnbt.getClientData('admin');
-                        ctx.write('var jsnbt = ' + JSON.stringify(jsnbtValue, null, app.dbg ? '\t' : ''));
+                        ctx.write('var jsnbt = ' + JSON.stringify(jsnbtValue, null, server.app.dbg ? '\t' : ''));
                         ctx.end();
                     }
                     catch (err) {

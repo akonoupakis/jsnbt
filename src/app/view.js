@@ -1,4 +1,3 @@
-var app = require('./app.js');
 var error = require('./error.js');
 var fs = require('fs');
 var _ = require('underscore');
@@ -10,7 +9,7 @@ var ViewRenderer = function (server, ctx) {
         error(ctx, 500, 'template not defined');
     }
     else {
-        var tmplFilePath = '../' + app.directory + '/public' + ctx.template;
+        var tmplFilePath = '../' + server.app.directory + '/public' + ctx.template;
 
         if (fs.existsSync(tmplFilePath)) {
             var tmplContent = fs.readFileSync(tmplFilePath, 'utf-8');
