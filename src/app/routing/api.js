@@ -1,4 +1,3 @@
-var app = require('../app.js');
 var formidable = require('formidable');
 var _ = require('underscore');
 
@@ -20,13 +19,9 @@ var getGetParams = function (ctx, onSuccess, onFailure) {
     onSuccess(ctx.uri.query);
 }
 
-// routes should be as: /jsnbt-api/{domain}/{serviceName}/{fnName}
-module.exports = function () {
+var ApiRouter = function (server) {
 
     return {
-        canRoute: function (ctx) {
-            return ctx.uri.first === 'jsnbt-api' && ctx.uri.parts.length == 4;
-        },
 
         route: function (ctx, next) {
             if (ctx.uri.first === 'jsnbt-api' && ctx.uri.parts.length == 4) {
@@ -36,13 +31,13 @@ module.exports = function () {
                 var fnName = ctx.uri.parts[3];
 
                 if (domain === 'core') {
-                    
+
                     var service = null;
                     try {
-                        service = require('../api/' + serviceName + '.js');
+                        service = require('../api/' + serviceName + '.js')(server);
                     }
                     catch (e) { }
-                    
+
                     if (service !== null && _.isFunction(service[fnName])) {
                         if (ctx.method === 'POST') {
                             getPostParams(ctx, function (fields, files) {
@@ -66,7 +61,7 @@ module.exports = function () {
                 }
                 else {
 
-                    var apiRouter = require('./processors/api.js')(domain);
+                    var apiRouter = require('./processors/api.js')(server, domain);
                     if (apiRouter) {
                         if (ctx.method === 'POST') {
                             getPostParams(ctx, function (fields, files) {
@@ -94,4 +89,8 @@ module.exports = function () {
             }
         }
     };
+
 };
+
+// routes should be as: /jsnbt-api/{domain}/{serviceName}/{fnName}
+module.exports = ApiRouter;

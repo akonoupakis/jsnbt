@@ -1,0 +1,53 @@
+{
+	"type": "Collection",
+	"properties": {
+		"timestamp": {
+			"name": "timestamp",
+			"type": "number",
+			"typeLabel": "number",
+			"required": true,
+			"id": "timestamp",
+			"order": 0
+		},
+		"user": {
+			"name": "user",
+			"type": "string",
+			"typeLabel": "string",
+			"required": false,
+			"id": "user",
+			"order": 1
+		},
+		"action": {
+			"name": "action",
+			"type": "string",
+			"typeLabel": "string",
+			"required": true,
+			"id": "action",
+			"order": 2
+		},
+		"collection": {
+			"name": "collection",
+			"type": "string",
+			"typeLabel": "string",
+			"required": true,
+			"id": "collection",
+			"order": 3
+		},
+		"objectId": {
+			"name": "objectId",
+			"type": "string",
+			"typeLabel": "string",
+			"required": true,
+			"id": "objectId",
+			"order": 4
+		},
+		"objectData": {
+			"name": "objectData",
+			"type": "object",
+			"typeLabel": "object",
+			"required": true,
+			"id": "objectData",
+			"order": 5
+		}
+	}
+}

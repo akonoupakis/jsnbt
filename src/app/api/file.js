@@ -1,58 +1,63 @@
-var app = require('../app.js');
-var auth = require('../auth.js');
-var file = require('../file.js');
+var FileApi = function (server) {
 
-module.exports = {
-    
-    get: function (ctx, fields) {
-        if (!auth.isInRole(ctx.user, 'admin'))
-            return null;
+    var authMngr = require('../cms/authMngr.js')(server);
+    var fileMngr = require('../cms/fileMngr.js')(server);
 
-        try {
-            var result = file.get(fields);
-            ctx.json(result);
-        }
-        catch (ex) {
-            ctx.error(500, ex, false);
-        }
-    },
+    return {
 
-    delete: function (ctx, fields) {
-        if (!auth.isInRole(ctx.user, 'admin'))
-            return null;
+        get: function (ctx, fields) {
+            if (!authMngr.isInRole(ctx.user, 'admin'))
+                return null;
 
-        try {
-            var result = file.delete(fields);
-            ctx.json(result);
-        }
-        catch (ex) {
-            ctx.error(500, ex, false);
-        }
-    },
+            try {
+                var result = fileMngr.get(fields);
+                ctx.json(result);
+            }
+            catch (ex) {
+                ctx.error(500, ex, false);
+            }
+        },
 
-    create: function (ctx, fields) {
-        if (!auth.isInRole(ctx.user, 'admin'))
-            return null;
+        delete: function (ctx, fields) {
+            if (!authMngr.isInRole(ctx.user, 'admin'))
+                return null;
 
-        try {
-            var result = file.create(fields);
-            ctx.json(result);
-        }
-        catch (ex) {
-            ctx.error(500, ex, false);
-        }
-    },
+            try {
+                var result = fileMngr.delete(fields);
+                ctx.json(result);
+            }
+            catch (ex) {
+                ctx.error(500, ex, false);
+            }
+        },
 
-    move: function (ctx, fields) {
-        if (!auth.isInRole(ctx.user, 'admin'))
-            return null;
+        create: function (ctx, fields) {
+            if (!authMngr.isInRole(ctx.user, 'admin'))
+                return null;
 
-        try {
-            var result = file.move(fields);
+            try {
+                var result = fileMngr.create(fields);
+                ctx.json(result);
+            }
+            catch (ex) {
+                ctx.error(500, ex, false);
+            }
+        },
+
+        move: function (ctx, fields) {
+            if (!authMngr.isInRole(ctx.user, 'admin'))
+                return null;
+
+            try {
+                var result = fileMngr.move(fields);
+            }
+            catch (ex) {
+                ctx.error(500, ex, false);
+            }
         }
-        catch (ex) {
-            ctx.error(500, ex, false);
-        }
-    }
+
+    };
 
 };
+
+module.exports = FileApi;

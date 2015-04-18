@@ -1,167 +1,208 @@
-var app = require('./app.js');
 var fs = require('fs');
-var jsnbt = require('./jsnbt.js');
-var auth = require('./auth.js');
-var server = require('server-root');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
 
 var routerNames = [
-    './routing/index.js',
+    './routing/home.js',
     './routing/api.js',
     './routing/image.js',
     './routing/jsnbt.js',
-    './routing/package.js',
     './routing/upload.js',
     './routing/admin.js',
     './routing/site.js',
     './routing/public.js'
 ];
 
-var routers = [];
+var getRouters = function (server) {
+    var routers = [];
 
-for (var i = 0; i < routerNames.length; i++) {
-    var router = require(routerNames[i])();
-    routers.push(router);
-}
-
-routers.push({
-    route: function (ctx, next) {
-        ctx.error(404);
+    for (var i = 0; i < routerNames.length; i++) {
+        var router = require(routerNames[i])(server);
+        routers.push(router);
     }
-});
 
-module.exports = function () {
-    return {
-        process: function (req, res) {
-            var ctx = require('./context.js')(req, res);
+    routers.push({
+        route: function (ctx, next) {
+            ctx.error(404);
+        }
+    });
 
-            var ignoredPaths = ['dashboard', 'dpd.js', '__resources', 'socket.io', 'favicon.ico', 'app-offline.htm', 'dpd'];
+    return routers;
+};
 
-            var ignoredPathPrefixes = ['/css/', '/font/', '/img/', '/js/', '/tmpl/', '/tmp/', '/files/', '/admin/css/', '/admin/font/', '/admin/img/', '/admin/js/', '/admin/tmpl/'];
+var Router = function(server, req, res) {
 
-            var notFoundPaths = [];
-            var templatePaths = _.pluck(jsnbt.templates, 'path');
-            notFoundPaths = _.union(notFoundPaths, templatePaths);
-            notFoundPaths = _.union(notFoundPaths, ['/tmp/', '/error/', '/admin/error/']);
+    var authMngr = require('./cms/authMngr.js')(server);
 
-            var formPaths = _.union(
-                _.pluck(_.filter(jsnbt.templates, function (x) { return x.form !== undefined; }), 'form'),
-                _.pluck(_.filter(jsnbt.lists, function (x) { return x.form !== undefined; }), 'form')
-            );
+    var routers = getRouters(server);
 
-            var forbiddedPathPrefixes = [];
+    var logger = require('./logger.js')(this);
 
-            var forbidRequest = false;
-            for (var i = 0; i < forbiddedPathPrefixes.length; i++) {
-                if (_.str.startsWith(ctx.uri.path, forbiddedPathPrefixes[i])) {
-                    forbidRequest = true;
-                    break;
-                }
-            }
+    var ignoredPaths = ['dashboard', 'dpd.js', '__resources', 'socket.io', 'favicon.ico', 'app-offline.htm', 'dpd'];
 
-            if (forbidRequest) {
-                ctx.error(403);
-            }
-            else {
-                var foundUrl = _.filter(notFoundPaths, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length === 0;
-                if (foundUrl) {
+    var ignoredPathPrefixes = ['/css/', '/font/', '/img/', '/js/', '/tmpl/', '/tmp/', '/files/', '/admin/css/', '/admin/font/', '/admin/img/', '/admin/js/', '/admin/tmpl/'];
 
-                    var processRequest = true;
-                    if (ignoredPaths.indexOf(ctx.uri.first) != -1)
-                        processRequest = false;
+    var notFoundPaths = [];
+    var templatePaths = _.pluck(server.jsnbt.templates, 'path');
+    notFoundPaths = _.union(notFoundPaths, templatePaths);
+    notFoundPaths = _.union(notFoundPaths, ['/tmp/', '/error/', '/admin/error/']);
 
-                    if (processRequest) {
-                        if (_.filter(ignoredPathPrefixes, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length > 0) {
-                            processRequest = false;
-                        }
-                    }
+    var formPaths = _.union(
+        _.pluck(_.filter(server.jsnbt.templates, function (x) { return x.form !== undefined; }), 'form'),
+        _.pluck(_.filter(server.jsnbt.lists, function (x) { return x.form !== undefined; }), 'form')
+    );
 
-                    if (_.filter(formPaths, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length > 0) {
-                        processRequest = true;
-                    }
-                    
-                    if (!processRequest && ctx.uri.first === 'files') {
-                        var imageRouter = require('./routing/image.js')();
-                        processRequest = imageRouter.canRoute(ctx);
-                    }
-                    
-                    if (processRequest) {
-                        req._routed = true;
-                        
-                        var continueRequest = function (ctxInteral, reqInternal, resInternal, sessionInternal, dpdInternal) {
+    var checkForbidded = function (ctx, next) {
+        
+        var forbiddedPathPrefixes = [];
 
-                            reqInternal.cookies.set('sid', sessionInternal.sid);
-                            
-                            reqInternal.dpd = dpdInternal;
-                            ctxInteral.dpd = dpdInternal;
-
-                            reqInternal.session = sessionInternal;
-                            ctxInteral.session = sessionInternal;
-
-                            ctxInteral.user = sessionInternal.user;
-                            
-                            if (_.filter(formPaths, function (x) { return _.str.startsWith(ctxInteral.uri.path, x); }).length > 0) {
-                                if (!(sessionInternal.user && auth.isInRole(sessionInternal.user, 'admin'))) {
-                                    ctxInteral.error(404);
-                                }
-                                else {
-                                    fs.readFile(server.getPath(app.root + '/public' + ctxInteral.uri.path), function (readErr, readResults) {
-                                        if (readErr) {
-                                            ctxInteral.error(500, readErr);
-                                        }
-                                        else {
-                                            ctxInteral.writeHead(200, { 'Content-Type': 'text/html' });
-                                            ctxInteral.write(readResults);
-                                            ctxInteral.end();
-                                        }
-                                    });
-                                }
-                            }
-                            else {
-                                var nextIndex = 0;
-                                var next = function () {
-                                    nextIndex++;
-                                    var router = routers[nextIndex];
-                                    router.route(ctxInteral, next);
-                                };
-
-                                var first = _.first(routers);
-                                first.route(ctxInteral, next);
-                            }
-                        };
-
-                        app.server.sessions.createSession(req.cookies.get('sid'), function (err, session) {
-
-                            if (err) {
-                                throw err;
-                            } else {
-                                
-                                dpd = require('deployd/lib/internal-client').build(app.server, session, req.stack);
-                                
-                                if ((session.data && session.data.uid) && !session.user) {
-                                    
-                                    dpd.users.get(session.data.uid, function (user, err) {
-                                        if (user) {
-                                            session.user = user;
-                                            continueRequest(ctx, req, res, session, dpd);
-                                        }
-                                        else
-                                            throw new Error('user not found');
-                                    });
-                                }
-                                else {
-                                    continueRequest(ctx, req, res, session, dpd);
-                                }
-                            }
-                        });
-                    }
-                }
-                else {
-                    ctx.error(404);
-                }
+        var forbidRequest = false;
+        for (var i = 0; i < forbiddedPathPrefixes.length; i++) {
+            if (_.str.startsWith(ctx.uri.path, forbiddedPathPrefixes[i])) {
+                forbidRequest = true;
+                break;
             }
         }
+
+        if (forbidRequest) {
+            ctx.error(403);
+        }
+        else {
+            next();
+        }
+
+    };
+
+    var checkFound = function (ctx, next)
+    {
+        var foundUrl = _.filter(notFoundPaths, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length === 0;
+        if (foundUrl) {
+
+            var processRequest = true;
+            if (ignoredPaths.indexOf(ctx.uri.first) != -1)
+                processRequest = false;
+
+            if (processRequest) {
+                if (_.filter(ignoredPathPrefixes, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length > 0) {
+                    processRequest = false;
+                }
+            }
+
+            if (_.filter(formPaths, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length > 0) {
+                processRequest = true;
+            }
+
+            if (!processRequest && ctx.uri.first === 'files') {
+                var imageRouter = require('./routing/image.js')(server);
+                processRequest = imageRouter.canRoute(ctx);
+            }
+
+            if (processRequest) {
+                req._routed = true;
+
+                next();
+            }
+        }
+        else {
+            ctx.error(404);
+        }
+    };
+
+    var buildSession = function (ctx, next) {
+        ctx.timer.start('session built');
+        server.sessions.createSession(ctx.req.cookies.get('sid'), function (err, session) {
+            ctx.timer.stop('session built');
+
+            if (err) {
+                logger.error(req.method, req.url, err);
+                throw err;
+            } else {
+
+                ctx.session = session;
+
+                ctx.timer.start('dpd internal client built');
+                dpd = require('deployd/lib/internal-client').build(server, session, req.stack);
+                ctx.timer.stop('dpd internal client built');
+
+                ctx.dpd = dpd;
+
+                if ((session.data && session.data.uid) && !session.user) {
+
+                    ctx.timer.start('current user retrieval');
+                    dpd.users.get(session.data.uid, function (user, err) {
+                        ctx.timer.stop('current user retrieval');
+                        if (user) {
+                            session.user = user;
+                            next(ctx);
+                        }
+                        else
+                            throw new Error('user not found');
+                    });
+                }
+                else {
+                    next(ctx);
+                }
+            }
+        });
+    };
+
+    var processRequest = function (ctx) {
+        ctx.req.cookies.set('sid', ctx.session.sid);
+
+        ctx.req.dpd = ctx.dpd;
+
+        ctx.req.session = ctx.session;
+
+        ctx.user = ctx.session.user;
+
+        if (_.filter(formPaths, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length > 0) {
+            if (!(ctx.session.user && authMngr.isInRole(ctx.session.user, 'admin'))) {
+                ctxInteral.error(404);
+            }
+            else {
+                fs.readFile(server.getPath(server.app.directory + '/public' + ctx.uri.path), function (readErr, readResults) {
+                    if (readErr) {
+                        ctx.error(500, readErr);
+                    }
+                    else {
+                        ctx.writeHead(200, { 'Content-Type': 'text/html' });
+                        ctx.write(readResults);
+                        ctx.end();
+                    }
+                });
+            }
+        }
+        else {
+            var nextIndex = 0;
+            var next = function () {
+                nextIndex++;
+                var router = routers[nextIndex];
+                router.route(ctx, next);
+            };
+
+            var first = _.first(routers);
+            first.route(ctx, next);
+        }
+    };
+
+    return {
+
+        process: function () {
+
+            var ctx = require('./context.js')(server, req, res);
+
+            checkForbidded(ctx, function () {
+                checkFound(ctx, function () {
+                    buildSession(ctx, function (session) {
+                        processRequest(ctx);
+                    });
+                });
+            });
+
+        }
+
     };
 };
+
+module.exports = Router;

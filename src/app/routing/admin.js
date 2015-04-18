@@ -1,16 +1,12 @@
-var app = require('../app.js');
 var _ = require('underscore');
-
 _.str = require('underscore.string');
 
-module.exports = function () {
+var AdminRouter = function (server) {
+
+    var logger = require('../logger.js')(this);
 
     return {
-
-        canRoute: function (ctx) {
-            return ctx.uri.first === 'admin';
-        },
-
+        
         route: function (ctx, next) {
             if (ctx.uri.first === 'admin') {
                 try {
@@ -48,7 +44,7 @@ module.exports = function () {
                     }
                 }
                 catch (err) {
-                    app.logger.error(err);
+                    logger.error(ctx.req.method, ctx.req.url, err);
                     ctx.error(500, err);
                 }
             }
@@ -56,5 +52,9 @@ module.exports = function () {
                 next();
             }
         }
+
     };
+
 };
+
+module.exports = AdminRouter;

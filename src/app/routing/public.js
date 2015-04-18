@@ -1,29 +1,25 @@
-var app = require('../app.js');
-var auth = require('../auth.js');
-var jsnbt = require('../jsnbt.js');
-var crawler = require('../crawl/phantom.js');
 var jsuri = require('jsuri');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
     
-module.exports = function () {
+var PublicRouter = function (server) {
+
+    var logger = require('../logger.js')(this);
+    var authMngr = require('../cms/authMngr.js')(server);
         
     return {
-        canRoute: function (ctx) {
-            return ctx.uri.path !== '/';
-        },
 
         route: function (ctx, next) {
             if (ctx.uri.path !== '/') {
                 try {
-                    var node = require('../node.js')(ctx.dpd);
+                    var node = require('../cms/nodeMngr.js')(server, ctx.dpd);
                     
                     node.resolveUrl(ctx.uri.url, function (resolved) {
                         if (resolved && resolved.page && resolved.isActive()) {
                           
-                            if (!ctx.restricted && jsnbt.restricted) {
-                                if (!auth.isInRole(ctx.user, resolved.getPermissions())) {
+                            if (!ctx.restricted && server.jsnbt.restricted) {
+                                if (!authMngr.isInRole(ctx.user, resolved.getPermissions())) {
                                     ctx.restricted = true;
                                 }
                             }
@@ -65,7 +61,7 @@ module.exports = function () {
                                 ctx.node = resolved.page || {};
                                 ctx.pointer = resolved.pointer || {};
                                 ctx.layout = resolved.getLayout();
-                                ctx.language = jsnbt.localization ? resolved.language || 'en' : jsnbt.locale;
+                                ctx.language = server.jsnbt.localization ? resolved.language || 'en' : server.jsnbt.locale;
                                 ctx.template = resolved.template || '';
 
                                 ctx.meta = {};
@@ -87,7 +83,7 @@ module.exports = function () {
                                 }
 
                                 if (resolved.pointer) {
-                                    var pointerRouter = require('./processors/router.js')(resolved.pointer.pointer.domain);
+                                    var pointerRouter = require('./processors/router.js')(server, resolved.pointer.pointer.domain);
                                     if (pointerRouter) {
                                         pointerRouter.route(ctx);
                                     }
@@ -103,7 +99,7 @@ module.exports = function () {
                                 else if (resolved.route) {
                                     ctx.url = resolved.url;
 
-                                    var routeRouter = require('./processors/router.js')(resolved.route);
+                                    var routeRouter = require('./processors/router.js')(server, resolved.route);
                                     if (routeRouter) {
                                         routeRouter.route(ctx);
                                     }
@@ -117,8 +113,8 @@ module.exports = function () {
                             }
                         }
                         else {
-                            if (jsnbt.localization) {
-                                var languages = jsnbt.languages;
+                            if (server.jsnbt.localization) {
+                                var languages = server.jsnbt.languages;
 
                                 var matched = _.filter(languages, function (x) { return _.str.startsWith(ctx.uri.path, '/' + x.code + '/'); });
                                 if (matched.length === 0) {
@@ -156,7 +152,7 @@ module.exports = function () {
                     });
                 }
                 catch (err) {
-                    app.logger.error(err);
+                    logger.error(ctx.req.method, ctx.req.url, err);
                     ctx.error(500, err);
                 }
             }
@@ -164,5 +160,8 @@ module.exports = function () {
                 next();
             }
         }
+
     };
 };
+
+module.exports = PublicRouter;

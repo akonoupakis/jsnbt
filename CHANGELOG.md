@@ -1,3 +1,16 @@
+## 1.0.100 (2015-04-18)
+
+Features
+
+	- Builtin cache provider (memory based). can be overriden on application.init();
+	- dpd pre & post events fed upon server options. 
+	- dpd authorization engine upon pre events. Add { auth: false } to the config.permissions collection to avoid the main auth check.
+	- dpd action logging upon post events
+	- Messager infrastructure for sending mail and sms messages
+	- Data migrations
+	- Stopwatch timer in ctx
+	- Test tasks on /dbg/{service}/{fn} endpoints through the dbg/index.js main route
+
 ## 1.0.99 (2015-13-31)
 
 Features:

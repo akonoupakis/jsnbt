@@ -1,6 +1,6 @@
 {
   "name": "jsnbt",
-  "version": "1.0.99",
+  "version": "1.0.100",
   "description": "The Jsonbot engine",
   "keywords": [
     "jsnbt",
@@ -24,7 +24,9 @@
   "main": "src/app/app.js",
   "files": [
     "src/app/**",
-    "src/dpd/**",
+	"src/cfg/**",
+	"src/dat/**",
+	"src/util/**",
     "src/web/admin/**",
     "scripts/**",
     "bower.json"

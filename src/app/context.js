@@ -1,9 +1,5 @@
-var app = require('./app.js');
-var auth = require('./auth.js');
-var jsnbt = require('./jsnbt.js');
-var errorRenderer = require('./rendering/error.js');
-var viewRenderer = require('./rendering/view.js');
-var crawler = require('./crawl/phantom.js');
+var error = require('./error.js');
+var view = require('./view.js');
 var parseUri = require('parseUri');
 var cookies = require('cookies');
 var jsuri = require('jsuri');
@@ -11,69 +7,73 @@ var _ = require('underscore');
 
 _.str = require('underscore.string');
 
-var applyTemplate = function (ctxInternal) {
-    var installedTemplate = _.first(_.filter(jsnbt.templates, function (x) { return x.id === ctxInternal.template; }));
-    if (installedTemplate) {
-        ctxInternal.template = installedTemplate.html;
-        return true;
-    }
-    else {
-        ctxInternal.error(500, 'text/html', 'template not installed: ' + ctxInternal.template);
-        return false;
-    }
-};
+var Context = function (server, req, res) {
 
-var shouldRenderCrawled = function (ctx, req, res) {
-    var prerender = false;
+    var authMngr = require('./cms/authMngr.js')(server);
 
-    if (req.headers["user-agent"]) {
-        var userAgent = req.headers["user-agent"];
-        var searchbots = ['google', 'googlebot', 'yahoo', 'baiduspider', 'bingbot', 'yandexbot', 'teoma'];
-        _.each(searchbots, function (searchbot) {
-            if (userAgent.toLowerCase().indexOf(searchbot) !== -1) {
-                prerender = true;
-                return false;
-            }
-        });
-    }
-
-    if (!prerender)
-        if (ctx.uri.query.prerender)
-            if (auth.isInRole(ctx.user, 'admin'))
-                prerender = true;
-
-    return prerender;
-};
-
-var renderCrawled = function (ctx) {
-    var targetUrl = new jsuri(_.str.rtrim(ctx.uri.getBaseHref(), '/') + ctx.uri.url).deleteQueryParam('prerender').toString();
-
-    crawler.crawl(targetUrl, function (crawlErr, crawlData) {
-        if (crawlErr) {
-            ctx.error(500, crawlErr);
+    var applyTemplate = function (ctx) {
+        var installedTemplate = _.first(_.filter(server.jsnbt.templates, function (x) { return x.id === ctx.template; }));
+        if (installedTemplate) {
+            ctx.template = installedTemplate.html;
+            return true;
         }
         else {
+            ctx.error(500, 'text/html', 'template not installed: ' + ctx.template);
+            return false;
+        }
+    };
+
+    var shouldRenderCrawled = function (ctx) {
+        var prerender = false;
+
+        if (ctx.req.headers["user-agent"]) {
+            var userAgent = ctx.req.headers["user-agent"];
+            var searchbots = ['google', 'googlebot', 'yahoo', 'baiduspider', 'bingbot', 'yandexbot', 'teoma'];
+            _.each(searchbots, function (searchbot) {
+                if (userAgent.toLowerCase().indexOf(searchbot) !== -1) {
+                    prerender = true;
+                    return false;
+                }
+            });
+        }
+
+        if (!prerender)
+            if (ctx.uri.query.prerender)
+                if (authMngr.isInRole(ctx.user, 'admin'))
+                    prerender = true;
+
+        return prerender;
+    };
+
+    var renderCrawled = function (ctx) {
+        var targetUrl = new jsuri(_.str.rtrim(ctx.uri.getBaseHref(), '/') + ctx.uri.url).deleteQueryParam('prerender').toString();
+
+        var crawler = require('./crawler.js')(server);
+        crawler.crawl(targetUrl, function (crawlData) {
             ctx.writeHead(200, { "Content-Type": "text/html" });
             ctx.write(crawlData);
             ctx.end();
-        }
-    });
-};
+        }, function (crawlErr) {
+            ctx.error(500, crawlErr);
+        });
+    };
 
-module.exports = function (req, res) {
-    var uri = new parseUri('http://' + app.hosts.host + ':' + app.hosts.port + req.url);
+    var uri = new parseUri('http://' + server.host + ':' + server.port + req.url);
 
     if (!_.str.endsWith(uri.path, '/'))
         uri.path += '/';
 
-    uri = new parseUri(('http://' + app.hosts.host + ':' + app.hosts.port + uri.path).toLowerCase() + (uri.query !== '' ? '?' + uri.query : ''));
+    uri = new parseUri(('http://' + server.host + ':' + server.port + uri.path).toLowerCase() + (uri.query !== '' ? '?' + uri.query : ''));
+
+    var timer = require('./logging/timer.js')('context: ' + uri.relative);
+    timer.start();
 
     if (uri.path === '/' || uri.path.toLowerCase() === '/index.html')
         uri.path = '/';
     else {
         uri.path = _.str.rtrim(uri.path, '/').toLowerCase();
     }
-
+    
     uri.parts = _.str.trim(uri.path, '/').split('/');
     uri.first = uri.parts.length > 0 ? _.first(uri.parts).toLowerCase() : '';
     uri.last = uri.parts.length > 0 ? _.last(uri.parts).toLowerCase() : '';
@@ -82,6 +82,10 @@ module.exports = function (req, res) {
 
     var completing = false;
 
+    var stopTimer = function () {
+        timer.stop();
+    };
+    
     var ctx = {
         req: req,
         res: res,
@@ -91,6 +95,8 @@ module.exports = function (req, res) {
         cookies: req.cookies,
 
         user: undefined,
+
+        timer: timer,
 
         node: undefined,
         pointer: undefined,
@@ -153,49 +159,68 @@ module.exports = function (req, res) {
                 html = true;
 
             if (html) {
-                errorRenderer.render(this, code, stack);
+                error(server, this, code, stack);
             }
             else {
-                res.writeHead(code, { "Content-Type": 'application/text' });
+                res.writeHead(code, { "Content-Type": 'text/plain' });
 
                 if (typeof (stack) === 'string')
                     this.write(stack);
                 else if (typeof (stack) === typeof (Error))
                     this.write(stack.toString());
+                else
+                    this.write(code.toString());
 
                 this.end();
             }
         },
-        view: function () {
-            if (completing)
-                return;
-
-            completing = true;
-            req._routed = true;
-
-            if (shouldRenderCrawled(this, req, res))
-                renderCrawled(ctx);
+        view: function () {            
+            if ((ctx.uri.query.dbg || '').toLowerCase() === 'true' && (ctx.uri.query.type || '').toLowerCase() === 'json' && server.app.dbg) {
+                ctx.json({
+                    uri: ctx.uri,
+                    timer: ctx.timer.get()
+                });
+            }
             else {
-                if (_.str.startsWith(this.template, '/'))
-                    viewRenderer.render(this);
-                else
-                    if (applyTemplate(this))
-                        viewRenderer.render(this);
+                if (completing)
+                    return;
+
+                completing = true;
+                req._routed = true;
+                
+                if (shouldRenderCrawled(this, req, res))
+                    renderCrawled(ctx);
+                else {
+                    if (_.str.startsWith(this.template, '/'))
+                        view(server, this);
+                    else {
+                        if (applyTemplate(this)) {
+                            view(server, this);
+                        }
+                        else {
+                            error(server, this, 500, 'template not found: ' + this.template);
+                        }
+                    }
+                }
             }
         },
         json: function (data) {
             if (completing)
                 return;
 
+            stopTimer();
+            
             completing = true;
             req._routed = true;
             res.writeHead(200, { "Content-Type": "application/json" });
-            res.write(JSON.stringify(data, null, app.dbg ? '\t' : ''));
+            res.write(JSON.stringify(data, null, server.app.dbg ? '\t' : ''));
             res.end();
         },
         redirect: function (url, mode) {
             if (completing)
                 return;
+
+            stopTimer();
 
             completing = true;
             req._routed = true;
@@ -209,6 +234,10 @@ module.exports = function (req, res) {
             res.write(obj);
         },
         end: function () {
+            timer.stop();
+
+            stopTimer();
+
             req._routed = true;
             res.end();
         }
@@ -216,4 +245,7 @@ module.exports = function (req, res) {
     };
 
     return ctx;
+
 };
+
+module.exports = Context;
