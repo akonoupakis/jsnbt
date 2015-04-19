@@ -39,6 +39,9 @@ var getInstalledModules = function () {
         if (found[i].indexOf('jsnbt-') === 0) {
             try {
                 var installedModule = require(found[i]);
+                if (typeof (installedModule.getVersion) === 'function')
+                    installedModule.version = installedModule.getVersion();
+
                 modules.push(installedModule);
             }
             catch (err) {
@@ -68,6 +71,7 @@ exports.init = function (options, module) {
 
     var coreModule = {
         domain: 'core',
+        version: self.getVersion(),
         browsable: false,
         getConfig: self.getConfig,
         getBower: self.getBower
@@ -185,4 +189,8 @@ exports.getBower = function () {
 
 exports.getConfig = function () {
     return require('../cfg/config.js');
+};
+
+exports.getVersion = function () {
+    return require('../../package').version;
 };
