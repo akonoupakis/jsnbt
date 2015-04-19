@@ -76,15 +76,15 @@
             };
 
             $scope.back = function () {
-                throw new Error('not implemeted: back()');
+                throw new Error('not implemented: back()');
             };
 
             $scope.discard = function () {
-                throw new Error('not implemeted: discard()');
+                throw new Error('not implemented: discard()');
             };
 
             $scope.publish = function () {
-                throw new Error('not implemeted: publish()');
+                throw new Error('not implemented: publish()');
             };
             
             $scope.$watch('name', function (newValue, prevValue) {

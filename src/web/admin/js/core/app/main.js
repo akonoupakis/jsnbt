@@ -124,10 +124,13 @@
             when('/settings', {
                 templateUrl: 'tmpl/core/pages/settings.html',
                 controller: 'SettingsController',
-                section: 'settings',
-                domain: 'core',
-                tmpl: 'tmpl/core/forms/settings.html'
+                section: 'settings'
             }).
+            //when('/settings', {
+            //    templateUrl: 'tmpl/core/pages/settingsCopy.html',
+            //    controller: 'SettingsControllerCopy',
+            //    domain: 'gApi'
+            //}).
              //when('/content/test', {
              //    templateUrl: 'tmpl/core/pages/content/texts.html',
              //    controller: 'TestListController'

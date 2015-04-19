@@ -86,10 +86,12 @@ var Parser = function (server) {
             mdl.scripts = isAdmin ? server.jsnbt.scripts : [];
             
             if (isAdmin) {
+                
                 var appFiles = [];
                 findJsFiles('../' + server.app.directory + '/public/admin/js/core/app/', appFiles, true);
 
-                _.each(server.jsnbt.modules.all, function (pack) {
+                _.each(server.app.modules.all, function (pack) {
+                    
                     if (pack.domain !== 'core') {
                         if (fs.existsSync('../' + server.app.directory + '/public/admin/js/' + pack.domain + '/app/')) {
                             findJsFiles('../' + server.app.directory + '/public/admin/js/' + pack.domain + '/app/', appFiles, true);
@@ -99,11 +101,10 @@ var Parser = function (server) {
 
                 mdl.js.app = appFiles;
 
-
                 var libFiles = [];
                 findJsFiles('../' + server.app.directory + '/public/admin/js/core/lib/', libFiles, true);
 
-                _.each(server.jsnbt.modules.all, function (pack) {
+                _.each(server.app.modules.all, function (pack) {
                     if (pack.domain !== 'core') {
                         if (fs.existsSync('../' + server.app.directory + '/public/admin/js/' + pack.domain + '/lib/')) {
                             findJsFiles('../' + server.app.directory + '/public/admin/js/' + pack.domain + '/lib/', libFiles, true);
@@ -145,9 +146,7 @@ var Parser = function (server) {
             var postparsingContext = {
                 html: html
             };
-
-       
-
+            
             if ((ctx.uri.query.dbg || '').toLowerCase() === 'true' && server.app.dbg) {
                 var injectedDbgHtml = '\t<script type="text/javascript">console.log("dbg uri", JSON.parse(\'' + JSON.stringify(ctx.uri, null, '') + '\')); </script>\n' + 
                     '\t<script type="text/javascript">console.log("dbg watch", JSON.parse(\'' + JSON.stringify(ctx.timer.get(), null, '') + '\')); </script>';
