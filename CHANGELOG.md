@@ -1,3 +1,10 @@
+## 1.0.101 (2015-04-19)
+
+Breaking changes
+
+	- module index files should include domain, public, pointed, section and getVersion() members (moved from config.js)
+	- src folders restructure to app,cfg,dat,web
+
 ## 1.0.100 (2015-04-18)
 
 Features

@@ -13,6 +13,10 @@ module.exports = {
         return require('./config.js');
     },
 
+    getVersion: function () {
+        return '0.0.0';
+    },
+
     getBower: function () {
         return require('./bower.json');
     },
