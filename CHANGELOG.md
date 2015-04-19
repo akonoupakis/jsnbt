@@ -1,3 +1,9 @@
+## 1.0.102 (2015-04-19)
+
+Features
+
+	- $scope.base.list, $scope.base.list, $scope.base.form for base controllers
+
 ## 1.0.101 (2015-04-19)
 
 Breaking changes

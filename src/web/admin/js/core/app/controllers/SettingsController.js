@@ -8,9 +8,9 @@
             
             var logger = $logger.create('SettingsController');
 
-            $scope.domain = $route.current.$$route.domain;
+            $scope.domain = 'core';
             $scope.name = ($scope.domain !== 'core' ? ($scope.domain + ' ') : '') + 'settings';
-
+            
             $scope.settingsId = undefined;
             $scope.settings = {};
             $scope.mySettingsId = undefined;
@@ -19,7 +19,6 @@
             $scope.valid = false;
             $scope.published = false;
 
-            $scope.domainTmpl = $route.current.$$route.tmpl;
             $scope.publicTmpl = $jsnbt.injects.settings;
 
             var fn = {

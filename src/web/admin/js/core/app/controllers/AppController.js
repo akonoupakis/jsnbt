@@ -4,10 +4,11 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('AppController', function ($scope, $rootScope, $route, $location, $logger, $q, $data, $jsnbt, LocationService, AuthService, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
+        .controller('AppController', function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
 
             var logger = $logger.create('AppController');
 
+            $scope.base = {};
             $scope.application = {};
             $scope.current = {};
             $scope.defaults = {};
@@ -25,13 +26,37 @@
             $scope.application.localization = $jsnbt.localization;
             $scope.application.restricted = $jsnbt.restricted;
             $scope.application.ssl = $jsnbt.ssl;
-
+            
             $scope.defaults.countries = $jsnbt.countries;
 
             $scope.defaults.languages = [];
             $scope.defaults.language = null;
 
             $scope.application.navigationSpec = $jsnbt.injects.navigation;
+
+            $scope.base.list = {
+                $scope: $scope
+            };
+
+            $scope.base.form = {
+                $scope: $scope,
+                $routeParams: $routeParams,
+                LocationService: LocationService,
+                ScrollSpyService: ScrollSpyService,
+                CONTROL_EVENTS: CONTROL_EVENTS
+            };
+
+            $scope.base.settings = {
+                $scope: $scope,
+                $route: $route,
+                $routeParams: $routeParams,
+                $q: $q,
+                $timeout: $timeout,
+                $data: $data,
+                LocationService: LocationService,
+                ScrollSpyService: ScrollSpyService,
+                CONTROL_EVENTS: CONTROL_EVENTS
+            };
 
             var apply = function (fn) {
                 var phase = $scope.$root.$$phase;
