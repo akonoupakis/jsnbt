@@ -235,6 +235,7 @@ var Jsnbt = function () {
 
             moduleConfig.public = module.public;
             moduleConfig.domain = module.domain;
+            moduleConfig.version = module.version;
             moduleConfig.browsable = module.browsable;
             moduleConfig.name = name;
             this.modules.push(moduleConfig);

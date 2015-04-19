@@ -1,6 +1,9 @@
 var app = require('./src/app/app.js');
+var dbgSite = require('./src/dbg/index.js');
 
-app.init();
+app.init({
+    title: 'jsnbt - prod'
+}, dbgSite);
 
 var server = app.createServer({
     env: 'prod',

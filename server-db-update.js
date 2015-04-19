@@ -1,6 +1,8 @@
 var app = require('./src/app/app.js');
 
-app.init();
+app.init({
+    title: 'jsnbt - db'
+});
 
 var server = app.createServer({
     env: 'dev',

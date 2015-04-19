@@ -172,3 +172,5 @@ $RECYCLE.BIN/
 /src/web/admin/tmpl/public
 
 /npm_tmp
+
+/npm
