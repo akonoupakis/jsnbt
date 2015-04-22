@@ -81,12 +81,14 @@ module.exports = {
 
     view: {
 
-        preparse: function (server, ctx, preparsingContext) {
+        preparse: function (server, ctx, preparsingContext, next) {
             // change here the preparsingContext.model and the preparsingContext.tmpl before rendering
+            next(preparsingContext);
         },
 
-        postparse: function (server, ctx, postparsingContext) {
+        postparse: function (server, ctx, postparsingContext, next) {
             // change here the postparsingContext.html upon render
+            next(postparsingContext);
         }
 
     }

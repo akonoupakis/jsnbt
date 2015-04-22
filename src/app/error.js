@@ -50,14 +50,15 @@ var ErrorRenderer = function (server, ctx, error, stack) {
         ctx.meta.title = server.app.title + (server.app.title ? ' | ' : '') + ctx.meta.title;
 
     ctx.halt = true;
-    errorContent = require('./parser.js')(server).parse(ctx, errorContent, {
+
+    require('./parser.js')(server).parse(ctx, errorContent, {
         error: error,
         text: text,
         stack: stack || ''
+    }, function (response) {
+        ctx.write(response);
+        ctx.end();
     });
-
-    ctx.write(errorContent);
-    ctx.end();
 
 };
 

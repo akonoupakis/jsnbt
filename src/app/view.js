@@ -16,10 +16,10 @@ var ViewRenderer = function (server, ctx) {
 
             ctx.writeHead(200, { "Content-Type": "text/html" });
 
-            tmplContent = require('./parser.js')(server).parse(ctx, tmplContent);
-
-            ctx.write(tmplContent);
-            ctx.end();
+            require('./parser.js')(server).parse(ctx, tmplContent, {}, function (response) {
+                ctx.write(response);
+                ctx.end();
+            });
         }
         else {
             error(ctx, 500, 'template not found: ' + tmplFilePath);

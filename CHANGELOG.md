@@ -1,3 +1,9 @@
+## 1.0.103 (2015-04-23)
+
+Features
+
+	- index.view.preparse() && index.view.postparse() with async callbacks
+
 ## 1.0.102 (2015-04-19)
 
 Features
