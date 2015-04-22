@@ -137,7 +137,7 @@ var Parser = function (server) {
     };
 
     var preparse = function (ctx, preparsingContext, callback) {
-        if (!ctx.halt) {
+        if (!ctx.halt && ctx.uri.first !== 'admin') {
             var preparser = require('./parsing/preparser.js')(server, ctx);
             preparser.process(preparsingContext, callback);
         }
@@ -163,12 +163,13 @@ var Parser = function (server) {
             postparsingContext.html = postparsingContext.html.replace('</body>', injectedDbgHtml + '\n</body>');
         }
 
-        if (!ctx.halt) {
+        if (!ctx.halt && ctx.uri.first !== 'admin') {
             var postparser = require('./parsing/postparser.js')(server, ctx);
-            postparser.process(postparsingContext);
+            postparser.process(postparsingContext, callback);
         }
-
-        callback(postparsingContext.html);
+        else {
+            callback(postparsingContext.html);
+        }
     };
 
     return {
@@ -178,9 +179,9 @@ var Parser = function (server) {
             prepare(ctx, tmpl, model, function (preparsingContext) {
                 preparse(ctx, preparsingContext, function (preparsedContext) {
                     parse(ctx, preparsedContext, function (parsedHtml) {
-                        //postParse(ctx, parsedHtml, function (postParsedHtml) {
+                        postParse(ctx, parsedHtml, function (postParsedHtml) {
                             callback(parsedHtml);
-                        //});
+                        });
                     });
                 })
             });
