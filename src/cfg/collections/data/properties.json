@@ -1,0 +1,19 @@
+[{
+	"name": "domain",
+	"type": "string"
+}, {
+	"name": "list",
+	"type": "string"
+}, {
+	"name": "name",
+	"type": "string"
+}, {
+	"name": "content",
+	"type": "object"
+}, {
+	"name": "createdOn",
+	"type": "number"
+}, {
+	"name": "modifiedOn",
+	"type": "number"
+}]

@@ -78,7 +78,7 @@ var Jsnbt = function () {
                 extend(true, resultObj, obj);
                 return resultObj
             }
-
+            
             var applyArray = function (configName, matchName) {
                 if (_.isArray(moduleConfig[configName])) {
                     _.each(moduleConfig[configName], function (moduleItem) {
@@ -259,7 +259,7 @@ var Jsnbt = function () {
                 enabled: self.localization,
                 locale: self.locale
             };
-
+            
             if (site === 'admin') {
 
                 result.jsModules = self.jsModules;

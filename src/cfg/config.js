@@ -115,6 +115,8 @@ module.exports = {
         roles: ['sa']
     }],
 
+    collections: require('./collections.js'),
+
     permissions: [{
         collection: 'languages',
         roles: [{
