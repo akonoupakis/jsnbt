@@ -20,24 +20,29 @@ function Server(app, options) {
     
     var logger = require('./logger.js')(this);
     
-    var nonLoggedCollections = ['actions', 'migrations'];
     var logAction = function (dpd, user, collection, action, objectId, objectData, callback) {
-        if (nonLoggedCollections.indexOf(collection) === -1) {
-            dpd.actions.post({
-                timestamp: new Date().getTime(),
-                user: user ? user.id : undefined,
-                collection: collection,
-                action: action,
-                objectId: objectId,
-                objectData: objectData || {}
-            }, function (results, err) {
-                if (err) {
-                    throw err;
-                }
-                else {
-                    callback();
-                }
-            });
+        var jsnbtCollection = _.find(server.jsnbt.collections, function (x) { return x.name === collection; });
+        if (jsnbtCollection) {
+            if (jsnbtCollection.logging) {
+                dpd.actions.post({
+                    timestamp: new Date().getTime(),
+                    user: user ? user.id : undefined,
+                    collection: collection,
+                    action: action,
+                    objectId: objectId,
+                    objectData: objectData || {}
+                }, function (results, err) {
+                    if (err) {
+                        throw err;
+                    }
+                    else {
+                        callback();
+                    }
+                });
+            }
+            else {
+                callback();
+            }
         }
         else {
             callback();
