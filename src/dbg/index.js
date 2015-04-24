@@ -10,7 +10,7 @@ module.exports = {
     },
 
     getConfig: function () {
-        return require('./config.js');
+        return require('./cfg/config.js');
     },
 
     getVersion: function () {
