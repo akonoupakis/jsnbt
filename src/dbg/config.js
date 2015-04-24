@@ -27,7 +27,7 @@ module.exports = {
 
     sections: [],
 
-    permissions: [],
+    collections: [],
     
     injects: {
         navigation: [{

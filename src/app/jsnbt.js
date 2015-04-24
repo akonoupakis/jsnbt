@@ -48,7 +48,7 @@ var Jsnbt = function () {
 
         sections: [],
 
-        permissions: [],
+        collections: [],
 
         lists: [],
 
@@ -167,7 +167,7 @@ var Jsnbt = function () {
 
             applyArray('sections', 'name');
 
-            applyArray('permissions', 'collection');
+            applyArray('collections', 'name');
 
             applyArray('images', 'name');
 

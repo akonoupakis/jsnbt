@@ -43,17 +43,7 @@ function Server(app, options) {
             callback();
         }
     };
-
-    var shouldCheck = function (collection) {
-        var result = true;
-
-        var dpdPermissions = _.find(server.jsnbt.permissions, function (x) { return x.collection === collection; });
-        if (dpdPermissions && dpdPermissions.auth === false)
-            result = false;
-
-        return result;
-    };
-
+    
     var authMngr = null;
 
     var started = false;
@@ -68,7 +58,7 @@ function Server(app, options) {
         },
         dpd: {
             onPreRead: function (scriptContext, collection, objectId, callback) {
-                if (!scriptContext.internal && shouldCheck(collection) && !authMngr.isAuthorized(scriptContext.me, collection, 'R'))
+                if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'R'))
                     scriptContext.cancel('access denied', 401);
 
                 callback();
@@ -77,7 +67,7 @@ function Server(app, options) {
                 callback();
             },
             onPreCreate: function (scriptContext, collection, objectId, callback) {
-                if (!scriptContext.internal && shouldCheck(collection) && !authMngr.isAuthorized(scriptContext.me, collection, 'C'))
+                if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'C'))
                     scriptContext.cancel('access denied', 401);
 
                 callback();
@@ -91,7 +81,7 @@ function Server(app, options) {
                 });
             },
             onPreUpdate: function (scriptContext, collection, objectId, callback) {
-                if (!scriptContext.internal && shouldCheck(collection) && !authMngr.isAuthorized(scriptContext.me, collection, 'U'))
+                if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'U'))
                     scriptContext.cancel('access denied', 401);
 
                 callback();
@@ -105,7 +95,7 @@ function Server(app, options) {
                 });
             },
             onPreDelete: function (scriptContext, collection, objectId, callback) {
-                if (!scriptContext.internal && shouldCheck(collection) && !authMngr.isAuthorized(scriptContext.me, collection, 'D'))
+                if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'D'))
                     scriptContext.cancel('access denied', 401);
 
                 callback();

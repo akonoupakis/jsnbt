@@ -117,6 +117,7 @@ module.exports = {
 
     collections: require('./collections.js'),
 
+    /*
     permissions: [{
         collection: 'languages',
         roles: [{
@@ -179,6 +180,7 @@ module.exports = {
             crud: ['C', 'R', 'U', 'D']
         }]
     }],
+    */
 
     lists: []
 
