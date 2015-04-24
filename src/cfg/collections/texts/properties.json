@@ -1,0 +1,10 @@
+[{
+	"name": "key",
+	"type": "string"
+}, {
+	"name": "value",
+	"type": "object"
+}, {
+	"name": "group",
+	"type": "string"
+}]

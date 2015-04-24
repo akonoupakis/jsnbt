@@ -1,0 +1,7 @@
+[{
+	"name": "layout",
+	"type": "string"
+}, {
+	"name": "content",
+	"type": "object"
+}]

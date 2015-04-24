@@ -1,0 +1,7 @@
+[{
+    "role": "public",
+    "crud": ["R"]
+}, {
+    "role": "admin",
+    "crud": ["C", "R", "U"]
+}]

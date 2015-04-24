@@ -1,0 +1,10 @@
+[{
+	"name": "module",
+	"type": "string"
+}, {
+	"name": "name",
+	"type": "string"
+}, {
+	"name": "processedOn",
+	"type": "number"
+}]

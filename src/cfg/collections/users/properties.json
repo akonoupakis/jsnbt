@@ -1,0 +1,10 @@
+[{
+	"name": "firstName",
+	"type": "string"
+}, {
+	"name": "lastName",
+	"type": "string"
+}, {
+	"name": "roles",
+	"type": "array"
+}]
