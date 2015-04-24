@@ -48,7 +48,7 @@ var Jsnbt = function () {
 
         sections: [],
 
-        collections: [],
+        collections: {},
 
         lists: [],
 
@@ -89,6 +89,20 @@ var Jsnbt = function () {
                         else {
                             self[configName] = self[configName] || [];
                             self[configName].push(clone(moduleItem));
+                        }
+                    });
+                }
+            };
+
+            var applyArrayInObject = function (configName, matchName) {
+                if (_.isArray(moduleConfig[configName])) {
+                    _.each(moduleConfig[configName], function (moduleItem) {
+
+                        if (self[configName][matchName]) {
+                            extend(true, self[configName][moduleItem.name], moduleItem);
+                        }
+                        else {
+                            self[configName][moduleItem.name] = clone(moduleItem);
                         }
                     });
                 }
@@ -167,8 +181,8 @@ var Jsnbt = function () {
 
             applyArray('sections', 'name');
 
-            applyArray('collections', 'name');
-
+            applyArrayInObject('collections', 'name');
+            
             applyArray('images', 'name');
 
             applyTextArray('fileGroups');

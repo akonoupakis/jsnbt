@@ -21,9 +21,8 @@ function Server(app, options) {
     var logger = require('./logger.js')(this);
     
     var logAction = function (dpd, user, collection, action, objectId, objectData, callback) {
-        var jsnbtCollection = _.find(server.jsnbt.collections, function (x) { return x.name === collection; });
-        if (jsnbtCollection) {
-            if (jsnbtCollection.logging) {
+        if (server.jsnbt.collections[collection]) {
+            if (server.jsnbt.collections[collection].logging) {
                 dpd.actions.post({
                     timestamp: new Date().getTime(),
                     user: user ? user.id : undefined,
