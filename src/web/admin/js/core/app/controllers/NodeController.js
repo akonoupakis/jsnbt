@@ -145,17 +145,17 @@
                             $scope.published = true;
                             $scope.draft = false;
 
-                            $scope.nodeLayout = result.layout.value;
-                            $scope.draftLayout = result.layout.value;
+                            $scope.nodeLayout = result.layout.value || '';
+                            $scope.draftLayout = result.layout.value || '';
 
-                            $scope.nodeRoles = result.roles.values;
-                            $scope.draftRoles = result.roles.values;
+                            $scope.nodeRoles = result.roles.value || [];
+                            $scope.draftRoles = result.roles.value || [];
 
-                            $scope.nodeRobots = result.robots.values;
-                            $scope.draftRobots = result.robots.values;
+                            $scope.nodeRobots = result.robots.value || [];
+                            $scope.draftRobots = result.robots.value || [];
 
-                            $scope.nodeSSL = result.secure.value;
-                            $scope.draftSSL = result.secure.value;
+                            $scope.nodeSSL = result.secure.value || false;
+                            $scope.draftSSL = result.secure.value || false;
 
                             deferred.resolve(result);
 
@@ -441,7 +441,7 @@
                             var matchedNode = _.first(_.filter(hierarchyNodes, function (x) { return x.id === item; }));
                             if (matchedNode) {
                                 if (!matchedNode.roles.inherits) {
-                                    roles = matchedNode.roles.values.slice(0);
+                                    roles = matchedNode.roles.value.slice(0);
                                 }
                             }
                             else {
@@ -473,7 +473,7 @@
                             var matchedNode = _.first(_.filter(hierarchyNodes, function (x) { return x.id === item; }));
                             if (matchedNode) {
                                 if (!matchedNode.robots.inherits) {
-                                    robots = matchedNode.robots.values.slice(0);
+                                    robots = matchedNode.robots.value.slice(0);
                                 }
                             }
                             else {
@@ -813,8 +813,8 @@
                             var publishNode = {};
                             $.extend(true, publishNode, $scope.node);
 
-                            publishNode.roles.values = !publishNode.roles.inherits ? $scope.nodeRoles : [];
-                            publishNode.robots.values = !publishNode.robots.inherits ? $scope.nodeRobots : [];
+                            publishNode.roles.value = !publishNode.roles.inherits ? $scope.nodeRoles : [];
+                            publishNode.robots.value = !publishNode.robots.inherits ? $scope.nodeRobots : [];
                             publishNode.layout.value = !publishNode.layout.inherits ? $scope.nodeLayout : '';
                             publishNode.secure.value = !publishNode.secure.inherits ? $scope.nodeSSL : false;
                             

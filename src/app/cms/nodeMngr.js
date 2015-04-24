@@ -276,44 +276,23 @@ module.exports = function(server, dpd) {
                     var rSelf = this;
                     return _.every(rSelf.nodes, function (x) { return x.active[rSelf.language] === true; });
                 },
-                getLayout: function () {
+                getInheritedProperties: function () {
                     var rSelf = this;
 
-                    var layout = '';
+                    var inherited = {};
 
-                    _.each(rSelf.nodes, function (rnode) {
-                        if (!rnode.layout.inherits) {
-                            layout = rnode.layout.value;
-                        }
-                    });
-                    
-                    return layout;
-                },
-                getPermissions: function () {
-                    var rSelf = this;
+                    var inheritedPropertyNames = _.pluck(_.filter(server.jsnbt.collections.nodes.properties, function (x) { return x.inheritable === true; }), 'name');
 
-                    var rRoles = ['public'];
-
-                    _.each(rSelf.nodes, function (rnode) {
-                        if (!rnode.roles.inherits) {
-                            rRoles = rnode.roles.values.slice(0);
-                        }
+                    _.each(inheritedPropertyNames, function (inheritedName) {
+                        _.each(rSelf.nodes, function (rnode) {
+                            if (rnode[inheritedName] && !rnode[inheritedName].inherits === true) {
+                                if (rnode[inheritedName].value)
+                                    inherited[inheritedName] = rnode[inheritedName].value;
+                            }
+                        });
                     });
 
-                    return rRoles;
-                },
-                getRobots: function () {
-                    var rSelf = this;
-
-                    var rRobots = [];
-
-                    _.each(rSelf.nodes, function (rnode) {
-                        if (!rnode.robots.inherits) {
-                            rRobots = rnode.robots.values.slice(0);
-                        }
-                    });
-
-                    return rRobots;
+                    return inherited;
                 }
             };
 

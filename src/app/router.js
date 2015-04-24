@@ -149,7 +149,7 @@ var Router = function(server, req, res) {
 
     var processRequest = function (ctx) {
         ctx.req.cookies.set('sid', ctx.session.sid);
-
+        
         ctx.req.dpd = ctx.dpd;
 
         ctx.req.session = ctx.session;
@@ -181,6 +181,7 @@ var Router = function(server, req, res) {
                 router.route(ctx, next);
             };
 
+            
             var first = _.first(routers);
             first.route(ctx, next);
         }

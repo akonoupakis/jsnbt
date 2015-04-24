@@ -11,16 +11,18 @@ var HomeRouter = function (server) {
         route: function (ctx, next) {
             if (ctx.uri.path === '/') {
                 try {
-                    
                     var node = require('../cms/nodeMngr.js')(server, ctx.dpd);
                     
                     ctx.timer.start('node retrieval');
+                    
                     node.resolveUrl(ctx.uri.url, function (resolved) {
                         ctx.timer.stop('node retrieval');
                         if (resolved && resolved.page && resolved.isActive()) {
+                            
+                            var inherited = resolved.getInheritedProperties();
 
                             if (!ctx.restricted && server.jsnbt.restricted) {
-                                if (!authMngr.isInRole(ctx.user, resolved.getPermissions())) {
+                                if (!authMngr.isInRole(ctx.user, (inherited.roles || []))) {
                                     ctx.restricted = true;
                                 }
                             }
@@ -60,22 +62,23 @@ var HomeRouter = function (server) {
                             else {
                                 ctx.node = resolved.page || {};
                                 ctx.pointer = resolved.pointer || {};
-                                ctx.layout = resolved.getLayout();
+                                ctx.inherited = inherited;
+                                ctx.layout = ctx.inherited.layout || '';
                                 ctx.language = server.jsnbt.localization ? resolved.language || 'en' : server.jsnbt.locale;
                                 ctx.template = resolved.template || '';
-
+                                
                                 ctx.meta = {};
                                 if (resolved.page.meta && resolved.page.meta[ctx.language])
                                     ctx.meta = resolved.page.meta[ctx.language] || {};
 
                                 ctx.uri.scheme = resolved.page.secure === true ? 'https' : 'http';
 
-                                if (_.filter(resolved.getPermissions(), function (x) { return x !== 'public' }).length > 0) {
+                                if (_.filter((ctx.inherited.roles || []), function (x) { return x !== 'public' }).length > 0) {
                                     ctx.robots.noindex = true;
                                     ctx.robots.nofollow = true;
                                 }
                                 else {
-                                    var robots = resolved.getRobots();
+                                    var robots = ctx.inherited.robots || [];
                                     _.each(robots, function (robot) {
                                         if (ctx.robots[robot] !== undefined)
                                             ctx.robots[robot] = true;
