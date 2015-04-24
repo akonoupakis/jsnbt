@@ -1,7 +1,5 @@
 var fs = require('./fs.js');
 var path = require('path');
-var bower = require('bower');
-var async = require('async');
 var server = require('server-root');
 var _ = require('underscore');
 
@@ -115,12 +113,19 @@ module.exports = function (grunt) {
         });
 
 
-        var files = [{
+        /*
+        
+        {
             expand: true,
             cwd: 'src/cfg/dpd/',
             src: ['app.dpd', 'resources/**'],
             dest: folder + '/'
-        }, {
+        }, 
+        
+        
+        */
+
+        var files = [{
             expand: true,
             cwd: 'src/dat/',
             src: ['**'],
@@ -298,6 +303,36 @@ module.exports = function (grunt) {
 		}];
     };
     
+    var deployFiles = function (source, target) {
+        if (!fs.existsSync(target)) {
+            fs.create(target);
+        }
+
+        fs.copy(source, target, false);
+        diffLessFile(source + '/css/_.less', target + '/css/_.less');
+    };
+
+    var diffLessFile = function (source, target) {
+        if (fs.existsSync(source)) {
+            if (fs.existsSync(target)) {
+                var sourceLines = fs.readFileSync(source, 'utf-8').split('\n');
+                var targetLines = fs.readFileSync(target, 'utf-8').split('\n');
+                var changed = false;
+
+                for (var i = 0; i < sourceLines.length; i++) {
+                    if (targetLines.indexOf(sourceLines[i]) == -1) {
+                        targetLines.push(sourceLines[i]);
+                        changed = true;
+                    }
+                }
+
+                if (changed) {
+                    fs.writeFileSync(target, targetLines.join('\n'), 'utf-8');
+                }
+            }
+        }
+    };
+
     grunt.registerMultiTask('mod', 'Install & pack modules', function () {
         var runFn = function (mod) {
             var modMngr = require(mod === 'bower' ? './npm.js' : './npm.js');
@@ -315,11 +350,113 @@ module.exports = function (grunt) {
     grunt.registerMultiTask('patch', 'Patch the copied with the package files', function () {
 
         var folder = this.target == 'prod' ? 'dist' : 'dev';
+        var events = ['get', 'post', 'put', 'validate', 'delete'];
+
+        var collections = [];
+
+        _.each(jsnbt.modules, function (module) {
+            if (module.collections && _.isArray(module.collections)) {
+                _.each(module.collections, function (moduleCollection) {
+                    
+                    var collection = _.find(collections, function (x) { return x.name === moduleCollection.name; });
+                    if (collection === undefined) {
+                        collection = {
+                            name: moduleCollection.name,
+                            config: {
+                                type: (moduleCollection.users === true ? 'User' : '') + 'Collection',
+                                properties: {}
+                            },
+                            events: {
+                                get: undefined,
+                                post: undefined,
+                                put: undefined,
+                                validate: undefined,
+                                delete: undefined,
+                            }
+                        };
+
+                        collections.push(collection);
+                    }
+
+                    if (moduleCollection.properties && _.isArray(moduleCollection.properties)) {
+
+                        _.each(moduleCollection.properties, function (collectionProperty) {
+
+                            var property = {
+                                name: collectionProperty.name,
+                                type: collectionProperty.type,
+                                typeLabel: collectionProperty.name,
+                                required: false,
+                                id: collectionProperty.name,
+                                order:0
+                            };
+
+                            if (collection.config.properties[collectionProperty.name]) {
+                                _.extend(module.config.properties[collectionProperty.name], property);
+                            }
+                            else {
+                                collection.config.properties[collectionProperty.name] = property;
+                            }
+                        });
+                    }
+
+                    if (moduleCollection.getEvents && _.isFunction(moduleCollection.getEvents)) {
+                        var moduleCollectionEvents = moduleCollection.getEvents();
+                        
+                        _.each(events, function (event) {
+                            if (moduleCollectionEvents[event] && _.isString(moduleCollectionEvents[event])) {
+                                if (collection.events[event] === undefined)
+                                    collection.events[event] = '';
+                                else
+                                    collection.events[event] += '\n\n';
+
+                                collection.events[event] += moduleCollectionEvents[event];
+                            }
+                        });
+                    }
+                });
+            }
+        });
+        
+        if (!fs.existsSync(server.getPath(folder + '/resources'))) {
+            fs.create(server.getPath(folder + '/resources'));
+        }
+
+        _.each(collections, function (collection) {
+
+            var targetFolder = server.getPath(folder + '/resources/' + collection.name);
+
+            if (!fs.existsSync(targetFolder)) {
+                fs.create(targetFolder);
+            }
+
+            var targetConfigFile = server.getPath(folder + '/resources/' + collection.name + '/config.json');
+            fs.writeFileSync(targetConfigFile, JSON.stringify(collection.config, null, '\t'), 'utf-8');
+
+            _.each(events, function (event) {
+                var targetEventFile = server.getPath(folder + '/resources/' + collection.name + '/' + event + '.js');
+                if (collection.events[event] && _.isString(collection.events[event])) {
+                    fs.writeFileSync(targetEventFile, collection.events[event], 'utf-8');
+                };
+            });
+        });
+
         var modMngr = require('./npm.js');
         if (fs.existsSync(server.getPath('src/pck'))) {
             var found = fs.readdirSync(server.getPath('src/pck'));
             _.each(found, function (f) {
-                modMngr.deploy(f, folder);
+
+                if (fs.existsSync(server.getPath('src/pck/' + f + '/web/public'))) {
+                    deployFiles(server.getPath('src/pck/' + f + '/web/public'), server.getPath(folder + '/public'));
+                }
+
+                if (fs.existsSync(server.getPath('src/pck/' + f + '/web/admin'))) {
+                    deployFiles(server.getPath('src/pck/' + f + '/web/admin'), server.getPath(folder + '/public/admin'));
+                }
+
+                if (fs.existsSync(server.getPath('src/pck/' + f + '/dat'))) {
+                    deployFiles(server.getPath('src/pck/' + f + '/dat'), server.getPath(folder + '/migrations/' + name));
+                }
             });
         }
     });
@@ -483,7 +620,7 @@ module.exports = function (grunt) {
     fs.create('./src');
     fs.create('./src/app');
     fs.create('./src/cfg');
-    fs.create('./src/cfg/dpd');
+    //fs.create('./src/cfg/dpd');
     fs.create('./src/dat');
     fs.create('./src/pck');
     fs.create('./src/web');

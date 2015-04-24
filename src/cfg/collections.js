@@ -88,6 +88,7 @@ module.exports = [{
     properties: require("./collections/users/properties.json"),
     permissions: false,
     logging: false,
+    users: true,
     getEvents: function () {
         return {
             get: fs.readFileSync(__dirname + "/collections/users/events/get.js", "utf8"),

@@ -15,6 +15,10 @@ var Directory = {
 
 var logger = require('./logger.js')(this);
 
+exports.domain = 'core';
+exports.public = false;
+exports.browsable = false;
+
 exports.environment = Environment.Development;
 exports.directory = Directory.Development;
 

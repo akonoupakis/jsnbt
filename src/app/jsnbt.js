@@ -239,6 +239,22 @@ var Jsnbt = function () {
             moduleConfig.browsable = module.browsable;
             moduleConfig.name = name;
             this.modules.push(moduleConfig);
+
+            var newModules = [];
+            var coreModule = _.find(this.modules, function (x) { return x.domain === 'core'; });
+            if (coreModule)
+                newModules.push(coreModule);
+
+            var restModules = _.filter(this.modules, function (x) { return x.domain !== 'core' && !x.public; });
+            _.each(restModules, function (mod) {
+                newModules.push(mod);
+            });
+
+            var publicModule = _.find(this.modules, function (x) { return x.public === true; });
+            if (publicModule)
+                newModules.push(publicModule);
+
+            this.modules = newModules;
         },
 
         setConfig: function (name, config) {
