@@ -76,7 +76,7 @@ var Jsnbt = function () {
             var clone = function (obj) {
                 var resultObj = {};
                 extend(true, resultObj, obj);
-                return resultObj
+                return resultObj;
             }
             
             var applyArray = function (configName, matchName) {

@@ -2,11 +2,16 @@ var fs = require("fs");
 
 module.exports = [{
     name: "actions",
-    properties: require("./collections/actions/properties.json"),
-    logging: false
+    schema: require("./collections/actions/schema.json"),
+    logging: false,
+    getEvents: function () {
+        return {
+            validate: fs.readFileSync(__dirname + "/collections/actions/events/validate.js", "utf8")
+        }
+    }
 }, {
     name: "data",
-    properties: require("./collections/data/properties.json"),
+    schema: require("./collections/data/schema.json"),
     permissions: require("./collections/data/permissions.json"),
     logging: true,
     getEvents: function () {
@@ -19,7 +24,7 @@ module.exports = [{
     }
 }, {
     name: "languages",
-    properties: require("./collections/languages/properties.json"),
+    schema: require("./collections/languages/schema.json"),
     permissions: require("./collections/languages/permissions.json"),
     logging: true,
     getEvents: function () {
@@ -32,7 +37,7 @@ module.exports = [{
     }
 }, {
     name: "layouts",
-    properties: require("./collections/layouts/properties.json"),
+    schema: require("./collections/layouts/schema.json"),
     permissions: require("./collections/layouts/permissions.json"),
     logging: true,
     getEvents: function () {
@@ -44,11 +49,11 @@ module.exports = [{
     }
 }, {
     name: "migrations",
-    properties: require("./collections/migrations/properties.json"),
+    schema: require("./collections/migrations/schema.json"),
     logging: false
 }, {
     name: "nodes",
-    properties: require("./collections/nodes/properties.json"),
+    schema: require("./collections/nodes/schema.json"),
     permissions: require("./collections/nodes/permissions.json"),
     logging: true,
     getEvents: function () {
@@ -62,18 +67,19 @@ module.exports = [{
     }
 }, {
     name: "settings",
-    properties: require("./collections/settings/properties.json"),
+    schema: require("./collections/settings/schema.json"),
     permissions: require("./collections/settings/permissions.json"),
     logging: true,
     getEvents: function () {
         return {
+            validate: fs.readFileSync(__dirname + "/collections/settings/events/validate.js", "utf8"),
             post: fs.readFileSync(__dirname + "/collections/settings/events/post.js", "utf8"),
             put: fs.readFileSync(__dirname + "/collections/settings/events/put.js", "utf8")
         }
     }
 }, {
     name: "texts",
-    properties: require("./collections/texts/properties.json"),
+    schema: require("./collections/texts/schema.json"),
     permissions: require("./collections/texts/permissions.json"),
     logging: true,
     getEvents: function () {
@@ -85,7 +91,7 @@ module.exports = [{
     }
 }, {
     name: "users",
-    properties: require("./collections/users/properties.json"),
+    schema: require("./collections/users/schema.json"),
     permissions: false,
     logging: false,
     users: true,

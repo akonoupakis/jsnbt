@@ -357,62 +357,68 @@ module.exports = function (grunt) {
         _.each(jsnbt.modules, function (module) {
             if (module.collections && _.isArray(module.collections)) {
                 _.each(module.collections, function (moduleCollection) {
-                    
-                    var collection = _.find(collections, function (x) { return x.name === moduleCollection.name; });
-                    if (collection === undefined) {
-                        collection = {
-                            name: moduleCollection.name,
-                            config: {
-                                type: (moduleCollection.users === true ? 'User' : '') + 'Collection',
-                                properties: {}
-                            },
-                            events: {
-                                get: undefined,
-                                post: undefined,
-                                put: undefined,
-                                validate: undefined,
-                                delete: undefined,
-                            }
-                        };
 
-                        collections.push(collection);
-                    }
-
-                    if (moduleCollection.properties && _.isArray(moduleCollection.properties)) {
-
-                        _.each(moduleCollection.properties, function (collectionProperty) {
-
-                            var property = {
-                                name: collectionProperty.name,
-                                type: collectionProperty.type,
-                                typeLabel: collectionProperty.name,
-                                required: false,
-                                id: collectionProperty.name,
-                                order:0
+                    if (moduleCollection.schema && _.isObject(moduleCollection.schema) && moduleCollection.schema.type === 'object' && _.isObject(moduleCollection.schema.properties)) {
+                        var collection = _.find(collections, function (x) { return x.name === moduleCollection.name; });
+                        if (collection === undefined) {
+                            collection = {
+                                name: moduleCollection.name,
+                                config: {
+                                    type: (moduleCollection.users === true ? 'User' : '') + 'Collection',
+                                    properties: {}
+                                },
+                                events: {
+                                    get: undefined,
+                                    post: undefined,
+                                    put: undefined,
+                                    validate: undefined,
+                                    delete: undefined,
+                                }
                             };
 
-                            if (collection.config.properties[collectionProperty.name]) {
-                                _.extend(module.config.properties[collectionProperty.name], property);
+                            collections.push(collection);
+                        }
+
+                        var propertyKeys = _.keys(moduleCollection.schema.properties);
+
+                        _.each(propertyKeys, function (propertyKey, propertyIndex) {
+
+                            var collectionProperty = moduleCollection.schema.properties[propertyKey];
+
+                            var propertyRequired = collectionProperty.type === 'boolean' ? false : (collectionProperty.required || false);
+
+                            var property = {
+                                name: propertyKey,
+                                type: collectionProperty.type,
+                                typeLabel: propertyKey,
+                                required: propertyRequired,
+                                id: propertyKey,
+                                order: propertyIndex
+                            };
+
+                            if (collection.config.properties[propertyKey]) {
+                                _.extend(module.config.properties[propertyKey], property);
                             }
                             else {
-                                collection.config.properties[collectionProperty.name] = property;
+                                collection.config.properties[propertyKey] = property;
                             }
-                        });
-                    }
 
-                    if (moduleCollection.getEvents && _.isFunction(moduleCollection.getEvents)) {
-                        var moduleCollectionEvents = moduleCollection.getEvents();
-                        
-                        _.each(events, function (event) {
-                            if (moduleCollectionEvents[event] && _.isString(moduleCollectionEvents[event])) {
-                                if (collection.events[event] === undefined)
-                                    collection.events[event] = '';
-                                else
-                                    collection.events[event] += '\n\n';
-
-                                collection.events[event] += moduleCollectionEvents[event];
-                            }
                         });
+
+                        if (moduleCollection.getEvents && _.isFunction(moduleCollection.getEvents)) {
+                            var moduleCollectionEvents = moduleCollection.getEvents();
+
+                            _.each(events, function (event) {
+                                if (moduleCollectionEvents[event] && _.isString(moduleCollectionEvents[event])) {
+                                    if (collection.events[event] === undefined)
+                                        collection.events[event] = '';
+                                    else
+                                        collection.events[event] += '\n\n';
+
+                                    collection.events[event] += moduleCollectionEvents[event];
+                                }
+                            });
+                        }
                     }
                 });
             }

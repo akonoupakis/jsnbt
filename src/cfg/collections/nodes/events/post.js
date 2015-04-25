@@ -5,8 +5,6 @@ var _ = require('underscore');
 var self = this;
     
 var entity = requireApp('cms/entityMngr.js')(server, self.entity);
-if (!entity)
-    error('entity', 'not a known entity');
 
 if (entity.hasProperty('seo')) {
     dpd.nodes.get({ parent: self.parent, domain: self.domain, id: { $nin: [self.id] } }, function (siblingNodes, siblingNodesError) {

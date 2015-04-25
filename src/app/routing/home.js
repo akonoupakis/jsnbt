@@ -20,7 +20,7 @@ var HomeRouter = function (server) {
                         if (resolved && resolved.page && resolved.isActive()) {
                             
                             var inherited = resolved.getInheritedProperties();
-
+                            
                             if (!ctx.restricted && server.jsnbt.restricted) {
                                 if (!authMngr.isInRole(ctx.user, (inherited.roles || []))) {
                                     ctx.restricted = true;

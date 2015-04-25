@@ -281,9 +281,18 @@ module.exports = function(server, dpd) {
 
                     var inherited = {};
 
-                    var inheritedPropertyNames = _.pluck(_.filter(server.jsnbt.collections.nodes.properties, function (x) { return x.inheritable === true; }), 'name');
+                    if (!server.jsnbt.collections.nodes.inheritablePropertyNames) {
+                        var inheritablePropertyNames = [];
+                        var propertyKeys = _.keys(server.jsnbt.collections.nodes.schema.properties);
+                        _.each(propertyKeys, function (propertyKey) {
+                            var prop = server.jsnbt.collections.nodes.schema.properties[propertyKey];
+                            if (prop.type === 'object' && prop.inheritable === true)
+                                inheritablePropertyNames.push(propertyKey);
+                        });
+                        server.jsnbt.collections.nodes.inheritablePropertyNames = inheritablePropertyNames;
+                    }
 
-                    _.each(inheritedPropertyNames, function (inheritedName) {
+                    _.each(server.jsnbt.collections.nodes.inheritablePropertyNames, function (inheritedName) {
                         _.each(rSelf.nodes, function (rnode) {
                             if (rnode[inheritedName] && !rnode[inheritedName].inherits === true) {
                                 if (rnode[inheritedName].value)

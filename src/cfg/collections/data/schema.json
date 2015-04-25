@@ -1,0 +1,30 @@
+{
+    "type": "object",
+    "properties": {
+        "domain": {
+            "type": "string",
+            "required": true
+        },
+        "list": {
+            "type": "string",
+            "required": true
+        },
+		"name": {
+            "type": "string",
+            "required": true
+        },
+		"content": {
+            "type": "object",
+            "required": true,
+			"properties": { }
+        },
+		"createdOn": {
+            "type": "number",
+            "required": true
+        },
+		"modifiedOn": {
+            "type": "number",
+            "required": true
+        }
+    }
+}

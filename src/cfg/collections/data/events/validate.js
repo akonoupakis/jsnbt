@@ -2,25 +2,42 @@ var _ = require('underscore');
 
 var self = this;
 
-var knownDomains = _.pluck(_.uniq(server.jsnbt.lists, function (x) { return x.domain; }), 'domain');
-if (_.filter(knownDomains, function (x) { return x === self.domain; }).length === 0) {
-    error('domain', 'not a known domain');
-}
-
-var knownLists = _.pluck(_.uniq(server.jsnbt.lists, function (x) { return x.id; }), 'domain');
-if (_.filter(knownLists, function (x) { return x === self.domain; }).length === 0) {
-    error('list', 'not a known list');
-}
-
-var knownLanguageCodes = _.pluck(server.jsnbt.languages, 'code');
-
-var knownList = _.first(_.filter(server.jsnbt.lists, function (x) { return x.id === self.list; }));
+var languageProperties = {};
+var contentProperties = {};
 
 if (server.jsnbt.localization) {
-    if (self.content.localized) {
-        for (var lang in self.content.localized) {
-            if (knownLanguageCodes.indexOf(lang) === -1)
-                error('content.localized[' + lang + ']', lang + ' not a known language');
+
+    _.each(server.jsnbt.languages, function (lang) {
+        languageProperties[lang] = {
+            type: "object"
+        }
+    });
+
+    contentProperties = {
+        localized: {
+            type: "object",
+            properties: languageProperties
+        }
+    };
+}
+
+validate({
+    type: 'object',
+    properties: {
+        domain: {
+            type: "string",
+            required: true,
+            enum: _.pluck(_.uniq(server.jsnbt.lists, function (x) { return x.domain; }), 'domain')
+        },
+        list: {
+            type: "string",
+            required: true,
+            enum: _.pluck(_.filter(server.jsnbt.lists, function (x) { return x.domain === self.domain; }), 'id')
+        },
+        content: {
+            type: "object",
+            required: true,
+            properties: contentProperties
         }
     }
-}
+});

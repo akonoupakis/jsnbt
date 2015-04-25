@@ -3,10 +3,10 @@ var _ = require('underscore');
 validate({
     type: 'object',
     properties: {
-        code: {
+        collection: {
             type: "string",
             required: true,
-            enum: _.pluck(server.jsnbt.languages, 'code')
+            enum: _.keys(server.jsnbt.collections)
         }
     }
 });

@@ -1,7 +1,0 @@
-[{
-	"name": "domain",
-	"type": "string"
-}, {
-	"name": "data",
-	"type": "object"
-}]
