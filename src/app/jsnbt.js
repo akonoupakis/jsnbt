@@ -21,10 +21,10 @@ var Jsnbt = function () {
         languages: require('./storage/languages.js'),
 
         countries: require('./storage/countries.js'),
+        
+        modules: [],
 
         configs: {},
-
-        modules: [],
 
         localization: true,
 
@@ -51,13 +51,6 @@ var Jsnbt = function () {
         collections: {},
 
         lists: [],
-
-        injects: {
-            navigation: [],
-            dashboard: undefined,
-            content: undefined,
-            settings: undefined
-        },
 
         layouts: [],
 
@@ -144,10 +137,7 @@ var Jsnbt = function () {
                     ssl: true
                 }
             };
-
-
-
-
+            
             if (moduleConfig.jsModule) {
                 if (_.isString(moduleConfig.jsModule)) {
                     if (self.jsModules.indexOf(moduleConfig.jsModule) === -1)
@@ -244,15 +234,17 @@ var Jsnbt = function () {
 
                 applyArray('routes', 'id');
             }
-
-            this.setConfig(name, moduleConfig);
-
+            
             moduleConfig.public = module.public;
             moduleConfig.domain = module.domain;
             moduleConfig.version = module.version;
             moduleConfig.browsable = module.browsable;
             moduleConfig.name = name;
             this.modules.push(moduleConfig);
+
+            if (typeof (moduleConfig.register) === 'function') {
+                self.configs[moduleConfig.domain] = moduleConfig.register();
+            }
 
             var newModules = [];
             var coreModule = _.find(this.modules, function (x) { return x.domain === 'core'; });
@@ -271,17 +263,15 @@ var Jsnbt = function () {
             this.modules = newModules;
         },
 
-        setConfig: function (name, config) {
-            config.name = name;
-            this.configs[name] = config;
-        },
-
-        getConfig: function (name) {
-            return this.configs[name] || {};
-        },
-
-        getClientData: function (site) {
+        get: function () {
             var self = this;
+
+            var applyArrayInObject = function (selfName, resultName, identifier) {
+                result[resultName] = {};
+                _.each(self[selfName], function (selfItem) {
+                    result[resultName][selfItem[identifier]] = selfItem;
+                });
+            };
 
             var result = {};
 
@@ -290,58 +280,72 @@ var Jsnbt = function () {
                 locale: self.locale
             };
             
-            if (site === 'admin') {
+            result.jsModules = self.jsModules;
 
-                result.jsModules = self.jsModules;
+            result.version = getVersion();
+            result.restricted = self.restricted;
+            result.ssl = self.ssl;
 
-                result.version = getVersion();
-                result.restricted = self.restricted;
-                result.ssl = self.ssl;
+            result.fileGroups = self.fileGroups;
 
-                result.fileGroups = self.fileGroups;
+            result.modules = {};
+            _.each(self.modules, function (module) {
 
-                var modules = [];
-                _.each(self.modules, function (module) {
-
-                    if (!module.public && (module.browsable === undefined || module.browsable === true)) {
-                        modules.push({
-                            name: module.name,
-                            domain: module.domain,
-                            type: module.type,
-                            version: module.version,
-                            pointed: module.pointed,
-                            section: module.section
-                        });
+                if (module.domain !== 'core') {
+                    result.modules[module.domain] = {
+                        name: module.name,
+                        domain: module.domain,
+                        type: module.type,
+                        version: module.version,
+                        pointed: module.pointed,
+                        section: module.section,
+                        browsable: module.browsable === undefined || module.browsable === true
                     }
-                });
-                result.modules = modules;
 
-                result.entities = self.entities;
+                    if (self.configs[module.domain]) {
+                        extend(true, result.modules[module.domain], self.configs[module.domain]);
+                    }
+                }
+            });
 
-                result.roles = self.roles;
-                result.sections = self.sections;
+            result.lists = [];
+            _.each(self.lists, function (list) {
+                var newList = {};
+                extend(true, newList, list);
+                delete newList.permissions;
+                result.lists.push(newList);
+            });
 
-                result.lists = [];
-                _.each(self.lists, function (list) {
-                    var newList = {};
-                    extend(true, newList, list);
-                    delete newList.permissions;
-                    result.lists.push(newList);
-                });
+            result.injects = [];
+            _.each(self.modules, function (module) {
+                if (module.injects) {
+                    var newInjects = {};
+                    extend(true, newInjects, module.injects);
+                    newInjects.domain = module.domain;
+                    result.injects.push(newInjects);
+                }
+            });
 
-                result.templates = self.templates;
-                result.injects = self.injects;
-                result.layouts = self.layouts;
-                result.containers = self.containers;
-                result.routes = self.routes;
-            }
+            applyArrayInObject('entities', 'entities', 'name');
 
-            result.languages = self.languages;
-            result.countries = self.countries;
+            applyArrayInObject('roles', 'roles', 'name');
+
+            applyArrayInObject('sections', 'sections', 'name');            
+
+            applyArrayInObject('templates', 'templates', 'id');
+
+            applyArrayInObject('layouts', 'layouts', 'id');
+
+            applyArrayInObject('containers', 'containers', 'id');
+
+            applyArrayInObject('routes', 'routes', 'id');
+
+            applyArrayInObject('languages', 'languages', 'code');
+
+            applyArrayInObject('countries', 'countries', 'code');
 
             return result;
         }
-
     };
 
 }

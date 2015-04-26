@@ -226,7 +226,7 @@ function Server(app, options) {
     var jsnbt = require('./jsnbt.js')();
 
     try {
-        jsnbt.register('core', app.modules.core);
+        jsnbt.register('core', app.modules.core);       
     }
     catch (err) {
         logger.error(err);

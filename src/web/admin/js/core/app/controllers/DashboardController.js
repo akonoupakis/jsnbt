@@ -8,8 +8,12 @@
         
             $scope.publicTmpl = null;
 
-            if ($jsnbt.injects.dashboard)
-                $scope.publicTmpl = $jsnbt.injects.dashboard;
+            var injects = [];
+            _.each($jsnbt.injects, function (inject) {
+                if (inject.dashboard)
+                    injects.push(inject.dashboard);
+            });
+            $scope.injects = injects;
 
         });
 })();

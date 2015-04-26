@@ -29,9 +29,10 @@
 
         <hr />
 
-        <div ng-show="publicTmpl" ng-include="publicTmpl"></div>
-
-        <hr ng-show="publicTmpl" />
+        <div ng-repeat="tmpl in injects">
+            <div ng-include="tmpl"></div>
+            <hr />
+        </div>
 
     </section>
 

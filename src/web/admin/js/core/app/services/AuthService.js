@@ -86,7 +86,7 @@
             var getAllRoles = function (role) {
                 var results = [];
 
-                var matchedRole = _.first(_.filter($jsnbt.roles, function (x) { return x.name === role; }));
+                var matchedRole = $jsnbt.roles[role];
                 if (matchedRole) {
                     results.push(role);
 
@@ -139,7 +139,7 @@
 
                 var result = false;
 
-                var matchedSection = _.first(_.filter($jsnbt.sections, function (x) { return x.name === section; }));
+                var matchedSection = $jsnbt.sections[section];
                 if (matchedSection && matchedSection.roles) {
                     $(matchedSection.roles).each(function (r, role) {
                         if (self.isInRole(user, role)) {

@@ -19,7 +19,12 @@
             $scope.valid = false;
             $scope.published = false;
 
-            $scope.publicTmpl = $jsnbt.injects.settings;
+            var injects = [];
+            _.each($jsnbt.injects, function (inject) {
+                if (inject.settings)
+                    injects.push(inject.settings);
+            });
+            $scope.injects = injects;
 
             var fn = {
 

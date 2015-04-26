@@ -50,7 +50,9 @@
 
                     var allowEdit = true;
 
-                    $($jsnbt.roles).each(function (r, role) {
+                    for (var roleName in $jsnbt.roles) {
+                        var role = $jsnbt.roles[roleName];
+
                         var newRole = {};
                         $.extend(true, newRole, role);
                         newRole.value = newRole.name;
@@ -63,7 +65,7 @@
                         }
 
                         allRoles.push(newRole);
-                    });
+                    };
 
                     $scope.editRoles = false;
                     if ($scope.current.user.id !== $scope.user.id)

@@ -269,8 +269,14 @@
                 var opts = {};
                 $.extend(true, opts, optionsDefault, options);
                 
-                if (!options.entities)
-                    opts.entities = _.pluck(_.filter($jsnbt.entities, function (x) { return x.treeNode !== false; }), 'name');
+                if (!options.entities) {
+                    opts.entities = [];
+
+                    for (var entityName in $jsnbt.entities) {
+                        if ($jsnbt.entities[entityName].treeNode !== false)
+                            opts.entities.push(entityName);
+                    }
+                }
                 
                 var isRoot = root !== undefined ? root : true;
 

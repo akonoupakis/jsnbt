@@ -110,9 +110,7 @@
                                         
                                         scope.wrong[nv] = false;
 
-                                        var selectedContainer = _.find($jsnbt.containers, function (x) {
-                                            return x.id === nValue.id
-                                        });
+                                        var selectedContainer = $jsnbt.containers[nValue.id];
 
                                         if (selectedContainer) {
                                             scopeValues.push({

@@ -30,6 +30,19 @@ module.exports = {
 
     lists: require('./lists.js'),
 
-    routes: require('./routes.js')
+    routes: require('./routes.js'),
+
+    register: function () {
+
+        return {
+            alpha: 1,
+            vita: {
+                gama: 3,
+                delta: 4
+            },
+            epsilon: 5
+        };
+
+    }
 
 }

@@ -5,7 +5,7 @@ var JsnbtRouter = function (server) {
     return {
 
         route: function (ctx, next) {
-            if (ctx.uri.path === '/jsnbt.js' || ctx.uri.path === '/admin/jsnbt.js') {
+            if (ctx.uri.path === '/jsnbt.js') {
                 if (ctx.method !== 'GET') {
                     ctx.error(405);
                 }
@@ -13,8 +13,7 @@ var JsnbtRouter = function (server) {
                     try {
                         ctx.writeHead(200, { "Content-Type": "application/javascript" });
 
-                        var jsnbtValue = ctx.uri.first === 'jsnbt.js' ? server.jsnbt.getClientData('public') : server.jsnbt.getClientData('admin');
-                        ctx.write('var jsnbt = ' + JSON.stringify(jsnbtValue, null, server.app.dbg ? '\t' : ''));
+                        ctx.write('var jsnbt = ' + JSON.stringify(server.jsnbt.get(), null, server.app.dbg ? '\t' : ''));
                         ctx.end();
                     }
                     catch (err) {

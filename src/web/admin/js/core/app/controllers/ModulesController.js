@@ -17,11 +17,13 @@
                     var deferred = $q.defer();
 
                     var modules = [];
-                    $($jsnbt.modules).each(function (i, item) {
-                        var module = {};
-                        $.extend(true, module, item);
-                        modules.push(module);
-                    });
+                    for (var moduleName in $jsnbt.modules) {
+                        if ($jsnbt.modules[moduleName].browsable) {
+                            var module = {};
+                            $.extend(true, module, $jsnbt.modules[moduleName]);
+                            modules.push(module);
+                        }
+                    }
                     var data = {
                         items: modules,
                         more: function () { }
