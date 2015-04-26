@@ -60,8 +60,6 @@ var getInstalledModules = function () {
 exports.init = function (options, module) {
     var self = this;
 
-    logger.info('jsnbt initiating..');
-
     var defOpts = {
         title: self.title
     };
@@ -147,8 +145,6 @@ exports.init = function (options, module) {
             throw err;
         }
     }
-
-    logger.info('jsnbt initiated');
 
     delete this.init;
 }
