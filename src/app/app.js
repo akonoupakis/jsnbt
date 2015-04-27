@@ -18,6 +18,7 @@ var logger = require('./logger.js')(this);
 exports.domain = 'core';
 exports.public = false;
 exports.browsable = false;
+exports.messager = true;
 
 exports.environment = Environment.Development;
 exports.directory = Directory.Development;
@@ -75,6 +76,7 @@ exports.init = function (options, module) {
         domain: 'core',
         version: self.getVersion(),
         browsable: false,
+        messager: true,
         getConfig: self.getConfig,
         getBower: self.getBower
     };

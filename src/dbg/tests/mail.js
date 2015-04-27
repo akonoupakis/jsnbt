@@ -4,36 +4,39 @@
 
         test: function (ctx, next) {
             
-            server.messager.mail.getTemplate('registrationConfirmation', function (err, tmpl) {
+            var templateCode = 'registration';
+            server.messager.mail.getTemplate(templateCode, function (err, tmpl) {
                 if (err) {
                     ctx.error(err);
                 }
                 else {
-                    var model = {
-                        firstName: 'first name here',
-                        lastName: 'last name here'
-                    };
-                    server.messager.mail.parseTemplate(tmpl, model, function (parseErr, parsedTmpl) {
-                        if (parseErr) {
-                            ctx.error(parseErr);
+                    server.messager.mail.getModel(templateCode, function (modelErr, model) {
+                        if (modelErr) {
+                            ctx.error(modelErr);
                         }
                         else {
-
-                            server.messager.mail.createSender(ctx.dpd, function (senderErr, sender) {
-                                if (senderErr) {
-                                    ctx.error(senderErr);
+                            server.messager.mail.parseTemplate(tmpl, model, function (parseErr, parsedTmpl) {
+                                if (parseErr) {
+                                    ctx.error(parseErr);
                                 }
                                 else {
-                                    sender.send({
-                                        to: '',
-                                        subject: '',
-                                        body: ''
-                                    }, function (sendErr, response) {
-                                        if (sendErr) {
-                                            ctx.error(sendErr);
+                                    server.messager.mail.getSender(ctx.dpd, function (senderErr, sender) {
+                                        if (senderErr) {
+                                            ctx.error(senderErr);
                                         }
                                         else {
-                                            ctx.json({ sent: true });
+                                            sender.send({
+                                                to: 'konoupakis@gmail.com',
+                                                subject: parsedTmpl.subject,
+                                                body: parsedTmpl.body
+                                            }, function (sendErr, response) {
+                                                if (sendErr) {
+                                                    ctx.error(sendErr);
+                                                }
+                                                else {
+                                                    ctx.json({ sent: true });
+                                                }
+                                            });
                                         }
                                     });
                                 }

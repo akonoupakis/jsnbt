@@ -26,6 +26,11 @@
             });
             $scope.injects = injects;
 
+            $scope.mailProviders = [];
+            $scope.mailTmpl = null;
+            $scope.smsProviders = [];
+            $scope.smsTmpl = null;
+
             var fn = {
 
                 set: function () {
@@ -66,6 +71,42 @@
                     }, function (error) {
                         deferred.reject(error);
                     });
+
+                    return deferred.promise;
+                },
+
+                setMailProviders: function () {
+                    var deferred = $q.defer();
+
+                    var providers = [];
+
+                    for (var providerDomain in $jsnbt.messaging.mail) {
+                        var provider = $jsnbt.messaging.mail[providerDomain];
+                        providers.push({ value: providerDomain, name: provider.name, tmpl: provider.settingsTmpl });
+                    }
+
+                    $scope.mailProviders = providers;
+
+                    deferred.resolve(providers);
+                    console.log(providers);
+                    return deferred.promise;
+                },
+
+                setSmsProviders: function () {
+                    var deferred = $q.defer();
+
+                    var providers = [];
+
+                 //   providers.push({ value: 'null', name: 'Please select', tmpl: null });
+
+                    for (var providerDomain in $jsnbt.messaging.sms) {
+                        var provider = $jsnbt.messaging.sms[providerDomain];
+                        providers.push({ value: providerDomain, name: provider.name, tmpl: provider.settingsTmpl });
+                    }
+
+                    $scope.smsProviders = providers;
+
+                    deferred.resolve(providers);
 
                     return deferred.promise;
                 },
@@ -219,6 +260,20 @@
                 });
             };
 
+            $scope.$watch('settings.messaging.mail.provider', function (newValue, prevValue) {
+                if (newValue) {
+                    if ($jsnbt.messaging.mail[newValue] && $jsnbt.messaging.mail[newValue].settingsTmpl) {
+                        $scope.mailTmpl = $jsnbt.messaging.mail[newValue].settingsTmpl;
+                    }
+                    else {
+                        $scope.mailTmpl = null;
+                    }
+                }
+                else {
+                    $scope.mailTmpl = null;
+                }
+            });
+
             $scope.$on(CONTROL_EVENTS.valueChanged, function (sender) {
                 sender.stopPropagation();
 
@@ -238,10 +293,12 @@
 
 
             $timeout(function () {
-                fn.set().then(function () {
-                    fn.setSpy(200);
-                }, function (ex) {
-                    logger.error(ex);
+                $q.all(fn.setMailProviders(), fn.setSmsProviders()).then(function () {
+                    fn.set().then(function () {
+                        fn.setSpy(200);
+                    }, function (ex) {
+                        logger.error(ex);
+                    });
                 });
             }, 200);
 

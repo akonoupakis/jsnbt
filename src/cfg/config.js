@@ -17,6 +17,8 @@ module.exports = {
 
     collections: require('./collections.js'),
     
-    lists: []
+    lists: [],
+
+    messaging: require('./messaging.js'),
 
 }

@@ -59,7 +59,7 @@
                             }
 
                             scope.notFound = false;
-                            if (valid) {
+                            if (valid && scope.ngModel !== undefined) {
                                 var option = _.first(_.filter(scope.ngOptions, function (x) { return x[scope.valueField] === scope.ngModel; }));
                                 if (!option) {
                                     valid = false;

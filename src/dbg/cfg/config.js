@@ -32,6 +32,8 @@ module.exports = {
 
     routes: require('./routes.js'),
 
+    messaging: require('./messaging.js'),
+
     register: function () {
 
         return {

@@ -1,4 +1,5 @@
 var extend = require('extend');
+var mustache = require('mustache');
 var _ = require('underscore');
 
 var Messager = function (server) {
@@ -7,23 +8,46 @@ var Messager = function (server) {
 
         mail: {
             getTemplate: function (templateCode, callback) {
-                callback(new Error('not implemented'), null);
+                var template = server.jsnbt.messaging.mail.templates[templateCode];
+                if (template) {
+                    callback(null, {
+                        subject: template.subject,
+                        body: template.body
+                    });
+                }
+                else {
+                    callback(new Error('mail template not found: ' + templateCode), null);
+                }
+            },
+            getModel: function (templateCode, callback) {
+                var template = server.jsnbt.messaging.mail.templates[templateCode];
+                if (template) {
+                    callback(null, template.model || {});
+                }
+                else {
+                    callback(new Error('mail template not found: ' + templateCode), null);
+                }
             },
             parseTemplate: function (template, model, callback) {
-                callback(new Error('not implemented'), null);
-            },
-            parseDebugTemplate: function (template, callback) {
-                callback(new Error('not implemented'), null);
+                try {
+                    var result = {
+                        subject: mustache.render(template.subject, model),
+                        body: mustache.render(template.body, model)
+                    };
+                    callback(null, result);
+                }
+                catch (err) {
+                    callback(err, null);
+                }
             },
             getSender: function (dpd, callback) {
 
                 var settings = {
                     provider: 'core',
-                    host: '127.0.0.1',
+                    host: '',
                     username: '',
                     password: '',
-                    port: 21,
-                    sender: 'info@domain.com',
+                    sender: '',
                     cc: [],
                     bcc: [],
                     ssl: false
@@ -40,22 +64,16 @@ var Messager = function (server) {
 
                         var opts = {};
                         extend(true, opts, settings);
+                        
                         if (first.data && first.data.messaging && first.data.messaging.mail)
                             extend(true, opts, first.data.messaging.mail);
 
-                        if (opts.provider !== undefined && opts.provider !== null && opts.provider !== 'null') {
-                            if (opts.provider === 'core') {
-                                var mailSender = require('./messaging/mailSender.js')(opts);
-                                callback(null, mailSender);
+                        if (opts.provider !== undefined && opts.provider !== null) {
+                            if (server.jsnbt.messaging.mail.implementations[opts.provider]) {
+                                server.jsnbt.messaging.mail.implementations[opts.provider].getSender(opts, callback);
                             }
                             else {
-                                var firstMatchedModule = _.find(server.app.modules.rest, function (x) { return x.domain === opts.provider && _.isObject(x.messaging) && _.isObject(x.messaging.mail) && _.isFunction(x.messaging.mail.getSender); });
-                                if (firstMatchedModule) {
-                                    firstMatchedModule.messaging.mail.getSender(opts, callback);
-                                }
-                                else {
-                                    callback(new Error('mail messager module not found: ' + opts.provider), null);
-                                }
+                                callback(new Error('mail messager module not found: ' + opts.provider), null);
                             }
                         }
                         else {
@@ -69,19 +87,37 @@ var Messager = function (server) {
 
         sms: {
             getTemplate: function (templateCode, callback) {
-                callback(new Error('not implemented'), null);
+                var template = server.jsnbt.messaging.sms.templates[templateCode];
+                if (template) {
+                    callback(null, template.body);
+                }
+                else {
+                    callback(new Error('sms template not found: ' + templateCode), null);
+                }
+            },
+            getModel: function (templateCode, callback) {
+                var template = server.jsnbt.messaging.sms.templates[templateCode];
+                if (template) {
+                    callback(null, template.model || {});
+                }
+                else {
+                    callback(new Error('sms template not found: ' + templateCode), null);
+                }
             },
             parseTemplate: function (template, model, callback) {
-                callback(new Error('not implemented'), null);
-            },
-            parseDebugTemplate: function (template, model, callback) {
-                callback(new Error('not implemented'), null);
+                try {
+                    var result = mustache.render(template, model);
+                    callback(null, result);
+                }
+                catch (err) {
+                    callback(err, null);
+                }
             },
             getSender: function (dpd, callback) {
            
                 var settings = {
                     provider: 'null',
-                    sender: 'jsnbt'
+                    sender: ''
                 };
 
                 dpd.settings.getCached({
@@ -98,19 +134,12 @@ var Messager = function (server) {
                         if (first.data && first.data.messaging && first.data.messaging.sms)
                             extend(true, opts, first.data.messaging.sms);
 
-                        if (opts.provider !== undefined && opts.provider !== null && opts.provider !== 'null') {
-                            if (opts.provider === 'core') {
-                                var mailSender = require('./messaging/smsSender.js')(opts);
-                                callback(null, mailSender);
+                        if (opts.provider !== undefined && opts.provider !== null) {
+                            if (server.jsnbt.messaging.sms.implementations[opts.provider]) {
+                                server.jsnbt.messaging.sms.implementations[opts.provider].getSender(opts, callback);
                             }
                             else {
-                                var firstMatchedModule = _.find(server.app.modules.rest, function (x) { return x.domain === opts.provider && _.isObject(x.messaging) && _.isObject(x.messaging.mail) && _.isFunction(x.messaging.sms.getSender); });
-                                if (firstMatchedModule) {
-                                    firstMatchedModule.messaging.sms.getSender(opts, callback);
-                                }
-                                else {
-                                    callback(new Error('sms messager module not found: ' + opts.provider), null);
-                                }
+                                callback(new Error('sms messager module not found: ' + opts.provider), null);
                             }
                         }
                         else {

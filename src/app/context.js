@@ -216,6 +216,11 @@ var Context = function (server, req, res) {
             res.write(JSON.stringify(data, null, server.app.dbg ? '\t' : ''));
             res.end();
         },
+        html: function (html) {
+            this.writeHead(200, { "Content-Type": 'text/html' });
+            this.write(html);
+            this.end();
+        },
         redirect: function (url, mode) {
             if (completing)
                 return;

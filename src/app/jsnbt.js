@@ -60,6 +60,17 @@ var Jsnbt = function () {
 
         routes: [],
 
+        messaging: {
+            mail: {
+                implementations: {},
+                templates: {}
+            },
+            sms: {
+                implementations: {},
+                templates: {}
+            }
+        },
+
         register: function (name, module) {
 
             var self = this;
@@ -206,6 +217,27 @@ var Jsnbt = function () {
                 });
             }
 
+            
+            if (moduleConfig.messaging && moduleConfig.messaging.mail) {
+                if (moduleConfig.messaging.mail.provider && typeof (moduleConfig.messaging.mail.getSender) === 'function') {
+                    self.messaging.mail.implementations[module.domain] = {
+                        provider: moduleConfig.messaging.mail.provider,
+                        settingsTmpl: moduleConfig.messaging.mail.settingsTmpl,
+                        getSender: moduleConfig.messaging.mail.getSender
+                    };
+                }
+            }
+
+            if (moduleConfig.messaging && moduleConfig.messaging.sms) {
+                if (moduleConfig.messaging.sms.provider && typeof (moduleConfig.messaging.sms.getSender) === 'function') {
+                    self.messaging.sms.implementations[module.domain] = {
+                        provider: moduleConfig.messaging.sms.provider,
+                        settingsTmpl: moduleConfig.messaging.sms.settingsTmpl,
+                        getSender: moduleConfig.messaging.sms.getSender
+                    };
+                }
+            }
+
             if (module.public) {
 
                 if (moduleConfig.ssl !== undefined) {
@@ -233,6 +265,20 @@ var Jsnbt = function () {
                 applyArray('containers', 'id');
 
                 applyArray('routes', 'id');
+
+                if (module.messager) {
+                    if (moduleConfig.messaging && moduleConfig.messaging.mail && moduleConfig.messaging.mail.templates && _.isArray(moduleConfig.messaging.mail.templates)) {
+                        _.each(moduleConfig.messaging.mail.templates, function (template) {
+                            self.messaging.mail.templates[template.code] = template;
+                        });
+                    }
+
+                    if (moduleConfig.messaging && moduleConfig.messaging.sms && moduleConfig.messaging.sms.templates && _.isArray(moduleConfig.messaging.sms.templates)) {
+                        _.each(moduleConfig.messaging.sms.templates, function (template) {
+                            self.messaging.sms.templates[template.code] = template;
+                        });
+                    }
+                }
             }
             
             moduleConfig.public = module.public;
@@ -343,6 +389,30 @@ var Jsnbt = function () {
             applyArrayInObject('languages', 'languages', 'code');
 
             applyArrayInObject('countries', 'countries', 'code');
+
+            result.messaging = {
+                mail: {},
+                sms: {}
+            };
+
+            for (var mailImplementationName in self.messaging.mail.implementations)
+            {
+                var mailImplementation = self.messaging.mail.implementations[mailImplementationName];
+                result.messaging.mail[mailImplementationName] = {
+                    domain: mailImplementationName,
+                    name: mailImplementation.provider,
+                    settingsTmpl: mailImplementation.settingsTmpl
+                }
+            }
+
+            for (var smsImplementationName in self.messaging.sms.implementations) {
+                var smsImplementation = self.messaging.sms.implementations[smsImplementationName];
+                result.messaging.sms[smsImplementationName] = {
+                    domain: smsImplementationName,
+                    name: smsImplementation.provider,
+                    settingsTmpl: smsImplementation.settingsTmpl
+                }
+            }
 
             return result;
         }
