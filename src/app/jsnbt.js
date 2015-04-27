@@ -1,5 +1,6 @@
 var path = require('path');
 var server = require('server-root');
+var validation = require('json-validation');
 var fs = require('fs');
 var extend = require('extend');
 var _ = require('underscore');
@@ -16,11 +17,16 @@ var getVersion = function () {
 
 var Jsnbt = function () {
 
+    var languages = require('./storage/languages.js');
+    var countries = require('./storage/countries.js');
+
+    var schema = require('../cfg/schema.json');
+
     return {
 
-        languages: require('./storage/languages.js'),
+        languages: languages,
 
-        countries: require('./storage/countries.js'),
+        countries: countries,
         
         modules: [],
 
@@ -76,6 +82,13 @@ var Jsnbt = function () {
             var self = this;
 
             var moduleConfig = typeof (module.getConfig) === 'function' ? module.getConfig() : {};
+
+            var validator = new validation.JSONValidation();
+            var validationResult = validator.validate(moduleConfig, schema);
+            if (!validationResult.ok) {
+                var validationErrors = validationResult.path + ': ' + validationResult.errors.join(' - ');
+                throw new Error('validation error on ' + module.domain + ' module config file\n' + validationErrors);
+            }
 
             var clone = function (obj) {
                 var resultObj = {};
