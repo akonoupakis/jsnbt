@@ -2,6 +2,36 @@ var Messager = function (server) {
 
     return {
 
+        mail: {
+            getTemplate: function (templateCode, callback) {
+
+            },
+            parseTemplate: function (template, model, callback) {
+
+            },
+            parseDebugTemplate: function (template, callback) {
+
+            },
+            getSender: function (dpd, callback) {
+
+            }
+        },
+
+        sms: {
+            getTemplate: function (templateCode, callback) {
+
+            },
+            parseTemplate: function (template, model, callback) {
+
+            },
+            parseDebugTemplate: function (template, model, callback) {
+
+            },
+            getSender: function (dpd, callback) {
+
+            }
+        },
+
         createMailSender: function (dpd, success, error) {
 
             var settings = {

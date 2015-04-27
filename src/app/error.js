@@ -51,7 +51,7 @@ var ErrorRenderer = function (server, ctx, error, stack) {
 
     ctx.halt = true;
 
-    require('./parser.js')(server).parse(ctx, errorContent, {
+    require('./html.js')(server).parse(ctx, errorContent, {
         error: error,
         text: text,
         stack: stack || ''
