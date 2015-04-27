@@ -1,10 +1,11 @@
+var extend = require('extend');
 var _ = require('underscore');
 
-module.exports = function (settings, dpd) {
+module.exports = function (settings) {
 
     return {
 
-        send: function (options, success, error) {
+        send: function (options, callback) {
 
             var defOpts = {
                 from: settings.sender,
@@ -14,10 +15,9 @@ module.exports = function (settings, dpd) {
             };
 
             var opts = {};
-            _.extend(opts, defOpts);
-            _.extend(opts, options);
+            extend(true, opts, defOpts, options);
 
-            success();
+            callback(new Error('not implemented'), null);
         }
 
     };
