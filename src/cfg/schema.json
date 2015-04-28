@@ -2,6 +2,427 @@
     "type": "object",
     "required": true,
     "properties": {
-        
+        "ssl": { 
+			"type": "boolean" 
+		},
+        "locale": { 
+			"type": "string" 
+		},
+        "restricted": { 
+			"type": "boolean" 
+		},
+        "fileGroups": { 
+			"type": "array", 
+			"items": { 
+				"type": "string", 
+				"required": true 
+			}, 
+			"uniqueItems": true 
+		},
+        "scripts": { 
+			"type": "array", 
+			"items": { 
+				"type": "string", 
+				"required": true 
+			}, 
+			"uniqueItems": true 
+		},
+        "entities": { 
+			"type": "array", 
+			"items": { 
+				"type": "object", 
+				"required": true, 
+				"properties": { 
+					"name": { 
+						"type": "string", 
+						"required": true 
+					},
+					"allowed": { 
+						"type": "array", 
+						"required": true,
+						"items": {
+							"type": "string",
+							"required": true
+						}
+					},
+					"treeNode": { 
+						"type": "boolean"
+					},
+					"localized": { 
+						"type": "boolean"
+					},
+					"properties": {
+						"type": "object",
+						"properties": {
+							"name": { "type": "boolean" },
+							"parent": { "type": "boolean" },
+							"template": { "type": "boolean" },
+							"layout": { "type": "boolean" },
+							"seo": { "type": "boolean" },
+							"permissions": { "type": "boolean" },
+							"robots": { "type": "boolean" },
+							"ssl": { "type": "boolean" }
+						}
+					}
+				} 
+			}, 
+			"uniqueItems": true
+		},
+		"roles": { 
+			"type": "array", 
+			"items": { 
+				"type": "object", 
+				"required": true, 
+				"properties": { 
+					"name": {
+						"type": "string",
+						"required": true
+					},
+					"inherits": {
+						"type": "array",
+						"required": true,
+						"items": {
+							"type": "string",
+							"required": true 
+						}, 
+						"uniqueItems": true 
+					}
+				}
+			}
+		},
+		"sections": { 
+			"type": "array", 
+			"items": { 
+				"type": "object", 
+				"required": true, 
+				"properties": { 
+					"name": {
+						"type": "string",
+						"required": true
+					},
+					"roles": {
+						"type": "array",
+						"required": true,
+						"items": {
+							"type": "string",
+							"required": true 
+						}, 
+						"uniqueItems": true 
+					}
+				}
+			}
+		},
+		"images": {
+			"type": "array",
+			"items": {
+				"type": "object", 
+				"required": true, 
+				"properties": { 
+					"name": {
+						"type": "string",
+						"required": true
+					},
+					"processors": {
+						"type": "array",
+						"items": {
+							"type": "object", 
+							"required": true, 
+							"properties": { 
+								"type": {
+									"type": "string",
+									"required": true,
+									"enum": ["crop", "fit", "stretch"]
+								},
+								"options": {
+									"type": "object",
+									"required": true,
+									"properties": {
+										"x": { "type": "number" },
+										"y": { "type": "number" },
+										"width": { "type": "number" },
+										"height": { "type": "number" }
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"lists": {
+			"type": "array",
+			"items": {
+				"type": "object", 
+				"required": true, 
+				"properties": { 
+					"id": {
+						"type": "string",
+						"required": true
+					},
+					"name": {
+						"type": "string",
+						"required": true
+					},
+					"form": {
+						"type": "string",
+						"required": true
+					},
+					"localized": {
+						"type": "boolean"
+					}
+				}
+			}
+		},
+		"messaging": {
+			"type": "object",
+			"properties": {
+				"mail": {
+					"type": "object",
+					"properties": {
+						"provider": {
+							"type": "string"
+						},
+						"settingsTmpl": {
+							"type": "string"
+						},
+						"templates": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"required": true,
+								"properties": {
+									"code": {
+										"type": "string",
+										"required": true
+									},
+									"model": {
+										"type": "object",
+										"required": true
+									},
+									"subject": {
+										"type": "string",
+										"required": true
+									},
+									"body": {
+										"type": "string",
+										"required": true
+									}
+								}
+							}
+						}
+					}
+				},
+				"sms": {
+					"type": "object",
+					"properties": {
+						"provider": {
+							"type": "string"
+						},
+						"settingsTmpl": {
+							"type": "string"
+						},
+						"templates": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"required": true,
+								"properties": {
+									"code": {
+										"type": "string",
+										"required": true
+									},
+									"model": {
+										"type": "object",
+										"required": true
+									},
+									"body": {
+										"type": "string",
+										"required": true
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"collections": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"required": true,
+				"properties": {
+					"name": {
+						"type": "string",
+						"required": true
+					},
+					"schema": {
+						"type": "object"
+					},
+					"permissions": {
+						"type": ["array", "boolean"],
+						"items": {
+							"type": "object",
+							"required": true,
+							"properties": {
+								"role": {
+									"type": "string",
+									"required": true
+								},
+								"crud": {
+									"type": "array",
+									"items": {
+										"type": "string",
+										"required": true,
+										"enum": ["C", "R", "U", "D"]
+									},
+									"uniqueItems": true
+								}
+							}
+						}
+					},
+					"logging": {
+						"type": "boolean"
+					},
+					"users": {
+						"type": "boolean"
+					}
+				}
+			}
+		},
+		"routes": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"required": true,
+				"properties": {
+					"id": { 
+						"type": "string",
+						"required": true
+					},
+					"name": { 
+						"type": "string",
+						"required": true
+					},
+					"fn": { 
+						"type": "string",
+						"required": true
+					}
+				}
+			}
+		},
+		"templates": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"required": true,
+				"properties": {
+					"id": { 
+						"type": "string",
+						"required": true
+					},
+					"name": { 
+						"type": "string",
+						"required": true
+					},
+					"html": { 
+						"type": "string",
+						"required": true
+					},
+					"form": { 
+						"type": "string"
+					},
+					"restricted": { 
+						"type": "array",
+						"items": {
+							"type": "string",
+							"required": true
+						},
+						"uniqueItems": true
+					}
+				}
+			}
+		},
+		"layouts": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"required": true,
+				"properties": {
+					"id": { 
+						"type": "string",
+						"required": true
+					},
+					"name": { 
+						"type": "string",
+						"required": true
+					},
+					"form": { 
+						"type": "string",
+						"required": true
+					}
+				}
+			}
+		},
+		"containers": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"required": true,
+				"properties": {
+					"id": { 
+						"type": "string",
+						"required": true
+					},
+					"name": { 
+						"type": "string",
+						"required": true
+					},
+					"html": { 
+						"type": "string",
+						"required": true
+					}
+				}
+			}
+		},
+		"injects": {
+			"type": "object",
+			"properties": {
+				"dashboard": {
+					"type": "string"
+				},
+				"content": {
+					"type": "string"
+				},
+				"settings": {
+					"type": "string"
+				},
+				"navigation": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"required": true,
+						"properties": {
+							"index": {
+								"type": "number",
+								"required": true
+							},
+							"identifier": {
+								"type": "string",
+								"required": true
+							},
+							"name": {
+								"type": "string",
+								"required": true
+							},
+							"url": {
+								"type": "string",
+								"required": true
+							}
+						}
+					}
+				}				
+			}
+		}
     }
 }
