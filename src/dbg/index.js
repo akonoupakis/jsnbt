@@ -23,7 +23,7 @@ module.exports = {
 
     route: function (server, ctx, next) {
         
-        if (ctx.uri.first === 'dbg' && ctx.uri.parts.length === 3) {
+        if (ctx.uri.first === 'test' && ctx.uri.parts.length === 3) {
 
             var taskService = ctx.uri.parts[1];
             var taskMethod = ctx.uri.parts[2];
