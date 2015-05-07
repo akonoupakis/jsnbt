@@ -163,21 +163,13 @@ var Jsnbt = function () {
             };
             
             if (moduleConfig.jsModule) {
-                if (_.isString(moduleConfig.jsModule)) {
-                    if (self.jsModules.indexOf(moduleConfig.jsModule) === -1)
-                        self.jsModules.push(moduleConfig.jsModule);
-                }
-                else if (_.isArray(moduleConfig.jsModule)) {
-                    _.each(moduleConfig.jsModule, function (mod2) {
-                        if (self.jsModules.indexOf(mod2) === -1)
-                            self.jsModules.push(mod2);
-                    });
-                }
+                if (self.jsModules.indexOf(moduleConfig.jsModule) === -1)
+                    self.jsModules.push(moduleConfig.jsModule);
             }
 
             applyTextArray('scripts');
 
-            if (_.isArray(moduleConfig.entities)) {
+            if (moduleConfig.entities) {
                 _.each(moduleConfig.entities, function (moduleEntity) {
                     var matchedEntity = _.first(_.filter(self.entities, function (x) { return x.name === moduleEntity.name; }));
                     if (matchedEntity) {
@@ -201,7 +193,7 @@ var Jsnbt = function () {
 
             applyTextArray('fileGroups');
 
-            if (_.isArray(moduleConfig.lists)) {
+            if (moduleConfig.lists) {
                 _.each(moduleConfig.lists, function (moduleList) {
                     var fileName = moduleList.form.substring(0, moduleList.form.lastIndexOf('.'));
                     fileName = fileName.substring(fileName.lastIndexOf('/') + 1);

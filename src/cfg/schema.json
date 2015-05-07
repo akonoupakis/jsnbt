@@ -11,6 +11,9 @@
         "restricted": { 
 			"type": "boolean" 
 		},
+		"jsModule": {
+			"type": "string"
+		},
         "fileGroups": { 
 			"type": "array", 
 			"items": { 
