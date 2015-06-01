@@ -17,7 +17,7 @@ var PointerRouterProcessor = function (server, domain) {
                 return nextRouter(ctx);
             }
 
-            moduleRouter.routePointer(ctx, next);
+            moduleRouter.routePointer(server, ctx, next);
         }
     } : undefined
 };

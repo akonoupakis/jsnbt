@@ -22,7 +22,7 @@ var RouterRouteProcessor = function (server, routeId) {
                 return nextRouter(ctx);
             }
 
-            moduleRouter[configRouteFn](ctx, next);
+            moduleRouter[configRouteFn](server, ctx, next);
         }
 
     } : undefined;
