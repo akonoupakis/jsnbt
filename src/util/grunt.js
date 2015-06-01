@@ -461,7 +461,7 @@ module.exports = function (grunt) {
                 }
 
                 if (fs.existsSync(server.getPath('src/pck/' + f + '/dat'))) {
-                    deployFiles(server.getPath('src/pck/' + f + '/dat'), server.getPath(folder + '/migrations/' + name));
+                    deployFiles(server.getPath('src/pck/' + f + '/dat'), server.getPath(folder + '/migrations/' + f));
                 }
             });
         }
