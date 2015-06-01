@@ -10,10 +10,12 @@
                 $location.next('/content/' + name);
             };
             
-            $scope.publicTmpl = null;
-
-            if ($jsnbt.injects.content)
-                $scope.publicTmpl = $jsnbt.injects.content;
+            var injects = [];
+            _.each($jsnbt.injects, function (inject) {
+                if (inject.content)
+                    injects.push(inject.content);
+            });
+            $scope.injects = injects;
 
         });
 })();

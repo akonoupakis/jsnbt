@@ -135,7 +135,7 @@
                                 $scope.name = result.name;
                             }
 
-                            var entity = _.first(_.filter($jsnbt.entities, function (x) { return x.name === result.entity; }));
+                            var entity = $jsnbt.entities[result.entity] || {};
 
                             $scope.localized = $scope.application.localization.enabled && (entity.localized === undefined || entity.localized === true);
 
@@ -145,17 +145,17 @@
                             $scope.published = true;
                             $scope.draft = false;
 
-                            $scope.nodeLayout = result.layout.value;
-                            $scope.draftLayout = result.layout.value;
+                            $scope.nodeLayout = result.layout.value || '';
+                            $scope.draftLayout = result.layout.value || '';
 
-                            $scope.nodeRoles = result.roles.values;
-                            $scope.draftRoles = result.roles.values;
+                            $scope.nodeRoles = result.roles.value || [];
+                            $scope.draftRoles = result.roles.value || [];
 
-                            $scope.nodeRobots = result.robots.values;
-                            $scope.draftRobots = result.robots.values;
+                            $scope.nodeRobots = result.robots.value || [];
+                            $scope.draftRobots = result.robots.value || [];
 
-                            $scope.nodeSSL = result.secure.value;
-                            $scope.draftSSL = result.secure.value;
+                            $scope.nodeSSL = result.secure.value || false;
+                            $scope.draftSSL = result.secure.value || false;
 
                             deferred.resolve(result);
 
@@ -271,12 +271,14 @@
                     var deferred = $q.defer();
       
                     var layouts = [];
-                    $($jsnbt.layouts).each(function (l, layout) {
+                    for (var layoutName in $jsnbt.layouts) {
+                        var layout = $jsnbt.layouts[layoutName];
+
                         layouts.push({
                             id: layout.id,
                             name: layout.name
                         });
-                    });
+                    };
 
                     $scope.layouts = layouts;
 
@@ -290,7 +292,9 @@
 
                     var allRoles = [];
                     
-                    $($jsnbt.roles).each(function (r, role) {
+                    for (var roleName in $jsnbt.roles) {
+                        var role = $jsnbt.roles[roleName];
+
                         if (!AuthService.isInRole({ roles: [role.name] }, 'admin')) {
                             var newRole = {};
                             $.extend(true, newRole, role);
@@ -299,7 +303,7 @@
                             newRole.description = role.inherits.length > 0 ? 'inherits from ' + role.inherits.join(', ') : '';
                             allRoles.push(newRole);
                         }
-                    });
+                    };
 
                     $scope.roles = allRoles;
 
@@ -441,7 +445,7 @@
                             var matchedNode = _.first(_.filter(hierarchyNodes, function (x) { return x.id === item; }));
                             if (matchedNode) {
                                 if (!matchedNode.roles.inherits) {
-                                    roles = matchedNode.roles.values.slice(0);
+                                    roles = matchedNode.roles.value.slice(0);
                                 }
                             }
                             else {
@@ -473,7 +477,7 @@
                             var matchedNode = _.first(_.filter(hierarchyNodes, function (x) { return x.id === item; }));
                             if (matchedNode) {
                                 if (!matchedNode.robots.inherits) {
-                                    robots = matchedNode.robots.values.slice(0);
+                                    robots = matchedNode.robots.value.slice(0);
                                 }
                             }
                             else {
@@ -496,7 +500,16 @@
                 setParentEntities: function () {
                     var deferred = $q.defer();
 
-                    var parentEntities = _.pluck(_.filter($jsnbt.entities, function (x) { return x.allowed && x.allowed.indexOf($scope.node.entity) !== -1; }), 'name');
+                    var parentEntities = [];
+
+                    for (var entityName in $jsnbt.entities) {
+                        var entity = $jsnbt.entities[entityName];
+                        if (_.isArray(entity.allowed)) {
+                            if (entity.allowed.indexOf($scope.node.entity) !== -1) {
+                                parentEntities.push(entity.name);
+                            }
+                        }
+                    }
 
                     $scope.parentOptions.entities = parentEntities;
 
@@ -509,7 +522,7 @@
                     var deferred = $q.defer();
 
                     if ($scope.node && $scope.node.entity !== 'pointer') {
-                        var jtmpl = _.find($jsnbt.templates, function (x) { return x.id === $scope.node.template; });
+                        var jtmpl = $jsnbt.templates[$scope.node.template];
                         if (jtmpl) {
                             $scope.tmpl = jtmpl.form;
                         }
@@ -531,9 +544,19 @@
 
                     var types = [];
                     types.push({ value: 'page', name: 'page' });
-                    if (_.filter($jsnbt.modules, function (x) { return x.type === 'addon' && x.pointed === true; }).length > 0)
+
+                    var pointerModules = false;
+                    for (var moduleName in $jsnbt.modules) {
+                        var module = $jsnbt.modules[moduleName];
+                        if (module.pointed) {
+                            pointerModules = true;
+                        }
+                    }
+
+                    if (pointerModules)
                         types.push({ value: 'pointer', name: 'pointer' });
-                    if ($jsnbt.routes.length > 0)
+
+                    if (_.keys($jsnbt.routes).length > 0)
                         types.push({ value: 'router', name: 'router' });
 
                     $scope.entities = types;
@@ -546,9 +569,14 @@
                 setRoutes: function () {
                     var deferred = $q.defer();
 
-                    $scope.routes = $jsnbt.routes;
+                    var routes = [];
+                    for (var routeName in $jsnbt.routes) {
+                        routes.push($jsnbt.routes[routeName]);
+                    }
 
-                    deferred.resolve($jsnbt.routes);
+                    $scope.routes = routes;
+
+                    deferred.resolve(routes);
 
                     return deferred.promise;
                 },
@@ -557,7 +585,9 @@
                     var deferred = $q.defer();
 
                     var templates = [];
-                    $($jsnbt.templates).each(function (t, template) {
+                    for (var templateName in $jsnbt.templates) {
+                        var template = $jsnbt.templates[templateName];
+                    
                         var tmpl = {};
                         $.extend(true, tmpl, template);
 
@@ -571,7 +601,7 @@
                         else {
                             templates.push(tmpl);
                         }
-                    });
+                    };
 
                     $scope.templates = templates;
                     
@@ -588,14 +618,15 @@
                     var deferred = $q.defer();
 
                     var modules = [];
-                    $($jsnbt.modules).each(function (a, module) {
+                    for (var moduleName in $jsnbt.modules) {
+                        var module = $jsnbt.modules[moduleName];
                         if (module.pointed) {
                             modules.push({
                                 name: module.name,
                                 domain: module.domain
                             });
                         }
-                    });
+                    }
                     $scope.modules = modules;
 
                     deferred.resolve(modules);
@@ -813,8 +844,8 @@
                             var publishNode = {};
                             $.extend(true, publishNode, $scope.node);
 
-                            publishNode.roles.values = !publishNode.roles.inherits ? $scope.nodeRoles : [];
-                            publishNode.robots.values = !publishNode.robots.inherits ? $scope.nodeRobots : [];
+                            publishNode.roles.value = !publishNode.roles.inherits ? $scope.nodeRoles : [];
+                            publishNode.robots.value = !publishNode.robots.inherits ? $scope.nodeRobots : [];
                             publishNode.layout.value = !publishNode.layout.inherits ? $scope.nodeLayout : '';
                             publishNode.secure.value = !publishNode.secure.inherits ? $scope.nodeSSL : false;
                             
@@ -936,7 +967,7 @@
                     var entity = {};
                     $.extend(true, entity, defaults);
 
-                    var knownEntity = _.first(_.filter($jsnbt.entities, function (x) { return x.name === newValue; }));
+                    var knownEntity = $jsnbt.entities[newValue];
 
                     if (knownEntity)
                         $.extend(true, entity, knownEntity);

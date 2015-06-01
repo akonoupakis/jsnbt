@@ -16,7 +16,7 @@ var ViewRenderer = function (server, ctx) {
 
             ctx.writeHead(200, { "Content-Type": "text/html" });
 
-            require('./parser.js')(server).parse(ctx, tmplContent, {}, function (response) {
+            require('./html.js')(server).parse(ctx, tmplContent, {}, function (response) {
                 ctx.write(response);
                 ctx.end();
             });

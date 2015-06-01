@@ -1,3 +1,11 @@
+## 1.0.104 (2015-06-01)
+
+Features
+
+	- messaging providers (modules that are marked as "messager")
+	- messaging config defined mail & sms templates
+	- messaging debug template view on /jsnbt-dev/mail/{templateCode} and on /jsnbt-dev/sms/{templateCode} with an optional ?model=true parameter to view the template debug model
+
 ## 1.0.103 (2015-04-23)
 
 Features

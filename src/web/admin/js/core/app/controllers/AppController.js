@@ -32,7 +32,16 @@
             $scope.defaults.languages = [];
             $scope.defaults.language = null;
 
-            $scope.application.navigationSpec = $jsnbt.injects.navigation;
+            var navigationInjects = [];
+            _.each($jsnbt.injects, function (inject) {
+                if (_.isArray(inject.navigation)) {
+                    _.each(inject.navigation, function (iNav) {
+                        navigationInjects.push(iNav);
+                    });
+                }
+            });
+
+            $scope.application.navigationSpec = navigationInjects;
 
             $scope.base.list = {
                 $scope: $scope

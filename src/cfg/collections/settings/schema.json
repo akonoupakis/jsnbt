@@ -1,0 +1,13 @@
+{
+    "type": "object",
+    "properties": {
+        "domain": {
+            "type": "string",
+            "required": true
+        },
+		"data": {
+            "type": "object",
+            "required": true
+        }
+    }
+}

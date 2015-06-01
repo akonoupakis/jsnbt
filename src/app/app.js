@@ -15,6 +15,11 @@ var Directory = {
 
 var logger = require('./logger.js')(this);
 
+exports.domain = 'core';
+exports.public = false;
+exports.browsable = false;
+exports.messager = true;
+
 exports.environment = Environment.Development;
 exports.directory = Directory.Development;
 
@@ -56,8 +61,6 @@ var getInstalledModules = function () {
 exports.init = function (options, module) {
     var self = this;
 
-    logger.info('jsnbt initiating..');
-
     var defOpts = {
         title: self.title
     };
@@ -73,6 +76,7 @@ exports.init = function (options, module) {
         domain: 'core',
         version: self.getVersion(),
         browsable: false,
+        messager: true,
         getConfig: self.getConfig,
         getBower: self.getBower
     };
@@ -143,8 +147,6 @@ exports.init = function (options, module) {
             throw err;
         }
     }
-
-    logger.info('jsnbt initiated');
 
     delete this.init;
 }

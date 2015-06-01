@@ -8,7 +8,7 @@
             </div>
         </div>
 
-        <div ng-show="publicTmpl" ng-include="publicTmpl"></div>
+        <div ng-repeat="tmpl in injects" ng-include="tmpl"></div>
 
     </section>
 

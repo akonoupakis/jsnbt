@@ -1,0 +1,14 @@
+{
+    "type": "object",
+    "properties": {
+        "layout": {
+            "type": "string",
+            "required": true
+        },
+        "content": {
+            "type": "object",
+            "required": true,
+			"properties": { }
+        }
+    }
+}

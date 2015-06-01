@@ -1,0 +1,22 @@
+{
+    "type": "object",
+    "properties": {
+        "timestamp": {
+            "type": "number",
+            "required": true
+        },
+        "user": {
+            "type": "string",
+            "required": true
+        },
+		"action": {
+            "type": "string",
+            "required": true,
+			"enum": ["create", "read", "update", "delete"]
+        },
+		"collection": {
+            "type": "string",
+            "required": true
+        }
+    }
+}

@@ -1,0 +1,107 @@
+{
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "required": false
+        },
+		"domain": {
+            "type": "string",
+            "required": true
+        },
+		"entity": {
+            "type": "string",
+            "required": true
+        },
+		"parent": {
+            "type": "string",
+            "required": true
+        },
+		"createdOn": {
+            "type": "number",
+            "required": true
+        },
+		"modifiedOn": {
+            "type": "number",
+            "required": true
+        },
+		"template": {
+            "type": "string",
+            "required": false
+        },
+		"pointer": {
+            "type": "object",
+            "required": false,
+			"properties": {
+				"domain": { "type": "string", "required": true },
+				"nodeId": { "type": "string", "required": true }
+			}
+        },
+		"route": {
+            "type": "string",
+            "required": false
+        },
+		"layout": {
+            "type": "object",
+            "required": false,
+			"properties": {
+				"inherits": { "type": "boolean", "required": true },
+				"value": { "type": "string", "required": true }
+			},
+			"inheritable": true
+        },
+		"content": {
+            "type": "object",
+            "required": true,
+			"properties": { }
+        },
+		"seo": {
+            "type": "object",
+            "required": true,
+			"properties": { }
+        },
+		"active": {
+            "type": "object",
+            "required": true,
+			"properties": { }
+        },
+		"secure": {
+            "type": "object",
+            "required": true,
+			"properties": {
+				"inherits": { "type": "boolean", "required": true },
+				"value": { "type": "boolean", "required": true }
+			},
+			"inheritable": true
+        },
+		"meta": {
+            "type": "object",
+            "required": true,
+			"properties": { }
+        },
+		"roles": {
+            "type": "object",
+            "required": true,
+			"properties": {
+				"inherits": { "type": "boolean", "required": true },
+				"value": { "type": "array", "required": true, "items": { "type": "string" }, "uniqueItems":  true }
+			},
+			"inheritable": true
+        },
+		"robots": {
+            "type": "object",
+            "required": true,
+			"properties": {
+				"inherits": { "type": "boolean", "required": true },
+				"value": { "type": "array", "required": true, "items": { "type": "string" }, "uniqueItems":  true, "enum": [ "noindex", "nofollow", "noarchive", "nosnipet", "notranslate", "noimageindex" ] }
+			},
+			"inheritable": true
+        },
+		"hierarchy": {
+            "type": "array",
+            "required": true,
+			"items": { "type": "string" },
+			"uniqueItems":  true
+        }
+    }
+}

@@ -1,5 +1,6 @@
 var path = require('path');
 var server = require('server-root');
+var validation = require('json-validation');
 var fs = require('fs');
 var extend = require('extend');
 var _ = require('underscore');
@@ -16,15 +17,20 @@ var getVersion = function () {
 
 var Jsnbt = function () {
 
+    var languages = require('./storage/languages.js');
+    var countries = require('./storage/countries.js');
+
+    var schema = require('../cfg/schema.json');
+
     return {
 
-        languages: require('./storage/languages.js'),
+        languages: languages,
 
-        countries: require('./storage/countries.js'),
+        countries: countries,
+        
+        modules: [],
 
         configs: {},
-
-        modules: [],
 
         localization: true,
 
@@ -48,16 +54,9 @@ var Jsnbt = function () {
 
         sections: [],
 
-        permissions: [],
+        collections: {},
 
         lists: [],
-
-        injects: {
-            navigation: [],
-            dashboard: undefined,
-            content: undefined,
-            settings: undefined
-        },
 
         layouts: [],
 
@@ -67,18 +66,36 @@ var Jsnbt = function () {
 
         routes: [],
 
+        messaging: {
+            mail: {
+                implementations: {},
+                templates: {}
+            },
+            sms: {
+                implementations: {},
+                templates: {}
+            }
+        },
+
         register: function (name, module) {
 
             var self = this;
 
             var moduleConfig = typeof (module.getConfig) === 'function' ? module.getConfig() : {};
 
+            var validator = new validation.JSONValidation();
+            var validationResult = validator.validate(moduleConfig, schema);
+            if (!validationResult.ok) {
+                var validationErrors = validationResult.path + ': ' + validationResult.errors.join(' - ');
+                throw new Error('validation error on ' + module.domain + ' module config file\n' + validationErrors);
+            }
+
             var clone = function (obj) {
                 var resultObj = {};
                 extend(true, resultObj, obj);
-                return resultObj
+                return resultObj;
             }
-
+            
             var applyArray = function (configName, matchName) {
                 if (_.isArray(moduleConfig[configName])) {
                     _.each(moduleConfig[configName], function (moduleItem) {
@@ -89,6 +106,20 @@ var Jsnbt = function () {
                         else {
                             self[configName] = self[configName] || [];
                             self[configName].push(clone(moduleItem));
+                        }
+                    });
+                }
+            };
+
+            var applyArrayInObject = function (configName, matchName) {
+                if (_.isArray(moduleConfig[configName])) {
+                    _.each(moduleConfig[configName], function (moduleItem) {
+
+                        if (self[configName][matchName]) {
+                            extend(true, self[configName][moduleItem.name], moduleItem);
+                        }
+                        else {
+                            self[configName][moduleItem.name] = clone(moduleItem);
                         }
                     });
                 }
@@ -130,26 +161,15 @@ var Jsnbt = function () {
                     ssl: true
                 }
             };
-
-
-
-
+            
             if (moduleConfig.jsModule) {
-                if (_.isString(moduleConfig.jsModule)) {
-                    if (self.jsModules.indexOf(moduleConfig.jsModule) === -1)
-                        self.jsModules.push(moduleConfig.jsModule);
-                }
-                else if (_.isArray(moduleConfig.jsModule)) {
-                    _.each(moduleConfig.jsModule, function (mod2) {
-                        if (self.jsModules.indexOf(mod2) === -1)
-                            self.jsModules.push(mod2);
-                    });
-                }
+                if (self.jsModules.indexOf(moduleConfig.jsModule) === -1)
+                    self.jsModules.push(moduleConfig.jsModule);
             }
 
             applyTextArray('scripts');
 
-            if (_.isArray(moduleConfig.entities)) {
+            if (moduleConfig.entities) {
                 _.each(moduleConfig.entities, function (moduleEntity) {
                     var matchedEntity = _.first(_.filter(self.entities, function (x) { return x.name === moduleEntity.name; }));
                     if (matchedEntity) {
@@ -167,13 +187,13 @@ var Jsnbt = function () {
 
             applyArray('sections', 'name');
 
-            applyArray('permissions', 'collection');
-
+            applyArrayInObject('collections', 'name');
+            
             applyArray('images', 'name');
 
             applyTextArray('fileGroups');
 
-            if (_.isArray(moduleConfig.lists)) {
+            if (moduleConfig.lists) {
                 _.each(moduleConfig.lists, function (moduleList) {
                     var fileName = moduleList.form.substring(0, moduleList.form.lastIndexOf('.'));
                     fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
@@ -200,6 +220,27 @@ var Jsnbt = function () {
                         }
                     }
                 });
+            }
+
+            
+            if (moduleConfig.messaging && moduleConfig.messaging.mail) {
+                if (moduleConfig.messaging.mail.provider && typeof (moduleConfig.messaging.mail.getSender) === 'function') {
+                    self.messaging.mail.implementations[module.domain] = {
+                        provider: moduleConfig.messaging.mail.provider,
+                        settingsTmpl: moduleConfig.messaging.mail.settingsTmpl,
+                        getSender: moduleConfig.messaging.mail.getSender
+                    };
+                }
+            }
+
+            if (moduleConfig.messaging && moduleConfig.messaging.sms) {
+                if (moduleConfig.messaging.sms.provider && typeof (moduleConfig.messaging.sms.getSender) === 'function') {
+                    self.messaging.sms.implementations[module.domain] = {
+                        provider: moduleConfig.messaging.sms.provider,
+                        settingsTmpl: moduleConfig.messaging.sms.settingsTmpl,
+                        getSender: moduleConfig.messaging.sms.getSender
+                    };
+                }
             }
 
             if (module.public) {
@@ -229,29 +270,59 @@ var Jsnbt = function () {
                 applyArray('containers', 'id');
 
                 applyArray('routes', 'id');
+
+                if (module.messager) {
+                    if (moduleConfig.messaging && moduleConfig.messaging.mail && moduleConfig.messaging.mail.templates && _.isArray(moduleConfig.messaging.mail.templates)) {
+                        _.each(moduleConfig.messaging.mail.templates, function (template) {
+                            self.messaging.mail.templates[template.code] = template;
+                        });
+                    }
+
+                    if (moduleConfig.messaging && moduleConfig.messaging.sms && moduleConfig.messaging.sms.templates && _.isArray(moduleConfig.messaging.sms.templates)) {
+                        _.each(moduleConfig.messaging.sms.templates, function (template) {
+                            self.messaging.sms.templates[template.code] = template;
+                        });
+                    }
+                }
             }
-
-            this.setConfig(name, moduleConfig);
-
+            
             moduleConfig.public = module.public;
             moduleConfig.domain = module.domain;
             moduleConfig.version = module.version;
             moduleConfig.browsable = module.browsable;
             moduleConfig.name = name;
             this.modules.push(moduleConfig);
+
+            if (typeof (moduleConfig.register) === 'function') {
+                self.configs[moduleConfig.domain] = moduleConfig.register();
+            }
+
+            var newModules = [];
+            var coreModule = _.find(this.modules, function (x) { return x.domain === 'core'; });
+            if (coreModule)
+                newModules.push(coreModule);
+
+            var restModules = _.filter(this.modules, function (x) { return x.domain !== 'core' && !x.public; });
+            _.each(restModules, function (mod) {
+                newModules.push(mod);
+            });
+
+            var publicModule = _.find(this.modules, function (x) { return x.public === true; });
+            if (publicModule)
+                newModules.push(publicModule);
+
+            this.modules = newModules;
         },
 
-        setConfig: function (name, config) {
-            config.name = name;
-            this.configs[name] = config;
-        },
-
-        getConfig: function (name) {
-            return this.configs[name] || {};
-        },
-
-        getClientData: function (site) {
+        get: function () {
             var self = this;
+
+            var applyArrayInObject = function (selfName, resultName, identifier) {
+                result[resultName] = {};
+                _.each(self[selfName], function (selfItem) {
+                    result[resultName][selfItem[identifier]] = selfItem;
+                });
+            };
 
             var result = {};
 
@@ -259,59 +330,97 @@ var Jsnbt = function () {
                 enabled: self.localization,
                 locale: self.locale
             };
+            
+            result.jsModules = self.jsModules;
 
-            if (site === 'admin') {
+            result.version = getVersion();
+            result.restricted = self.restricted;
+            result.ssl = self.ssl;
 
-                result.jsModules = self.jsModules;
+            result.fileGroups = self.fileGroups;
 
-                result.version = getVersion();
-                result.restricted = self.restricted;
-                result.ssl = self.ssl;
+            result.modules = {};
+            _.each(self.modules, function (module) {
 
-                result.fileGroups = self.fileGroups;
-
-                var modules = [];
-                _.each(self.modules, function (module) {
-
-                    if (!module.public && (module.browsable === undefined || module.browsable === true)) {
-                        modules.push({
-                            name: module.name,
-                            domain: module.domain,
-                            type: module.type,
-                            version: module.version,
-                            pointed: module.pointed,
-                            section: module.section
-                        });
+                if (module.domain !== 'core') {
+                    result.modules[module.domain] = {
+                        name: module.name,
+                        domain: module.domain,
+                        type: module.type,
+                        version: module.version,
+                        pointed: module.pointed,
+                        section: module.section,
+                        browsable: module.browsable === undefined || module.browsable === true
                     }
-                });
-                result.modules = modules;
 
-                result.entities = self.entities;
+                    if (self.configs[module.domain]) {
+                        extend(true, result.modules[module.domain], self.configs[module.domain]);
+                    }
+                }
+            });
 
-                result.roles = self.roles;
-                result.sections = self.sections;
+            result.lists = [];
+            _.each(self.lists, function (list) {
+                var newList = {};
+                extend(true, newList, list);
+                delete newList.permissions;
+                result.lists.push(newList);
+            });
 
-                result.lists = [];
-                _.each(self.lists, function (list) {
-                    var newList = {};
-                    extend(true, newList, list);
-                    delete newList.permissions;
-                    result.lists.push(newList);
-                });
+            result.injects = [];
+            _.each(self.modules, function (module) {
+                if (module.injects) {
+                    var newInjects = {};
+                    extend(true, newInjects, module.injects);
+                    newInjects.domain = module.domain;
+                    result.injects.push(newInjects);
+                }
+            });
 
-                result.templates = self.templates;
-                result.injects = self.injects;
-                result.layouts = self.layouts;
-                result.containers = self.containers;
-                result.routes = self.routes;
+            applyArrayInObject('entities', 'entities', 'name');
+
+            applyArrayInObject('roles', 'roles', 'name');
+
+            applyArrayInObject('sections', 'sections', 'name');            
+
+            applyArrayInObject('templates', 'templates', 'id');
+
+            applyArrayInObject('layouts', 'layouts', 'id');
+
+            applyArrayInObject('containers', 'containers', 'id');
+
+            applyArrayInObject('routes', 'routes', 'id');
+
+            applyArrayInObject('languages', 'languages', 'code');
+
+            applyArrayInObject('countries', 'countries', 'code');
+
+            result.messaging = {
+                mail: {},
+                sms: {}
+            };
+
+            for (var mailImplementationName in self.messaging.mail.implementations)
+            {
+                var mailImplementation = self.messaging.mail.implementations[mailImplementationName];
+                result.messaging.mail[mailImplementationName] = {
+                    domain: mailImplementationName,
+                    name: mailImplementation.provider,
+                    settingsTmpl: mailImplementation.settingsTmpl
+                }
             }
 
-            result.languages = self.languages;
-            result.countries = self.countries;
+            for (var smsImplementationName in self.messaging.sms.implementations) {
+                var smsImplementation = self.messaging.sms.implementations[smsImplementationName];
+                result.messaging.sms[smsImplementationName] = {
+                    domain: smsImplementationName,
+                    name: smsImplementation.provider,
+                    settingsTmpl: smsImplementation.settingsTmpl
+                }
+            }
 
             return result;
         }
-
     };
 
 }

@@ -1,0 +1,17 @@
+{
+    "type": "object",
+    "properties": {
+        "key": {
+            "type": "string",
+            "required": true
+        },
+		"group": {
+            "type": "string",
+            "required": false
+        },
+		"value": {
+            "type": "object",
+            "required": true
+        }
+    }
+}

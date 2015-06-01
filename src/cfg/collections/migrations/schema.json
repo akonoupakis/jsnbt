@@ -1,0 +1,17 @@
+{
+    "type": "object",
+    "properties": {
+        "module": {
+            "type": "string",
+            "required": true
+        },
+		"name": {
+            "type": "string",
+            "required": true
+        },
+		"processedOn": {
+            "type": "number",
+            "required": true
+        }
+    }
+}

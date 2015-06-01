@@ -188,5 +188,36 @@
                 throw languageError;
             });
 
+
+            dpd.layouts.get({
+                layout: 'eshop'
+            }, function (res, err) {
+                
+                var eshopLayout = res[0];
+                dpd.layouts.put(eshopLayout, {
+                    layout: 'eshop',
+                    content: {
+                        testData: 'td2',
+                        alpha: '1',
+                        vita: '1'
+                    }
+                }, function (err, res) {
+                    console.log(err, res);
+                });
+            });
+
+           
+            //dpd.layouts.post({
+            //    layout: 'eshop',
+            //    content: {
+            //        testData: 'aAaAaA-bBB'
+            //    }
+            //}, function (res, err) {
+            //    console.log(err, res);
+            //});
+
+
+
         });
+
 })();

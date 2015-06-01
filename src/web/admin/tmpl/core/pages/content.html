@@ -48,16 +48,10 @@
                     </a>
                     <label>files</label>
                 </li>
-                <!--<li>
-                    <a href="javascript:;" ng-click="goto('test')">
-                        <img src="img/core/content/files.png" style="height: 128px" />
-                    </a>
-                    <label>test</label>
-                </li>-->
             </ul>
         </div>
 
-        <div ng-show="publicTmpl" ng-include="publicTmpl"></div>
+        <div ng-repeat="tmpl in injects" ng-include="tmpl"></div>
 
     </section>
 

@@ -73,9 +73,7 @@
                             if (_.isString(newValue)) {
                                 if (newValue !== '') {
                                     
-                                    var selectedContainer = _.find($jsnbt.containers, function (x) {
-                                        return x.id === newValue
-                                    });
+                                    var selectedContainer = $jsnbt.containers[newValue];
 
                                     if (selectedContainer) {
                                         scope.value = selectedContainer.name;

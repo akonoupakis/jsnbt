@@ -276,44 +276,32 @@ module.exports = function(server, dpd) {
                     var rSelf = this;
                     return _.every(rSelf.nodes, function (x) { return x.active[rSelf.language] === true; });
                 },
-                getLayout: function () {
+                getInheritedProperties: function () {
                     var rSelf = this;
 
-                    var layout = '';
+                    var inherited = {};
 
-                    _.each(rSelf.nodes, function (rnode) {
-                        if (!rnode.layout.inherits) {
-                            layout = rnode.layout.value;
-                        }
-                    });
-                    
-                    return layout;
-                },
-                getPermissions: function () {
-                    var rSelf = this;
+                    if (!server.jsnbt.collections.nodes.inheritablePropertyNames) {
+                        var inheritablePropertyNames = [];
+                        var propertyKeys = _.keys(server.jsnbt.collections.nodes.schema.properties);
+                        _.each(propertyKeys, function (propertyKey) {
+                            var prop = server.jsnbt.collections.nodes.schema.properties[propertyKey];
+                            if (prop.type === 'object' && prop.inheritable === true)
+                                inheritablePropertyNames.push(propertyKey);
+                        });
+                        server.jsnbt.collections.nodes.inheritablePropertyNames = inheritablePropertyNames;
+                    }
 
-                    var rRoles = ['public'];
-
-                    _.each(rSelf.nodes, function (rnode) {
-                        if (!rnode.roles.inherits) {
-                            rRoles = rnode.roles.values.slice(0);
-                        }
-                    });
-
-                    return rRoles;
-                },
-                getRobots: function () {
-                    var rSelf = this;
-
-                    var rRobots = [];
-
-                    _.each(rSelf.nodes, function (rnode) {
-                        if (!rnode.robots.inherits) {
-                            rRobots = rnode.robots.values.slice(0);
-                        }
+                    _.each(server.jsnbt.collections.nodes.inheritablePropertyNames, function (inheritedName) {
+                        _.each(rSelf.nodes, function (rnode) {
+                            if (rnode[inheritedName] && !rnode[inheritedName].inherits === true) {
+                                if (rnode[inheritedName].value)
+                                    inherited[inheritedName] = rnode[inheritedName].value;
+                            }
+                        });
                     });
 
-                    return rRobots;
+                    return inherited;
                 }
             };
 

@@ -13,7 +13,8 @@
             $scope.data = {};
 
             var dataItems = [];
-            $($jsnbt.containers).each(function (c, container) {
+            for (var containerName in $jsnbt.containers) {
+                var container = $jsnbt.containers[containerName];
 
                 var allSelected = $scope.mode === 'multiple' ? (_.isArray($scope.selected) ? $scope.selected : []) : (_.isString($scope.selected) ? [$scope.selected] : []);
 
@@ -26,7 +27,7 @@
                 };
 
                 dataItems.push(containerItem);
-            });
+            };
 
             $scope.data = {
                 items: dataItems

@@ -43,22 +43,26 @@ var AuthorizationManager = function (server) {
     }
 
     var isUserAuthorized = function (user, section, permission) {
-        var dataCollections = server.jsnbt.permissions || [];
-
-        var dataCollection = _.first(_.filter(dataCollections, function (x) { return x.collection === section; }));
 
         var result = false;
 
-        if (dataCollection) {
-            var roles = getUserRoles(user);
-            result = false;
+        if (server.jsnbt.collections[section]) {
 
-            _.each(dataCollection.roles, function (perm) {
-                if (roles.indexOf(perm.role) !== -1) {
-                    if (perm.crud.indexOf(permission) !== -1)
-                        result = true;
-                }
-            });
+      
+            if (server.jsnbt.collections[section].permissions === false) {
+                result = true;
+            }
+            else if (_.isArray(server.jsnbt.collections[section].permissions)) {
+                var roles = getUserRoles(user);
+                result = false;
+
+                _.each(server.jsnbt.collections[section].permissions, function (perm) {
+                    if (roles.indexOf(perm.role) !== -1) {
+                        if (perm.crud.indexOf(permission) !== -1)
+                            result = true;
+                    }
+                });
+            }
         }
 
         return result;

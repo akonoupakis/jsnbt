@@ -1,4 +1,5 @@
 var serverRoot = require('server-root');
+var validation = require('json-validation');
 var extend = require('extend');
 var _ = require('underscore');
 
@@ -20,40 +21,36 @@ function Server(app, options) {
     
     var logger = require('./logger.js')(this);
     
-    var nonLoggedCollections = ['actions', 'migrations'];
     var logAction = function (dpd, user, collection, action, objectId, objectData, callback) {
-        if (nonLoggedCollections.indexOf(collection) === -1) {
-            dpd.actions.post({
-                timestamp: new Date().getTime(),
-                user: user ? user.id : undefined,
-                collection: collection,
-                action: action,
-                objectId: objectId,
-                objectData: objectData || {}
-            }, function (results, err) {
-                if (err) {
-                    throw err;
-                }
-                else {
-                    callback();
-                }
-            });
+        
+        if (server.jsnbt.collections[collection]) {
+            if (server.jsnbt.collections[collection].logging) {
+                
+                dpd.actions.post({
+                    timestamp: new Date().getTime(),
+                    user: user ? user.id : undefined,
+                    collection: collection,
+                    action: action,
+                    objectId: objectId,
+                    objectData: objectData || {}
+                }, function (results, err) {
+                    if (err) {
+                        callback(err);
+                    }
+                    else {
+                        callback();
+                    }
+                });
+            }
+            else {
+                callback();
+            }
         }
         else {
             callback();
         }
     };
-
-    var shouldCheck = function (collection) {
-        var result = true;
-
-        var dpdPermissions = _.find(server.jsnbt.permissions, function (x) { return x.collection === collection; });
-        if (dpdPermissions && dpdPermissions.auth === false)
-            result = false;
-
-        return result;
-    };
-
+    
     var authMngr = null;
 
     var started = false;
@@ -67,56 +64,108 @@ function Server(app, options) {
             name: opts.db.name
         },
         dpd: {
-            onPreRead: function (scriptContext, collection, objectId, callback) {
-                if (!scriptContext.internal && shouldCheck(collection) && !authMngr.isAuthorized(scriptContext.me, collection, 'R'))
-                    scriptContext.cancel('access denied', 401);
-
-                callback();
-            },
-            onPostRead: function (scriptContext, collection, objectId, objectData, callback) {
-                callback();
-            },
-            onPreCreate: function (scriptContext, collection, objectId, callback) {
-                if (!scriptContext.internal && shouldCheck(collection) && !authMngr.isAuthorized(scriptContext.me, collection, 'C'))
-                    scriptContext.cancel('access denied', 401);
-
-                callback();
-            },
-            onPostCreate: function (scriptContext, collection, objectId, objectData, callback) {
-                logAction(scriptContext.dpd, scriptContext.me, collection, 'create', objectId, objectData, function () {
-                    if (!scriptContext.internal)
-                        scriptContext.emit(collection + 'Created', objectData);
-
+            onPreRead: function (scriptContext, collection, callback) {
+                if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'R')) {
+                    var accessDenied = new Error('access denied');
+                    accessDenied.statusCode = 401;
+                    callback(accessDenied);
+                }
+                else {
                     callback();
+                }
+            },
+            onPostRead: function (scriptContext, collection, object, callback) {
+                callback();
+            },
+            onPreCreate: function (scriptContext, collection, callback) {
+                if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'C')) {
+                    var accessDenied = new Error('access denied');
+                    accessDenied.statusCode = 401;
+                    callback(accessDenied);
+                }
+                else {
+                    callback();
+                }
+            },
+            onPostCreate: function (scriptContext, collection, object, callback) {
+                logAction(scriptContext.dpd, scriptContext.me, collection, 'create', object.id, object, function (err, res) {
+                    if (err) {
+                        callback(err);
+                    }
+                    else {
+                        if (!scriptContext.internal)
+                            scriptContext.emit(collection + 'Created', object);
+
+                        callback();
+                    }
                 });
             },
-            onPreUpdate: function (scriptContext, collection, objectId, callback) {
-                if (!scriptContext.internal && shouldCheck(collection) && !authMngr.isAuthorized(scriptContext.me, collection, 'U'))
-                    scriptContext.cancel('access denied', 401);
-
-                callback();
-            },
-            onPostUpdate: function (scriptContext, collection, objectId, objectData, callback) {
-                logAction(scriptContext.dpd, scriptContext.me, collection, 'update', objectId, objectData, function () {
-                    if (!scriptContext.internal)
-                        scriptContext.emit(collection + 'Updated', objectData);
-
+            onPreUpdate: function (scriptContext, collection, object, callback) {
+                if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'U')) {
+                    var accessDenied = new Error('access denied');
+                    accessDenied.statusCode = 401;
+                    callback(accessDenied);
+                }
+                else {
                     callback();
+                }
+            },
+            onPostUpdate: function (scriptContext, collection, object, callback) {
+                logAction(scriptContext.dpd, scriptContext.me, collection, 'update', object.id, object, function (err, res) {
+                    if (err) {
+                        callback(err);
+                    }
+                    else {
+                        if (!scriptContext.internal)
+                            scriptContext.emit(collection + 'Updated', object);
+
+                        callback();
+                    }
                 });
             },
-            onPreDelete: function (scriptContext, collection, objectId, callback) {
-                if (!scriptContext.internal && shouldCheck(collection) && !authMngr.isAuthorized(scriptContext.me, collection, 'D'))
-                    scriptContext.cancel('access denied', 401);
-
-                callback();
-            },
-            onPostDelete: function (scriptContext, collection, objectId, objectData, callback) {
-                logAction(scriptContext.dpd, scriptContext.me, collection, 'delete', objectId, objectData, function () {
-                    if (!scriptContext.internal)
-                        scriptContext.emit(collection + 'Deleted', objectData);
-
+            onPreDelete: function (scriptContext, collection, object, callback) {
+                if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'D')) {
+                    var accessDenied = new Error('access denied');
+                    accessDenied.statusCode = 401;
+                    callback(accessDenied);
+                }
+                else {
                     callback();
+                }
+            },
+            onPostDelete: function (scriptContext, collection, object, callback) {
+                logAction(scriptContext.dpd, scriptContext.me, collection, 'delete', object.id, object, function (err, res) {
+                    if (err) {
+                        callback(err);
+                    }
+                    else {
+                        if (!scriptContext.internal)
+                            scriptContext.emit(collection + 'Deleted', object);
+
+                        callback();
+                    }
                 });
+            },
+            onValidate: function (scriptContext, collection, object, callback) {
+                if (server.jsnbt.collections[collection]) {
+                    if (server.jsnbt.collections[collection].schema) {
+                        var validator = new validation.JSONValidation();
+                        var validationResult = validator.validate(object, server.jsnbt.collections[collection].schema);
+                        if (!validationResult.ok) {
+                            var validationErrors = validationResult.path + ': ' + validationResult.errors.join(' - ');
+                            callback(new Error(validationErrors));
+                        }
+                        else {
+                            callback();
+                        }
+                    }
+                    else {
+                        callback();
+                    }
+                }
+                else {
+                    callback();
+                }
             }
         },
         cache: require('./cache.js')(this),
@@ -177,7 +226,7 @@ function Server(app, options) {
     var jsnbt = require('./jsnbt.js')();
 
     try {
-        jsnbt.register('core', app.modules.core);
+        jsnbt.register('core', app.modules.core);       
     }
     catch (err) {
         logger.error(err);

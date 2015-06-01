@@ -11,12 +11,15 @@
             $scope.data = {};
 
             var layouts = [];
-            $($jsnbt.layouts).each(function (l, layout) {
+            for (var layoutName in $jsnbt.layouts) {
+                var layout = $jsnbt.layouts[layoutName];
+
                 layouts.push({
                     id: layout.id,
                     name: layout.name
                 });
-            });
+            };
+
             $scope.data = {
                 items: _.sortBy(layouts, 'name')
             };
