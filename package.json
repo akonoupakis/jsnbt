@@ -1,6 +1,6 @@
 {
   "name": "jsnbt",
-  "version": "1.0.104",
+  "version": "1.0.105",
   "description": "The Jsonbot engine",
   "keywords": [
     "jsnbt",
@@ -11,7 +11,6 @@
     "email": "konoupakis@gmail.com",
     "url": ""
   },
-  "readme": "null",
   "repository": {
     "type": "git",
     "url": "https://github.com/akonoupakis/jsnbt.git"
@@ -20,6 +19,11 @@
     "url": "https://github.com/akonoupakis/jsnbt/issues",
     "email": "konoupakis@gmail.com"
   },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
   "config": {},
   "main": "src/app/app.js",
   "files": [
