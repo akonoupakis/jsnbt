@@ -17,22 +17,16 @@
 
     <% _.each(params, function(p) { %><meta name="<%= p.name %>" content="<%= p.content %>" />
     <% }); %>
-
-    <% _.each(params, function(p) { %>
-    <meta name="<%= p.name %>" content="<%= p.content %>" />
-    <% }); %>
-
+    
     <!-- @if NODE_ENV='DEVELOPMENT' -->
     <link rel="stylesheet" href="css/style.css" />
 
-    <% _.each(js.lib, function(file) { %>
-    <script type="text/javascript" src="<%= file %>"></script>
+    <% _.each(js.lib, function(file) { %><script type="text/javascript" src="<%= file %>"></script>
     <% }); %>
     <script type="text/javascript" src="dpd.js"></script>
     <script type="text/javascript" src="jsnbt.js"></script>
 
-    <% _.each(js.app, function(file) { %>
-    <script type="text/javascript" src="<%= file %>"></script>
+    <% _.each(js.app, function(file) { %><script type="text/javascript" src="<%= file %>"></script>
     <% }); %>
     <script type="text/javascript" src="js/init.js"></script>
     <!-- @endif -->

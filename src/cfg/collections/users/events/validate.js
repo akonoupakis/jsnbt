@@ -1,3 +1,5 @@
+var _ = require('underscore');
+
 var self = this;
 
 validate({
