@@ -59,7 +59,7 @@ validate({
             properties: {
                 domain: {
                     type: 'string',
-                    enum: _.pluck(_.filter(server.app.modules, function (x) { return x.pointed; }), 'domain')
+                    enum: _.union(_.pluck(_.filter(server.app.modules, function (x) { return x.pointed; }), 'domain'), [''])
                 }
             }
         },
@@ -72,7 +72,7 @@ validate({
             properties: {
                 value: {
                     type: 'string',
-                    enum: _.pluck(server.jsnbt.layouts, 'id')
+                    enum: _.union(_.pluck(server.jsnbt.layouts, 'id'), [''])
                 }
             }
         },
