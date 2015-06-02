@@ -489,7 +489,8 @@ module.exports = function (grunt) {
             tasks.push(function (cb) {
                 exec('bower install ' + bowerPackage.name + '-' + bowerPackage.version + '=' + bowerPackage.name + '#' + bowerPackage.version
                     // + ' --config.directory=bower_components'
-                    + ' --config.analytics=false',
+                    + ' --config.analytics=false'
+                    + ' -f',
                     { cwd: './' }, function (err, stdout, stderr) {
                     if (err)
                         throw err;
