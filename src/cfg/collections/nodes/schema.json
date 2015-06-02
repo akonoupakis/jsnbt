@@ -15,7 +15,7 @@
         },
 		"parent": {
             "type": "string",
-            "required": true
+            "required": false
         },
 		"createdOn": {
             "type": "number",
