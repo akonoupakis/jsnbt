@@ -19,7 +19,6 @@ $(document).ready(function () {
         var results = [];
 
         var spyItems = $('*[data-spy-title!=""][data-spy-level=' + level + ']', $el);
-        console.log(level, $el, spyItems);
         spyItems.each(function (i, item) {
             randomIndex++;
 
@@ -70,6 +69,6 @@ $(document).ready(function () {
         });
 
         $('#scroll-spy-sidebar').affix();
-    }, 100);
+    }, 500);
 
 });

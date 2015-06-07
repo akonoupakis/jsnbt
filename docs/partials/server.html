@@ -1,0 +1,397 @@
+﻿<div data-spy-title="server" data-spy-level="1">
+    <h2>
+        server
+    </h2>
+    <p>
+        The server object created on application start.
+    </p><p>
+        This singleton object gives you access to the app and jsnbt configurations and other singleton mechanisms as cache and messaging engines.
+    </p>
+    <div class="panel panel-default">
+        <table class="table table-bordered table-condensed data-structure">
+            <tbody>
+                <tr class="data-title">
+                    <td>app</td>
+                    <td>object</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        the app instance that the server deployd on.<br /><br />
+
+                        <div class="panel panel-default">
+                            <table class="table table-bordered table-condensed data-structure">
+                                <tbody>
+                                    <tr class="data-title">
+                                        <td>path</td>
+                                        <td>string</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            the path from which the app is running
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>dbg</td>
+                                        <td>bool</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            the debug status of the app running
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>modules</td>
+                                        <td>string</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            the modules loaded into the jsnbt engine
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>init(options, module)</td>
+                                        <td>function</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            initiates the application
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>createServer(options)</td>
+                                        <td>function</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            creates the dpd server for the application
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr class="data-title">
+                    <td>jsnbt</td>
+                    <td>object</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        returns the running jsnbt configuration.<br /><br />
+
+                        <div class="panel panel-default">
+                            <table class="table table-bordered table-condensed data-structure">
+                                <tbody>
+                                    <tr class="data-title">
+                                        <td>languages</td>
+                                        <td>array of strings</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            the available languages
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>countries</td>
+                                        <td>array of strings</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            the available countries
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>modules</td>
+                                        <td>array of objects</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            the loaded modules
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>configs</td>
+                                        <td>object</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            the configurations injected by any modules per domain
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>localization</td>
+                                        <td>bool</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            whether the application runs on multiple languages<br />
+                                            this value is usually set by the site module alone
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>locale</td>
+                                        <td>string</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            the singleton language code (applicable only when the "localization" property is set to true)<br />
+                                            this value is usually set by the site module alone
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>ssl</td>
+                                        <td>bool</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            whether the site or part of it is under ssl or not<br />
+                                            this value is usually set by the site module alone
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>restricted</td>
+                                        <td>bool</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            whether the site or part of it is restricted to specific user roles<br />
+                                            this value is usually set by the site module alone
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>jsModules</td>
+                                        <td>array of strings</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            the injected angular module names from installed modules
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>scripts</td>
+                                        <td>array of strings</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            extra head scripts (for the admin pages)
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>fileGroups</td>
+                                        <td>array of strings</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            the available file group names.
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>images</td>
+                                        <td>array of objects</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            the available image transformations.
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>entities</td>
+                                        <td>array of objects</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            the entities.
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>roles</td>
+                                        <td>array of objects</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            the user roles.
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>sections</td>
+                                        <td>array of objects</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            the sections with their available roles.
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>collections</td>
+                                        <td>object</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            the data collections along with their restrictions, events and schema validations.
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>lists</td>
+                                        <td>array of objects</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            the data lists
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>layouts</td>
+                                        <td>array of objects</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            the layouts.
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>containers</td>
+                                        <td>array of objects</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            the containers.
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>templates</td>
+                                        <td>array of objects</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            the templates.
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>routes</td>
+                                        <td>array of objects</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            the routes.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr class="data-title">
+                    <td>messager</td>
+                    <td>object</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        the messager engine. it serves the below for mail and sms<br /><br />
+
+                        <div class="panel panel-default">
+                            <table class="table table-bordered table-condensed data-structure">
+                                <tbody>
+                                    <tr class="data-title">
+                                        <td>getTemplate(templateCode, callback)</td>
+                                        <td>function</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            retrieves a template and returns it as an argument on the callback function
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>getModel(templateCode, callback)</td>
+                                        <td>function</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            retrieves the debug model for a template code and returns it as an argument on the callback function
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>parseTemplate(template, model, callback)</td>
+                                        <td>function</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            parses a template with a model and returns the parsed result as an argument on the callback function
+                                        </td>
+                                    </tr>
+
+                                    <tr class="data-title">
+                                        <td>getSender(dpd, callback)</td>
+                                        <td>function</td>
+                                    </tr>
+                                    <tr class="data-description">
+                                        <td colspan="2">
+                                            creates a sender and returns it as an argument on the callback function
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr class="data-title">
+                    <td>cache</td>
+                    <td>object</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        the server cache
+                    </td>
+                </tr>
+
+                <tr class="data-title">
+                    <td>getPath(path)</td>
+                    <td>function</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        returns the server path of a relative path
+                    </td>
+                </tr>
+
+                <tr class="data-title">
+                    <td>start(next)</td>
+                    <td>function</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        starts the server
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

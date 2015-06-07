@@ -28,7 +28,27 @@
             </tr>
 
             <tr class="data-title">
-                <td>route(ctx, next)</td>
+                <td>getVersion()</td>
+                <td>function</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    returns the module's current version
+                </td>
+            </tr>
+
+            <tr class="data-title">
+                <td>getBower()</td>
+                <td>function</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    returns the module's bower cofiguration as a json object
+                </td>
+            </tr>
+
+            <tr class="data-title">
+                <td>route(server, ctx, next)</td>
                 <td>function</td>
             </tr>
             <tr class="data-description">
@@ -38,27 +58,27 @@
             </tr>
 
             <tr class="data-title">
-                <td>view.prerender(ctx)</td>
+                <td>view.preparse(server, ctx, preparsingContext, next)</td>
                 <td>function</td>
             </tr>
             <tr class="data-description">
                 <td colspan="2">
-                    could change the ctx.model and the ctx.tmpl before rendering
+                    could change the preparsingContext.model and the preparsingContext.tmpl before rendering
                 </td>
             </tr>
 
             <tr class="data-title">
-                <td>view.render(ctx)</td>
+                <td>view.postparse(server, ctx, postparsingContext, next)</td>
                 <td>function</td>
             </tr>
             <tr class="data-description">
                 <td colspan="2">
-                    could change the ctx.html upon render
+                    could change the postparsingContext.html upon render
                 </td>
             </tr>
 
             <tr class="data-title">
-                <td>point(ctx)</td>
+                <td>routePointer(server, ctx, next)</td>
                 <td>function</td>
             </tr>
             <tr class="data-description">
@@ -67,36 +87,64 @@
                     the system invokes this method on a specific module if a pointer points to a node of the module
                 </td>
             </tr>
+
+            <tr class="data-title">
+                <td>routeApi(server, ctx, serviceName, fnName, fields, files, next)</td>
+                <td>function</td>
+            </tr>
+            <tr class="data-description">
+                <td colspan="2">
+                    targets modules that expose a jsnbt api under /jsnbt-api/{domain}/{serviceName}/{fnName}/ for the module's domain
+                </td>
+            </tr>
         </tbody>
     </table>
     <div class="panel-body">
         <p>sample:</p>
-        <pre>module.exports = {
+        <pre>var app = null;
+
+module.exports = {
+
+    domain: 'public',
+    public: true,
 
     init: function (application) {
+        app = application;
     },
 
     getConfig: function () {
-        return require('./config.js');
+        return require('../cfg/config.js');
+    },
+
+    getVersion: function () {
+        return require('../../package.json').version;
+    },
+
+    getBower: function () {
+        return require('../src/web/bower.json');
     },
 
     route: function (ctx, next) {
         next();
     },
 
-    view: {
-
-        prerender: function (ctx) {
-
-        },
-
-        render: function (ctx) {
-
-        }
-
+    routeApi: function (server, ctx, serviceName, fnName, fields, files, next) {
+        next();
     },
 
-    point: function(ctx) {
+    routePointer: function (server, ctx, next) {
+        next();
+    },
+
+    view: {
+
+        preparse: function (server, ctx, preparsingContext, next) {
+            next();
+        },
+
+        postparse: function (server, ctx, postparsingContext, next) {
+            next();
+        }
 
     }
 

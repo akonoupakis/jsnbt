@@ -3,12 +3,11 @@
     <pre>docs/
   ├── index.html
 src/
-  ├── css/
-  │   ├── app/
-  │         ├── index.js
-  │         ├── config.js
-  ├── dpd/
-  │   ├── resources/
+  │── app/
+  │     ├── index.js
+  │── cfg/
+  │     ├── config.js
+  ├── dat/
   └── web/
       ├── admin/
       └── public/</pre>
@@ -16,10 +15,8 @@ src/
     <p>
         Each module is meant to enrich the cms functionality and extend the jsnbt admin.
         <br />
-        In case that a module needs to alter the dpd default configuration, under the dpd specficiations files that will be found under the "dpd" folder will be merged with the other installed ones; or they will be appended as new.
         <br />
-        <br />
-        A module might need to inject custom client files to be used by the user interface. Same path anf filename locations from different installed modules will result on conflicts! Therefore it is highly recommended to append any of these files under a reserved folder named after the module domain.
+        A module might need to inject custom client files to be used by the user interface. Same path and filename locations from different installed modules will result on conflicts! Therefore it is highly recommended to append any of these files under a reserved folder named after the module domain.
         <br />
         It is quite wize not to append files in the public folder, as this is intended to be used only by the end site. However if you need to, we won't stop you.
         <br />

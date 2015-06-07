@@ -1,0 +1,225 @@
+﻿<div data-spy-title="context" data-spy-level="1">
+    <h2>
+        context
+    </h2>
+    <p>
+        The context object created per request.
+    </p><p>
+        Commonly, through this object the engine resolves and ends a request.
+    </p>
+    <div class="panel panel-default">
+        <table class="table table-bordered table-condensed data-structure">
+            <tbody>
+                <tr class="data-title">
+                    <td>req</td>
+                    <td>object</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        the request
+                    </td>
+                </tr>
+
+                <tr class="data-title">
+                    <td>res</td>
+                    <td>object</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        the response
+                    </td>
+                </tr>
+
+                <tr class="data-title">
+                    <td>method</td>
+                    <td>string</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        the request method
+                    </td>
+                </tr>
+
+                <tr class="data-title">
+                    <td>session</td>
+                    <td>object</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        the session
+                    </td>
+                </tr>
+
+                <tr class="data-title">
+                    <td>cookies</td>
+                    <td>object</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        the cookies
+                    </td>
+                </tr>
+
+                <tr class="data-title">
+                    <td>user</td>
+                    <td>object</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        the current user
+                    </td>
+                </tr>
+
+                <tr class="data-title">
+                    <td>timer</td>
+                    <td>object</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        the timer timing the request life cycle
+                    </td>
+                </tr>
+
+                <tr class="data-title">
+                    <td>node</td>
+                    <td>object</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        the resolved node
+                    </td>
+                </tr>
+
+                <tr class="data-title">
+                    <td>pointer</td>
+                    <td>object</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        the resolved pointer node
+                    </td>
+                </tr>
+
+                <tr class="data-title">
+                    <td>layout</td>
+                    <td>string</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        the resolved layout
+                    </td>
+                </tr>
+
+                <tr class="data-title">
+                    <td>meta</td>
+                    <td>object</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        the meta information for the selected language
+                    </td>
+                </tr>
+
+                <tr class="data-title">
+                    <td>params</td>
+                    <td>array of objects</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        the key value collection of meta tag values
+                    </td>
+                </tr>
+
+                <tr class="data-title">
+                    <td>robots</td>
+                    <td>object</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        the selected robot values
+                    </td>
+                </tr>
+
+                <tr class="data-title">
+                    <td>template</td>
+                    <td>string</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        the template code of the template to be rendered
+                    </td>
+                </tr>
+
+                <tr class="data-title">
+                    <td>uri</td>
+                    <td>object</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        the url in parts
+                    </td>
+                </tr>
+
+                <tr class="data-title">
+                    <td>restricted</td>
+                    <td>bool</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        whether this request is restrited or not
+                    </td>
+                </tr>
+
+                <tr class="data-title">
+                    <td>error(code, stack)</td>
+                    <td>function</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        renders an error page and ends the request
+                    </td>
+                </tr>
+
+                <tr class="data-title">
+                    <td>view()</td>
+                    <td>function</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        renders the selected template with the current context configuration and ends the request
+                    </td>
+                </tr>
+
+                <tr class="data-title">
+                    <td>json(data)</td>
+                    <td>function</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        renders the given json object as json and ends the request
+                    </td>
+                </tr>
+
+                <tr class="data-title">
+                    <td>html(text)</td>
+                    <td>function</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        renders the given text as html and ends the request
+                    </td>
+                </tr>
+
+                <tr class="data-title">
+                    <td>redirect(url, code)</td>
+                    <td>function</td>
+                </tr>
+                <tr class="data-description">
+                    <td colspan="2">
+                        redirects to the given url with the given code (or 302 as default)
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
