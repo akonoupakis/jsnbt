@@ -15,7 +15,7 @@
                     dcsSpyTitle: '@',
                     dcsSpyLevel: '@'
                 },
-                templateUrl: 'tmpl/dcsContainer.html',
+                template: '<div data-spy-title="{{dcsSpyTitle}}" data-spy-level="{{dcsSpyLevel}}"><h2>{{dcsTitle}}</h2><div ng-transclude></div></div>',
                 link: function (scope, element, attrs) {
                     element.addClass('dcs-container');
 
@@ -32,7 +32,7 @@
                  transclude: true,
                  scope: {
                  },
-                 templateUrl: 'tmpl/dcsIntro.html',
+                 template: '<div ng-transclude></div>',
                  link: function (scope, element, attrs) {
                      element.addClass('dcs-intro');
 
@@ -49,7 +49,7 @@
                  transclude: true,
                  scope: {
                  },
-                 templateUrl: 'tmpl/dcsDefinition.html',
+                 template: '<div class="panel panel-default"><table class="table table-bordered table-condensed data-structure"><tbody ng-transclude></tbody></table></div>',
                  link: function (scope, element, attrs) {
                      element.addClass('dcs-definition');
 
