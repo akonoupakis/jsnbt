@@ -50,11 +50,18 @@
     background-color: #f5f5f5;
 }
 
-.data-structure .data-description > td {
+.data-structure .data-description > td,
+.data-structure .data-sample > td {
     font-style: italic;
     font-size: 0.8875em;
 }
 
-.data-sample {
-    text-align: right;
+.data-sample span.code {
+    white-space: pre;
+}
+
+
+.dcs-definition {
+    margin-top:20px;
+    margin-bottom: 0px;
 }

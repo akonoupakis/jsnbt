@@ -4,13 +4,13 @@
     <title>jsnbt docs</title>
     <link type="text/css" href="css/bootstrap.min.css" rel="stylesheet" />
     <link type="text/css" href="css/docs.min.css" rel="stylesheet" />
-    <link type="text/css" href="css/common.css" rel="stylesheet" />
+    <link type="text/css" href="css/app.css" rel="stylesheet" />
 
-    <script type="text/javascript" src="js/jquery.min.js"></script> 
+    <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/angular.min.js"></script>
     <script type="text/javascript" src="js/jquery.scrollTo.js"></script>
-    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
 </head>
 <body data-spy="scroll" data-target="#scroll-spy-sidebar">
     <div class="container">
@@ -21,6 +21,11 @@
     <div class="container bs-docs-container">
         <div class="row">
             <div class="col-md-9" role="main" id="scroll-spy-container">
+
+                <!--<dcs-container class="scroll-spy-section" dcs-title="test" dcs-spy-title="spy test" dcs-spy-level="1">
+                    <div ng-include="'partials/test.html'"></div>
+                </dcs-container>-->
+
                 <div class="scroll-spy-section" ng-include="'partials/introduction.html'"></div>
                 <div class="scroll-spy-section" ng-include="'partials/dependencies.html'"></div>
                 <div class="scroll-spy-section" ng-include="'partials/installation.html'"></div>
@@ -28,8 +33,12 @@
                 <div class="scroll-spy-section" ng-include="'partials/grunt.html'"></div>
                 <div class="scroll-spy-section" ng-include="'partials/database.html'"></div>
                 <div class="scroll-spy-section" ng-include="'partials/dpd.js.html'"></div>
-                <div class="scroll-spy-section" ng-include="'partials/jsnbt.js.html'"></div>
-                <div class="scroll-spy-section" ng-include="'partials/server.html'"></div>
+                <div class="scroll-spy-section" ng-include="'partials/jsnbt.html'"></div>
+
+                <dcs-container class="scroll-spy-section" dcs-title="server" dcs-spy-title="server" dcs-spy-level="1">
+                    <div ng-include="'partials/server.html'"></div>
+                </dcs-container>
+
                 <div class="scroll-spy-section" ng-include="'partials/context.html'"></div>
                 <div class="scroll-spy-section" ng-include="'partials/modules.html'"></div>
                 <div class="scroll-spy-section" ng-include="'partials/site.html'"></div>
