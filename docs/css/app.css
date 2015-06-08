@@ -38,6 +38,18 @@
     padding-left: 39px;
 }
 
+.bs-docs-sidebar .nav > li.level4 > a {
+    padding-left: 50px;
+}
+.bs-docs-sidebar .nav > li.level4.active > a,
+.bs-docs-sidebar .nav > li.level4.active > a:hover {
+    padding-left: 48px;
+}
+.bs-docs-sidebar .nav > li.level4 > a:hover {
+    padding-left: 49px;
+}
+
+
 .scroll-spy-section {
     padding-bottom:20px;
 }
