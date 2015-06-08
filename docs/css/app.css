@@ -6,47 +6,47 @@
 }
 
 .bs-docs-sidebar .nav > li.level1 > a {
-    padding-left: 20px;
+    padding-left: 20px !important;
 }
 .bs-docs-sidebar .nav > li.level1.active > a,
 .bs-docs-sidebar .nav > li.level1.active > a:hover {
-    padding-left: 18px;
+    padding-left: 18px !important;
 }
 .bs-docs-sidebar .nav > li.level1 > a:hover {
-    padding-left: 19px;
+    padding-left: 19px !important;
 }
 
 .bs-docs-sidebar .nav > li.level2 > a {
-    padding-left: 30px;
+    padding-left: 30px !important;
 }
 .bs-docs-sidebar .nav > li.level2.active > a,
 .bs-docs-sidebar .nav > li.level2.active > a:hover {
-    padding-left: 28px;
+    padding-left: 28px !important;
 }
 .bs-docs-sidebar .nav > li.level2 > a:hover {
-    padding-left: 29px;
+    padding-left: 29px !important;
 }
 
 .bs-docs-sidebar .nav > li.level3 > a {
-    padding-left: 40px;
+    padding-left: 40px !important;
 }
 .bs-docs-sidebar .nav > li.level3.active > a,
 .bs-docs-sidebar .nav > li.level3.active > a:hover {
-    padding-left: 38px;
+    padding-left: 38px !important;
 }
 .bs-docs-sidebar .nav > li.level3 > a:hover {
-    padding-left: 39px;
+    padding-left: 39px !important;
 }
 
 .bs-docs-sidebar .nav > li.level4 > a {
-    padding-left: 50px;
+    padding-left: 50px !important;
 }
 .bs-docs-sidebar .nav > li.level4.active > a,
 .bs-docs-sidebar .nav > li.level4.active > a:hover {
-    padding-left: 48px;
+    padding-left: 48px !important;
 }
 .bs-docs-sidebar .nav > li.level4 > a:hover {
-    padding-left: 49px;
+    padding-left: 49px !important;
 }
 
 
