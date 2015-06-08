@@ -11,16 +11,23 @@
                 replace: true,
                 transclude: true,
                 scope: {
-                    dcsTitle: '@',
-                    dcsSpyTitle: '@',
-                    dcsSpyLevel: '@'
+                    title: '@',
+                    titleLevel: '@',
+                    spyTitle: '@',
+                    spyLevel: '@'
                 },
-                template: '<div data-spy-title="{{dcsSpyTitle}}" data-spy-level="{{dcsSpyLevel}}"><h2>{{dcsTitle}}</h2><div ng-transclude></div></div>',
+                template: '<div><span class="h{{titleLevel}}">{{title}}</span><div ng-transclude></div></div>',
                 link: function (scope, element, attrs) {
                     element.addClass('dcs-container');
 
-                    if (!scope.dcsSpyLevel)
-                        scope.dcsSpyLevel = 1;
+                    if (!scope.spyLevel)
+                        scope.spyLevel = 1;
+
+                    if (!scope.titleLevel)
+                        scope.titleLevel = 1;
+
+                    element.attr('data-spy-title', scope.spyTitle);
+                    element.attr('data-spy-level', scope.spyLevel);
                 }
             };
         })
@@ -32,7 +39,7 @@
                  transclude: true,
                  scope: {
                  },
-                 template: '<div ng-transclude></div>',
+                 template: '<p ng-transclude></p>',
                  link: function (scope, element, attrs) {
                      element.addClass('dcs-intro');
 
@@ -117,6 +124,7 @@ $(document).ready(function () {
         var results = [];
 
         var spyItems = $('*[data-spy-title!=""][data-spy-level=' + level + ']', $el);
+
         spyItems.each(function (i, item) {
             randomIndex++;
 

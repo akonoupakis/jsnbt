@@ -1,225 +1,69 @@
-﻿<div data-spy-title="context" data-spy-level="1">
-    <h2>
-        context
-    </h2>
-    <p>
-        The context object created per request.
-    </p><p>
-        Commonly, through this object the engine resolves and ends a request.
-    </p>
-    <div class="panel panel-default">
-        <table class="table table-bordered table-condensed data-structure">
-            <tbody>
-                <tr class="data-title">
-                    <td>req</td>
-                    <td>object</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        the request
-                    </td>
-                </tr>
+﻿<dcs-intro>
+    The context object created per request.
+    <br /><br />
+    Commonly, through this object the engine resolves and ends a request.
+</dcs-intro>
+<dcs-definition>
+    <dcs-definition-title type="object">req</dcs-definition-title>
+    <dcs-definition-desc>the request</dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>res</td>
-                    <td>object</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        the response
-                    </td>
-                </tr>
+    <dcs-definition-title type="object">res</dcs-definition-title>
+    <dcs-definition-desc>the response</dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>method</td>
-                    <td>string</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        the request method
-                    </td>
-                </tr>
+    <dcs-definition-title type="string">method</dcs-definition-title>
+    <dcs-definition-desc>the request method</dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>session</td>
-                    <td>object</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        the session
-                    </td>
-                </tr>
+    <dcs-definition-title type="object">session</dcs-definition-title>
+    <dcs-definition-desc>the session</dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>cookies</td>
-                    <td>object</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        the cookies
-                    </td>
-                </tr>
+    <dcs-definition-title type="object">cookies</dcs-definition-title>
+    <dcs-definition-desc>the cookies</dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>user</td>
-                    <td>object</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        the current user
-                    </td>
-                </tr>
+    <dcs-definition-title type="object">user</dcs-definition-title>
+    <dcs-definition-desc>the current user</dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>timer</td>
-                    <td>object</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        the timer timing the request life cycle
-                    </td>
-                </tr>
+    <dcs-definition-title type="object">timer</dcs-definition-title>
+    <dcs-definition-desc>the timer timing the request life cycle</dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>node</td>
-                    <td>object</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        the resolved node
-                    </td>
-                </tr>
+    <dcs-definition-title type="object">node</dcs-definition-title>
+    <dcs-definition-desc>the resolved node</dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>pointer</td>
-                    <td>object</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        the resolved pointer node
-                    </td>
-                </tr>
+    <dcs-definition-title type="object">pointer</dcs-definition-title>
+    <dcs-definition-desc>the resolved pointer node</dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>layout</td>
-                    <td>string</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        the resolved layout
-                    </td>
-                </tr>
+    <dcs-definition-title type="string">layout</dcs-definition-title>
+    <dcs-definition-desc>the resolved layout</dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>meta</td>
-                    <td>object</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        the meta information for the selected language
-                    </td>
-                </tr>
+    <dcs-definition-title type="object">meta</dcs-definition-title>
+    <dcs-definition-desc>the meta information for the selected language</dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>params</td>
-                    <td>array of objects</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        the key value collection of meta tag values
-                    </td>
-                </tr>
+    <dcs-definition-title type="array">params</dcs-definition-title>
+    <dcs-definition-desc>the key value collection of meta tag values</dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>robots</td>
-                    <td>object</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        the selected robot values
-                    </td>
-                </tr>
+    <dcs-definition-title type="object">robots</dcs-definition-title>
+    <dcs-definition-desc>the selected robot values</dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>template</td>
-                    <td>string</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        the template code of the template to be rendered
-                    </td>
-                </tr>
+    <dcs-definition-title type="string">template</dcs-definition-title>
+    <dcs-definition-desc>the template code of the template to be rendered</dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>uri</td>
-                    <td>object</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        the url in parts
-                    </td>
-                </tr>
+    <dcs-definition-title type="object">uri</dcs-definition-title>
+    <dcs-definition-desc>the url in parts</dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>restricted</td>
-                    <td>bool</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        whether this request is restrited or not
-                    </td>
-                </tr>
+    <dcs-definition-title type="bool">restricted</dcs-definition-title>
+    <dcs-definition-desc>whether this request is restrited or not</dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>error(code, stack)</td>
-                    <td>function</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        renders an error page and ends the request
-                    </td>
-                </tr>
+    <dcs-definition-title type="function">error(code, stack)</dcs-definition-title>
+    <dcs-definition-desc>renders an error page and ends the request</dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>view()</td>
-                    <td>function</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        renders the selected template with the current context configuration and ends the request
-                    </td>
-                </tr>
+    <dcs-definition-title type="function">view()</dcs-definition-title>
+    <dcs-definition-desc>renders the selected template with the current context configuration and ends the request</dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>json(data)</td>
-                    <td>function</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        renders the given json object as json and ends the request
-                    </td>
-                </tr>
+    <dcs-definition-title type="function">json(data)</dcs-definition-title>
+    <dcs-definition-desc>renders the given json object as json and ends the request</dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>html(text)</td>
-                    <td>function</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        renders the given text as html and ends the request
-                    </td>
-                </tr>
+    <dcs-definition-title type="function">html(text)</dcs-definition-title>
+    <dcs-definition-desc>renders the given text as html and ends the request</dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>redirect(url, code)</td>
-                    <td>function</td>
-                </tr>
-                <tr class="data-description">
-                    <td colspan="2">
-                        redirects to the given url with the given code (or 302 as default)
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
+    <dcs-definition-title type="function">redirect(url, code)</dcs-definition-title>
+    <dcs-definition-desc>redirects to the given url with the given code (or 302 as default)</dcs-definition-desc>
+</dcs-definition>
