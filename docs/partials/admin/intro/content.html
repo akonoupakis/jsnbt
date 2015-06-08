@@ -1,168 +1,174 @@
-﻿<p>Like in dashboard, you may have an html file installed on "src/web/admin/tmpl/public/" and reference it in your config injects section for content.</p>
+﻿<dcs-intro>Like in dashboard, you may have an html file installed on "src/web/admin/tmpl/public/" and reference it in your config injects section for content.</dcs-intro>
 
-<h4 data-spy-title="languages" data-spy-level="4">admin &raquo; content &raquo; languages</h4>
-<p>
-    Here you are able to administer the site languages.<br />
-    If you define in your site config that you do not want localization on your site (locale: 'en'), this section will not be visible.
-</p>
+<dcs-container title="admin &raquo; content &raquo; languages" title-level="4" spy-title="languages" spy-level="4">
+    <p>
+        Here you are able to administer the site languages.<br />
+        If you define in your site config that you do not want localization on your site (locale: 'en'), this section will not be visible.
+    </p>    
+</dcs-container>
 
-<h4 data-spy-title="layouts" data-spy-level="4">admin &raquo; content &raquo; layouts</h4>
-<p>
-    The layouts are defined on your site config as a key value collection linking each layout with a partial html file.<br />
-    This file can include controls that bind their values to the data layout object, therefore saving a layout entry with whatever fields your site needs.<br />
-    This data, can be then bound to a node, and be used in the template in the front site.
-</p>
+<dcs-container title="admin &raquo; content &raquo; layouts" title-level="4" spy-title="layouts" spy-level="4">
+    <p>
+        The layouts are defined on your site config as a key value collection linking each layout with a partial html file.<br />
+        This file can include controls that bind their values to the data layout object, therefore saving a layout entry with whatever fields your site needs.<br />
+        This data, can be then bound to a node, and be used in the template in the front site.
+    </p>
+</dcs-container>
 
-<h4 data-spy-title="nodes" data-spy-level="4">admin &raquo; content &raquo; nodes</h4>
-<p>
-    The nodes represent the endpoints that will result in your site urls.
-    <br />
-    Each node is defined a seo name that will be part of the end url.
-</p>
-<p>Depending on the node entity, you might have extra or less input controls, but here's a few that matter:</p>
+<dcs-container title="admin &raquo; content &raquo; nodes" title-level="4" spy-title="nodes" spy-level="4">
+    <p>
+        The nodes represent the endpoints that will result in your site urls.
+        <br />
+        Each node is defined a seo name that will be part of the end url.
+    </p>
+    <p>Depending on the node entity, you might have extra or less input controls, but here's a few that matter:</p>
 
-<div class="panel panel-default">
-    <table class="table table-bordered table-condensed data-structure">
-        <tbody>
-            <tr class="data-title">
-                <td>name</td>
-            </tr>
-            <tr class="data-description">
-                <td>
-                    the name identifier for use in the admin
-                </td>
-            </tr>
+    <div class="panel panel-default">
+        <table class="table table-bordered table-condensed data-structure">
+            <tbody>
+                <tr class="data-title">
+                    <td>name</td>
+                </tr>
+                <tr class="data-description">
+                    <td>
+                        the name identifier for use in the admin
+                    </td>
+                </tr>
 
-            <tr class="data-title">
-                <td>parent</td>
-            </tr>
-            <tr class="data-description">
-                <td>
-                    this is the parent of the node. if blank, root is meant as the parent
-                </td>
-            </tr>
+                <tr class="data-title">
+                    <td>parent</td>
+                </tr>
+                <tr class="data-description">
+                    <td>
+                        this is the parent of the node. if blank, root is meant as the parent
+                    </td>
+                </tr>
 
-            <tr class="data-title">
-                <td>type</td>
-            </tr>
-            <tr class="data-description">
-                <td>
-                    the entity type <br />
-                    in the central node form, if extension modules are installed, you may define a node as a pointer to another node in another module.<br />
-                    in other module node forms, you may see different options as entities in this select box
-                </td>
-            </tr>
+                <tr class="data-title">
+                    <td>type</td>
+                </tr>
+                <tr class="data-description">
+                    <td>
+                        the entity type <br />
+                        in the central node form, if extension modules are installed, you may define a node as a pointer to another node in another module.<br />
+                        in other module node forms, you may see different options as entities in this select box
+                    </td>
+                </tr>
 
-            <tr class="data-title">
-                <td>language</td>
-            </tr>
-            <tr class="data-description">
-                <td>
-                    the current node language.
-                    <br />
-                    this is just for viewing to change the controls to another language for editing
-                </td>
-            </tr>
+                <tr class="data-title">
+                    <td>language</td>
+                </tr>
+                <tr class="data-description">
+                    <td>
+                        the current node language.
+                        <br />
+                        this is just for viewing to change the controls to another language for editing
+                    </td>
+                </tr>
 
-            <tr class="data-title">
-                <td>url</td>
-            </tr>
-            <tr class="data-description">
-                <td>
-                    the seo name for this node.
-                    <br />
-                    the final url of this node is computed with the seo names of the hierarchical nodes leading to this one, followed by this seo name
-                </td>
-            </tr>
+                <tr class="data-title">
+                    <td>url</td>
+                </tr>
+                <tr class="data-description">
+                    <td>
+                        the seo name for this node.
+                        <br />
+                        the final url of this node is computed with the seo names of the hierarchical nodes leading to this one, followed by this seo name
+                    </td>
+                </tr>
 
-            <tr class="data-title">
-                <td>active</td>
-            </tr>
-            <tr class="data-description">
-                <td>
-                    indicates whether this node is active per language<br />
-                    note that a node might be active for one language but not for another
-                </td>
-            </tr>
+                <tr class="data-title">
+                    <td>active</td>
+                </tr>
+                <tr class="data-description">
+                    <td>
+                        indicates whether this node is active per language<br />
+                        note that a node might be active for one language but not for another
+                    </td>
+                </tr>
 
-            <tr class="data-title">
-                <td>layout</td>
-            </tr>
-            <tr class="data-description">
-                <td>
-                    the selected layout for this node.<br />
-                    this may inherit its value from the parent node.<br />
-                    the layout identifier comes as meta content in your site's html source code, so that you can pick it up and use it to retrieve the layout data that accompany this node page
-                </td>
-            </tr>
+                <tr class="data-title">
+                    <td>layout</td>
+                </tr>
+                <tr class="data-description">
+                    <td>
+                        the selected layout for this node.<br />
+                        this may inherit its value from the parent node.<br />
+                        the layout identifier comes as meta content in your site's html source code, so that you can pick it up and use it to retrieve the layout data that accompany this node page
+                    </td>
+                </tr>
 
-            <tr class="data-title">
-                <td>template</td>
-            </tr>
-            <tr class="data-description">
-                <td>
-                    the selected template for this node.<br />
-                    if the template is accompanied with a form file, it is used to extend the node content with extra input controls that appear below the template section
-                </td>
-            </tr>
+                <tr class="data-title">
+                    <td>template</td>
+                </tr>
+                <tr class="data-description">
+                    <td>
+                        the selected template for this node.<br />
+                        if the template is accompanied with a form file, it is used to extend the node content with extra input controls that appear below the template section
+                    </td>
+                </tr>
 
-            <tr class="data-title">
-                <td>meta</td>
-            </tr>
-            <tr class="data-description">
-                <td>
-                    the title, keywords and description meta information
-                </td>
-            </tr>
+                <tr class="data-title">
+                    <td>meta</td>
+                </tr>
+                <tr class="data-description">
+                    <td>
+                        the title, keywords and description meta information
+                    </td>
+                </tr>
 
-            <tr class="data-title">
-                <td>robots</td>
-            </tr>
-            <tr class="data-description">
-                <td>
-                    the meta robots for then page's head section<br />
-                    this may inherit its value from the parent node
-                </td>
-            </tr>
+                <tr class="data-title">
+                    <td>robots</td>
+                </tr>
+                <tr class="data-description">
+                    <td>
+                        the meta robots for then page's head section<br />
+                        this may inherit its value from the parent node
+                    </td>
+                </tr>
 
-            <tr class="data-title">
-                <td>permissions</td>
-            </tr>
-            <tr class="data-description">
-                <td>
-                    the role permissions that will be able to reach this node<br />
-                    this may inherit its value from the parent node
-                </td>
-            </tr>
+                <tr class="data-title">
+                    <td>permissions</td>
+                </tr>
+                <tr class="data-description">
+                    <td>
+                        the role permissions that will be able to reach this node<br />
+                        this may inherit its value from the parent node
+                    </td>
+                </tr>
 
-            <tr class="data-title">
-                <td>ssl</td>
-            </tr>
-            <tr class="data-description">
-                <td>
-                    indicates whether this node should be under https or not<br />
-                    this may inherit its value from the parent node
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+                <tr class="data-title">
+                    <td>ssl</td>
+                </tr>
+                <tr class="data-description">
+                    <td>
+                        indicates whether this node should be under https or not<br />
+                        this may inherit its value from the parent node
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</dcs-container>
 
-<h4 data-spy-title="data" data-spy-level="4">admin &raquo; content &raquo; data</h4>
-<p>
-    The lists are defined on your site config to provide fluent lists of data.<br />
-    Then you may link list items to your nodes or layouts through data-container controls.
-</p>
+<dcs-container title="admin &raquo; content &raquo; data" title-level="4" spy-title="data" spy-level="4">
+    <p>
+        The lists are defined on your site config to provide fluent lists of data.<br />
+        Then you may link list items to your nodes or layouts through data-container controls.
+    </p>
+</dcs-container>
 
-<h4 data-spy-title="texts" data-spy-level="4">admin &raquo; content &raquo; texts</h4>
-<p>
-    This section holds the text resources for the front end site.<br />
-    The text entries may be grouped so that they can be fetched together per any section needed.
-</p>
+<dcs-container title="admin &raquo; content &raquo; texts" title-level="4" spy-title="texts" spy-level="4">
+    <p>
+        This section holds the text resources for the front end site.<br />
+        The text entries may be grouped so that they can be fetched together per any section needed.
+    </p>
+</dcs-container>
 
-<h4 data-spy-title="files" data-spy-level="4">admin &raquo; content &raquo; files</h4>
-<p>
-    Typically, a file manager for you to upload any files to be used by your site.<br />
-    The files are uploaded in a "files/{group}/" folder on the root path of the application, grouped by file group folders with "public/" as the default.<br />
-    This way, you may separate the content files of your site than other uploaded files.
-</p>
+<dcs-container title="admin &raquo; content &raquo; files" title-level="4" spy-title="files" spy-level="4">
+    <p>
+        Typically, a file manager for you to upload any files to be used by your site.<br />
+        The files are uploaded in a "files/{group}/" folder on the root path of the application, grouped by file group folders with "public/" as the default.<br />
+        This way, you may separate the content files of your site than other uploaded files.
+    </p>
+</dcs-container>

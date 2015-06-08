@@ -16,7 +16,7 @@
                     spyTitle: '@',
                     spyLevel: '@'
                 },
-                template: '<div><span class="h{{titleLevel}}">{{title}}</span><div ng-transclude></div></div>',
+                template: '<div><span ng-show="title" class="h{{titleLevel}}">{{title}}</span><div ng-transclude></div></div>',
                 link: function (scope, element, attrs) {
                     element.addClass('dcs-container');
 

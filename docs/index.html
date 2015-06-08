@@ -66,9 +66,18 @@
                     <div ng-include="'partials/modules.html'"></div>
                 </dcs-container>
 
-                <div class="scroll-spy-section" ng-include="'partials/site.html'"></div>
-                <div class="scroll-spy-section" ng-include="'partials/admin.html'"></div>
-                <div class="scroll-spy-section" ng-include="'partials/defaults.html'"></div>
+                <dcs-container class="scroll-spy-section" title="site" title-level="2" spy-title="site" spy-level="1">
+                    <div ng-include="'partials/site.html'"></div>
+                </dcs-container>
+
+                <dcs-container class="scroll-spy-section" title="admin" title-level="2" spy-title="admin" spy-level="1">
+                    <div ng-include="'partials/admin.html'"></div>
+                </dcs-container>
+
+                <dcs-container class="scroll-spy-section" title="defaults" title-level="2" spy-title="defaults" spy-level="1">
+                    <div ng-include="'partials/defaults.html'"></div>
+                </dcs-container>
+
                 <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
             </div>
             <div class="col-md-3" role="complementary">
