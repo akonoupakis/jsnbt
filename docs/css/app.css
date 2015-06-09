@@ -1,6 +1,17 @@
 ﻿body {
 
 }
+
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+pre {
+    background-color: #FFFFFF;
+}
+
 .bs-docs-sidebar.affix {
     top: 120px;
 }
@@ -49,27 +60,11 @@
     padding-left: 49px !important;
 }
 
-
-.scroll-spy-section {
+#scroll-spy-container {
+    padding-bottom:200px;
+}
+#scroll-spy-container > .dcs-container {
     padding-bottom:20px;
-}
-
-.data-structure {
-
-}
-
-.data-structure .data-title > td {
-    background-color: #f5f5f5;
-}
-
-.data-structure .data-description > td,
-.data-structure .data-sample > td {
-    font-style: italic;
-    font-size: 0.8875em;
-}
-
-.data-sample span.code {
-    white-space: pre;
 }
 
 
@@ -78,8 +73,16 @@
     margin-bottom: 0px;
 }
 
-h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
-    display: block;
-    margin-top: 20px;
-    margin-bottom: 10px;
+.dcs-definition .dcs-definition-title > td {
+    background-color: #f5f5f5;
+}
+
+.dcs-definition .dcs-definition-desc > td,
+.dcs-definition .dcs-definition-sample > td {
+    font-style: italic;
+    font-size: 0.8875em;
+}
+
+.dcs-definition .dcs-definition-sample span.code {
+    white-space: pre;
 }

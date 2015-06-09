@@ -56,7 +56,7 @@
                  transclude: true,
                  scope: {
                  },
-                 template: '<div class="panel panel-default"><table class="table table-bordered table-condensed data-structure"><tbody ng-transclude></tbody></table></div>',
+                 template: '<div class="panel panel-default"><table class="table table-bordered table-condensed"><tbody ng-transclude></tbody></table></div>',
                  link: function (scope, element, attrs) {
                      element.addClass('dcs-definition');
 
@@ -72,7 +72,7 @@
                  scope: {
                      type: '@'
                  },
-                 template: '<tr class="data-title"><td width="50%" ng-transclude></td><td width="50%">{{type}}</td></tr>',
+                 template: '<tr><td width="50%" ng-transclude></td><td ng-show="type" width="50%">{{type}}</td></tr>',
                  link: function (scope, element, attrs) {
                      element.addClass('dcs-definition-title');
 
@@ -87,7 +87,7 @@
                 transclude: true,
                 scope: {
                 },
-                template: '<tr class="data-description"><td colspan="2" ng-transclude></td></tr>',
+                template: '<tr><td colspan="2" ng-transclude></td></tr>',
                 link: function (scope, element, attrs) {
                     element.addClass('dcs-definition-desc');
 
@@ -102,11 +102,25 @@
                 transclude: true,
                 scope: {
                 },
-                template: '<tr class="data-sample"><td colspan="2"><span class="code" ng-transclude></span></td></tr>',
+                template: '<tr><td colspan="2"><pre class="code" ng-transclude></pre></td></tr>',
                 link: function (scope, element, attrs) {
                     element.addClass('dcs-definition-sample');
+                    element.html(element.html());
+                    //console.log('link', element.html(), ':');
+                    //console.log(1, element, attrs);
 
-                }
+                }//,
+                //compile: function (tElem, tAttrs) {
+                //    console.log(name + ': compile');
+                //    return {
+                //        pre: function (scope, iElem, iAttrs) {
+                //            console.log('pre', iElem, iAttrs, iElem.html(), ': pre link');
+                //        },
+                //        post: function (scope, iElem, iAttrs) {
+                //            console.log('post', iElem, iAttrs, iElem.html(), ': post link');
+                //        }
+                //    }
+                //}
             };
         })
         .config(function () {

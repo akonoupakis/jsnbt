@@ -23,132 +23,73 @@
     </p>
     <p>Depending on the node entity, you might have extra or less input controls, but here's a few that matter:</p>
 
-    <div class="panel panel-default">
-        <table class="table table-bordered table-condensed data-structure">
-            <tbody>
-                <tr class="data-title">
-                    <td>name</td>
-                </tr>
-                <tr class="data-description">
-                    <td>
-                        the name identifier for use in the admin
-                    </td>
-                </tr>
+    <dcs-definition>
+        <dcs-definition-title>name</dcs-definition-title>
+        <dcs-definition-desc>the name identifier for use in the admin</dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>parent</td>
-                </tr>
-                <tr class="data-description">
-                    <td>
-                        this is the parent of the node. if blank, root is meant as the parent
-                    </td>
-                </tr>
+        <dcs-definition-title>parent</dcs-definition-title>
+        <dcs-definition-desc>this is the parent of the node. if blank, root is meant as the parent</dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>type</td>
-                </tr>
-                <tr class="data-description">
-                    <td>
-                        the entity type <br />
-                        in the central node form, if extension modules are installed, you may define a node as a pointer to another node in another module.<br />
-                        in other module node forms, you may see different options as entities in this select box
-                    </td>
-                </tr>
+        <dcs-definition-title>type</dcs-definition-title>
+        <dcs-definition-desc>
+            the entity type <br />
+            in the central node form, if extension modules are installed, you may define a node as a pointer to another node in another module.<br />
+            in other module node forms, you may see different options as entities in this select box
+        </dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>language</td>
-                </tr>
-                <tr class="data-description">
-                    <td>
-                        the current node language.
-                        <br />
-                        this is just for viewing to change the controls to another language for editing
-                    </td>
-                </tr>
+        <dcs-definition-title>language</dcs-definition-title>
+        <dcs-definition-desc>
+            the current node language.<br />
+            this is just for viewing to change the controls to another language for editing
+        </dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>url</td>
-                </tr>
-                <tr class="data-description">
-                    <td>
-                        the seo name for this node.
-                        <br />
-                        the final url of this node is computed with the seo names of the hierarchical nodes leading to this one, followed by this seo name
-                    </td>
-                </tr>
+        <dcs-definition-title>url</dcs-definition-title>
+        <dcs-definition-desc>
+            the seo name for this node.<br />
+            the final url of this node is computed with the seo names of the hierarchical nodes leading to this one, followed by this seo name
+        </dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>active</td>
-                </tr>
-                <tr class="data-description">
-                    <td>
-                        indicates whether this node is active per language<br />
-                        note that a node might be active for one language but not for another
-                    </td>
-                </tr>
+        <dcs-definition-title>active</dcs-definition-title>
+        <dcs-definition-desc>
+            indicates whether this node is active per language<br />
+            note that a node might be active for one language but not for another
+        </dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>layout</td>
-                </tr>
-                <tr class="data-description">
-                    <td>
-                        the selected layout for this node.<br />
-                        this may inherit its value from the parent node.<br />
-                        the layout identifier comes as meta content in your site's html source code, so that you can pick it up and use it to retrieve the layout data that accompany this node page
-                    </td>
-                </tr>
+        <dcs-definition-title>layout</dcs-definition-title>
+        <dcs-definition-desc>
+            the selected layout for this node.<br />
+            this may inherit its value from the parent node.<br />
+            the layout identifier comes as meta content in your site's html source code, so that you can pick it up and use it to retrieve the layout data that accompany this node page
+        </dcs-definition-desc>
+        
+        <dcs-definition-title>template</dcs-definition-title>
+        <dcs-definition-desc>
+            the selected template for this node.<br />
+            if the template is accompanied with a form file, it is used to extend the node content with extra input controls that appear below the template section
+        </dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>template</td>
-                </tr>
-                <tr class="data-description">
-                    <td>
-                        the selected template for this node.<br />
-                        if the template is accompanied with a form file, it is used to extend the node content with extra input controls that appear below the template section
-                    </td>
-                </tr>
+        <dcs-definition-title>meta</dcs-definition-title>
+        <dcs-definition-desc>the title, keywords and description meta information</dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>meta</td>
-                </tr>
-                <tr class="data-description">
-                    <td>
-                        the title, keywords and description meta information
-                    </td>
-                </tr>
+        <dcs-definition-title>robots</dcs-definition-title>
+        <dcs-definition-desc>
+            the meta robots for then page's head section<br />
+            this may inherit its value from the parent node
+        </dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>robots</td>
-                </tr>
-                <tr class="data-description">
-                    <td>
-                        the meta robots for then page's head section<br />
-                        this may inherit its value from the parent node
-                    </td>
-                </tr>
+        <dcs-definition-title>permissions</dcs-definition-title>
+        <dcs-definition-desc>
+            the role permissions that will be able to reach this node<br />
+            this may inherit its value from the parent node
+        </dcs-definition-desc>
 
-                <tr class="data-title">
-                    <td>permissions</td>
-                </tr>
-                <tr class="data-description">
-                    <td>
-                        the role permissions that will be able to reach this node<br />
-                        this may inherit its value from the parent node
-                    </td>
-                </tr>
+        <dcs-definition-title>ssl</dcs-definition-title>
+        <dcs-definition-desc>
+            indicates whether this node should be under https or not<br />
+            this may inherit its value from the parent node
+        </dcs-definition-desc>
+    </dcs-definition>
 
-                <tr class="data-title">
-                    <td>ssl</td>
-                </tr>
-                <tr class="data-description">
-                    <td>
-                        indicates whether this node should be under https or not<br />
-                        this may inherit its value from the parent node
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
 </dcs-container>
 
 <dcs-container title="admin &raquo; content &raquo; data" title-level="4" spy-title="data" spy-level="4">
