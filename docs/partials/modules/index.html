@@ -1,107 +1,43 @@
-﻿<p>
+﻿<dcs-intro>
     Each module uses an index entry point (typically the package.json main js file reference) to inject its functionality and parameterization to the jsnbt engine.
     <br />
     The index file is placed in the "src/app/" folder as all server side code blocks.
-</p>
-<p>The below are the specs needed in a module's index.js file:</p>
-<div class="panel panel-default">
-    <table class="table table-bordered table-condensed data-structure">
-        <tbody>
-            <tr class="data-title">
-                <td>init(application)</td>
-                <td>function</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    runs on application start
-                </td>
-            </tr>
+    <br /><br />
+    The below are the specs needed in a module's index.js file:
+</dcs-intro>
 
-            <tr class="data-title">
-                <td>getConfig()</td>
-                <td>function</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    returns the module's cofiguration as a json object
-                </td>
-            </tr>
+<dcs-definition>
+    <dcs-definition-title type="function">init(application)</dcs-definition-title>
+    <dcs-definition-desc>runs on application start</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>getVersion()</td>
-                <td>function</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    returns the module's current version
-                </td>
-            </tr>
+    <dcs-definition-title type="function">getConfig()</dcs-definition-title>
+    <dcs-definition-desc>returns the module's cofiguration as a json object</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>getBower()</td>
-                <td>function</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    returns the module's bower cofiguration as a json object
-                </td>
-            </tr>
+    <dcs-definition-title type="function">getVersion()</dcs-definition-title>
+    <dcs-definition-desc>returns the module's current version</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>route(server, ctx, next)</td>
-                <td>function</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    could intercept the routing process here, or trigger the next router
-                </td>
-            </tr>
+    <dcs-definition-title type="function">getBower()</dcs-definition-title>
+    <dcs-definition-desc>returns the module's bower cofiguration as a json object</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>view.preparse(server, ctx, preparsingContext, next)</td>
-                <td>function</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    could change the preparsingContext.model and the preparsingContext.tmpl before rendering
-                </td>
-            </tr>
+    <dcs-definition-title type="function">route(server, ctx, next)</dcs-definition-title>
+    <dcs-definition-desc>could intercept the routing process here, or trigger the next router</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>view.postparse(server, ctx, postparsingContext, next)</td>
-                <td>function</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    could change the postparsingContext.html upon render
-                </td>
-            </tr>
+    <dcs-definition-title type="function">view.preparse(server, ctx, preparsingContext, next)</dcs-definition-title>
+    <dcs-definition-desc>could change the preparsingContext.model and the preparsingContext.tmpl before rendering</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>routePointer(server, ctx, next)</td>
-                <td>function</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    specify a custom pointer routing process
-                    the system invokes this method on a specific module if a pointer points to a node of the module
-                </td>
-            </tr>
+    <dcs-definition-title type="function">view.postparse(server, ctx, postparsingContext, next)</dcs-definition-title>
+    <dcs-definition-desc>could change the postparsingContext.html upon render</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>routeApi(server, ctx, serviceName, fnName, fields, files, next)</td>
-                <td>function</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    targets modules that expose a jsnbt api under /jsnbt-api/{domain}/{serviceName}/{fnName}/ for the module's domain
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <div class="panel-body">
-        <p>sample:</p>
-        <pre>var app = null;
+    <dcs-definition-title type="function">routePointer(server, ctx, next)</dcs-definition-title>
+    <dcs-definition-desc>
+        specify a custom pointer routing process<br />
+        the system invokes this method on a specific module if a pointer points to a node of the module
+    </dcs-definition-desc>
+
+    <dcs-definition-title type="function">routeApi(server, ctx, serviceName, fnName, fields, files, next)</dcs-definition-title>
+    <dcs-definition-desc>targets modules that expose a jsnbt api under /jsnbt-api/{domain}/{serviceName}/{fnName}/ for the module's domain</dcs-definition-desc>
+
+    <dcs-definition-sample>var app = null;
 
 module.exports = {
 
@@ -148,6 +84,5 @@ module.exports = {
 
     }
 
-};</pre>
-    </div>
-</div>
+};</dcs-definition-sample>
+</dcs-definition>
