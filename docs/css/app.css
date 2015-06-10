@@ -8,10 +8,6 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
     margin-bottom: 10px;
 }
 
-pre {
-    background-color: #FFFFFF;
-}
-
 .bs-docs-sidebar.affix {
     top: 120px;
 }
@@ -83,6 +79,6 @@ pre {
     font-size: 0.8875em;
 }
 
-.dcs-definition .dcs-definition-sample span.code {
-    white-space: pre;
+.dcs-definition-sample pre.code {
+    background-color: #FFFFFF;
 }

@@ -106,21 +106,8 @@
                 link: function (scope, element, attrs) {
                     element.addClass('dcs-definition-sample');
                     element.html(element.html());
-                    //console.log('link', element.html(), ':');
-                    //console.log(1, element, attrs);
 
-                }//,
-                //compile: function (tElem, tAttrs) {
-                //    console.log(name + ': compile');
-                //    return {
-                //        pre: function (scope, iElem, iAttrs) {
-                //            console.log('pre', iElem, iAttrs, iElem.html(), ': pre link');
-                //        },
-                //        post: function (scope, iElem, iAttrs) {
-                //            console.log('post', iElem, iAttrs, iElem.html(), ': post link');
-                //        }
-                //    }
-                //}
+                }
             };
         })
         .config(function () {
