@@ -64,6 +64,12 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
 }
 
 
+pre.code {    
+    margin: 0px;
+    white-space: pre-wrap;
+}
+
+
 .dcs-definition {
     margin-top:20px;
     margin-bottom: 0px;
@@ -77,8 +83,4 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
 .dcs-definition .dcs-definition-sample > td {
     font-style: italic;
     font-size: 0.8875em;
-}
-
-.dcs-definition-sample pre.code {
-    background-color: #FFFFFF;
 }

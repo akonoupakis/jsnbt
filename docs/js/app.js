@@ -101,10 +101,71 @@
                 replace: true,
                 transclude: true,
                 scope: {
+                    
                 },
                 template: '<tr><td colspan="2"><pre class="code" ng-transclude></pre></td></tr>',
                 link: function (scope, element, attrs) {
                     element.addClass('dcs-definition-sample');
+                    element.html(element.html());
+
+                }
+            };
+        })
+        .directive('dcsDefinitionQuote', function () {
+
+            return {
+                restrict: 'E',
+                replace: true,
+                transclude: true,
+                scope: {
+
+                },
+                template: '<tr><td colspan="2"><pre class="code" ng-transclude></pre></td></tr>',
+                link: function (scope, element, attrs) {
+                    element.addClass('dcs-definition-quote');
+                    element.html(element.html());
+
+                }
+            };
+        })
+        .directive('dcsDefinitionCode', function () {
+
+            return {
+                restrict: 'E',
+                replace: true,
+                transclude: true,
+                scope: {
+                    title: '@',
+                    type: '@'
+                },
+                template: '<tr><td colspan="2"><pre class="code" ng-transclude></pre></td></tr>',
+                link: function (scope, element, attrs) {
+                    element.addClass('dcs-definition-code');
+
+                    if (scope.type)
+                        element.find('pre').addClass('code-' + scope.type);
+
+                    element.html(element.html());
+
+                }
+            };
+        })
+        .directive('dcsCode', function () {
+
+            return {
+                restrict: 'E',
+                replace: true,
+                transclude: true,
+                scope: {
+                    type: '@'
+                },
+                template: '<pre class="code" ng-transclude></pre>',
+                link: function (scope, element, attrs) {
+                    element.addClass('dcs-code');
+
+                    if (scope.type)
+                        element.find('pre').addClass('code-' + scope.type);
+
                     element.html(element.html());
 
                 }
