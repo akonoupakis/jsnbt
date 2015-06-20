@@ -26,7 +26,7 @@
 
 	MongoDB : https://www.mongodb.org/downloads
 	
-	GraphicsMagick : http://www.graphicsmagick.org/download.html
+	ImageMagick : http://www.imagemagick.org/script/download.php
 
 	PhantomJs: http://phantomjs.org/download.html
 
