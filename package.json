@@ -57,7 +57,7 @@
     "moment": "2.6.0",
     "mustache": "2.0.0",
     "parseUri": "1.2.3-2",
-    "server-root": "*",
+    "server-root": "0.0.5",
     "underscore": "1.6.0",
     "underscore.string": "2.3.3"
   },

@@ -31,23 +31,6 @@
                 }
             };
         })
-        .directive('dcsIntro', function () {
-
-             return {
-                 restrict: 'E',
-                 replace: true,
-                 transclude: true,
-                 scope: {
-                 },
-                 template: '<p ng-transclude></p>',
-                 link: function (scope, element, attrs) {
-                     element.addClass('dcs-intro');
-
-                     if (!scope.dcsSpyLevel)
-                         scope.dcsSpyLevel = 1;
-                 }
-             };
-        })
          .directive('dcsDefinition', function () {
 
              return {
