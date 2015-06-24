@@ -18,7 +18,7 @@
     "ngInfiniteScroll": "1.1.2",
     "ng-flow": "2.5.1",
     "tinymce": "4.0.0",
-    "angular-ui-tinymce": "0.0.5",
+    "angular-ui-tinymce": "0.0.9",
     "cropper": "0.7.9"
   },
   "deploy": {
@@ -299,7 +299,7 @@
     "angular-ui-tinymce": {
       "files": [
         {
-          "src": "angular-ui-tinymce-0.0.5/src/tinymce.js",
+          "src": "angular-ui-tinymce-0.0.9/src/tinymce.js",
           "dest": [
             "admin/js/core/lib/tinymce/b-angular-ui-tinymce.js"
           ]

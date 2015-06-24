@@ -15,7 +15,7 @@ var errors = {
 };
 
 var ErrorRenderer = function (server, ctx, error, stack) {
-
+    
     var tmplPath = '../' + server.app.directory + '/public/error/';
     if (ctx.uri.first === 'admin')
         tmplPath = '../' + server.app.directory + '/public/admin/error/';
@@ -39,7 +39,7 @@ var ErrorRenderer = function (server, ctx, error, stack) {
     }
 
     ctx.res.writeHead(error, { "Content-Type": "text/html" });
-
+    
     var text = null;
     if (errors[error])
         text = errors[error];
@@ -50,7 +50,7 @@ var ErrorRenderer = function (server, ctx, error, stack) {
         ctx.meta.title = server.app.title + (server.app.title ? ' | ' : '') + ctx.meta.title;
 
     ctx.halt = true;
-
+    
     require('./html.js')(server).parse(ctx, errorContent, {
         error: error,
         text: text,
