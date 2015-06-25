@@ -1,0 +1,86 @@
+﻿body {
+
+}
+
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.bs-docs-sidebar.affix {
+    top: 120px;
+}
+
+.bs-docs-sidebar .nav > li.level1 > a {
+    padding-left: 20px !important;
+}
+.bs-docs-sidebar .nav > li.level1.active > a,
+.bs-docs-sidebar .nav > li.level1.active > a:hover {
+    padding-left: 18px !important;
+}
+.bs-docs-sidebar .nav > li.level1 > a:hover {
+    padding-left: 19px !important;
+}
+
+.bs-docs-sidebar .nav > li.level2 > a {
+    padding-left: 30px !important;
+}
+.bs-docs-sidebar .nav > li.level2.active > a,
+.bs-docs-sidebar .nav > li.level2.active > a:hover {
+    padding-left: 28px !important;
+}
+.bs-docs-sidebar .nav > li.level2 > a:hover {
+    padding-left: 29px !important;
+}
+
+.bs-docs-sidebar .nav > li.level3 > a {
+    padding-left: 40px !important;
+}
+.bs-docs-sidebar .nav > li.level3.active > a,
+.bs-docs-sidebar .nav > li.level3.active > a:hover {
+    padding-left: 38px !important;
+}
+.bs-docs-sidebar .nav > li.level3 > a:hover {
+    padding-left: 39px !important;
+}
+
+.bs-docs-sidebar .nav > li.level4 > a {
+    padding-left: 50px !important;
+}
+.bs-docs-sidebar .nav > li.level4.active > a,
+.bs-docs-sidebar .nav > li.level4.active > a:hover {
+    padding-left: 48px !important;
+}
+.bs-docs-sidebar .nav > li.level4 > a:hover {
+    padding-left: 49px !important;
+}
+
+#scroll-spy-container {
+    padding-bottom:200px;
+}
+#scroll-spy-container > .dcs-container {
+    padding-bottom:20px;
+}
+
+
+pre.code {    
+    margin: 0px;
+    white-space: pre-wrap;
+}
+
+
+.dcs-definition {
+    margin-top:20px;
+    margin-bottom: 0px;
+}
+
+.dcs-definition .dcs-definition-title > td {
+    background-color: #f5f5f5;
+}
+
+.dcs-definition .dcs-definition-desc > td,
+.dcs-definition .dcs-definition-sample > td {
+    font-style: italic;
+    font-size: 0.8875em;
+}

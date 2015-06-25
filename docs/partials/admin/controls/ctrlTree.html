@@ -1,42 +1,18 @@
-﻿<div class="panel panel-default">
-    <table class="table table-bordered table-condensed data-structure">
-        <tbody>
-            <tr class="data-title">
-                <td>ngModel</td>
-                <td>object</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    the model to be bound to the control<br />
-                    this object must have the results set along with a more() function that when triggered returns the next results page<br />
-                    this sort of function is provided by the PagedDataService that will be covered in next chapters
-                </td>
-            </tr>
+﻿<dcs-definition>
+    <dcs-definition-title type="object">ngModel</dcs-definition-title>
+    <dcs-definition-desc>
+        the model to be bound to the control<br />
+        this object must have the results set along with a more() function that when triggered returns the next results page<br />
+        this sort of function is provided by the PagedDataService that will be covered in next chapters
+    </dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>ngDomain</td>
-                <td>text</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    the target domain to retrieve nodes for
-                </td>
-            </tr>
+    <dcs-definition-title type="text">ngDomain</dcs-definition-title>
+    <dcs-definition-desc>the target domain to retrieve nodes for</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>ngFn</td>
-                <td>object</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    an object with functions to be used internally in the control
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <div class="panel-body">
-        <p>usage:</p>
-        <pre>(function () {
+    <dcs-definition-title type="object">ngFn</dcs-definition-title>
+    <dcs-definition-desc>an object with functions to be used internally in the control</dcs-definition-desc>
+
+    <dcs-definition-sample>(function () {
     angular.module("jsnbt")
         .controller('AppController', function ($scope) {
 
@@ -67,22 +43,22 @@
                 }
             };
         });
-})();</pre>
-        <pre ng-non-bindable>&lt;ctrl-tree ng-model="nodes[0].children" ng-domain="domain" ng-fn="treeFn"&gt;
+})();</dcs-definition-sample>
+
+    <dcs-definition-sample>&lt;ctrl-tree ng-model="nodes[0].children" ng-domain="domain" ng-fn="treeFn"&gt;
     &lt;ctrl-tree-node&gt;
         &lt;ctrl-tree-node-content&gt;{{ node.name }}&lt;/ctrl-tree-node-content&gt;
         &lt;ctrl-tree-node-buttons&gt;
-            &lt;button title="open" class="btn btn-link" 
+            &lt;button title="open" class="btn btn-link"
                 ng-show="fn.canOpen(node)" ng-click="fn.open(node)"&gt;open&lt;/button&gt;
-            &lt;button title="create child" class="btn btn-default btn-sm glyphicon glyphicon-plus-sign" 
+            &lt;button title="create child" class="btn btn-default btn-sm glyphicon glyphicon-plus-sign"
                 ng-disabled="!fn.canCreate(node)" ng-click="fn.create(node)"&gt;&lt;/button&gt;
-            &lt;button title="edit" class="btn btn-default btn-sm glyphicon glyphicon-edit" 
+            &lt;button title="edit" class="btn btn-default btn-sm glyphicon glyphicon-edit"
                 ng-disabled="!fn.canEdit(node)" ng-click="fn.edit(node)"&gt;&lt;/button&gt;
-            &lt;button title="delete" class="btn btn-default btn-sm glyphicon glyphicon-remove" 
+            &lt;button title="delete" class="btn btn-default btn-sm glyphicon glyphicon-remove"
                 ng-disabled="!fn.canDelete(node)" ng-click="fn.delete(node)"&gt;&lt;/button&gt;
         &lt;/ctrl-tree-node-buttons&gt;
     &lt;/ctrl-tree-node&gt;
 &lt;/ctrl-tree&gt;
-&lt;ctrl-tree-empty ng-model="nodes[0].children" ng-domain="domain"&gt;no nodes&lt;/ctrl-tree-empty&gt;</pre>
-    </div>
-</div>
+&lt;ctrl-tree-empty ng-model="nodes[0].children" ng-domain="domain"&gt;no nodes&lt;/ctrl-tree-empty&gt;</dcs-definition-sample>
+</dcs-definition>

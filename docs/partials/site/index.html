@@ -1,0 +1,13 @@
+﻿<dcs-definition>
+    <dcs-definition-title type="string">domain</dcs-definition-title>
+    <dcs-definition-desc>the domain identifier; for the site module it should be set to "public"</dcs-definition-desc>
+
+    <dcs-definition-title type="bool">public</dcs-definition-title>
+    <dcs-definition-desc>whether this module is the site module or not</dcs-definition-desc>
+
+    <dcs-definition-title type="function">routeCustom(server, ctx, next)</dcs-definition-title>
+    <dcs-definition-desc>the implementation of a specific config route injection</dcs-definition-desc>
+    <dcs-definition-sample>routeCustom: function (server, ctx, next) {
+    next();
+},</dcs-definition-sample>
+</dcs-definition>

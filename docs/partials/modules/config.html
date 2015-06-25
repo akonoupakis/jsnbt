@@ -3,177 +3,124 @@
     <br />
     This is just to separate the config from the functionality!
 </p>
+    
+<dcs-definition>
+    <dcs-definition-title type="string">domain</dcs-definition-title>
+    <dcs-definition-desc>the domain identifier for the module. this should be easy to identify, and if possible limited to one word for consistency</dcs-definition-desc>
 
-<div class="panel panel-default">
-    <table class="table table-bordered table-condensed data-structure">
-        <tbody>
-            <tr class="data-title">
-                <td>domain</td>
-                <td>string</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    the domain identifier for the module. this should be easy to identify, and if possible limited to one word for consistency
-                </td>
-            </tr>
+    <dcs-definition-title type="bool">browsable</dcs-definition-title>
+    <dcs-definition-desc>indicates whether this module is to be shown in the admin modules list</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>browsable</td>
-                <td>bool</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    indicates whether this module is to be shown in the admin modules list
-                </td>
-            </tr>
+    <dcs-definition-title type="bool">pointed</dcs-definition-title>
+    <dcs-definition-desc>indicates whether if the content of this module can be linked to a pointer node</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>pointed</td>
-                <td>bool</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    indicates whether if the content of this module can be linked to a pointer node
-                </td>
-            </tr>
+    <dcs-definition-title type="string">version</dcs-definition-title>
+    <dcs-definition-desc>returns the module version</dcs-definition-desc>
+    <dcs-definition-sample>version: require('../../package.json').version</dcs-definition-sample>
 
-            <tr class="data-title">
-                <td>version</td>
-                <td>string</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    returns the module version
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <pre>version: require('../../package.json').version</pre>
-                </td>
-            </tr>
+    <dcs-definition-title type="string">jsModule</dcs-definition-title>
+    <dcs-definition-desc>the js angular module to be injected in the admin angular module configuration</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>jsModule</td>
-                <td>string</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    the js angular module to be injected in the admin angular module configuration
-                </td>
-            </tr>
-
-            <tr class="data-title">
-                <td>entities</td>
-                <td>array of objects</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    entity type injections for the data in the "nodes" collection
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <pre>entities: [{
+    <dcs-definition-title type="array">entities</dcs-definition-title>
+    <dcs-definition-desc>entity type injections for the data in the "nodes" collection</dcs-definition-desc>
+    <dcs-definition-sample>entities: [{
     name: 'item'
 }, {
     name: 'folder',
     allowed: ['folder', 'item']
-}]</pre>
-                </td>
-            </tr>
-      
-            <tr class="data-title">
-                <td>roles</td>
-                <td>array of objects</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    custom roles that might be needed by the module
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <pre>roles: [{
+}]</dcs-definition-sample>
+
+    <dcs-definition-title type="array">roles</dcs-definition-title>
+    <dcs-definition-desc>custom roles that might be needed by the module</dcs-definition-desc>
+    <dcs-definition-sample>roles: [{
     name: 'module-role'
 }, {
     name: 'module-super-role',
     inherits: ['module-role']
-}]</pre>
-                </td>
-            </tr>
-     
-            <tr class="data-title">
-                <td>sections</td>
-                <td>array of objects</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    custom sections that are used by the module's pages, along with their role access lists
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <pre>sections: [{
+}]</dcs-definition-sample>
+
+    <dcs-definition-title type="array">sections</dcs-definition-title>
+    <dcs-definition-desc>custom sections that are used by the module's pages, along with their role access lists</dcs-definition-desc>
+    <dcs-definition-sample>sections: [{
     name: 'module-section',
     roles: ['module-role']
 }, {
     name: 'module-super-section',
     roles: ['module-super-role']
-}]</pre>
-                </td>
-            </tr>
+}]</dcs-definition-sample>
 
-            <tr class="data-title">
-                <td>permissions</td>
-                <td>array of objects</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    custom permissions for the dpd resources
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <pre>permissions: [{
-    collection: 'custom-collection',
-    roles: [{
-        role: 'module-role',
-        crud: ['R']
-    }, {
-        role: 'module-super-role',
-        crud: ['C, 'R', 'U', 'D']
-    }]
-}]</pre>
-                </td>
-            </tr>
+    <dcs-definition-title type="array">collections</dcs-definition-title>
+    <dcs-definition-desc>
+        data collections along with their restrictions, events and schema validations
 
-            <tr class="data-title">
-                <td>fileGroups</td>
-                <td>array of strings</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    file groups for the file manager
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <pre>fileGroups: ['users', 'stores']</pre>
-                </td>
-            </tr>
+        <dcs-definition>
+            <dcs-definition-title type="string">name</dcs-definition-title>
+            <dcs-definition-desc>the name identifier of the collection</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>images</td>
-                <td>array of objects</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    custom image type cropping and sizing specifications
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <pre>images: [{
+            <dcs-definition-title type="object">schema</dcs-definition-title>
+            <dcs-definition-desc>the validation schema of the collection</dcs-definition-desc>
+            <dcs-definition-sample>{
+    "type": "object",
+    "properties": {
+        "timestamp": {
+            "type": "number",
+            "required": true
+        },
+        "user": {
+            "type": "string",
+            "required": true
+        },
+		"action": {
+            "type": "string",
+            "required": true,
+			"enum": ["create", "read", "update", "delete"]
+        },
+		"collection": {
+            "type": "string",
+            "required": true
+        }
+    }
+}</dcs-definition-sample>
+
+            <dcs-definition-title type="array">permissions</dcs-definition-title>
+            <dcs-definition-desc>the role permissions for the collection (if false, no permissions are processed)</dcs-definition-desc>
+            <dcs-definition-sample>[{
+    "role": "public",
+    "crud": ["R"]
+}, {
+    "role": "admin",
+    "crud": ["C", "R", "U", "D"]
+}]</dcs-definition-sample>
+
+            <dcs-definition-title type="bool">logging</dcs-definition-title>
+            <dcs-definition-desc>whether the crud actions on the collection should be logged or not</dcs-definition-desc>
+
+            <dcs-definition-title type="bool">users</dcs-definition-title>
+            <dcs-definition-desc>whether if the collection is a users collection</dcs-definition-desc>
+
+            <dcs-definition-title type="function">getEvents()</dcs-definition-title>
+            <dcs-definition-desc>returns an object with the collection event file data</dcs-definition-desc>
+            <dcs-definition-sample>getEvents: function () {
+        return {
+            validate: fs.readFileSync(__dirname + "/collections/languages/events/validate.js", "utf8"),
+            get: fs.readFileSync(__dirname + "/collections/languages/events/get.js", "utf8"),
+            post: fs.readFileSync(__dirname + "/collections/languages/events/post.js", "utf8"),
+            put: fs.readFileSync(__dirname + "/collections/languages/events/put.js", "utf8"),
+            delete: fs.readFileSync(__dirname + "/collections/languages/events/delete.js", "utf8")
+        }
+    }</dcs-definition-sample>
+
+        </dcs-definition>
+    </dcs-definition-desc>
+    
+
+    <dcs-definition-title type="array">fileGroups</dcs-definition-title>
+    <dcs-definition-desc>file groups for the file manager</dcs-definition-desc>
+    <dcs-definition-sample>fileGroups: ['users', 'stores']</dcs-definition-sample>
+
+    <dcs-definition-title type="array">images</dcs-definition-title>
+    <dcs-definition-desc>custom image type cropping and sizing specifications</dcs-definition-desc>
+    <dcs-definition-sample>images: [{
     name: 'thumb',
     processors: [{
         type: 'crop',
@@ -196,39 +143,17 @@
             height: 60
         }
     }]
-}]</pre>
-                </td>
-            </tr>
+}]</dcs-definition-sample>
 
-            <tr class="data-title">
-                <td>scripts</td>
-                <td>array of strings</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    a collection of js script urls to be included in the admin pages
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <pre>scripts: [
+    <dcs-definition-title type="array">scripts</dcs-definition-title>
+    <dcs-definition-desc>a collection of js script urls to be included in the admin pages</dcs-definition-desc>
+    <dcs-definition-sample>scripts: [
     'http://maps.google.com/maps/api/js?sensor=true'
-]</pre>
-                </td>
-            </tr>
+]</dcs-definition-sample>
 
-            <tr class="data-title">
-                <td>lists</td>
-                <td>array of objects</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    custom data lists along with their role permissions
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <pre>lists: [{
+    <dcs-definition-title type="array">lists</dcs-definition-title>
+    <dcs-definition-desc>custom data lists along with their role permissions</dcs-definition-desc>
+    <dcs-definition-sample>lists: [{
     id: 'sample1',
     name: 'Sample 01',
     form: 'tmpl/customModule/sample1.html',
@@ -240,9 +165,5 @@
         role: 'module-super-role',
         crud: ['C', 'R', 'U', 'D']
     }]
-}]</pre>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+}]</dcs-definition-sample>
+</dcs-definition>

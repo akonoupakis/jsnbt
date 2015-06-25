@@ -1,628 +1,628 @@
-﻿<div data-spy-title="database" data-spy-level="1">
-    <h2>
-        database
-    </h2>
-    <div>
-        <h4 data-spy-title="languages" data-spy-level="2">database &raquo; languages</h4>
+﻿<dcs-container title="database &raquo; languages" title-level="3" spy-title="languages" spy-level="2">
+    <p>
+        The languages data collection holds the site languages of the target site.<br />
+        This collection is used only when the site is configured to be multilingual.
+    </p>
 
-        <p>
-            The languages data collection holds the site languages of the target site.
-            <br />
-            This collection is used only when the site is configured to be multilingual.
-        </p>
+    <dcs-definition>
+        <dcs-definition-title type="objectId">_id</dcs-definition-title>
+        <dcs-definition-desc>the language identifier</dcs-definition-desc>
 
-        <div class="panel panel-default">
-            <table class="table table-bordered table-condensed data-structure">
-                <tbody>
-                    <tr class="data-title">
-                        <td>_id</td>
-                        <td>objectId</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the language identifier
-                        </td>
-                    </tr>
+        <dcs-definition-title type="string">code</dcs-definition-title>
+        <dcs-definition-desc>the two letter ISO code of the language</dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>code</td>
-                        <td>string</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the two letter ISO code of the language
-                        </td>
-                    </tr>
+        <dcs-definition-title type="string">name</dcs-definition-title>
+        <dcs-definition-desc>the display name (most commonly used by the admin)</dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>name</td>
-                        <td>string</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the display name (most commonly used by the admin)
-                        </td>
-                    </tr>
+        <dcs-definition-title type="bool">active</dcs-definition-title>
+        <dcs-definition-desc>indicates whether this is an active language or not</dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>active</td>
-                        <td>bool</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            indicates whether this is an active language or not
-                        </td>
-                    </tr>
+        <dcs-definition-title type="bool">default</dcs-definition-title>
+        <dcs-definition-desc>indicates whether this is the default language or not (only one object in the collection should be marked as default)</dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>default</td>
-                        <td>bool</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            indicates whether this is the default language or not (only one object in the collection should be marked as default)
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <dcs-definition-code type="json" title="schema">{
+    "type": "object",
+    "properties": {
+        "code": {
+            "type": "string",
+            "required": true
+        },
+        "name": {
+            "type": "string",
+            "required": true
+        },
+        "active": {
+            "type": "boolean",
+            "required": true
+        },
+        "default": {
+            "type": "boolean",
+            "required": true
+        }
+    }
+}</dcs-definition-code>
+        <dcs-definition-code type="json" title="sample">{
+    "_id" : "f54436103e862b87",
+    "code" : "en",
+    "name" : "English",
+    "active" : true,
+    "default" : true
+}</dcs-definition-code>
+    </dcs-definition>
+</dcs-container>
 
-        <div class="panel panel-default">
-            <div class="panel-body data-sample">
-                <a href="samples/data/languages.json" target="_blank">click here</a> for a json sample
-            </div>
-        </div>
+<dcs-container title="database &raquo; nodes" title-level="3" spy-title="nodes" spy-level="2">
+    <p>
+        The nodes data collection holds all the cascaded objects, grouped by domain.<br />
+        Typically, the nodes are the cms pages, each if active creating a url address for the site.
+    </p>
 
-        <h4 data-spy-title="nodes" data-spy-level="2">database &raquo; nodes</h4>
+    <dcs-definition>
+        <dcs-definition-title type="objectId">_id</dcs-definition-title>
+        <dcs-definition-desc>the node identifier</dcs-definition-desc>
 
-        <p>
-            The nodes data collection holds all the cascaded objects, grouped by domain.
-            <br />
-            Typically, the nodes are the cms pages, each if active creating a url address for the site.
-        </p>
+        <dcs-definition-title type="string">name</dcs-definition-title>
+        <dcs-definition-desc>the display name (most commonly used by the admin)</dcs-definition-desc>
 
-        <div class="panel panel-default">
-            <table class="table table-bordered table-condensed data-structure">
-                <tbody>
-                    <tr class="data-title">
-                        <td>_id</td>
-                        <td>objectId</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the node identifier
-                        </td>
-                    </tr>
+        <dcs-definition-title type="string">domain</dcs-definition-title>
+        <dcs-definition-desc>the domain identifier, typically the module domain in order to group nodes together</dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>name</td>
-                        <td>string</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the display name (most commonly used by the admin)
-                        </td>
-                    </tr>
+        <dcs-definition-title type="string">entity</dcs-definition-title>
+        <dcs-definition-desc>a named entity name identifier, typically the type of the node</dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>domain</td>
-                        <td>string</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the domain identifier, typically the module domain in order to group nodes together
-                        </td>
-                    </tr>
+        <dcs-definition-title type="string">parent</dcs-definition-title>
+        <dcs-definition-desc>the parent node id (should be empty if the parent is the root)</dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>entity</td>
-                        <td>string</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            a named entity name identifier, typically the type of the node
-                        </td>
-                    </tr>
+        <dcs-definition-title type="timestamp">createdOn</dcs-definition-title>
+        <dcs-definition-desc>the timestamp that the node was created</dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>parent</td>
-                        <td>string</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the parent node id (should be empty if the parent is the root)
-                        </td>
-                    </tr>
+        <dcs-definition-title type="timestamp">modifiedOn</dcs-definition-title>
+        <dcs-definition-desc>the timestamp that the node was last modified</dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>createdOn</td>
-                        <td>timestamp</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the timestamp that the node was created
-                        </td>
-                    </tr>
+        <dcs-definition-title type="string">template</dcs-definition-title>
+        <dcs-definition-desc>the template path that will be used for rendering (does not apply to pointer nodes)</dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>modifiedOn</td>
-                        <td>timestamp</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the timestamp that the node was last modified
-                        </td>
-                    </tr>
+        <dcs-definition-title type="object">pointer</dcs-definition-title>
+        <dcs-definition-desc>
+            the pointee data (if the entity is set to "pointer")<br />
+            the object structure should be as { domain: "core", nodeId: "2655683b9307585e" }
+        </dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>template</td>
-                        <td>string</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the template path that will be used for rendering (does not apply to pointer nodes)
-                        </td>
-                    </tr>
+        <dcs-definition-title type="object">layout</dcs-definition-title>
+        <dcs-definition-desc>
+            the layout defined for this node<br />
+            the property value can be inherited from the parent node, thus the object structure should be as { inherits: false, value: "layoutKey" }
+        </dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>pointer</td>
-                        <td>object</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the pointee data (if the entity is set to "pointer")
-                            <br />
-                            the object structure should be as { domain: "core", nodeId: "2655683b9307585e" }
-                        </td>
-                    </tr>
+        <dcs-definition-title type="object">content</dcs-definition-title>
+        <dcs-definition-desc>
+            the content data of this node<br />
+            the object structure is free to structure as you wish, with optional localized values on a localization object as { localized: { en: { ... } } }
+        </dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>layout</td>
-                        <td>object</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the layout defined for this node
-                            <br />
-                            the property value can be inherited from the parent node, thus the object structure should be as { inherits: false, value: "layoutKey" }
-                        </td>
-                    </tr>
+        <dcs-definition-title type="object">seo</dcs-definition-title>
+        <dcs-definition-desc>
+            the seo names for each language<br />
+            the object structure should be a localized dictionary with the seo names for each language as in { en: 'about' }
+        </dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>content</td>
-                        <td>object</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the content data of this node
-                            <br />
-                            the object structure is free to structure as you wish, with optional localized values on a localization object as { localized: { en: { ... } } }
-                        </td>
-                    </tr>
+        <dcs-definition-title type="object">active</dcs-definition-title>
+        <dcs-definition-desc>
+            the active information for each language<br />
+            the object structure should be a localized dictionary with the active information for each language as in { en: true }
+        </dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>seo</td>
-                        <td>object</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the seo names for each language
-                            <br />
-                            the object structure should be a localized dictionary with the seo names for each language as in { en: 'about' }
-                        </td>
-                    </tr>
+        <dcs-definition-title type="object">secure</dcs-definition-title>
+        <dcs-definition-desc>
+            indicates whether the node should be under https or not<br />
+            the property value can be inherited from the parent node, thus the object structure should be as { inherits: false, value: true }
+        </dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>active</td>
-                        <td>object</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the active information for each language
-                            <br />
-                            the object structure should be a localized dictionary with the active information for each language as in { en: true }
-                        </td>
-                    </tr>
+        <dcs-definition-title type="object">meta</dcs-definition-title>
+        <dcs-definition-desc>
+            the meta information for each language<br />
+            the object structure should be a localized dictionary with the meta information for each language as in { en: { title: "", keywords: "", description: "" } }
+        </dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>secure</td>
-                        <td>object</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            indicates whether the node should be under https or not
-                            <br />
-                            the property value can be inherited from the parent node, thus the object structure should be as { inherits: false, value: true }
-                        </td>
-                    </tr>
+        <dcs-definition-title type="object">roles</dcs-definition-title>
+        <dcs-definition-desc>
+            the role restrictions<br />
+            the property value can be inherited from the parent node, thus the object structure should be as { inherits: false, value: ["admin"] }
+        </dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>meta</td>
-                        <td>object</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the meta information for each language
-                            <br />
-                            the object structure should be a localized dictionary with the meta information for each language as in { en: { title: "", keywords: "", description: "" } }
-                        </td>
-                    </tr>
+        <dcs-definition-title type="object">robots</dcs-definition-title>
+        <dcs-definition-desc>
+            the robot values<br />
+            the property value can be inherited from the parent node, thus the object structure should be as { inherits: false, value: ["index", "follow"] }
+        </dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>roles</td>
-                        <td>object</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the role restrictions
-                            <br />
-                            the property value can be inherited from the parent node, thus the object structure should be as { inherits: false, value: ["admin"] }
-                        </td>
-                    </tr>
+        <dcs-definition-title type="array">hierarchy</dcs-definition-title>
+        <dcs-definition-desc>
+            the cascade node ids tha lead to this node<br />
+            this property is auto calculated upon saving the node
+        </dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>robots</td>
-                        <td>object</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the robot values
-                            <br />
-                            the property value can be inherited from the parent node, thus the object structure should be as { inherits: false, value: ["index", "follow"] }
-                        </td>
-                    </tr>
+        <dcs-definition-title type="object">url</dcs-definition-title>
+        <dcs-definition-desc>
+            holds the localized full urls of this node<br />
+            this property is calculated upon retrieving the node and it is not included in the database object<br />
+            the object structure comes as a localized dictionary with the url for each language as in { en: "/en/about" }
+        </dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>hierarchy</td>
-                        <td>array</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the cascade node ids tha lead to this node
-                            <br />
-                            this property is auto calculated upon saving the node
-                        </td>
-                    </tr>
+        <dcs-definition-title type="object">enabled</dcs-definition-title>
+        <dcs-definition-desc>
+            holds the cascaded active information for this node<br />
+            this property is calculated upon retrieving the node and it is not included in the database object<br />
+            the object structure comes as a localized dictionary with the cascade active information for each language as in { en: true }
+        </dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>url</td>
-                        <td>object</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            holds the localized full urls of this node
-                            <br />
-                            this property is calculated upon retrieving the node and it is not included in the database object
-                            <br />
-                            the object structure comes as a localized dictionary with the url for each language as in { en: "/en/about" }
-                        </td>
-                    </tr>
+        <dcs-definition-code type="json" title="schema">{
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "required": false
+        },
+        "domain": {
+            "type": "string",
+            "required": true
+        },
+        "entity": {
+            "type": "string",
+            "required": true
+        },
+        "parent": {
+            "type": "string",
+            "required": false
+        },
+        "createdOn": {
+            "type": "number",
+            "required": true
+        },
+        "modifiedOn": {
+            "type": "number",
+            "required": true
+        },
+        "template": {
+            "type": "string",
+            "required": false
+        },
+        "pointer": {
+            "type": "object",
+            "required": false,
+            "properties": {
+                "domain": { "type": "string", "required": true },
+                "nodeId": { "type": "string", "required": true }
+            }
+        },
+        "route": {
+            "type": "string",
+            "required": false
+        },
+        "layout": {
+            "type": "object",
+            "required": false,
+            "properties": {
+                "inherits": { "type": "boolean", "required": true },
+                "value": { "type": "string", "required": true }
+            },
+            "inheritable": true
+        },
+        "content": {
+            "type": "object",
+            "required": true,
+            "properties": { }
+        },
+        "seo": {
+            "type": "object",
+            "required": true,
+            "properties": { }
+        },
+        "active": {
+            "type": "object",
+            "required": true,
+            "properties": { }
+        },
+        "secure": {
+            "type": "object",
+            "required": true,
+            "properties": {
+                "inherits": { "type": "boolean", "required": true },
+                "value": { "type": "boolean", "required": true }
+            },
+            "inheritable": true
+        },
+        "meta": {
+            "type": "object",
+            "required": true,
+            "properties": { }
+        },
+        "roles": {
+            "type": "object",
+            "required": true,
+            "properties": {
+                "inherits": { "type": "boolean", "required": true },
+                "value": { "type": "array", "required": true, "items": { "type": "string" }, "uniqueItems":  true }
+            },
+            "inheritable": true
+        },
+        "robots": {
+            "type": "object",
+            "required": true,
+            "properties": {
+                "inherits": { "type": "boolean", "required": true },
+                "value": { "type": "array", "required": true, "items": { "type": "string" }, "uniqueItems":  true, "enum": [ "noindex", "nofollow", "noarchive", "nosnipet", "notranslate", "noimageindex" ] }
+            },
+            "inheritable": true
+        },
+        "hierarchy": {
+            "type": "array",
+            "required": true,
+            "items": { "type": "string" },
+            "uniqueItems":  true
+        }
+    }
+}</dcs-definition-code>
 
-                    <tr class="data-title">
-                        <td>enabled</td>
-                        <td>object</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            holds the cascaded active information for this node
-                            <br />
-                            this property is calculated upon retrieving the node and it is not included in the database object
-                            <br />
-                            the object structure comes as a localized dictionary with the cascade active information for each language as in { en: true }
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <dcs-definition-code type="json" title="sample">{
+    "_id" : "e8ab42bdbcd2688d",
+    "name" : "contact",
+    "domain" : "core",
+    "entity" : "page",
+    "parent" : "2655683b9307585e",
+    "published" : true,
+    "createdOn" : 1415452924638,
+    "modifiedOn" : 1416179926894,
+    "template" : "/tmpl/contact.html",
+    "pointer" : {
+        "domain": "",
+        "nodeId": ""
+    },
+    "layout" : {
+        "inherits" : false,
+        "value" : "common"
+    },
+    "content" : {
+        "localized" : {
+            "en" : {
+                "title" : "title goes here",
+                "body" : "body goes here"
+            },
+            "el" : {
+                "title" : "τίτλος εδώ",
+                "body" : "περιεχόμενο εδώ"
+            }
+        },
+        "filepath": '/files/file.png'
+    },
+    "seo" : {
+        "en" : "contact",
+        "el" : "contact"
+    },
+    "active" : {
+        "en" : true,
+        "el" : true
+    },
+    "secure" : {
+        "inherits" : true,
+        "value": false
+    },
+    "meta" : {
+        "en" : {
+            "title" : "contact page meta title goes here",
+            "keywords" : "contact page keywords goes here",
+            "description" : "contact page meta description goes here"
+        },
+        "el" : {
+            "title" : "ο meta τίτλος της σελίδας εδώ",
+            "keywords" : "οι meta λέξεις κλειδιά εδώ",
+            "description" : "η meta περιγραφή της σελίδας εδώ"
+        }
+    },
+    "roles" : {
+        "inherits" : false,
+        "values" : [ "member" ]
+    },
+    "robots" : {
+        "inherits" : false,
+        "values" : [ "index", "follow" ]
+    },
+    "hierarchy" : [
+        "2655683b9307585e",
+        "e8ab42bdbcd2688d"
+    ],
+    url : {
+        "en": "/en/about/contact",
+        "el": "/en/about/contact"
+    },
+    enabled : {
+        "en": true,
+        "el": true
+    }
+}</dcs-definition-code>
+    </dcs-definition>
+</dcs-container>
 
-        <div class="panel panel-default">
-            <div class="panel-body data-sample">
-                <a href="samples/data/nodes.json" target="_blank">click here</a> for a json sample
-            </div>
-        </div>
+<dcs-container title="database &raquo; layouts" title-level="3" spy-title="layouts" spy-level="2">
+    <p>
+        The layouts data collection holds the layout content data as they are saved from the admin data forms to be linked in nodes and to be used in the site.
+    </p>
 
-        <h4 data-spy-title="layouts" data-spy-level="2">database &raquo; layouts</h4>
+    <dcs-definition>
+        <dcs-definition-title type="objectId">_id</dcs-definition-title>
+        <dcs-definition-desc>the layout identifier</dcs-definition-desc>
 
-        <p>
-            The layouts data collection holds the layout content data as they are saved from the admin data forms to be linked in nodes and to be used in the site.
-        </p>
+        <dcs-definition-title type="string">layout</dcs-definition-title>
+        <dcs-definition-desc>the layout key to be used referencing this layout</dcs-definition-desc>
 
-        <div class="panel panel-default">
-            <table class="table table-bordered table-condensed data-structure">
-                <tbody>
-                    <tr class="data-title">
-                        <td>_id</td>
-                        <td>objectId</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the layout identifier
-                        </td>
-                    </tr>
+        <dcs-definition-title type="object">content</dcs-definition-title>
+        <dcs-definition-desc>
+            the content data of this layout<br />
+            the object structure is free to structure as you wish, with optional localized values on a localization object as { localized: { en: { ... } } }
+        </dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>layout</td>
-                        <td>string</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the layout key to be used referencing this layout
-                        </td>
-                    </tr>
+        <dcs-definition-code type="json" title="schema">{
+    "type": "object",
+    "properties": {
+        "layout": {
+            "type": "string",
+            "required": true
+        },
+        "content": {
+            "type": "object",
+            "required": true,
+            "properties": { }
+        }
+    }
+}</dcs-definition-code>
 
-                    <tr class="data-title">
-                        <td>content</td>
-                        <td>object</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the content data of this layout
-                            <br />
-                            the object structure is free to structure as you wish, with optional localized values on a localization object as { localized: { en: { ... } } }
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        
-        <div class="panel panel-default">
-            <div class="panel-body data-sample">
-                <a href="samples/data/layouts.json" target="_blank">click here</a> for a json sample
-            </div>
-        </div>
+        <dcs-definition-code type="json" title="sample">{
+    "_id" : "b1fae84aa4441a95",
+    "layout" : "eshop",
+    "content" : {
+        "localized" : {
+            "en" : {
+                "title" : "title goes here"
+            },
+            "el" : {
+                "title" : "τίτλος εδώ"
+            }
+        },
+        "filepath": '/files/file.png'
+    }
+}</dcs-definition-code>
 
-        <h4 data-spy-title="data" data-spy-level="2">database &raquo; data</h4>
+    </dcs-definition>
+</dcs-container>
 
-        <p>
-            The data collection holds the content saved from data lists, grouped by their list name.
-        </p>
+<dcs-container title="database &raquo; data" title-level="3" spy-title="data" spy-level="2">
+    <p>
+        The data collection holds the content saved from data lists, grouped by their list name.
+    </p>
 
-        <div class="panel panel-default">
-            <table class="table table-bordered table-condensed data-structure">
-                <tbody>
-                    <tr class="data-title">
-                        <td>_id</td>
-                        <td>objectId</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the data identifier
-                        </td>
-                    </tr>
+    <dcs-definition>
+        <dcs-definition-title type="objectId">_id</dcs-definition-title>
+        <dcs-definition-desc>the data identifier</dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>domain</td>
-                        <td>string</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the domain identifier, typically the module domain in order to group list data together
-                        </td>
-                    </tr>
+        <dcs-definition-title type="string">domain</dcs-definition-title>
+        <dcs-definition-desc>the domain identifier, typically the module domain in order to group list data together</dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>name</td>
-                        <td>string</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the display name (most commonly used by the admin)
-                        </td>
-                    </tr>
+        <dcs-definition-title type="string">name</dcs-definition-title>
+        <dcs-definition-desc>the display name (most commonly used by the admin)</dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>createdOn</td>
-                        <td>timestamp</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the timestamp that the object was created
-                        </td>
-                    </tr>
+        <dcs-definition-title type="timestamp">createdOn</dcs-definition-title>
+        <dcs-definition-desc>the timestamp that the object was created</dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>modifiedOn</td>
-                        <td>timestamp</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the timestamp that the object was last modified
-                        </td>
-                    </tr>
+        <dcs-definition-title type="timestamp">modifiedOn</dcs-definition-title>
+        <dcs-definition-desc>the timestamp that the object was last modified</dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>content</td>
-                        <td>object</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the content data
-                            <br />
-                            the object structure is free to structure as you wish, with optional localized values on a localization object as { localized: { en: { ... } } }
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        
-        <div class="panel panel-default">
-            <div class="panel-body data-sample">
-                <a href="samples/data/data.json" target="_blank">click here</a> for a json sample
-            </div>
-        </div>
+        <dcs-definition-title type="object">content</dcs-definition-title>
+        <dcs-definition-desc>
+            the content data<br />
+            the object structure is free to structure as you wish, with optional localized values on a localization object as { localized: { en: { ... } } }
+        </dcs-definition-desc>
 
-        <h4 data-spy-title="texts" data-spy-level="2">database &raquo; texts</h4>
+        <dcs-definition-code type="json" title="schema">{
+    "type": "object",
+    "properties": {
+        "domain": {
+            "type": "string",
+            "required": true
+        },
+        "list": {
+            "type": "string",
+            "required": true
+        },
+        "name": {
+            "type": "string",
+            "required": true
+        },
+        "content": {
+            "type": "object",
+            "required": true,
+            "properties": { }
+        },
+        "createdOn": {
+            "type": "number",
+            "required": true
+        },
+        "modifiedOn": {
+            "type": "number",
+            "required": true
+        }
+    }
+}</dcs-definition-code>
 
-        <p>
-            The texts collection holds the localized text resources for the available site languages.
-        </p>
+        <dcs-definition-code type="json" title="sample">{
+    "_id" : "ede20efea91c58cb",
+    "domain" : "core",
+    "list" : "list1",
+    "name" : "entry name",
+    "published" : true,
+    "createdOn" : 1415044624698,
+    "modifiedOn" : 1415044630373,
+    "content" : {
+        "localized" : {
+            "en" : {
+                "title" : "title goes here"
+            },
+            "el" : {
+                "title" : "τίτλος εδώ"
+            }
+        }
+    }
+}</dcs-definition-code>
 
-        <div class="panel panel-default">
-            <table class="table table-bordered table-condensed data-structure">
-                <tbody>
-                    <tr class="data-title">
-                        <td>_id</td>
-                        <td>objectId</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the text identifier
-                        </td>
-                    </tr>
+    </dcs-definition>
+</dcs-container>
 
-                    <tr class="data-title">
-                        <td>key</td>
-                        <td>string</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the text key to be used referencing this text
-                        </td>
-                    </tr>
+<dcs-container title="database &raquo; texts" title-level="3" spy-title="texts" spy-level="2">
+    <p>
+        The texts collection holds the localized text resources for the available site languages.
+    </p>
 
-                    <tr class="data-title">
-                        <td>group</td>
-                        <td>string</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            an optional group key to be used to group text resources together
-                        </td>
-                    </tr>
+    <dcs-definition>
+        <dcs-definition-title type="objectId">_id</dcs-definition-title>
+        <dcs-definition-desc>the text identifier</dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>value</td>
-                        <td>object</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the value data
-                            <br />
-                            the object structure should be a localized dictionary with the values for each language as in { en: 'english text translation' }
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        
-        <div class="panel panel-default">
-            <div class="panel-body data-sample">
-                <a href="samples/data/texts.json" target="_blank">click here</a> for a json sample
-            </div>
-        </div>
+        <dcs-definition-title type="string">key</dcs-definition-title>
+        <dcs-definition-desc>the text key to be used referencing this text</dcs-definition-desc>
 
-        <h4 data-spy-title="settings" data-spy-level="2">database &raquo; settings</h4>
+        <dcs-definition-title type="string">group</dcs-definition-title>
+        <dcs-definition-desc>an optional group key to be used to group text resources together</dcs-definition-desc>
 
-        <p>The settings per module domain.</p>
+        <dcs-definition-title type="object">value</dcs-definition-title>
+        <dcs-definition-desc>
+            the value data<br />
+            the object structure should be a localized dictionary with the values for each language as in { en: 'english text translation' }
+        </dcs-definition-desc>
 
-        <div class="panel panel-default">
-            <table class="table table-bordered table-condensed data-structure">
-                <tbody>
-                    <tr class="data-title">
-                        <td>_id</td>
-                        <td>objectId</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the setting identifier
-                        </td>
-                    </tr>
+        <dcs-definition-code type="json" title="schema">{
+    "type": "object",
+    "properties": {
+        "key": {
+            "type": "string",
+            "required": true
+        },
+        "group": {
+            "type": "string",
+            "required": false
+        },
+        "value": {
+            "type": "object",
+            "required": true
+        }
+    }
+}</dcs-definition-code>
 
-                    <tr class="data-title">
-                        <td>domain</td>
-                        <td>string</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the domain identifier, typically the module domain
-                        </td>
-                    </tr>
+        <dcs-definition-code type="json" title="sample">{
+    "_id" : "96982a30f1d078a8",
+    "key" : "en",
+    "group" : "language",
+    "published" : true,
+    "value" : {
+        "en" : "English",
+        "el" : "agglika",
+        "es" : "ingles"
+    }
+}</dcs-definition-code>
+    </dcs-definition>
+</dcs-container>
 
-                    <tr class="data-title">
-                        <td>data</td>
-                        <td>object</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the setting data
-                            <br />
-                            the object structure is free to structure as you wish, with optional localized values on a localization object as { localized: { en: { ... } } }
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        
-        <div class="panel panel-default">
-            <div class="panel-body data-sample">
-                <a href="samples/data/settings.json" target="_blank">click here</a> for a json sample
-            </div>
-        </div>
+<dcs-container title="database &raquo; settings" title-level="3" spy-title="settings" spy-level="2">
+    <p>The settings per module domain.</p>
 
-        <h4 data-spy-title="users" data-spy-level="2">database &raquo; users</h4>
+    <dcs-definition>
+        <dcs-definition-title type="objectId">_id</dcs-definition-title>
+        <dcs-definition-desc>the setting identifier</dcs-definition-desc>
 
-        <p>Lastly, the users collection.</p>
+        <dcs-definition-title type="string">domain</dcs-definition-title>
+        <dcs-definition-desc>the domain identifier, typically the module domain</dcs-definition-desc>
 
-        <div class="panel panel-default">
-            <table class="table table-bordered table-condensed data-structure">
-                <tbody>
-                    <tr class="data-title">
-                        <td>_id</td>
-                        <td>objectId</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the user identifier
-                        </td>
-                    </tr>
+        <dcs-definition-title type="object">data</dcs-definition-title>
+        <dcs-definition-desc>
+            the setting data<br />
+            the object structure is free to structure as you wish, with optional localized values on a localization object as { localized: { en: { ... } } }
+        </dcs-definition-desc>
 
-                    <tr class="data-title">
-                        <td>firstName</td>
-                        <td>string</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the first name
-                        </td>
-                    </tr>
+        <dcs-definition-code type="json" title="schema">{
+    "type": "object",
+    "properties": {
+        "domain": {
+            "type": "string",
+            "required": true
+        },
+        "data": {
+            "type": "object",
+            "required": true
+        }
+    }
+}</dcs-definition-code>
 
-                    <tr class="data-title">
-                        <td>lastName</td>
-                        <td>string</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the last name
-                        </td>
-                    </tr>
+        <dcs-definition-code type="json" title="sample">{
+    "_id" : "0dc5d6239efc19ff",
+    "domain" : "core",
+    "data" : {
+        "title" : "title here"
+    }
+}</dcs-definition-code>
+    </dcs-definition>
+</dcs-container>
 
-                    <tr class="data-title">
-                        <td>username</td>
-                        <td>string</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the username
-                        </td>
-                    </tr>
-                    
-                    <tr class="data-title">
-                        <td>roles</td>
-                        <td>array</td>
-                    </tr>
-                    <tr class="data-description">
-                        <td colspan="2">
-                            the roles that the user exists in
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+<dcs-container title="database &raquo; users" title-level="3" spy-title="users" spy-level="2">
+    <p>Lastly, the users collection.</p>
 
-        <div class="panel panel-default">
-            <div class="panel-body data-sample">
-                <a href="samples/data/users.json" target="_blank">click here</a> for a json sample
-            </div>
-        </div>
-    </div>
-</div>
+    <dcs-definition>
+        <dcs-definition-title type="objectId">_id</dcs-definition-title>
+        <dcs-definition-desc>the user identifier</dcs-definition-desc>
+
+        <dcs-definition-title type="string">firstName</dcs-definition-title>
+        <dcs-definition-desc>the first name</dcs-definition-desc>
+
+        <dcs-definition-title type="string">lastName</dcs-definition-title>
+        <dcs-definition-desc>the last name</dcs-definition-desc>
+
+        <dcs-definition-title type="string">username</dcs-definition-title>
+        <dcs-definition-desc>the username</dcs-definition-desc>
+
+        <dcs-definition-title type="array">roles</dcs-definition-title>
+        <dcs-definition-desc>the roles that the user exists in</dcs-definition-desc>
+
+        <dcs-definition-code type="json" title="sample">{
+    "type": "object",
+    "properties": {
+        "firstName": {
+            "type": "string",
+            "required": true
+        },
+        "lastName": {
+            "type": "string",
+            "required": true
+        },
+        "roles": {
+            "type": "array",
+            "required": true,
+            "items": { "type": "string" },
+            "uniqueItems":  true
+        }
+    }
+}</dcs-definition-code>
+
+        <dcs-definition-code type="json" title="sample">{
+    "_id" : "06dd0ca8891ecb03",
+    "firstName" : "Apostolis",
+    "lastName" : "Konoupakis",
+    "username" : "konoupakis@gmail.com",
+    "password" : "db1772",
+    "roles" : [
+        "admin"
+    ]
+}</dcs-definition-code>
+    </dcs-definition>
+</dcs-container>
+
+<dcs-container title="database &raquo; custom" title-level="3" spy-title="custom" spy-level="2">
+    <p>
+        custom database collections can be defined in each module's configuration along with their restrictions, events and schema validations.
+    </p>
+</dcs-container>

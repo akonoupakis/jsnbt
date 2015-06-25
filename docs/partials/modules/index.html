@@ -2,104 +2,90 @@
     Each module uses an index entry point (typically the package.json main js file reference) to inject its functionality and parameterization to the jsnbt engine.
     <br />
     The index file is placed in the "src/app/" folder as all server side code blocks.
+    <br /><br />
+    The below are the specs needed in a module's index.js file:
 </p>
-<p>The below are the specs needed in a module's index.js file:</p>
-<div class="panel panel-default">
-    <table class="table table-bordered table-condensed data-structure">
-        <tbody>
-            <tr class="data-title">
-                <td>init(application)</td>
-                <td>function</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    runs on application start
-                </td>
-            </tr>
 
-            <tr class="data-title">
-                <td>getConfig()</td>
-                <td>function</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    returns the module's cofiguration as a json object
-                </td>
-            </tr>
+<dcs-definition>
+    <dcs-definition-title type="string">domain</dcs-definition-title>
+    <dcs-definition-desc>the module domain identifier</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>route(ctx, next)</td>
-                <td>function</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    could intercept the routing process here, or trigger the next router
-                </td>
-            </tr>
+    <dcs-definition-title type="function">init(application)</dcs-definition-title>
+    <dcs-definition-desc>runs on application start</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>view.prerender(ctx)</td>
-                <td>function</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    could change the ctx.model and the ctx.tmpl before rendering
-                </td>
-            </tr>
+    <dcs-definition-title type="function">getConfig()</dcs-definition-title>
+    <dcs-definition-desc>returns the module's cofiguration as a json object</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>view.render(ctx)</td>
-                <td>function</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    could change the ctx.html upon render
-                </td>
-            </tr>
+    <dcs-definition-title type="function">getVersion()</dcs-definition-title>
+    <dcs-definition-desc>returns the module's current version</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>point(ctx)</td>
-                <td>function</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    specify a custom pointer routing process
-                    the system invokes this method on a specific module if a pointer points to a node of the module
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <div class="panel-body">
-        <p>sample:</p>
-        <pre>module.exports = {
+    <dcs-definition-title type="function">getBower()</dcs-definition-title>
+    <dcs-definition-desc>returns the module's bower cofiguration as a json object</dcs-definition-desc>
+
+    <dcs-definition-title type="function">route(server, ctx, next)</dcs-definition-title>
+    <dcs-definition-desc>could intercept the routing process here, or trigger the next router</dcs-definition-desc>
+
+    <dcs-definition-title type="function">view.preparse(server, ctx, preparsingContext, next)</dcs-definition-title>
+    <dcs-definition-desc>could change the preparsingContext.model and the preparsingContext.tmpl before rendering</dcs-definition-desc>
+
+    <dcs-definition-title type="function">view.postparse(server, ctx, postparsingContext, next)</dcs-definition-title>
+    <dcs-definition-desc>could change the postparsingContext.html upon render</dcs-definition-desc>
+
+    <dcs-definition-title type="function">routePointer(server, ctx, next)</dcs-definition-title>
+    <dcs-definition-desc>
+        specify a custom pointer routing process<br />
+        the system invokes this method on a specific module if a pointer points to a node of the module
+    </dcs-definition-desc>
+
+    <dcs-definition-title type="function">routeApi(server, ctx, serviceName, fnName, fields, files, next)</dcs-definition-title>
+    <dcs-definition-desc>targets modules that expose a jsnbt api under /jsnbt-api/{domain}/{serviceName}/{fnName}/ for the module's domain</dcs-definition-desc>
+
+    <dcs-definition-sample>var app = null;
+
+module.exports = {
+
+    domain: 'public',
+    public: true,
 
     init: function (application) {
+        app = application;
     },
 
     getConfig: function () {
-        return require('./config.js');
+        return require('../cfg/config.js');
+    },
+
+    getVersion: function () {
+        return require('../../package.json').version;
+    },
+
+    getBower: function () {
+        return require('../src/web/bower.json');
     },
 
     route: function (ctx, next) {
         next();
     },
 
-    view: {
-
-        prerender: function (ctx) {
-
-        },
-
-        render: function (ctx) {
-
-        }
-
+    routeApi: function (server, ctx, serviceName, fnName, fields, files, next) {
+        next();
     },
 
-    point: function(ctx) {
+    routePointer: function (server, ctx, next) {
+        next();
+    },
+
+    view: {
+
+        preparse: function (server, ctx, preparsingContext, next) {
+            next();
+        },
+
+        postparse: function (server, ctx, postparsingContext, next) {
+            next();
+        }
 
     }
 
-};</pre>
-    </div>
-</div>
+};</dcs-definition-sample>
+</dcs-definition>

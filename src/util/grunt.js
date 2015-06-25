@@ -111,20 +111,7 @@ module.exports = function (grunt) {
         _.each(jsnbt.fileGroups, function (fileGroup) {
             publicCopyfiles.push('files/' + fileGroup + '/');
         });
-
-
-        /*
         
-        {
-            expand: true,
-            cwd: 'src/cfg/dpd/',
-            src: ['app.dpd', 'resources/**'],
-            dest: folder + '/'
-        }, 
-        
-        
-        */
-
         var files = [{
             expand: true,
             cwd: 'src/dat/',

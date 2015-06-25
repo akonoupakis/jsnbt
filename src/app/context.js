@@ -194,7 +194,7 @@ var Context = function (server, req, res) {
                     if (_.str.startsWith(this.template, '/'))
                         view(server, this);
                     else {
-                        if (applyTemplate(this)) {
+                        if (applyTemplate(this)) {                            
                             view(server, this);
                         }
                         else {

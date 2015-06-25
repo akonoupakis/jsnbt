@@ -1,0 +1,69 @@
+﻿<p>
+    The context object created per request.
+    <br /><br />
+    Commonly, through this object the engine resolves and ends a request.
+</p>
+<dcs-definition>
+    <dcs-definition-title type="object">req</dcs-definition-title>
+    <dcs-definition-desc>the request</dcs-definition-desc>
+
+    <dcs-definition-title type="object">res</dcs-definition-title>
+    <dcs-definition-desc>the response</dcs-definition-desc>
+
+    <dcs-definition-title type="string">method</dcs-definition-title>
+    <dcs-definition-desc>the request method</dcs-definition-desc>
+
+    <dcs-definition-title type="object">session</dcs-definition-title>
+    <dcs-definition-desc>the session</dcs-definition-desc>
+
+    <dcs-definition-title type="object">cookies</dcs-definition-title>
+    <dcs-definition-desc>the cookies</dcs-definition-desc>
+
+    <dcs-definition-title type="object">user</dcs-definition-title>
+    <dcs-definition-desc>the current user</dcs-definition-desc>
+
+    <dcs-definition-title type="object">timer</dcs-definition-title>
+    <dcs-definition-desc>the timer timing the request life cycle</dcs-definition-desc>
+
+    <dcs-definition-title type="object">node</dcs-definition-title>
+    <dcs-definition-desc>the resolved node</dcs-definition-desc>
+
+    <dcs-definition-title type="object">pointer</dcs-definition-title>
+    <dcs-definition-desc>the resolved pointer node</dcs-definition-desc>
+
+    <dcs-definition-title type="string">layout</dcs-definition-title>
+    <dcs-definition-desc>the resolved layout</dcs-definition-desc>
+
+    <dcs-definition-title type="object">meta</dcs-definition-title>
+    <dcs-definition-desc>the meta information for the selected language</dcs-definition-desc>
+
+    <dcs-definition-title type="array">params</dcs-definition-title>
+    <dcs-definition-desc>the key value collection of meta tag values</dcs-definition-desc>
+
+    <dcs-definition-title type="object">robots</dcs-definition-title>
+    <dcs-definition-desc>the selected robot values</dcs-definition-desc>
+
+    <dcs-definition-title type="string">template</dcs-definition-title>
+    <dcs-definition-desc>the template code of the template to be rendered</dcs-definition-desc>
+
+    <dcs-definition-title type="object">uri</dcs-definition-title>
+    <dcs-definition-desc>the url in parts</dcs-definition-desc>
+
+    <dcs-definition-title type="bool">restricted</dcs-definition-title>
+    <dcs-definition-desc>whether this request is restrited or not</dcs-definition-desc>
+
+    <dcs-definition-title type="function">error(code, stack)</dcs-definition-title>
+    <dcs-definition-desc>renders an error page and ends the request</dcs-definition-desc>
+
+    <dcs-definition-title type="function">view()</dcs-definition-title>
+    <dcs-definition-desc>renders the selected template with the current context configuration and ends the request</dcs-definition-desc>
+
+    <dcs-definition-title type="function">json(data)</dcs-definition-title>
+    <dcs-definition-desc>renders the given json object as json and ends the request</dcs-definition-desc>
+
+    <dcs-definition-title type="function">html(text)</dcs-definition-title>
+    <dcs-definition-desc>renders the given text as html and ends the request</dcs-definition-desc>
+
+    <dcs-definition-title type="function">redirect(url, code)</dcs-definition-title>
+    <dcs-definition-desc>redirects to the given url with the given code (or 302 as default)</dcs-definition-desc>
+</dcs-definition>

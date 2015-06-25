@@ -1,75 +1,22 @@
-﻿<div class="panel panel-default">
-    <table class="table table-bordered table-condensed data-structure">
-        <tbody>
-            <tr class="data-title">
-                <td>domain</td>
-                <td>string</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    the domain identifier for the module<br />
-                    this should be set to "public" for the site module
-                </td>
-            </tr>
+﻿<dcs-definition>
+    <dcs-definition-title type="bool">restricted</dcs-definition-title>
+    <dcs-definition-desc>
+        indicates whether if the site utilizes members or not<br />
+        if so, there will be permission controls in each node, and if access is denied the user will be redirected to a login page
+    </dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>public</td>
-                <td>bool</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    indicates whether if this module is the site module or not
-                    <br />
-                    this should be set to "true" for the site module
-                </td>
-            </tr>
+    <dcs-definition-title type="bool">ssl</dcs-definition-title>
+    <dcs-definition-desc>indicates whether if the site is under ssl or not</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>restricted</td>
-                <td>bool</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    indicates whether if the site utilizes members or not
-                    <br />
-                    if so, there will be permission controls in each node, and if access is denied the user will be redirected to a login page
-                </td>
-            </tr>
+    <dcs-definition-title type="string">locale (optional)</dcs-definition-title>
+    <dcs-definition-desc>
+        indicates whether if the site is localized in more than one languages or not<br />
+        if the locale is specified, the jsnbt will assume that there is one and only content language
+    </dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>ssl</td>
-                <td>bool</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    indicates whether if the site is under ssl or not
-                </td>
-            </tr>
-
-            <tr class="data-title">
-                <td>locale</td>
-                <td>string (optional)</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    indicates whether if the site is localized in more than one languages or not
-                    <br />
-                    if the locale is specified, the jsnbt will assume that there is one and only content language
-                </td>
-            </tr>
-
-            <tr class="data-title">
-                <td>injects</td>
-                <td>object</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    defines the custom content injections to the admin predefined holders
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <pre>injects: {
+    <dcs-definition-title type="object">injects</dcs-definition-title>
+    <dcs-definition-desc>defines the custom content injections to the admin predefined holders</dcs-definition-desc>
+    <dcs-definition-sample>injects: {
     navigation: [{
         index: 5,
         identifier: 'extra',
@@ -79,24 +26,14 @@
     dashboard: 'tmpl/public/injects/dashboard.html',
     content: 'tmpl/public/injects/content.html',
     settings: 'tmpl/public/injects/settings.html'
-}</pre>
-                </td>
-            </tr>
+}</dcs-definition-sample>
 
-            <tr class="data-title">
-                <td>layouts</td>
-                <td>array of objects</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    custom layouts of the site
-                    <br />
-                    the layouts defined here, will be available to be bound to nodes and provide administrative layout management for their front end templates
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <pre>layouts: [{
+    <dcs-definition-title type="array">layouts</dcs-definition-title>
+    <dcs-definition-desc>
+        custom layouts of the site<br />
+        the layouts defined here, will be available to be bound to nodes and provide administrative layout management for their front end templates
+    </dcs-definition-desc>
+    <dcs-definition-sample>layouts: [{
     id: 'global',
     name: 'global layout',
     form: 'tmpl/public/layouts/global.html'
@@ -104,24 +41,14 @@
     id: 'eshop',
     name: 'eshop layout',
     form: 'tmpl/public/layouts/eshop.html'
-}]</pre>
-                </td>
-            </tr>
+}]</dcs-definition-sample>
 
-            <tr class="data-title">
-                <td>containers</td>
-                <td>array of objects</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    the available containers of the site
-                    <br />
-                    these containers are available to the container controls
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <pre>containers: [{
+    <dcs-definition-title type="array">containers</dcs-definition-title>
+    <dcs-definition-desc>
+        the available containers of the site<br />
+        these containers are available to the container controls
+    </dcs-definition-desc>
+    <dcs-definition-sample>containers: [{
     id: 'sampleContainer1',
     name: 'sample container A',
     html: '/tmpl/partial/containers/sampleContainerA.html',
@@ -129,76 +56,42 @@
     id: 'sampleContainer2',
     name: 'sample container B',
     html: '/tmpl/partial/containers/sampleContainerB.html'
-}]</pre>
-                </td>
-            </tr>
+}]</dcs-definition-sample>
 
-            <tr class="data-title">
-                <td>templates</td>
-                <td>array of objects</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    the available templates of the site
-                    <br />
-                    these template are available to the template dropdown control on every node
-                    <br />
-                    templates are assosiated with "form" guidance html parts, that are used by the node to save additional data that concern this only template
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <pre>templates: [{
+    <dcs-definition-title type="array">templates</dcs-definition-title>
+    <dcs-definition-desc>
+        the available templates of the site<br />
+        these template are available to the template dropdown control on every node<br />
+        templates are assosiated with "form" guidance html parts, that are used by the node to save additional data that concern this only template
+    </dcs-definition-desc>
+    <dcs-definition-sample>templates: [{
     id: 'text',
     name: 'text page',
     html: '/tmpl/text.html',
     form: 'tmpl/public/forms/page/text.html',
     restricted: ['page']
-}]</pre>
-                </td>
-            </tr>
+}]</dcs-definition-sample>
 
-            <tr class="data-title">
-                <td>lists</td>
-                <td>array of objects</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    data lists along with their role permissions
-                    <br />
-                    the content of these lists is managed in the data section of the admin
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <pre>lists: [{
+    <dcs-definition-title type="array">lists</dcs-definition-title>
+    <dcs-definition-desc>
+        data lists along with their role permissions<br />
+        the content of these lists is managed in the data section of the admin
+    </dcs-definition-desc>
+    <dcs-definition-sample>lists: [{
     id: 'sample1',
     name: 'Sample 01',
     form: 'tmpl/customModule/sample1.html',
     localized: true
-}]</pre>
-                </td>
-            </tr>
+}]</dcs-definition-sample>
 
-            <tr class="data-title">
-                <td>routes</td>
-                <td>array of objects</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    custom routes implemented by the public module<br />
-                    a route must define an id and a display name, as well as a function ("fn") name that exists in the public module's index file.
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <pre>routes: [{
+    <dcs-definition-title type="array">routes</dcs-definition-title>
+    <dcs-definition-desc>
+        custom routes implemented by the public module<br />
+        a route must define an id and a display name, as well as a function ("fn") name that exists in the public module's index file.
+    </dcs-definition-desc>
+    <dcs-definition-sample>routes: [{
     id: 'search',
     name: 'Search results',
     fn: 'routeSearch'
-}]</pre>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+}]</dcs-definition-sample>
+</dcs-definition>

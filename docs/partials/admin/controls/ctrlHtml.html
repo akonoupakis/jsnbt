@@ -1,75 +1,27 @@
-﻿<div class="panel panel-default">
-    <table class="table table-bordered table-condensed data-structure">
-        <tbody>
-            <tr class="data-title">
-                <td>ngModel</td>
-                <td>text</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    the model to be bound to the control
-                </td>
-            </tr>
+﻿<dcs-definition>
+    <dcs-definition-title type="text">ngModel</dcs-definition-title>
+    <dcs-definition-desc>the model to be bound to the control</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>ngDisabled</td>
-                <td>bool</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    indicates whether this control is disabled or not
-                </td>
-            </tr>
+    <dcs-definition-title type="bool">ngDisabled</dcs-definition-title>
+    <dcs-definition-desc>indicates whether this control is disabled or not</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>ngRequired</td>
-                <td>bool</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    indicates whether the value of this control is required or not
-                </td>
-            </tr>
+    <dcs-definition-title type="bool">ngRequired</dcs-definition-title>
+    <dcs-definition-desc>indicates whether the value of this control is required or not</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>ngOptions</td>
-                <td>object</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    options for the native configuration of the tinyMCE editor
-                </td>
-            </tr>
+    <dcs-definition-title type="object">ngOptions</dcs-definition-title>
+    <dcs-definition-desc>options for the native configuration of the tinyMCE editor</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>ngLabel</td>
-                <td>text</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    the label for this control, viewed as header
-                </td>
-            </tr>
+    <dcs-definition-title type="text">ngLabel</dcs-definition-title>
+    <dcs-definition-desc>the label for this control, viewed as header</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>ngTip</td>
-                <td>text</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    the sublabel for this control, viewed as subheader
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <div class="panel-body">
-        <p>usage:</p>
-        <pre>&lt;ctrl-html 
-    ng-model="sample.value" 
-    ng-disabled="false" 
-    ng-required="true" 
+    <dcs-definition-title type="text">ngTip</dcs-definition-title>
+    <dcs-definition-desc>the sublabel for this control, viewed as subheader</dcs-definition-desc>
+
+    <dcs-definition-sample>&lt;ctrl-html
+    ng-model="sample.value"
+    ng-disabled="false"
+    ng-required="true"
     ng-options="{ height: '450px' }"
-    ng-label="sample label text" 
-    ng-tip="sample tip text"&gt;&lt;/ctrl-html&gt;</pre>
-    </div>
-</div>
+    ng-label="sample label text"
+    ng-tip="sample tip text"&gt;&lt;/ctrl-html&gt;</dcs-definition-sample>
+</dcs-definition>

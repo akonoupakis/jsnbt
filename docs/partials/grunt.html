@@ -1,67 +1,58 @@
-﻿<div data-spy-title="grunt" data-spy-level="1">
-    <h2>
-        grunt
-    </h2>
-    <div>
-        <p>
-            Grunt is a task runner.
-        </p>
-        <p>
-            We use grunt to prepare the a target folder with the nessesary app files for deployment.
-        </p>
-        <p>
-            In general lines, grunting, gets the files from all installed modules from their "src/" folders and merges them to the deployment folder target  ("dev/" or "dist/").
-        </p>
-        <p>
-            Upon grunt, the "src/public/" ends to "{target}/public/" and the "src/admin/" ends to "{target}/public/admin/" ready as wanted by the app so that the admin would reside in a "/admin" directory.
-            <br />
-            The deployd resource configuration files, are merged together and copied from "src/dpd/" to "{target}/dpd/".
-        </p>
-        <p>
-            The "src/app/" location containing all server side code is left out as it is always triggered from the downloaded npm packages, from "node_modules".
-        </p>
+﻿<p>
+    Grunt is a task runner.
+</p>
+<p>
+    We use grunt to prepare the a target folder with the nessesary app files for deployment.
+</p>
+<p>
+    In general lines, grunting, gets the files from all installed modules from their "src/" folders and merges them to the deployment folder target  ("dev/" or "dist/").
+</p>
+<p>
+    Upon grunt, the "src/public/" ends to "{target}/public/" and the "src/admin/" ends to "{target}/public/admin/" ready as wanted by the app so that the admin would reside in a "/admin" directory.
+</p>
+<p>
+    The "src/app/" location containing all server side code is left out as it is always triggered from the downloaded npm packages, from "node_modules".
+</p>
 
-        <div class="panel panel-default">
-            <div class="panel-heading">dev process</div>
-            <div class="panel-body">
-                <ul>
-                    <li>downloads bower packages</li>
-                    <li>sets the deployment environment to "dev"</li>
-                    <li>cleans the target deployment folder ("dev")</li>
-                    <li>copies the module files from "src/web" to the target deployment folder ("dev")</li>
-                    <li>copies the "src/pck" files from all other installed modules to the target deployment folder ("dev")</li>
-                    <li>copies the "src/dpd" resource files to the target deployment folder ("dev"), merging them with any existing ones.</li>
-                    <li>deploys the downloaded bower packages to the target deployment folder ("dev"), depending on the bower.json "deploy" section</li>
-                    <li>performs less parsing on the copied less files</li>
-                    <li>preprocess the copied html templates depending on the deployment target (on "dev", it preprocess the templates and leaves the unminified resources)</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="panel panel-default">
-            <div class="panel-heading">prod process</div>
-            <div class="panel-body">
-                <ul>
-                    <li>downloads bower packages</li>
-                    <li>sets the deployment environment to "dist"</li>
-                    <li>cleans the target deployment folder ("dist")</li>
-                    <li>copies the module files from "src/web" to the target deployment folder ("dist")</li>
-                    <li>copies the "src/pck" files from all other installed modules to the target deployment folder ("dist")</li>
-                    <li>copies the "src/dpd" resource files to the target deployment folder ("dist"), merging them with any existing ones.</li>
-                    <li>deploys the downloaded bower packages to the target deployment folder ("dist"), depending on the bower.json "deploy" section</li>
-                    <li>performs less parsing on the copied less files</li>
-                    <li>preprocess the copied html templates depending on the deployment target (on "dist", it preprocess the templates and leaves the unminified resources)</li>
-                    <li>minifies the parsed less response</li>
-                    <li>uglifies copies js files</li>
-                </ul>
-            </div>
-        </div>
-        
-        <h4>update-files switch</h4>
-        <p>
-            Grunt utilizes a files watch, and if the update-files switch is defined (e.g. grunt dev update-files), grunt will monitor any changes on your src files and re-deploy them to the deployment target folder when modified.
-            <br /><br />
-            Try <b>grunt dev/prod update-files.</b>
-        </p>
+<div class="panel panel-default">
+    <div class="panel-heading">dev process</div>
+    <div class="panel-body">
+        <ul>
+            <li>downloads bower packages</li>
+            <li>sets the deployment environment to "dev"</li>
+            <li>cleans the target deployment folder ("dev")</li>
+            <li>copies the module files from "src/web" to the target deployment folder ("dev")</li>
+            <li>copies the "src/pck" files from all other installed modules to the target deployment folder ("dev")</li>
+            <li>deploys the resource dpd configuration files to the target deployment folder ("dev"), merging them with any existing ones.</li>
+            <li>deploys the downloaded bower packages to the target deployment folder ("dev"), depending on the bower.json "deploy" section</li>
+            <li>performs less parsing on the copied less files</li>
+            <li>preprocess the copied html templates depending on the deployment target (on "dev", it preprocess the templates and leaves the unminified resources)</li>
+        </ul>
     </div>
 </div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">prod process</div>
+    <div class="panel-body">
+        <ul>
+            <li>downloads bower packages</li>
+            <li>sets the deployment environment to "dist"</li>
+            <li>cleans the target deployment folder ("dist")</li>
+            <li>copies the module files from "src/web" to the target deployment folder ("dist")</li>
+            <li>copies the "src/pck" files from all other installed modules to the target deployment folder ("dist")</li>
+            <li>deploys the resource dpd configuration files to the target deployment folder ("dist"), merging them with any existing ones.</li>
+            <li>deploys the downloaded bower packages to the target deployment folder ("dist"), depending on the bower.json "deploy" section</li>
+            <li>performs less parsing on the copied less files</li>
+            <li>preprocess the copied html templates depending on the deployment target (on "dist", it preprocess the templates and leaves the unminified resources)</li>
+            <li>minifies the parsed less response</li>
+            <li>uglifies copies js files</li>
+        </ul>
+    </div>
+</div>
+        
+<h4>update-files switch</h4>
+<p>
+    Grunt utilizes a files watch, and if the update-files switch is defined (e.g. grunt dev update-files), grunt will monitor any changes on your src files and re-deploy them to the deployment target folder when modified.
+    <br /><br />
+    Try <b>grunt dev/prod update-files</b>
+</p>

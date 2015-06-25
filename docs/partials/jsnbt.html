@@ -1,0 +1,95 @@
+﻿<p>jsnbt.js brings an object with all the merged configuration from all installed modules!</p>
+<p>This object is meant to deliver static application configuration to both the admin and the site.</p>
+<pre>&lt;script type="text/javascript" src="jsnbt.js"&gt;&lt;/script&gt;</pre>
+<p>Inject the above to the head of your pages pointing to a dynamic "jsnbt.js" file located in your application root or the admin root.</p>
+
+<dcs-definition>
+    <dcs-definition-title type="array">languages</dcs-definition-title>
+    <dcs-definition-desc>the available language codes</dcs-definition-desc>
+    <dcs-definition-sample>['en', 'es', 'el']</dcs-definition-sample>
+
+    <dcs-definition-title type="array">countries</dcs-definition-title>
+    <dcs-definition-desc>the available country codes</dcs-definition-desc>
+    <dcs-definition-sample>['GB', 'GR']</dcs-definition-sample>
+
+    <dcs-definition-title type="array">modules</dcs-definition-title>
+    <dcs-definition-desc>the loaded modules</dcs-definition-desc>
+    <dcs-definition-sample>[{
+    domain: 'core',
+    getConfig(),
+    getBower(),
+    getVersion()
+}, {
+    domain: 'public',
+    public: true,
+    getConfig(),
+    getBower(),
+    getVersion()
+}]</dcs-definition-sample>
+
+    <dcs-definition-title type="object">configs</dcs-definition-title>
+    <dcs-definition-desc>the configurations injected by any modules per domain</dcs-definition-desc>
+    <dcs-definition-sample>{
+    public: {
+        valueA: 1,
+        valueB: 2,
+        valueC: 3
+    },
+    another: {
+        valueD: 1,
+        valueE: 2,
+        valueF: 3
+    }
+}</dcs-definition-sample>
+
+    <dcs-definition-title type="bool">localization</dcs-definition-title>
+    <dcs-definition-desc>whether the application runs on multiple languages<br />this value is usually set by the site module alone</dcs-definition-desc>
+
+    <dcs-definition-title type="string">locale</dcs-definition-title>
+    <dcs-definition-desc>the singleton language code (applicable only when the "localization" property is set to true)<br />this value is usually set by the site module alone</dcs-definition-desc>
+
+    <dcs-definition-title type="bool">ssl</dcs-definition-title>
+    <dcs-definition-desc>whether the site or part of it is under ssl or not<br />this value is usually set by the site module alone</dcs-definition-desc>
+
+    <dcs-definition-title type="bool">restricted</dcs-definition-title>
+    <dcs-definition-desc>whether the site or part of it is restricted to specific user roles<br />this value is usually set by the site module alone</dcs-definition-desc>
+
+    <dcs-definition-title type="array of strings">jsModules</dcs-definition-title>
+    <dcs-definition-desc>the injected angular module names from installed modules</dcs-definition-desc>
+
+    <dcs-definition-title type="array of strings">scripts</dcs-definition-title>
+    <dcs-definition-desc>extra head scripts (for the admin pages)</dcs-definition-desc>
+
+    <dcs-definition-title type="array of strings">fileGroups</dcs-definition-title>
+    <dcs-definition-desc>the available file group names</dcs-definition-desc>
+
+    <dcs-definition-title type="array of objects">images</dcs-definition-title>
+    <dcs-definition-desc>the available image transformations</dcs-definition-desc>
+
+    <dcs-definition-title type="array of objects">entities</dcs-definition-title>
+    <dcs-definition-desc>the entities</dcs-definition-desc>
+
+    <dcs-definition-title type="array of objects">roles</dcs-definition-title>
+    <dcs-definition-desc>the user roles</dcs-definition-desc>
+
+    <dcs-definition-title type="array of objects">sections</dcs-definition-title>
+    <dcs-definition-desc>the sections with their roles</dcs-definition-desc>
+
+    <dcs-definition-title type="object">collections</dcs-definition-title>
+    <dcs-definition-desc>the data collections along with their restrictions, events and schema validations</dcs-definition-desc>
+
+    <dcs-definition-title type="array of objects">lists</dcs-definition-title>
+    <dcs-definition-desc>the data lists</dcs-definition-desc>
+
+    <dcs-definition-title type="array of objects">layouts</dcs-definition-title>
+    <dcs-definition-desc>the layouts</dcs-definition-desc>
+
+    <dcs-definition-title type="array of objects">containers</dcs-definition-title>
+    <dcs-definition-desc>the containers</dcs-definition-desc>
+
+    <dcs-definition-title type="array of objects">templates</dcs-definition-title>
+    <dcs-definition-desc>the templates</dcs-definition-desc>
+
+    <dcs-definition-title type="array of objects">routes</dcs-definition-title>
+    <dcs-definition-desc>the routes</dcs-definition-desc>
+</dcs-definition>

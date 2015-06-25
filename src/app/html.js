@@ -147,7 +147,7 @@ var Parser = function (server) {
     };
 
     var parse = function (ctx, preparsingContext, callback) {
-        var html = _.template(preparsingContext.tmpl, preparsingContext.model);
+        var html = _.template(preparsingContext.tmpl)(preparsingContext.model);
         callback(html);
     };
 
@@ -165,7 +165,9 @@ var Parser = function (server) {
 
         if (!ctx.halt && ctx.uri.first !== 'admin') {
             var postparser = require('./parsing/postparser.js')(server, ctx);
-            postparser.process(postparsingContext, callback);
+            postparser.process(postparsingContext, function (postParsedContext) {
+                callback(postParsedContext.html);
+            });
         }
         else {
             callback(postparsingContext.html);
@@ -175,12 +177,12 @@ var Parser = function (server) {
     return {
 
         parse: function (ctx, tmpl, model, callback) {
-            
+
             prepare(ctx, tmpl, model, function (preparsingContext) {
                 preparse(ctx, preparsingContext, function (preparsedContext) {
                     parse(ctx, preparsedContext, function (parsedHtml) {
                         postParse(ctx, parsedHtml, function (postParsedHtml) {
-                            callback(parsedHtml);
+                            callback(postParsedHtml);
                         });
                     });
                 })

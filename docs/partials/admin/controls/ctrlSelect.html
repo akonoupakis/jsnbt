@@ -1,138 +1,48 @@
-﻿<div class="panel panel-default">
-    <table class="table table-bordered table-condensed data-structure">
-        <tbody>
-            <tr class="data-title">
-                <td>ngModel</td>
-                <td>text or number</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    the model to be bound to the control as the value
-                </td>
-            </tr>
+﻿<dcs-definition>
+    <dcs-definition-title type="text or number">ngModel</dcs-definition-title>
+    <dcs-definition-desc>the model to be bound to the control as the value</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>ngDisabled</td>
-                <td>bool</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    indicates whether this control is disabled or not
-                </td>
-            </tr>
+    <dcs-definition-title type="bool">ngDisabled</dcs-definition-title>
+    <dcs-definition-desc>indicates whether this control is disabled or not</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>ngRequired</td>
-                <td>bool</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    indicates whether the value of this control is required or not
-                </td>
-            </tr>
+    <dcs-definition-title type="bool">ngRequired</dcs-definition-title>
+    <dcs-definition-desc>indicates whether the value of this control is required or not</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>ngLabel</td>
-                <td>text</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    the label for this control, viewed as header
-                </td>
-            </tr>
+    <dcs-definition-title type="text">ngLabel</dcs-definition-title>
+    <dcs-definition-desc>the label for this control, viewed as header</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>ngTip</td>
-                <td>text</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    the sublabel for this control, viewed as subheader
-                </td>
-            </tr>
+    <dcs-definition-title type="text">ngTip</dcs-definition-title>
+    <dcs-definition-desc>the sublabel for this control, viewed as subheader</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>ngOptions</td>
-                <td>array of objects</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    these objects represent the selectbox options
-                </td>
-            </tr>
+    <dcs-definition-title type="array">ngOptions</dcs-definition-title>
+    <dcs-definition-desc>these objects represent the selectbox options</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>ngDefault</td>
-                <td>bool</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    indicates whether a default option value should be included or not
-                </td>
-            </tr>
+    <dcs-definition-title type="bool">ngDefault</dcs-definition-title>
+    <dcs-definition-desc>indicates whether a default option value should be included or not</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>ngValueField</td>
-                <td>text</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    the name of the option property that should be used as value
-                </td>
-            </tr>
-            
-            <tr class="data-title">
-                <td>ngNameField</td>
-                <td>text</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    the name of the option property that should be used as name
-                </td>
-            </tr>
+    <dcs-definition-title type="text">ngValueField</dcs-definition-title>
+    <dcs-definition-desc>the name of the option property that should be used as value</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>ngValidate</td>
-                <td>function</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    a custom validation function that should return a boolean result
-                </td>
-            </tr>
+    <dcs-definition-title type="text">ngNameField</dcs-definition-title>
+    <dcs-definition-desc>the name of the option property that should be used as name</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>ngValid</td>
-                <td>bool</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    if false, the control returns invalid when validation triggers (so that you can guide its validity from another scope property value)
-                </td>
-            </tr>
+    <dcs-definition-title type="function">ngValidate</dcs-definition-title>
+    <dcs-definition-desc>a custom validation function that should return a boolean result</dcs-definition-desc>
 
-            <tr class="data-title">
-                <td>ngAutoFocus</td>
-                <td>bool</td>
-            </tr>
-            <tr class="data-description">
-                <td colspan="2">
-                    indicates if the control should be focused on load or not
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <div class="panel-body">
-        <p>usage:</p>
-        <pre>&lt;ctrl-select
-    ng-model="sample.value" 
-    ng-disabled="false" 
-    ng-required="true" 
-    ng-label="sample label text" 
+    <dcs-definition-title type="bool">ngValid</dcs-definition-title>
+    <dcs-definition-desc>if false, the control returns invalid when validation triggers (so that you can guide its validity from another scope property value)</dcs-definition-desc>
+
+    <dcs-definition-title type="bool">ngAutoFocus</dcs-definition-title>
+    <dcs-definition-desc>indicates if the control should be focused on load or not</dcs-definition-desc>
+
+    <dcs-definition-sample>&lt;ctrl-select
+    ng-model="sample.value"
+    ng-disabled="false"
+    ng-required="true"
+    ng-label="sample label text"
     ng-tip="sample tip text"
     ng-options="options"
     ng-default="true"
     ng-name-field="name"
-    ng-value-field="value"&gt;&lt;/ctrl-select&gt;</pre>
-    </div>
-</div>
+    ng-value-field="value"&gt;&lt;/ctrl-select&gt;</dcs-definition-sample>
+</dcs-definition>
