@@ -4,6 +4,17 @@
     "use strict";
 
     angular.module('jsnbt', [])
+        .controller('DocsController', function ($scope) {
+
+            $scope.version = '0.0.1';
+
+            var parts = document.location.pathname.split('/');
+            if (parts.length > 2) {
+                var uriVersion = parts[2];
+                $scope.version = uriVersion;
+            }
+
+        })
         .directive('dcsContainer', function () {
 
             return {
@@ -48,7 +59,7 @@
                  }
              };
         })
-         .directive('dcsDefinition', function () {
+        .directive('dcsDefinition', function () {
 
              return {
                  restrict: 'E',
@@ -63,7 +74,7 @@
                  }
              };
          })
-         .directive('dcsDefinitionTitle', function () {
+        .directive('dcsDefinitionTitle', function () {
 
              return {
                  restrict: 'E',

@@ -73,6 +73,6 @@
     "grunt-contrib-watch": "*",
     "grunt-env": "*",
     "grunt-preprocess": "*",
-    "serve-static": "*"
+    "express": "*"
   }
 }
