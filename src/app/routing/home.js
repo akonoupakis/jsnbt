@@ -16,6 +16,7 @@ var HomeRouter = function (server) {
                     ctx.timer.start('node retrieval');
                     
                     node.resolveUrl(ctx.uri.url, function (resolved) {
+                        
                         ctx.timer.stop('node retrieval');
                         if (resolved && resolved.page && resolved.isActive()) {
                             
