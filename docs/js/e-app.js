@@ -6,7 +6,7 @@
     angular.module('jsnbt', [])
         .controller('DocsController', function ($scope) {
 
-            $scope.version = '0.0.1';
+            $scope.version = '0.0.0';
 
             var parts = document.location.pathname.split('/');
             if (parts.length > 2) {
