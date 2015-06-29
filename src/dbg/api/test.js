@@ -2,7 +2,7 @@
 
     return {
 
-        test: function (ctx, next) {
+        test: function (ctx, fields) {
             ctx.json({ test: 'test' });
         }
 

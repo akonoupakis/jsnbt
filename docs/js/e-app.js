@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module('jsnbt', [])
-        .controller('DocsController', function ($scope) {
+        .controller('DocsController', ['$scope', function ($scope) {
 
             $scope.version = '0.0.0';
 
@@ -14,8 +14,8 @@
                 $scope.version = uriVersion;
             }
 
-        })
-        .directive('dcsContainer', function () {
+        }])
+        .directive('dcsContainer', [function () {
 
             return {
                 restrict: 'E',
@@ -41,8 +41,8 @@
                     element.attr('data-spy-level', scope.spyLevel);
                 }
             };
-        })
-        .directive('dcsIntro', function () {
+        }])
+        .directive('dcsIntro', [function () {
 
              return {
                  restrict: 'E',
@@ -58,8 +58,8 @@
                          scope.dcsSpyLevel = 1;
                  }
              };
-        })
-        .directive('dcsDefinition', function () {
+        }])
+        .directive('dcsDefinition', [function () {
 
              return {
                  restrict: 'E',
@@ -73,8 +73,8 @@
 
                  }
              };
-         })
-        .directive('dcsDefinitionTitle', function () {
+         }])
+        .directive('dcsDefinitionTitle', [function () {
 
              return {
                  restrict: 'E',
@@ -89,8 +89,8 @@
 
                  }
              };
-         })
-        .directive('dcsDefinitionDesc', function () {
+         }])
+        .directive('dcsDefinitionDesc', [function () {
 
             return {
                 restrict: 'E',
@@ -104,8 +104,8 @@
 
                 }
             };
-        })
-        .directive('dcsDefinitionSample', function () {
+        }])
+        .directive('dcsDefinitionSample', [function () {
 
             return {
                 restrict: 'E',
@@ -121,8 +121,8 @@
 
                 }
             };
-        })
-        .directive('dcsDefinitionQuote', function () {
+        }])
+        .directive('dcsDefinitionQuote', [function () {
 
             return {
                 restrict: 'E',
@@ -138,8 +138,8 @@
 
                 }
             };
-        })
-        .directive('dcsDefinitionCode', function () {
+        }])
+        .directive('dcsDefinitionCode', [function () {
 
             return {
                 restrict: 'E',
@@ -160,7 +160,7 @@
 
                 }
             };
-        })
+        }])
         .directive('dcsCode', function () {
 
             return {
