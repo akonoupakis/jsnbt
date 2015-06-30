@@ -47,7 +47,8 @@ var getInstalledModules = function () {
                 if (typeof (installedModule.getVersion) === 'function')
                     installedModule.version = installedModule.getVersion();
 
-                modules.push(installedModule);
+                if (installedModule.domain)
+                    modules.push(installedModule);
             }
             catch (err) {
                 logger.fatal(err);
