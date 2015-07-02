@@ -84,3 +84,9 @@ pre.code {
     font-style: italic;
     font-size: 0.8875em;
 }
+
+@media screen and (max-width: 1000px) {
+    #scroll-spy {
+        display:none !important;
+    }
+}
