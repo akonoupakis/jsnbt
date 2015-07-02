@@ -2,23 +2,19 @@
 <html lang="en">
 <head>
     <title>jsnbt | documentation</title>
-    <link type="text/css" href="css/a-bootstrap.css" rel="stylesheet" />
-    <link type="text/css" href="css/b-docs.css" rel="stylesheet" />
-    <link type="text/css" href="css/c-app.css" rel="stylesheet" />
+    
+    <base href="<%= baseHref %>" />
+    <meta charset="utf-8" />
 
-    <script type="text/javascript" src="js/a-jquery.js"></script>
-    <script type="text/javascript" src="js/b-bootstrap.js"></script>
-    <script type="text/javascript" src="js/c-angular.js"></script>
-    <script type="text/javascript" src="js/d-jquery.scrollTo.js"></script>
-    <script type="text/javascript" src="js/e-app.js"></script>
+    <link rel="canonical" href="<%= canonical %>" />
 
-    <link type="text/css" href="all.css" rel="stylesheet" />
-    <script type="text/javascript" src="all.js"></script>
+    <% _.each(styles, function(file) { %><link type="text/css" href="<%= file %>" rel="stylesheet" />
+    <% }); %>
 </head>
 <body data-spy="scroll" data-target="#scroll-spy-sidebar" ng-controller="DocsController">
     <div class="container">
         <div class=" page-header">
-            <h1>jsnbt docs <small>v{{version}}</small></h1>
+            <h1>jsnbt docs <small>v<%= version %></small></h1>
         </div>
     </div>
     <div class="container bs-docs-container">
@@ -89,5 +85,8 @@
             </div>
         </div>
     </div>
+
+    <% _.each(scripts, function(file) { %><script type="text/javascript" src="<%= file %>"></script>
+    <% }); %>
 </body>
 </html>
