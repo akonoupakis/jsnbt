@@ -4,7 +4,18 @@
     "use strict";
 
     angular.module('jsnbt', [])
-        .directive('dcsContainer', function () {
+        .controller('DocsController', ['$scope', function ($scope) {
+
+            $scope.version = '0.0.0';
+
+            var parts = document.location.pathname.split('/');
+            if (parts.length > 2) {
+                var uriVersion = parts[2];
+                $scope.version = uriVersion;
+            }
+
+        }])
+        .directive('dcsContainer', [function () {
 
             return {
                 restrict: 'E',
@@ -30,8 +41,25 @@
                     element.attr('data-spy-level', scope.spyLevel);
                 }
             };
-        })
-         .directive('dcsDefinition', function () {
+        }])
+        .directive('dcsIntro', [function () {
+
+             return {
+                 restrict: 'E',
+                 replace: true,
+                 transclude: true,
+                 scope: {
+                 },
+                 template: '<p ng-transclude></p>',
+                 link: function (scope, element, attrs) {
+                     element.addClass('dcs-intro');
+
+                     if (!scope.dcsSpyLevel)
+                         scope.dcsSpyLevel = 1;
+                 }
+             };
+        }])
+        .directive('dcsDefinition', [function () {
 
              return {
                  restrict: 'E',
@@ -45,8 +73,8 @@
 
                  }
              };
-         })
-         .directive('dcsDefinitionTitle', function () {
+         }])
+        .directive('dcsDefinitionTitle', [function () {
 
              return {
                  restrict: 'E',
@@ -61,8 +89,8 @@
 
                  }
              };
-         })
-        .directive('dcsDefinitionDesc', function () {
+         }])
+        .directive('dcsDefinitionDesc', [function () {
 
             return {
                 restrict: 'E',
@@ -76,8 +104,8 @@
 
                 }
             };
-        })
-        .directive('dcsDefinitionSample', function () {
+        }])
+        .directive('dcsDefinitionSample', [function () {
 
             return {
                 restrict: 'E',
@@ -93,8 +121,8 @@
 
                 }
             };
-        })
-        .directive('dcsDefinitionQuote', function () {
+        }])
+        .directive('dcsDefinitionQuote', [function () {
 
             return {
                 restrict: 'E',
@@ -110,8 +138,8 @@
 
                 }
             };
-        })
-        .directive('dcsDefinitionCode', function () {
+        }])
+        .directive('dcsDefinitionCode', [function () {
 
             return {
                 restrict: 'E',
@@ -132,7 +160,7 @@
 
                 }
             };
-        })
+        }])
         .directive('dcsCode', function () {
 
             return {

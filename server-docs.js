@@ -1,3 +1,10 @@
-var connect = require('connect');
-var serveStatic = require('serve-static');
-connect().use(serveStatic('docs')).listen(3001);
+var app = require('jsnbt-docs');
+
+var server = app.createServer({
+    title: 'jsnbt documentation',
+    host: 'localhost',
+    port: 3001,
+    root: 'docs'
+});
+
+server.start();

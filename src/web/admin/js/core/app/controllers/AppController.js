@@ -114,23 +114,29 @@
                 setDefaultLanguage: function () {
                     var deferred = $q.defer();
 
-                    $data.languages.get({ active: true, 'default': true, $limit: 1 }).then(function (results) {
-                        var defaultLanguage = _.first(results);
-                        var defaultLangCode = defaultLanguage ? defaultLanguage.code : '';
-                        if (_.filter($scope.application.languages, function (x) { return x.code === defaultLangCode; }).length === 0) {
-                            var firstLanguage = _.first($scope.application.languages);
-                            if (firstLanguage) {
-                                defaultLangCode = firstLanguage.code;
+                    if (!$jsnbt.localization.enabled) {
+                        $scope.defaults.language = $jsnbt.localization.locale;
+                        deferred.resolve($scope.defaults.language);
+                    }
+                    else {
+                        $data.languages.get({ active: true, 'default': true, $limit: 1 }).then(function (results) {
+                            var defaultLanguage = _.first(results);
+                            var defaultLangCode = defaultLanguage ? defaultLanguage.code : '';
+                            if (_.filter($scope.application.languages, function (x) { return x.code === defaultLangCode; }).length === 0) {
+                                var firstLanguage = _.first($scope.application.languages);
+                                if (firstLanguage) {
+                                    defaultLangCode = firstLanguage.code;
+                                }
                             }
-                        }
 
-                        $scope.defaults.language = defaultLangCode;
+                            $scope.defaults.language = defaultLangCode;
 
-                        deferred.resolve(defaultLangCode);
+                            deferred.resolve(defaultLangCode);
 
-                    }, function (error) {
-                        deferred.reject(error);
-                    });
+                        }, function (error) {
+                            deferred.reject(error);
+                        });
+                    }
 
                     return deferred.promise;
                 }

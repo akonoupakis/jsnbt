@@ -18,7 +18,8 @@
             $scope.nodeRoles = [];
             $scope.draftRoles = [];
 
-            $scope.robots = [];$scope.nodeRobots = [];
+            $scope.robots = [];
+            $scope.nodeRobots = [];
             $scope.draftRobots = [];
 
             $scope.layouts = [];

@@ -2,8 +2,10 @@
 
     return {
 
-        test: function (ctx, next) {
-            ctx.json({ test: 'test' });
+        test: function (ctx, fields) {
+            //ctx.json({ test: 'test' });
+
+            ctx.json(['test1', 'test2']);
         }
 
     }

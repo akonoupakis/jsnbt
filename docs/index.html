@@ -1,21 +1,21 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>jsnbt docs</title>
-    <link type="text/css" href="css/bootstrap.min.css" rel="stylesheet" />
-    <link type="text/css" href="css/docs.min.css" rel="stylesheet" />
-    <link type="text/css" href="css/app.css" rel="stylesheet" />
+    <title>jsnbt | documentation</title>
+    
+    <base href="<%= baseHref %>" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/angular.min.js"></script>
-    <script type="text/javascript" src="js/jquery.scrollTo.js"></script>
-    <script type="text/javascript" src="js/app.js"></script>
+    <link rel="canonical" href="<%= canonical %>" />
+
+    <% _.each(styles, function(file) { %><link type="text/css" href="<%= file %>" rel="stylesheet" />
+    <% }); %>
 </head>
-<body data-spy="scroll" data-target="#scroll-spy-sidebar">
+<body data-spy="scroll" data-target="#scroll-spy-sidebar" ng-controller="DocsController">
     <div class="container">
         <div class=" page-header">
-            <h1>jsnbt docs <small>v0.0.0</small></h1>
+            <h1>jsnbt docs <small>v<%= version %></small></h1>
         </div>
     </div>
     <div class="container bs-docs-container">
@@ -79,12 +79,15 @@
                 </dcs-container>
 
             </div>
-            <div class="col-md-3" role="complementary">
+            <div class="col-md-3" role="complementary" id="scroll-spy">
                 <nav class="bs-docs-sidebar" id="scroll-spy-sidebar">
                     <ul class="nav bs-docs-sidenav"></ul>
                 </nav>
             </div>
         </div>
     </div>
+
+    <% _.each(scripts, function(file) { %><script type="text/javascript" src="<%= file %>"></script>
+    <% }); %>
 </body>
 </html>

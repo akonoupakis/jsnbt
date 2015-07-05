@@ -16,7 +16,7 @@ module.exports = {
 
         if (fs.existsSync(server.getPath('bower_components/' + name)))
             if (force === true)
-                fs.delete(server.getPath('bower_components/' + name));
+                fs.delete(server.getPath('bower_components/' + name)); 
 
         if (!fs.existsSync(server.getPath('bower_components/' + name)))
             fs.copy(server.getPath('bower/' + name), server.getPath('bower_components/' + name));

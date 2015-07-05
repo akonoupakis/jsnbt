@@ -296,6 +296,9 @@ var Jsnbt = function () {
             if (typeof (moduleConfig.register) === 'function') {
                 self.configs[moduleConfig.domain] = moduleConfig.register();
             }
+            else {
+                self.configs[moduleConfig.domain] = {};
+            }
 
             var newModules = [];
             var coreModule = _.find(this.modules, function (x) { return x.domain === 'core'; });

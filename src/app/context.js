@@ -213,7 +213,7 @@ var Context = function (server, req, res) {
             completing = true;
             req._routed = true;
             res.writeHead(200, { "Content-Type": "application/json" });
-            res.write(JSON.stringify(data, null, server.app.dbg ? '\t' : ''));
+            res.write(new Buffer(JSON.stringify(data, null, server.app.dbg ? '\t' : '')));
             res.end();
         },
         html: function (html) {
