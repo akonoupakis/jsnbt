@@ -3,7 +3,6 @@
 module.exports = {
 
     domain: 'public',
-    public: true,
 
     init: function (application) {
         app = application;

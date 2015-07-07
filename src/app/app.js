@@ -16,7 +16,6 @@ var Directory = {
 var logger = require('./logger.js')(this);
 
 exports.domain = 'core';
-exports.public = false;
 exports.browsable = false;
 exports.messager = true;
 
@@ -47,7 +46,7 @@ var getInstalledModules = function () {
                 if (typeof (installedModule.getVersion) === 'function')
                     installedModule.version = installedModule.getVersion();
 
-                if (installedModule.domain)
+                if (installedModule.domain && installedModule.domain !== 'public')
                     modules.push(installedModule);
             }
             catch (err) {
@@ -90,8 +89,7 @@ exports.init = function (options, module) {
     });
 
     if (module) {
-        if (module.public) {
-            module.domain = 'public';
+        if (module.domain === 'public') {
             module.browsable = false;
             self.modules.public = module;
         }

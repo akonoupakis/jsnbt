@@ -199,7 +199,7 @@ var Jsnbt = function () {
                     fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
 
                     if (module.domain) {
-                        var moduleListDomain = module.public ? 'public' : module.domain;
+                        var moduleListDomain = module.domain;
 
                         var matchedList = _.first(_.filter(self.lists, function (x) { return x.id === fileName && x.domain == moduleListDomain; }));
                         if (matchedList) {
@@ -243,7 +243,7 @@ var Jsnbt = function () {
                 }
             }
 
-            if (module.public) {
+            if (module.domain === 'public') {
 
                 if (moduleConfig.ssl !== undefined) {
                     self.ssl = moduleConfig.ssl === true;
@@ -286,7 +286,6 @@ var Jsnbt = function () {
                 }
             }
             
-            moduleConfig.public = module.public;
             moduleConfig.domain = module.domain;
             moduleConfig.version = module.version;
             moduleConfig.browsable = module.browsable;
@@ -305,12 +304,12 @@ var Jsnbt = function () {
             if (coreModule)
                 newModules.push(coreModule);
 
-            var restModules = _.filter(this.modules, function (x) { return x.domain !== 'core' && !x.public; });
+            var restModules = _.filter(this.modules, function (x) { return x.domain !== 'core' && x.domain !== 'public'; });
             _.each(restModules, function (mod) {
                 newModules.push(mod);
             });
 
-            var publicModule = _.find(this.modules, function (x) { return x.public === true; });
+            var publicModule = _.find(this.modules, function (x) { return x.domain === 'public'; });
             if (publicModule)
                 newModules.push(publicModule);
 
