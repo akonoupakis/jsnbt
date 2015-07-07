@@ -177,7 +177,7 @@ function Server(app, options) {
 
                 authMngr = require('./cms/authMngr.js')(server);
 
-                logger.info('server is listening on ' + opts.host + ':' + opts.port);
+                logger.info('server is listening on:' + opts.port);
 
                 started = true;
 
