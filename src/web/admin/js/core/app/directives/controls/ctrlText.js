@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlText', function ($timeout, CONTROL_EVENTS) {
+        .directive('ctrlText', ['$timeout', 'CONTROL_EVENTS', function ($timeout, CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -86,8 +86,8 @@
                 templateUrl: 'tmpl/core/controls/ctrlText.html'
             };
 
-        })
-        .directive('ctrlTextAllowed', function () {
+        }])
+        .directive('ctrlTextAllowed', [function () {
 
             return {
                 restrict: "A",
@@ -103,6 +103,6 @@
                 }
             };
 
-        });
+        }]);
 
 })();

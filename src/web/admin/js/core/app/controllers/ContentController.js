@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('ContentController', function ($scope, $jsnbt, $location) {
+        .controller('ContentController', ['$scope', '$jsnbt', '$location', function ($scope, $jsnbt, $location) {
 
             $scope.goto = function (name) {
                 $location.next('/content/' + name);
@@ -17,5 +17,5 @@
             });
             $scope.injects = injects;
 
-        });
+        }]);
 })();

@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .factory('AuthService', function ($q, $jsnbt) {
+        .factory('AuthService', ['$q', '$jsnbt', function ($q, $jsnbt) {
             var AuthService = {};
             
             AuthService.login = function (username, password) {
@@ -153,5 +153,5 @@
             }
 
             return AuthService;
-        });
+        }]);
 })();

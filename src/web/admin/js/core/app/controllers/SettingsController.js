@@ -4,7 +4,8 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('SettingsController', function ($scope, $rootScope, $location, $route, $timeout, $q, $logger, $queue, $data, $jsnbt, ScrollSpyService, LocationService, CONTROL_EVENTS) {
+        .controller('SettingsController', ['$scope', '$location', '$route', '$timeout', '$q', '$logger', '$data', '$jsnbt', 'ScrollSpyService', 'LocationService', 'CONTROL_EVENTS',
+            function ($scope, $location, $route, $timeout, $q, $logger, $data, $jsnbt, ScrollSpyService, LocationService, CONTROL_EVENTS) {
             
             var logger = $logger.create('SettingsController');
 
@@ -304,5 +305,5 @@
 
 
             var section = $route.current.$$route.section;
-        });
+        }]);
 })(); 

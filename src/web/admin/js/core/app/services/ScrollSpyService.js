@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .factory('ScrollSpyService', function ($q) {
+        .factory('ScrollSpyService', ['$q', function ($q) {
             var ScrollSpyService = {};
 
             ScrollSpyService.get = function (timeout) {
@@ -49,5 +49,5 @@
             };
 
             return ScrollSpyService;
-        });
+        }]);
 })();

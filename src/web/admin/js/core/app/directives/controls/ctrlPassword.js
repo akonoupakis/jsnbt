@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlPassword', function ($timeout, CONTROL_EVENTS) {
+        .directive('ctrlPassword', ['$timeout', 'CONTROL_EVENTS', function ($timeout, CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -85,6 +85,6 @@
                 templateUrl: 'tmpl/core/controls/ctrlPassword.html'
             };
 
-        });
+        }]);
 
 })();

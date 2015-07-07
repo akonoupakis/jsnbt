@@ -4,11 +4,11 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('FilesController', function ($scope, $location) {
+        .controller('FilesController', ['$scope', '$location', function ($scope, $location) {
 
             $scope.back = function () {
                 $location.previous('/content');
             };
 
-        });
+        }]);
 })();

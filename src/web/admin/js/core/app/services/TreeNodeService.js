@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .factory('TreeNodeService', function ($q, $jsnbt, $cacheFactory, FileService) {
+        .factory('TreeNodeService', ['$q', '$jsnbt', '$cacheFactory', 'FileService', function ($q, $jsnbt, $cacheFactory, FileService) {
             var TreeNodeService = {};
             
             var cache = $cacheFactory('NestableCache');
@@ -601,5 +601,5 @@
             };
 
             return TreeNodeService;
-        });
+        }]);
 })();

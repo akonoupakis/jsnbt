@@ -4,7 +4,8 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('TextsController', function ($scope, $location, $logger, $q, $data, PagedDataService, ModalService, LocationService) {
+        .controller('TextsController', ['$scope', '$location', '$logger', '$q', '$data', 'PagedDataService', 'ModalService',
+            function ($scope, $location, $logger, $q, $data, PagedDataService, ModalService) {
            
             var logger = $logger.create('TextsController');
 
@@ -79,5 +80,5 @@
                 logger.error(ex);
             });
 
-        });
+        }]);
 })();

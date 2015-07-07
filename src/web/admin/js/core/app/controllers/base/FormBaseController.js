@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('FormBaseController', function ($scope, $routeParams, LocationService, ScrollSpyService, CONTROL_EVENTS) {
+        .controller('FormBaseController', ['$scope', '$routeParams', 'LocationService', 'ScrollSpyService', 'CONTROL_EVENTS', function ($scope, $routeParams, LocationService, ScrollSpyService, CONTROL_EVENTS) {
            
             $scope.id = $routeParams.id;
             $scope.new = $scope.id === 'new';
@@ -103,5 +103,5 @@
                 if (!value)
                     $scope.valid = false;
             });
-        });
+        }]);
 })();

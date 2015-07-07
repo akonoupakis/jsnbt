@@ -2,7 +2,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('NodeSelectorController', function ($scope, $data, TreeNodeService, CONTROL_EVENTS, MODAL_EVENTS) {
+        .controller('NodeSelectorController', ['$scope', '$data', 'TreeNodeService', 'CONTROL_EVENTS', 'MODAL_EVENTS', function ($scope, $data, TreeNodeService, CONTROL_EVENTS, MODAL_EVENTS) {
      
             $scope.nodes = [];
 
@@ -79,5 +79,5 @@
             $scope.$on(CONTROL_EVENTS.valueSubmitted, function (sender, selected) {
                 sender.stopPropagation();
             });
-        });
+        }]);
 })();

@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlRegistration', function ($rootScope, $data, AuthService, AUTH_EVENTS, CONTROL_EVENTS) {
+        .directive('ctrlRegistration', ['$rootScope', '$data', 'AuthService', 'AUTH_EVENTS', 'CONTROL_EVENTS', function ($rootScope, $data, AuthService, AUTH_EVENTS, CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -77,6 +77,6 @@
                 templateUrl: 'tmpl/core/controls/ctrlRegistration.html'
             };
 
-        });
+        }]);
 
 })();

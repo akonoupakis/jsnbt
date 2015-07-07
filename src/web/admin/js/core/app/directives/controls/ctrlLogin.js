@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlLogin', function ($rootScope, AuthService, AUTH_EVENTS, CONTROL_EVENTS) {
+        .directive('ctrlLogin', ['$rootScope', 'AuthService', 'AUTH_EVENTS', 'CONTROL_EVENTS', function ($rootScope, AuthService, AUTH_EVENTS, CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -48,6 +48,6 @@
                 templateUrl: 'tmpl/core/controls/ctrlLogin.html'
             };
 
-        });
+        }]);
 
 })();

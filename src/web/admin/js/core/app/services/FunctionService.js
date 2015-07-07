@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .factory('FunctionService', function ($q, $data, ModalService) {
+        .factory('FunctionService', ['$q', 'ModalService', function ($q, ModalService) {
             var FunctionService = {};
             
             FunctionService = {
@@ -67,5 +67,5 @@
             };
 
             return FunctionService;
-        });
+        }]);
 })();

@@ -4,7 +4,8 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('UserController', function ($scope, $routeParams, $location, $timeout, $q, $logger, $data, $jsnbt, ScrollSpyService, LocationService, AuthService, CONTROL_EVENTS) {
+        .controller('UserController', ['$scope', '$routeParams', '$location', '$timeout', '$q', '$logger', '$data', '$jsnbt', 'ScrollSpyService', 'LocationService', 'AuthService', 'CONTROL_EVENTS',
+            function ($scope, $routeParams, $location, $timeout, $q, $logger, $data, $jsnbt, ScrollSpyService, LocationService, AuthService, CONTROL_EVENTS) {
            
             var logger = $logger.create('UserController');
 
@@ -207,5 +208,5 @@
                     logger.error(ex);
                 });
             }, 200);
-        });
+        }]);
 })();

@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .provider("$logger", function () {
+        .provider("$logger", [function () {
             var settings = {};
 
             return {
@@ -31,5 +31,5 @@
                     return Logger;
                 }
             };
-        });
+        }]);
 })();

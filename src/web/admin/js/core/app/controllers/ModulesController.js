@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('ModulesController', function ($scope, $location, $q, $logger, $jsnbt, AuthService) {
+        .controller('ModulesController', ['$scope', '$location', '$q', '$logger', '$jsnbt', 'AuthService', function ($scope, $location, $q, $logger, $jsnbt, AuthService) {
             
             var logger = $logger.create('ModulesController');
 
@@ -61,5 +61,5 @@
                 logger.error(ex);
             });
 
-        });
+        }]);
 })(); 

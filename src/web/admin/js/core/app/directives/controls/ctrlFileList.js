@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlFileList', function ($timeout, ModalService, CONTROL_EVENTS) {
+        .directive('ctrlFileList', ['$timeout', 'ModalService', 'CONTROL_EVENTS', function ($timeout, ModalService, CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -214,6 +214,6 @@
                 templateUrl: 'tmpl/core/controls/ctrlFileList.html'
             };
 
-        });
+        }]);
 
 })();

@@ -2,7 +2,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('ContainerSelectorController', function ($scope, $jsnbt, CONTROL_EVENTS, MODAL_EVENTS) {
+        .controller('ContainerSelectorController', ['$scope', '$jsnbt', 'CONTROL_EVENTS', 'MODAL_EVENTS', function ($scope, $jsnbt, CONTROL_EVENTS, MODAL_EVENTS) {
      
             if (!$scope.mode)
                 $scope.mode = 'single';
@@ -49,5 +49,5 @@
                 sender.stopPropagation();
             });
 
-        });
+        }]);
 })();

@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('LayoutController', function ($scope, $rootScope, $routeParams, $location, $timeout, $q, $logger, $queue, $data, $jsnbt, ScrollSpyService, LocationService, CONTROL_EVENTS) {
+        .controller('LayoutController', ['$scope', '$routeParams', '$location', '$timeout', '$q', '$logger', '$data', '$jsnbt', 'ScrollSpyService', 'LocationService', 'CONTROL_EVENTS', function ($scope, $routeParams, $location, $timeout, $q, $logger, $data, $jsnbt, ScrollSpyService, LocationService, CONTROL_EVENTS) {
            
             var logger = $logger.create('LayoutController');
 
@@ -283,5 +283,5 @@
                     logger.error(ex);
                 });
             }, 200);
-        });
+        }]);
 })();

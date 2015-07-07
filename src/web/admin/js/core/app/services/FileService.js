@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .factory('FileService', function ($q, $http) {
+        .factory('FileService', ['$q', '$http', function ($q, $http) {
             var FileService = {};
          
             FileService.get = function (paths) {
@@ -79,5 +79,5 @@
             };
 
             return FileService;
-        });
+        }]);
 })();

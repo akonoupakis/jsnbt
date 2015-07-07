@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlExplorer', function ($timeout, $rootScope, FileService, ModalService, CONTROL_EVENTS) {
+        .directive('ctrlExplorer', ['FileService', 'ModalService', 'CONTROL_EVENTS', function (FileService, ModalService, CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -291,6 +291,6 @@
                 templateUrl: 'tmpl/core/controls/ctrlExplorer.html'
             };
 
-        });
+        }]);
 
 })();
