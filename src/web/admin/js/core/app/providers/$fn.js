@@ -5,7 +5,7 @@
 
     angular.providers = {};
     angular.module("jsnbt")
-        .provider("$fn", function () {
+        .provider("$fn", [function () {
             var settings = {};
 
             return {
@@ -35,7 +35,6 @@
                     };
 
                     var getFn = function (domain, fn, cascade) {
-                        //var module = _.first(_.filter($jsnbt.modules, function (x) { return x.domain === domain; }));
                         var loopObject;
                         var coreDomain = 'core';
                         if (angular.providers[domain]) {
@@ -83,6 +82,6 @@
                     return Function;
                 }
             };
-        });
+        }]);
         
 })();

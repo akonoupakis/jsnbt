@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlNodeList', function ($timeout, $data, $fn, CONTROL_EVENTS) {
+        .directive('ctrlNodeList', ['$timeout', '$data', '$fn', 'CONTROL_EVENTS', function ($timeout, $data, $fn, CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -262,6 +262,6 @@
                 templateUrl: 'tmpl/core/controls/ctrlNodeList.html'
             };
 
-        });
+        }]);
 
 })();

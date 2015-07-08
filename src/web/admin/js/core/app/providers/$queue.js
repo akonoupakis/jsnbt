@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .provider("$queue", function () {
+        .provider("$queue", [function () {
             var settings = {};
 
             return {
@@ -62,5 +62,5 @@
                     return Queue;
                 }
             };
-        });
+        }]);
 })();

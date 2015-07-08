@@ -4,7 +4,7 @@
     "use strict";
     angular.scrollspy = false;
     angular.module('jsnbt')
-        .directive('scrollspy', function () {
+        .directive('scrollspy', [function () {
 
             return {
                 restrict: 'E',
@@ -64,6 +64,6 @@
                 templateUrl: 'tmpl/core/common/scrollspy.html'
             };
 
-        });
+        }]);
 
 })();

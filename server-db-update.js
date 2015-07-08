@@ -1,3 +1,4 @@
+var hosts = require('./hosts.json');
 var app = require('./src/app/app.js');
 
 app.init({
@@ -7,7 +8,7 @@ app.init({
 var server = app.createServer({
     env: 'dev',
     host: 'localhost',
-    port: 2999,
+    port: hosts.port - 1,
     db: {
         host: 'localhost',
         port: 27017,

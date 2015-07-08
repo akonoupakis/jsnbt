@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('SettingsBaseController', function ($scope, $route, $routeParams, $q, $timeout, $data, LocationService, ScrollSpyService, CONTROL_EVENTS) {
+        .controller('SettingsBaseController', ['$scope', '$route', '$routeParams', '$q', '$timeout', '$data', 'LocationService', 'ScrollSpyService', 'CONTROL_EVENTS', function ($scope, $route, $routeParams, $q, $timeout, $data, LocationService, ScrollSpyService, CONTROL_EVENTS) {
            
             $scope.domain = $route.current.$$route.domain;
 
@@ -178,5 +178,5 @@
                 if (!value)
                     $scope.valid = false;
             });
-        });
+        }]);
 })();

@@ -2,7 +2,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('DataSelectorController', function ($scope, $data, PagedDataService, CONTROL_EVENTS, MODAL_EVENTS) {
+        .controller('DataSelectorController', ['$scope', '$data', 'PagedDataService', 'CONTROL_EVENTS', 'MODAL_EVENTS', function ($scope, $data, PagedDataService, CONTROL_EVENTS, MODAL_EVENTS) {
      
             $scope.data = [];
 
@@ -41,5 +41,5 @@
                 sender.stopPropagation();
             });
 
-        });
+        }]);
 })();

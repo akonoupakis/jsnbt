@@ -58,12 +58,12 @@ var Context = function (server, req, res) {
         });
     };
 
-    var uri = new parseUri('http://' + server.host + ':' + server.port + req.url);
+    var uri = new parseUri('http://' + server.host + req.url);
 
     if (!_.str.endsWith(uri.path, '/'))
         uri.path += '/';
 
-    uri = new parseUri(('http://' + server.host + ':' + server.port + uri.path).toLowerCase() + (uri.query !== '' ? '?' + uri.query : ''));
+    uri = new parseUri(('http://' + server.host + uri.path).toLowerCase() + (uri.query !== '' ? '?' + uri.query : ''));
 
     var timer = require('./logging/timer.js')('context: ' + uri.relative);
     timer.start();

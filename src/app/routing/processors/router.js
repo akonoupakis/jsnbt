@@ -6,10 +6,7 @@ var RouterRouteProcessor = function (server, routeId) {
 
     var configRouteFn = configRoute !== undefined ? configRoute.fn : '';
 
-    var moduleRouter = configRoute !== undefined ? _.first(_.filter(server.app.modules.all, function (x) {
-        return x.public === true
-            && x[configRouteFn] && _.isFunction(x[configRouteFn]);
-    })) : undefined;
+    var moduleRouter = server.app.modules.public && _.isFunction(server.app.modules.public[configRouteFn]) ? server.app.modules.public : undefined;
 
     var nextRouter = function (ctx) {
         ctx.error(404);

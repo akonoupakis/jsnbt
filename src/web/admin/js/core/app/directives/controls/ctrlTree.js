@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-     .directive('ctrlTree', function ($compile) {
+     .directive('ctrlTree', [function () {
 
          return {
              restrict: 'E',
@@ -53,8 +53,8 @@
              }
          };
 
-     })
-     .directive('ctrlTreeNode', function ($compile) {
+     }])
+     .directive('ctrlTreeNode', ['$compile', function ($compile) {
 
          return {
              restrict: 'E',
@@ -100,8 +100,8 @@
              }
          };
 
-     })
-     .directive('ctrlTreeNodeContent', function (CONTROL_EVENTS) {
+     }])
+     .directive('ctrlTreeNodeContent', ['CONTROL_EVENTS', function (CONTROL_EVENTS) {
 
          return {
              restrict: 'E',
@@ -161,8 +161,8 @@
              template: '<div class="dd-content" ng-class="{ \'dd-selected\': node.selected }"><div ng-click="select(node, false)" ng-dblclick="select(node, true)" ng-transclude></div></div>'
          };
 
-     })
-     .directive('ctrlTreeNodeButtons', function ($compile, $location, $q, $fn) {
+     }])
+     .directive('ctrlTreeNodeButtons', [function () {
 
          return {
              restrict: 'E',
@@ -174,8 +174,8 @@
              template: '<div class="dd-buttons" ng-transclude></div>'
          };
 
-     })
-     .directive('ctrlTreeEmpty', function () {
+     }])
+     .directive('ctrlTreeEmpty', [function () {
 
          return {
              restrict: 'E',
@@ -195,6 +195,6 @@
              }
          };
 
-     });
+     }]);
 
 })();

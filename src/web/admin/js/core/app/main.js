@@ -16,7 +16,7 @@
     modules.push('ui.tinymce');
     
     angular.module('jsnbt', modules)
-    .config(function ($routeProvider, $jsnbtProvider, flowFactoryProvider) {
+    .config(['$routeProvider', '$jsnbtProvider', 'flowFactoryProvider', function ($routeProvider, $jsnbtProvider, flowFactoryProvider) {
         
         $jsnbtProvider.setSettings(jsnbt);
 
@@ -152,8 +152,8 @@
         };
 
         tinymce.baseURL = '/admin/css/core/lib/tinymce';
-    })
-    .run(function ($rootScope, $location, $route, $timeout, $fn, FunctionService, AuthService, AUTH_EVENTS, ROUTE_EVENTS) {
+    }])
+    .run(['$rootScope', '$location', '$route', '$timeout', '$fn', 'FunctionService', 'AuthService', 'AUTH_EVENTS', 'ROUTE_EVENTS', function ($rootScope, $location, $route, $timeout, $fn, FunctionService, AuthService, AUTH_EVENTS, ROUTE_EVENTS) {
         $fn.register('core', FunctionService);
         
         $rootScope.initiated = $rootScope.initiated || false;
@@ -273,5 +273,5 @@
             $location.path(path);
         };
 
-    });
+    }]);
 })();

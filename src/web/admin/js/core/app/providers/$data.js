@@ -5,7 +5,7 @@
 
     angular.defaults = {};
     angular.module("jsnbt")
-        .provider("$data", function () {
+        .provider("$data", [function () {
             var settings = {};
 
             return {
@@ -116,8 +116,8 @@
                     return Data;
                 }
             };
-        })
-        .run(function ($data) {
+        }])
+        .run(['$data', function ($data) {
 
             $data.register('users', {
                 username: undefined,
@@ -195,6 +195,6 @@
                 data: {}
             });
 
-        });
+        }]);
         
 })();

@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlCheck', function ($timeout, CONTROL_EVENTS) {
+        .directive('ctrlCheck', ['$timeout', 'CONTROL_EVENTS', function ($timeout, CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -62,6 +62,6 @@
                 templateUrl: 'tmpl/core/controls/ctrlCheck.html'
             };
 
-        });
+        }]);
 
 })();

@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlGrid', function () {
+        .directive('ctrlGrid', [function () {
 
             return {
                 restrict: 'E',
@@ -40,8 +40,8 @@
                 template: '<table class="table table-condensed" ng-class="{\'ctrl-grid-loading\': loading}" ng-transclude></table>'
             };
 
-        })
-        .directive('ctrlGridHeader', function () {
+        }])
+        .directive('ctrlGridHeader', [function () {
 
             return {
                 restrict: 'E',
@@ -63,8 +63,8 @@
                 }
             };
 
-        })
-        .directive('ctrlGridHeaderColumn', function () {
+        }])
+        .directive('ctrlGridHeaderColumn', [function () {
 
             return {
                 restrict: 'E',
@@ -76,8 +76,8 @@
                 }
             };
 
-        })
-        .directive('ctrlGridBody', function () {
+        }])
+        .directive('ctrlGridBody', [function () {
 
             return {
                 restrict: 'E',
@@ -89,8 +89,8 @@
                 }
             };
 
-        })
-        .directive('ctrlGridColumn', function (CONTROL_EVENTS) {
+        }])
+        .directive('ctrlGridColumn', ['CONTROL_EVENTS', function (CONTROL_EVENTS) {
 
             return {
                 require: '^ctrlGrid',
@@ -133,8 +133,8 @@
                 }
             };
 
-        })
-        .directive('ctrlGridButtonsColumn', function () {
+        }])
+        .directive('ctrlGridButtonsColumn', [function () {
 
             return {
                 require: '^ctrlGrid',
@@ -150,8 +150,8 @@
                 }
             };
 
-        })
-        .directive('ctrlGridFooter', function () {
+        }])
+        .directive('ctrlGridFooter', [function () {
 
             return {
                 restrict: 'E',
@@ -169,8 +169,8 @@
                 }
             };
 
-        })
-       .directive('ctrlGridInfiniteScroll', function () {
+        }])
+       .directive('ctrlGridInfiniteScroll', [function () {
 
            return {
                restrict: 'E',
@@ -207,8 +207,8 @@
                }
            };
 
-       })
-      .directive('ctrlGridEmpty', function () {
+       }])
+      .directive('ctrlGridEmpty', [function () {
 
           return {
               restrict: 'E',
@@ -226,8 +226,8 @@
               }
           };
 
-      })
-      .directive('ctrlGridInject', function () {
+      }])
+      .directive('ctrlGridInject', [function () {
           return {
               link: function ($scope, $element, $attrs, controller, $transclude) {
                   if (!$transclude) {
@@ -247,5 +247,5 @@
                   });
               }
           };
-      });
+      }]);
 })();

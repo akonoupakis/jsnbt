@@ -4,7 +4,7 @@
     "use strict";
     
     angular.module("jsnbt")
-        .provider("$package", function () {
+        .provider("$package", [function () {
             var settings = {};
 
             return {
@@ -43,6 +43,6 @@
                     return Package;
                 }
             };
-        });
+        }]);
         
 })();

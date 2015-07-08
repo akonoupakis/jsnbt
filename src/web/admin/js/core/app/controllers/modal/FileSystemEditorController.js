@@ -2,7 +2,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('FileSystemEditorController', function ($scope, TreeNodeService, CONTROL_EVENTS, MODAL_EVENTS) {
+        .controller('FileSystemEditorController', ['$scope', 'TreeNodeService', 'CONTROL_EVENTS', 'MODAL_EVENTS', function ($scope, TreeNodeService, CONTROL_EVENTS, MODAL_EVENTS) {
      
             if (!$scope.group)
                 throw new Error('$scope.group not defined in FileSystemEditorController');
@@ -61,5 +61,5 @@
                 }
             });
 
-        });
+        }]);
 })();

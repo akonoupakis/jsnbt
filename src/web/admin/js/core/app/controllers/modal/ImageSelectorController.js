@@ -2,7 +2,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('ImageSelectorController', function ($scope, MODAL_EVENTS, CONTROL_EVENTS) {
+        .controller('ImageSelectorController', ['$scope', 'MODAL_EVENTS', 'CONTROL_EVENTS', function ($scope, MODAL_EVENTS, CONTROL_EVENTS) {
 
             $scope.mode = 'single';
 
@@ -57,5 +57,5 @@
                     $scope.ngModel.gen = selected;
             });
 
-        });
+        }]);
 })();

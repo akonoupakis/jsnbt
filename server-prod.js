@@ -1,3 +1,4 @@
+var hosts = require('./hosts.json');
 var app = require('./src/app/app.js');
 var dbgSite = require('./src/dbg/index.js');
 
@@ -7,8 +8,8 @@ app.init({
 
 var server = app.createServer({
     env: 'prod',
-    host: 'localhost',
-    port: 3000,
+    host: hosts.host,
+    port: hosts.port,
     db: {
         host: 'localhost',
         port: 27017,

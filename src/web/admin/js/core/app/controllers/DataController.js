@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('DataController', function ($scope, $rootScope, $location, $jsnbt) {
+        .controller('DataController', ['$scope', '$rootScope', '$location', '$jsnbt', function ($scope, $rootScope, $location, $jsnbt) {
            
             $scope.data = {};
             
@@ -29,5 +29,5 @@
 
             };
 
-        });
+        }]);
 })();

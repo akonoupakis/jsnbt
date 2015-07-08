@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .factory('ModalService', function ($q, $modal, MODAL_EVENTS) {
+        .factory('ModalService', ['$q', '$modal', 'MODAL_EVENTS', function ($q, $modal, MODAL_EVENTS) {
             var ModalService = {};
             
             ModalService.open = function (scope) {
@@ -50,5 +50,5 @@
             };
 
             return ModalService;
-        });
+        }]);
 })();

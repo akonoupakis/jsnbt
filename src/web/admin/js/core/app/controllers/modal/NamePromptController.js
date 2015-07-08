@@ -2,7 +2,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('NamePromptController', function ($scope, CONTROL_EVENTS, MODAL_EVENTS) {
+        .controller('NamePromptController', ['$scope', 'CONTROL_EVENTS', 'MODAL_EVENTS', function ($scope, CONTROL_EVENTS, MODAL_EVENTS) {
      
             $scope.valid = false;
             $scope.ngModel = $scope.selected;
@@ -28,5 +28,5 @@
                     $scope.$emit(MODAL_EVENTS.valueSubmitted, $scope.ngModel);
             });
 
-        });
+        }]);
 })();

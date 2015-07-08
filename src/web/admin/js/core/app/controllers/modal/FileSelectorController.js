@@ -2,7 +2,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('FileSelectorController', function ($scope, CONTROL_EVENTS, MODAL_EVENTS) {
+        .controller('FileSelectorController', ['$scope', 'CONTROL_EVENTS', 'MODAL_EVENTS', function ($scope, CONTROL_EVENTS, MODAL_EVENTS) {
 
             if (!$scope.mode)
                 $scope.mode = 'single';
@@ -40,5 +40,5 @@
                 $scope.selected = selected;
                 sender.stopPropagation();
             });
-        });
+        }]);
 })();

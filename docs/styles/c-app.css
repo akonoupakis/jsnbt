@@ -90,3 +90,9 @@ pre.code {
         display:none !important;
     }
 }
+
+#spare {
+    height: 2px;    
+    width: 100%;
+    display:block;
+}

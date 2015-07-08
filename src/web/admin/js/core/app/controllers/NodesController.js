@@ -4,7 +4,8 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('NodesController', function ($scope, $location, $rootScope, $route, $logger, $q, $data, TreeNodeService, $fn, LocationService, ModalService) {
+        .controller('NodesController', ['$scope', '$location', '$logger', '$q', '$data', 'TreeNodeService', '$fn', 'ModalService',
+            function ($scope, $location, $logger, $q, $data, TreeNodeService, $fn, ModalService) {
             
             var logger = $logger.create('NodesController');
 
@@ -120,5 +121,5 @@
                 logger.error(ex);
             });
 
-        });
+        }]);
 })();

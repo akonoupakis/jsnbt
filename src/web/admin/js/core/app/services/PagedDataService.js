@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .factory('PagedDataService', function ($q) {
+        .factory('PagedDataService', ['$q', function ($q) {
             var PagedDataService = {};
             
             var getData = function (fn, query, start, limit, selected) {
@@ -68,5 +68,5 @@
             };
 
             return PagedDataService;
-        });
+        }]);
 })();

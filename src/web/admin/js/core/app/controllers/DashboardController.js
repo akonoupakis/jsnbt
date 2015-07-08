@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('DashboardController', function ($scope, $jsnbt, $location) {
+        .controller('DashboardController', ['$scope', '$jsnbt', function ($scope, $jsnbt) {
         
             $scope.publicTmpl = null;
 
@@ -15,5 +15,5 @@
             });
             $scope.injects = injects;
 
-        });
+        }]);
 })();

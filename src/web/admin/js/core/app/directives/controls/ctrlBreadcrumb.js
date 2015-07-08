@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlBreadcrumb', function ($location) {
+        .directive('ctrlBreadcrumb', ['$location', function ($location) {
 
             return {
                 restrict: 'E',
@@ -25,6 +25,6 @@
                 templateUrl: 'tmpl/core/controls/ctrlBreadcrumb.html'
             };
 
-        });
+        }]);
 
 })();

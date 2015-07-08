@@ -14,7 +14,100 @@
                 $scope.version = uriVersion;
             }
 
+            var randomIndex = 0;
+            var getSpyElements = function ($el, level) {
+                var results = [];
+
+                var spyItems = $('*[data-spy-title!=""][data-spy-level=' + level + ']', $el);
+
+                spyItems.each(function (i, item) {
+                    randomIndex++;
+
+                    var $item = $(item);
+
+                    var itemId = 'spiedEl-' + level + '-' + randomIndex;
+
+                    $item.prop('id', itemId);
+
+                    var spyAnchor = $('<a />')
+                        .prop('href', '#' + itemId)
+                        .html($item.data('spy-title'));
+
+                    var spyItem = $('<li />')
+                        .addClass('level' + level).append(spyAnchor);
+
+                    spyAnchor.click(function (e) {
+                        e.preventDefault();
+
+                        $('body').scrollTo('#' + itemId, { offset: -5, duration: 400 });
+                    });
+
+                    var childSpyElements = getSpyElements($item, level + 1);
+                    if (childSpyElements.length > 0) {
+                        var childUl = $('<ul />')
+                            .addClass('nav');
+
+                        $(childSpyElements).each(function (ci, citem) {
+                            childUl.append(citem);
+                        });
+
+                        spyItem.append(childUl);
+                    }
+
+                    results.push(spyItem);
+                });
+
+                return results;
+            }
+
+            $('body').attr('data-spy', 'scroll');
+
+            setTimeout(function () {
+                var targetContainer = $('#scroll-spy-container');
+                var spyItems = getSpyElements(targetContainer, 1);
+                var targetUl = $('ul.nav.bs-docs-sidenav');
+
+                $(spyItems).each(function (i, item) {
+                    targetUl.append(item);
+                });
+
+                $('#scroll-spy-sidebar').affix();
+                $('#spare').remove();
+            }, 500);
+
         }])
+
+        .directive('dcsHeader', [function () {
+
+            return {
+                restrict: 'E',
+                replace: true,
+                scope: {
+                    title: '@',
+                    version: '@'
+                },
+                template: '<div class="container"><div class="page-header"><h1>{{ title }} <small>v{{version}}</small></h1></div><div id="spare"></div></div>',
+                link: function (scope, element, attrs) {
+                    element.addClass('dcs-header');
+                }
+            };
+        }])
+
+        .directive('dcsContent', [function () {
+
+            return {
+                restrict: 'E',
+                replace: true,
+                transclude: true,
+                scope: {
+                },
+                template: '<div class="container bs-docs-container"><div class="row"><div class="col-md-9" role="main" id="scroll-spy-container" ng-transclude></div><div class="col-md-3" role="complementary" id="scroll-spy"><nav class="bs-docs-sidebar" id="scroll-spy-sidebar"><ul class="nav bs-docs-sidenav"></ul></nav></div></div></div>',
+                link: function (scope, element, attrs) {
+                    element.addClass('dcs-content');
+                }
+            };
+        }])
+
         .directive('dcsContainer', [function () {
 
             return {
@@ -42,23 +135,7 @@
                 }
             };
         }])
-        .directive('dcsIntro', [function () {
 
-             return {
-                 restrict: 'E',
-                 replace: true,
-                 transclude: true,
-                 scope: {
-                 },
-                 template: '<p ng-transclude></p>',
-                 link: function (scope, element, attrs) {
-                     element.addClass('dcs-intro');
-
-                     if (!scope.dcsSpyLevel)
-                         scope.dcsSpyLevel = 1;
-                 }
-             };
-        }])
         .directive('dcsDefinition', [function () {
 
              return {
@@ -161,6 +238,7 @@
                 }
             };
         }])
+
         .directive('dcsCode', function () {
 
             return {
@@ -182,6 +260,7 @@
                 }
             };
         })
+
         .config(function () {
 
         });
@@ -191,63 +270,5 @@
 $(document).ready(function () {
 
     angular.bootstrap(document, ['jsnbt']);
-
-    var randomIndex = 0;
-    var getSpyElements = function ($el, level) {
-        var results = [];
-
-        var spyItems = $('*[data-spy-title!=""][data-spy-level=' + level + ']', $el);
-
-        spyItems.each(function (i, item) {
-            randomIndex++;
-
-            var $item = $(item);
-
-            var itemId = 'spiedEl-' + level + '-' + randomIndex;
-
-            $item.prop('id', itemId);
-
-            var spyAnchor = $('<a />')
-                .prop('href', '#' + itemId)
-                .html($item.data('spy-title'));
-
-            var spyItem = $('<li />')
-                .addClass('level' + level).append(spyAnchor);
-
-            spyAnchor.click(function (e) {
-                e.preventDefault();
-
-                $('body').scrollTo('#' + itemId, { offset: -5, duration: 400 });
-            });
-
-            var childSpyElements = getSpyElements($item, level + 1);
-            if (childSpyElements.length > 0) {
-                var childUl = $('<ul />')
-                    .addClass('nav');
-
-                $(childSpyElements).each(function (ci, citem) {
-                    childUl.append(citem);
-                });
-
-                spyItem.append(childUl);
-            }
-
-            results.push(spyItem);
-        });
-
-        return results;
-    }
-   
-    setTimeout(function () {
-        var targetContainer = $('#scroll-spy-container');
-        var spyItems = getSpyElements(targetContainer, 1);
-        var targetUl = $('ul.nav.bs-docs-sidenav');
-
-        $(spyItems).each(function (i, item) {
-            targetUl.append(item);
-        });
-
-        $('#scroll-spy-sidebar').affix();
-    }, 500);
 
 });

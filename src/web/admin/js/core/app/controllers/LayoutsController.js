@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('LayoutsController', function ($scope, $logger, $location, $jsnbt) {
+        .controller('LayoutsController', ['$scope', '$logger', '$location', '$jsnbt', function ($scope, $logger, $location, $jsnbt) {
             
             var logger = $logger.create('LayoutsController');
             
@@ -32,5 +32,5 @@
 
             };
 
-        });
+        }]);
 })();

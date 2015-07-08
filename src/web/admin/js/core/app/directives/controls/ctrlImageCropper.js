@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlImageCropper', function (CONTROL_EVENTS, ModalService) {
+        .directive('ctrlImageCropper', ['CONTROL_EVENTS', function (CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -73,6 +73,6 @@
                 templateUrl: 'tmpl/core/controls/ctrlImageCropper.html'
             };
 
-        });
+        }]);
 
 })();

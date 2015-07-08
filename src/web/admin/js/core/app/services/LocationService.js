@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .factory('LocationService', function ($q, $location) {
+        .factory('LocationService', ['$location', function ($location) {
             var LocationService = {};
             
             LocationService.getBreadcrumb = function () {
@@ -27,5 +27,5 @@
             };
 
             return LocationService;
-        });
+        }]);
 })();

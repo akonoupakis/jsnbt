@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('ListBaseController', function ($scope) {
+        .controller('ListBaseController', ['$scope', function ($scope) {
            
             $scope.data = {};
           
@@ -16,5 +16,5 @@
                 $scope.data.items = _.filter($scope.data.items, function (x) { return x.id !== itemId; });
             };
 
-        });
+        }]);
 })();

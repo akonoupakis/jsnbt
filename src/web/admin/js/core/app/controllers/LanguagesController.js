@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('LanguagesController', function ($scope, $rootScope, $location, $q, $logger, $data, PagedDataService, ModalService) {
+        .controller('LanguagesController', ['$scope', '$location', '$q', '$logger', '$data', 'PagedDataService', 'ModalService', function ($scope, $location, $q, $logger, $data, PagedDataService, ModalService) {
            
             var logger = $logger.create('LanguagesController');
 
@@ -160,5 +160,5 @@
                 logger.error(ex);
             });
 
-        });
+        }]);
 })();

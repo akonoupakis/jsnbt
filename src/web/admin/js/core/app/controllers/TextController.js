@@ -4,7 +4,8 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('TextController', function ($scope, $controller, $rootScope, $routeParams, $location, $timeout, $logger, $queue, $q, $data, ScrollSpyService, LocationService, CONTROL_EVENTS) {
+        .controller('TextController', ['$scope', '$routeParams', '$location', '$timeout', '$logger', '$q', '$data', 'ScrollSpyService', 'LocationService', 'CONTROL_EVENTS',
+            function ($scope, $routeParams, $location, $timeout, $logger, $q, $data, ScrollSpyService, LocationService, CONTROL_EVENTS) {
            
             var logger = $logger.create('TextController');
 
@@ -267,5 +268,5 @@
                 });
             }, 200);
                       
-        });
+        }]);
 })();
