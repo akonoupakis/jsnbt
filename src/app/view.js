@@ -9,7 +9,7 @@ var ViewRenderer = function (server, ctx) {
         error(ctx, 500, 'template not defined');
     }
     else {
-        var tmplFilePath = '../' + server.app.directory + '/public' + ctx.template;
+        var tmplFilePath = '../www/public' + ctx.template;
 
         if (fs.existsSync(tmplFilePath)) {
             var tmplContent = fs.readFileSync(tmplFilePath, 'utf-8');

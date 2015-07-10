@@ -85,13 +85,13 @@ var Parser = function (server) {
         if (isAdmin) {
 
             var appFiles = [];
-            findJsFiles('../' + server.app.directory + '/public/admin/js/core/app/', appFiles, true);
+            findJsFiles('../www/public/admin/js/core/app/', appFiles, true);
 
             _.each(server.app.modules.all, function (pack) {
 
                 if (pack.domain !== 'core') {
-                    if (fs.existsSync('../' + server.app.directory + '/public/admin/js/' + pack.domain + '/app/')) {
-                        findJsFiles('../' + server.app.directory + '/public/admin/js/' + pack.domain + '/app/', appFiles, true);
+                    if (fs.existsSync('../www/public/admin/js/' + pack.domain + '/app/')) {
+                        findJsFiles('../www/public/admin/js/' + pack.domain + '/app/', appFiles, true);
                     }
                 }
             });
@@ -99,12 +99,12 @@ var Parser = function (server) {
             mdl.js.app = appFiles;
 
             var libFiles = [];
-            findJsFiles('../' + server.app.directory + '/public/admin/js/core/lib/', libFiles, true);
+            findJsFiles('../www/public/admin/js/core/lib/', libFiles, true);
 
             _.each(server.app.modules.all, function (pack) {
                 if (pack.domain !== 'core') {
-                    if (fs.existsSync('../' + server.app.directory + '/public/admin/js/' + pack.domain + '/lib/')) {
-                        findJsFiles('../' + server.app.directory + '/public/admin/js/' + pack.domain + '/lib/', libFiles, true);
+                    if (fs.existsSync('../www/public/admin/js/' + pack.domain + '/lib/')) {
+                        findJsFiles('../www/public/admin/js/' + pack.domain + '/lib/', libFiles, true);
                     }
                 }
             });
@@ -113,11 +113,11 @@ var Parser = function (server) {
         }
         else {
             var appFiles = [];
-            findJsFiles('../' + server.app.directory + '/public/js/app/', appFiles, false);
+            findJsFiles('../www/public/js/app/', appFiles, false);
             mdl.js.app = appFiles;
 
             var libFiles = [];
-            findJsFiles('../' + server.app.directory + '/public/js/lib/', libFiles, false);
+            findJsFiles('../www/public/js/lib/', libFiles, false);
             mdl.js.lib = libFiles;
         }
 

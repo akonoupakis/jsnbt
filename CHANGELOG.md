@@ -1,4 +1,13 @@
-## 1.0.111
+## 1.0.113
+
+Improvements
+
+	- no further need of server-dev or server-prod start up file. it now gets the environment status from grunting, so one start up file (server-app.js) is enough
+	- hosts.json, having the host as it should be on a base href, and the port that the application is hosted on
+
+Breaking changes
+
+	- deployment target changed from "dev/dist" to "www"
 
 
 

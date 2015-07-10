@@ -8,11 +8,6 @@ var Environment = {
     Production: 'prod'
 };
 
-var Directory = {
-    Development: 'dev',
-    Production: 'dist'
-};
-
 var logger = require('./logger.js')(this);
 
 exports.domain = 'core';
@@ -20,7 +15,6 @@ exports.browsable = false;
 exports.messager = true;
 
 exports.environment = Environment.Development;
-exports.directory = Directory.Development;
 
 exports.path = null;
 
@@ -60,7 +54,7 @@ var getInstalledModules = function () {
 
 exports.init = function (options, module) {
     var self = this;
-
+    
     var defOpts = {
         title: self.title
     };
@@ -153,8 +147,11 @@ exports.init = function (options, module) {
 exports.createServer = function (options) {
     var self = this;
 
+    this.dbg = fs.readFileSync('www/mode', {
+        encoding: 'utf8'
+    }) !== 'prod'; 
+
     var defOpts = {
-        env: 'dev',
         host: '',
         port: 0,
         db: {
@@ -167,17 +164,9 @@ exports.createServer = function (options) {
     var opts = {};
     extend(true, opts, defOpts, options);
 
-    this.environment = opts.env === 'prod' || opts.env === 'dist' ? Environment.Production : Environment.Development;
-    this.directory = this.environment == Environment.Production ? Directory.Production : Directory.Development;
+    process.chdir('www');
     
-    extend(opts, {
-        env: self.environment
-    });
-
-    process.chdir(this.directory);
-    
-    this.path = path.join(__dirname, this.directory, 'public');
-    this.dbg = this.environment !== Environment.Production;
+    this.path = path.join(__dirname, 'www', 'public');
     
     var server = require('./server.js')(this, opts);
 

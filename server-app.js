@@ -3,11 +3,10 @@ var app = require('./src/app/app.js');
 var dbgSite = require('./src/dbg/index.js');
 
 app.init({
-    title: 'jsnbt - dev'
+    title: 'jsnbt'
 }, dbgSite);
 
 var server = app.createServer({
-    env: 'dev',
     host: hosts.host,
     port: hosts.port,
     db: {

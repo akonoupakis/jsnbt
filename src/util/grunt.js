@@ -336,7 +336,7 @@ module.exports = function (grunt) {
 
     grunt.registerMultiTask('patch', 'Patch the copied with the package files', function () {
 
-        var folder = this.target == 'prod' ? 'dist' : 'dev';
+        var folder = 'www';
         var events = ['get', 'post', 'put', 'validate', 'delete'];
 
         var collections = [];
@@ -456,10 +456,18 @@ module.exports = function (grunt) {
 
     grunt.registerMultiTask('cleanempty', 'Clean empty folders', function () {
 
-        var folder = this.target == 'prod' ? 'dist' : 'dev';
+        var folder = 'www';
 
         _.each(this.data.src, function (item) {
             fs.clean(item, true);
+        });
+
+    });
+
+    grunt.registerMultiTask('setenv', 'Setting environment', function () {
+
+        fs.writeFileSync('www/mode', this.target, {
+            encoding: 'utf-8'
         });
 
     });
@@ -475,14 +483,11 @@ module.exports = function (grunt) {
         var add = function (successMessage, bowerPackage) {
             tasks.push(function (cb) {
                 exec('bower install ' + bowerPackage.name + '-' + bowerPackage.version + '=' + bowerPackage.name + '#' + bowerPackage.version
-                    // + ' --config.directory=bower_components'
                     + ' --config.analytics=false'
                     + ' -f',
                     { cwd: './' }, function (err, stdout, stderr) {
                     if (err)
                         throw err;
-
-                    //grunt.log.ok(stdout);
 
                     grunt.log.ok(successMessage);
                     cb();
@@ -533,7 +538,7 @@ module.exports = function (grunt) {
     });
 
     grunt.registerMultiTask('deploybower', 'Deploy bower components', function () {
-        var folder = this.target == 'prod' ? 'dist' : 'dev';
+        var folder = 'www';
         
         var bowerConfigs = [];
 
@@ -614,7 +619,6 @@ module.exports = function (grunt) {
     fs.create('./src');
     fs.create('./src/app');
     fs.create('./src/cfg');
-    //fs.create('./src/cfg/dpd');
     fs.create('./src/dat');
     fs.create('./src/pck');
     fs.create('./src/web');
@@ -671,40 +675,40 @@ module.exports = function (grunt) {
             options: {
                 force: true
             },
-            src: getFilesToClean('dev')
+            src: getFilesToClean('www')
         },
         prod: {
             options: {
                 force: true
             },
-            src: getFilesToClean('dist')
+            src: getFilesToClean('www')
         },
         devLess: [
-            "dev/public/admin/css/**/*.less",
-            "dev/public/admin/css/*.less",
-            "dev/public/css/**/*.less",
-            "dev/public/css/*.less"
+            "www/public/admin/css/**/*.less",
+            "www/public/admin/css/*.less",
+            "www/public/css/**/*.less",
+            "www/public/css/*.less"
         ],
         prodLess: [
-            "dist/public/admin/css/**/*.less",
-            "dist/public/admin/css/*.less",
-            "dist/public/css/**/*.less",
-            "dist/public/css/*.less"
+            "www/public/admin/css/**/*.less",
+            "www/public/admin/css/*.less",
+            "www/public/css/**/*.less",
+            "www/public/css/*.less"
         ],
         prodMinified: [
-            "dist/public/admin/css/*.css",
-            "!dist/public/admin/css/*.min.css",
-            "dist/public/css/*.css",
-            "!dist/public/css/*.min.css"
+            "www/public/admin/css/*.css",
+            "!www/public/admin/css/*.min.css",
+            "www/public/css/*.css",
+            "!www/public/css/*.min.css"
         ],
         prodUglified: [
-            "dist/public/admin/js/**/*.js",
-            "dist/public/admin/js/*.js",
-            "!dist/public/admin/js/*.min.js",
-            "dist/public/js/app",
-            "dist/public/js/lib",
-            "dist/public/js/*.js",
-            "!dist/public/js/*.min.js",
+            "www/public/admin/js/**/*.js",
+            "www/public/admin/js/*.js",
+            "!www/public/admin/js/*.min.js",
+            "www/public/js/app",
+            "www/public/js/lib",
+            "www/public/js/*.js",
+            "!www/public/js/*.min.js",
         ]
     };
 
@@ -715,7 +719,7 @@ module.exports = function (grunt) {
                 onlyIf: 'newer',
                 cwd: 'src/web/admin/',
                 src: ['js/**'],
-                dest: 'dev/public/admin/'
+                dest: 'www/public/admin/'
             }]
         },
         devAdminImg: {
@@ -724,7 +728,7 @@ module.exports = function (grunt) {
                 onlyIf: 'newer',
                 cwd: 'src/web/admin/',
                 src: ['img/**'],
-                dest: 'dev/public/admin/'
+                dest: 'www/public/admin/'
             }]
         },
         devAdminTmpl: {
@@ -733,7 +737,7 @@ module.exports = function (grunt) {
                 onlyIf: 'newer',
                 cwd: 'src/web/admin/tmpl/',
                 src: ['**'],
-                dest: 'dev/public/admin/tmpl/'
+                dest: 'www/public/admin/tmpl/'
             }]
         },
         devAdminCss: {
@@ -742,7 +746,7 @@ module.exports = function (grunt) {
                 onlyIf: 'newer',
                 cwd: 'src/web/admin/css/',
                 src: ['**'],
-                dest: 'dev/public/admin/css/'
+                dest: 'www/public/admin/css/'
             }]
         },
         devPublicJs: {
@@ -751,7 +755,7 @@ module.exports = function (grunt) {
                 onlyIf: 'newer',
                 cwd: 'src/web/public/',
                 src: ['js/**'],
-                dest: 'dev/public/'
+                dest: 'www/public/'
             }]
         },
         devPublicImg: {
@@ -760,7 +764,7 @@ module.exports = function (grunt) {
                 onlyIf: 'newer',
                 cwd: 'src/web/public/',
                 src: ['img/**'],
-                dest: 'dev/public/'
+                dest: 'www/public/'
             }]
         },
         devPublicTmpl: {
@@ -769,7 +773,7 @@ module.exports = function (grunt) {
                 onlyIf: 'newer',
                 cwd: 'src/web/public/tmpl/',
                 src: ['**'],
-                dest: 'dev/public/tmpl/'
+                dest: 'www/public/tmpl/'
             }]
         },
         devPublicCss: {
@@ -778,14 +782,14 @@ module.exports = function (grunt) {
                 onlyIf: 'newer',
                 cwd: 'src/web/public/css/',
                 src: ['**'],
-                dest: 'dev/public/css/'
+                dest: 'www/public/css/'
             }]
         },
         dev: {
-            files: getFilesToCopy('dev')
+            files: getFilesToCopy('www')
         },
         prod: {
-            files: getFilesToCopy('dist')
+            files: getFilesToCopy('www')
         }
     };
 
@@ -803,56 +807,56 @@ module.exports = function (grunt) {
         devPublic: {
             options: {
                 concat: false,
-                paths: getLessPaths('dev')
+                paths: getLessPaths('www')
             },
-            files: getFilesToLess('dev', 'public')
+            files: getFilesToLess('www', 'public')
         },
         devAdmin: {
             options: {
                 concat: false,
-                paths: getLessPaths('dev')
+                paths: getLessPaths('www')
             },
-            files: getFilesToLess('dev', 'admin')
+            files: getFilesToLess('www', 'admin')
         },
         dev: {
             options: {
                 concat: false,
-                paths: getLessPaths('dev')
+                paths: getLessPaths('www')
             },
-            files: getFilesToLess('dev')
+            files: getFilesToLess('www')
         },
         prod: {
             options: {
                 concat: false,
-                paths: getLessPaths('dist')
+                paths: getLessPaths('www')
             },
-            files: getFilesToLess('dist')
+            files: getFilesToLess('www')
         }
     };
 
     gruntConfig.preprocess = {
         devPublic: {
-            files: getFilesToPreprocess('dev', 'public')
+            files: getFilesToPreprocess('www', 'public')
         },
         devAdmin: {
-            files: getFilesToPreprocess('dev', 'admin')
+            files: getFilesToPreprocess('www', 'admin')
         },
         dev: {
-            files: getFilesToPreprocess('dev')
+            files: getFilesToPreprocess('www')
         },
         prod: {
-            files: getFilesToPreprocess('dist')
+            files: getFilesToPreprocess('www')
         }
     };
 
     gruntConfig.cssmin = {
         prod: {
             files: [{
-                src: './dist/public/admin/css/style.css',
-                dest: './dist/public/admin/css/style.min.css'
+                src: './www/public/admin/css/style.css',
+                dest: './www/public/admin/css/style.min.css'
             }, {
-                src: './dist/public/css/style.css',
-                dest: './dist/public/css/style.min.css'
+                src: './www/public/css/style.css',
+                dest: './www/public/css/style.min.css'
             }]
         }
     };
@@ -865,27 +869,32 @@ module.exports = function (grunt) {
                 compress: false,
                 wrap: false
             },
-            files: getFilesToUglify('dist')
+            files: getFilesToUglify('www')
         }
     };
 
     gruntConfig.cleanempty = {
         dev: {
             src: [
-                'dev/public/admin/js/',
-                'dev/public/admin/css/',
-                'dev/public/js/',
-                'dev/public/css/'
+                'www/public/admin/js/',
+                'www/public/admin/css/',
+                'www/public/js/',
+                'www/public/css/'
             ]
         },
         prod: {
             src: [
-                'dist/public/admin/js/',
-                'dist/public/admin/css/',
-                'dist/public/js/',
-                'dist/public/css/'
+                'www/public/admin/js/',
+                'www/public/admin/css/',
+                'www/public/js/',
+                'www/public/css/'
             ]
         }
+    };
+
+    gruntConfig.setenv = {
+        dev: { },
+        prod: { }
     };
 
     gruntConfig.watch = {
@@ -970,8 +979,8 @@ module.exports = function (grunt) {
 
 
     // 'jshint'
-    grunt.registerTask('dev', ['mod:bower', 'mod:npm', 'bower:dev', 'env:dev', 'clean:dev', 'copy:dev', 'patch:dev', 'deploybower:dev', 'less:dev', 'preprocess:dev', 'clean:devLess', 'cleanempty:dev']);
-    grunt.registerTask('prod', ['mod:bower', 'mod:npm', 'bower:prod', 'env:prod', 'clean:prod', 'copy:prod', 'patch:prod', 'deploybower:prod', 'less:prod', 'preprocess:prod', 'clean:prodLess', 'cssmin:prod', 'clean:prodMinified', 'uglify:prod', 'clean:prodUglified', 'cleanempty:prod']);
+    grunt.registerTask('dev', ['mod:bower', 'mod:npm', 'bower:dev', 'env:dev', 'clean:dev', 'copy:dev', 'patch:dev', 'deploybower:dev', 'less:dev', 'preprocess:dev', 'clean:devLess', 'cleanempty:dev', 'setenv:dev']);
+    grunt.registerTask('prod', ['mod:bower', 'mod:npm', 'bower:prod', 'env:prod', 'clean:prod', 'copy:prod', 'patch:prod', 'deploybower:prod', 'less:prod', 'preprocess:prod', 'clean:prodLess', 'cssmin:prod', 'clean:prodMinified', 'uglify:prod', 'clean:prodUglified', 'cleanempty:prod', 'setenv:prod']);
     
     grunt.registerTask('watch-public-css', ['watch:publicCss']);
     grunt.registerTask('watch-public-js', ['watch:publicJs']);

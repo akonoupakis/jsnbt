@@ -16,9 +16,9 @@ var errors = {
 
 var ErrorRenderer = function (server, ctx, error, stack) {
     
-    var tmplPath = '../' + server.app.directory + '/public/error/';
+    var tmplPath = '../www/public/error/';
     if (ctx.uri.first === 'admin')
-        tmplPath = '../' + server.app.directory + '/public/admin/error/';
+        tmplPath = '../www/public/admin/error/';
 
     var tmplFilePath = tmplPath + error + '.html';
     var tmplDefaultFilePath = tmplPath + 'error.html';

@@ -6,7 +6,6 @@ var _ = require('underscore');
 function Server(app, options) {
 
     var defOpts = {
-        env: 'dev',
         host: '',
         port: 0,
         db: {
@@ -57,7 +56,6 @@ function Server(app, options) {
 
     var server = require('deployd')({
         port: opts.port,
-        env: opts.env === 'prod' ? 'production' : 'development',
         db: {
             host: opts.db.host,
             port: opts.db.port,
