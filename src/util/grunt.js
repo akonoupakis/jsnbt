@@ -92,12 +92,12 @@ module.exports = function (grunt) {
                     var publicItems = fs.readdirSync(path.join(folderPath, rootItem));
                     _.each(publicItems, function (publicItem) {
                         if (publicItem !== 'files') {
-                            results.push(path.join('dev', rootItem, publicItem));
+                            results.push(path.join(folder, rootItem, publicItem));
                         }
                     });
                 }
                 else {
-                    results.push(path.join('dev', rootItem));
+                    results.push(path.join(folder, rootItem));
                 }
             });
         }
