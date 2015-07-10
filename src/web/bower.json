@@ -165,6 +165,12 @@
           "dest": [
             "admin/css/core/lib/bootstrap/fonts"
           ]
+        },
+		{
+          "src": "bootstrap-3.2.0/dist/fonts",
+          "dest": [
+            "admin/fonts"
+          ]
         }
       ]
     },
