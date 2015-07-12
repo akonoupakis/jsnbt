@@ -12,8 +12,6 @@ module.exports = function (grunt) {
     this.app = require('../app/app.js');
     this.modulePaths = [];
     
-    //this.modules = [];
-    
     var getModule = function (indexPath) {
         if (fs.existsSync(indexPath)) {
             var packObject = require(indexPath);
@@ -50,23 +48,21 @@ module.exports = function (grunt) {
     if (fs.existsSync(server.getPath('src/pck'))) {
         var packages = fs.readdirSync(server.getPath('src/pck'));
         _.each(packages, function (packageItem) {
-            if (packageItem !== 'jsnbt') {
-                if (self.moduleNames.indexOf(packageItem) === -1) {
-                    if (fs.lstatSync(server.getPath('src/pck/' + packageItem)).isDirectory()) {
-                        if (fs.existsSync(server.getPath('node_modules/' + packageItem))) {
-                            var nodeModulePackagePath = server.getPath('src/pck/' + packageItem + '/package.json');
-                            if (fs.existsSync(nodeModulePackagePath)) {
-                                var nodeModulePackage = require(nodeModulePackagePath);
+            if (self.moduleNames.indexOf(packageItem) === -1) {
+                if (fs.lstatSync(server.getPath('src/pck/' + packageItem)).isDirectory()) {
+                    if (fs.existsSync(server.getPath('node_modules/' + packageItem))) {
+                        var nodeModulePackagePath = server.getPath('src/pck/' + packageItem + '/package.json');
+                        if (fs.existsSync(nodeModulePackagePath)) {
+                            var nodeModulePackage = require(nodeModulePackagePath);
 
-                                if (nodeModulePackage.main) {
-                                    var nodeModuleIndexPath = server.getPath('src/pck/' + packageItem + '/' + nodeModulePackage.main);
-                                    var nodeModuleIndexModule = getModule(server.getPath('src/pck/' + packageItem + '/' + nodeModulePackage.main));
-                                    if (nodeModuleIndexModule) {
-                                        self.modulePaths.push('node_modules/' + packageItem + '/' + nodeModulePackage.main);
-                                        self.app.register(nodeModuleIndexModule);
+                            if (nodeModulePackage.main) {
+                                var nodeModuleIndexPath = server.getPath('src/pck/' + packageItem + '/' + nodeModulePackage.main);
+                                var nodeModuleIndexModule = getModule(server.getPath('src/pck/' + packageItem + '/' + nodeModulePackage.main));
+                                if (nodeModuleIndexModule) {
+                                    self.modulePaths.push('node_modules/' + packageItem + '/' + nodeModulePackage.main);
+                                    self.app.register(nodeModuleIndexModule);
 
-                                        self.moduleNames.push(packageItem);
-                                    }
+                                    self.moduleNames.push(packageItem);
                                 }
                             }
                         }
@@ -80,7 +76,7 @@ module.exports = function (grunt) {
         var packages = fs.readdirSync(server.getPath('node_modules'));
         _.each(packages, function (packageItem) {
 
-            if (_.str.startsWith(packageItem, 'jsnbt-')) {
+            if (_.str.startsWith(packageItem, 'jsnbt')) {
                 if (self.moduleNames.indexOf(packageItem) === -1) {
                     if (fs.lstatSync(server.getPath('node_modules/' + packageItem)).isDirectory()) {
                         var nodeModulePackagePath = server.getPath('node_modules/' + packageItem + '/package.json');
@@ -347,7 +343,7 @@ module.exports = function (grunt) {
 
     grunt.registerMultiTask('mod', 'Install & pack modules', function () {
         var runFn = function (mod) {
-            var modMngr = require(mod === 'bower' ? './npm.js' : './npm.js');
+            var modMngr = require(mod === 'bower' ? './npm.js' : './bower.js');
             if (fs.existsSync(server.getPath(mod))) {                
                 var found = fs.readdirSync(server.getPath(mod));
                 _.each(found, function (f) {
@@ -543,7 +539,7 @@ module.exports = function (grunt) {
         
         var packageNames = [];
 
-        _.each(self.modules, function (module) {
+        _.each(self.app.modules.all, function (module) {
             if (typeof (module.getBower) === 'function') {
                 var bowerConfig = module.getBower();
                 bowerConfigs.push(bowerConfig);

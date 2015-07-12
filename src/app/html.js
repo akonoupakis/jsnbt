@@ -53,6 +53,9 @@ var Parser = function (server) {
         mdl.params = mdl.params || [];
 
         mdl.params = _.union([{
+            name: 'generator',
+            content: 'jsnbt content management'
+        }, {
             name: 'layout',
             content: ctx.layout
         }, {

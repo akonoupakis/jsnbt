@@ -324,7 +324,7 @@ exports.register = function (module) {
     self.modules.all.push(module);
 };
 
-exports.init = function (options, module) {
+exports.init = function (options) {
     var self = this;
     
     var defOpts = {
