@@ -10,19 +10,23 @@ var HomeRouter = function (server) {
 
         route: function (ctx, next) {
             if (ctx.uri.path === '/') {
+                
                 try {
                     var node = require('../cms/nodeMngr.js')(server, ctx.dpd);
                     
                     ctx.timer.start('node retrieval');
-                    
+
                     node.resolveUrl(ctx.uri.url, function (resolved) {
-                        
                         ctx.timer.stop('node retrieval');
+
+                        if (resolved && resolved.page)
+                            ctx.debug('node found: ' + resolved.page.id);
+
                         if (resolved && resolved.page && resolved.isActive()) {
-                            
+                        
                             var inherited = resolved.getInheritedProperties();
                             
-                            if (!ctx.restricted && server.jsnbt.restricted) {
+                            if (!ctx.restricted && server.app.restricted) {
                                 if (!authMngr.isInRole(ctx.user, (inherited.roles || []))) {
                                     ctx.restricted = true;
                                 }
@@ -65,7 +69,7 @@ var HomeRouter = function (server) {
                                 ctx.pointer = resolved.pointer || {};
                                 ctx.inherited = inherited;
                                 ctx.layout = ctx.inherited.layout || '';
-                                ctx.language = server.jsnbt.localization ? resolved.language || 'en' : server.jsnbt.locale;
+                                ctx.language = server.app.localization.enabled ? resolved.language || server.app.localization.locale : server.app.localization.locale;
                                 ctx.template = resolved.template || '';
                                 
                                 ctx.meta = {};
@@ -112,11 +116,13 @@ var HomeRouter = function (server) {
                                     }
                                 }
                                 else {
+                                    ctx.debug('node rendering: ' + resolved.page.id);
                                     ctx.view();
                                 }
                             }
                         }
                         else {
+                            ctx.debug('node inactive: ' + resolved.page.id);
                             ctx.error(404);
                         }
                     });

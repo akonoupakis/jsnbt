@@ -9,47 +9,65 @@ module.exports = function (grunt) {
 
     var self = this;
 
-    var jsnbt = require('../app/jsnbt.js')();
-
-    this.modules = [];
+    this.app = require('../app/app.js');
+    this.modulePaths = [];
     
-    var registerJsnbtConfig = function (indexPath) {
+    //this.modules = [];
+    
+    var getModule = function (indexPath) {
         if (fs.existsSync(indexPath)) {
             var packObject = require(indexPath);
-            if (packObject) {
-                var moduleConfig = typeof (packObject.getConfig) === 'function' ? packObject.getConfig() : {};
+            if (packObject && packObject.domain) {
+                return packObject;
+            }
+        }
+        return undefined;
+    }
 
-                jsnbt.register(packObject.domain, packObject);
+    var mainPackageInfoPath = server.getPath('package.json');
+    if (fs.existsSync(mainPackageInfoPath)) {
+        var mainPackInfo = require(mainPackageInfoPath);
+        if (mainPackInfo.main) {
 
-                self.modules.push(packObject);
+            var module = getModule(server.getPath(mainPackInfo.main));
+            if (module)
+            {
+                self.modulePaths.push(mainPackInfo.main);
+                self.app.register(module);
+
+
+                var dbgModule = getModule(server.getPath('src/dbg/index.js'));
+                if (dbgModule) {
+                    self.modulePaths.push('src/dbg/index.js');
+                    self.app.register(dbgModule);
+                }
             }
         }
     }
 
-    var packInfo = require(server.getPath('package.json'));
-    if (packInfo.main) {
-        registerJsnbtConfig(server.getPath(packInfo.main))
-    }
-
-    registerJsnbtConfig(server.getPath('src/dbg/index.js'));
-    
     this.moduleNames = [];
 
     if (fs.existsSync(server.getPath('src/pck'))) {
         var packages = fs.readdirSync(server.getPath('src/pck'));
         _.each(packages, function (packageItem) {
-            
-            if (self.moduleNames.indexOf(packageItem) === -1) {
-                if (fs.lstatSync(server.getPath('src/pck/' + packageItem)).isDirectory()) {
-                    if (fs.existsSync(server.getPath('node_modules/' + packageItem))) {
-                        var nodeModulePackagePath = server.getPath('src/pck/' + packageItem + '/package.json');
-                        if (fs.existsSync(nodeModulePackagePath)) {
-                            var nodeModulePackage = require(nodeModulePackagePath);
+            if (packageItem !== 'jsnbt') {
+                if (self.moduleNames.indexOf(packageItem) === -1) {
+                    if (fs.lstatSync(server.getPath('src/pck/' + packageItem)).isDirectory()) {
+                        if (fs.existsSync(server.getPath('node_modules/' + packageItem))) {
+                            var nodeModulePackagePath = server.getPath('src/pck/' + packageItem + '/package.json');
+                            if (fs.existsSync(nodeModulePackagePath)) {
+                                var nodeModulePackage = require(nodeModulePackagePath);
 
-                            if (nodeModulePackage.main) {
-                                var nodeModuleIndexPath = server.getPath('src/pck/' + packageItem + '/' + nodeModulePackage.main);
-                                registerJsnbtConfig(nodeModuleIndexPath);
-                                self.moduleNames.push(packageItem);
+                                if (nodeModulePackage.main) {
+                                    var nodeModuleIndexPath = server.getPath('src/pck/' + packageItem + '/' + nodeModulePackage.main);
+                                    var nodeModuleIndexModule = getModule(server.getPath('src/pck/' + packageItem + '/' + nodeModulePackage.main));
+                                    if (nodeModuleIndexModule) {
+                                        self.modulePaths.push('node_modules/' + packageItem + '/' + nodeModulePackage.main);
+                                        self.app.register(nodeModuleIndexModule);
+
+                                        self.moduleNames.push(packageItem);
+                                    }
+                                }
                             }
                         }
                     }
@@ -62,7 +80,7 @@ module.exports = function (grunt) {
         var packages = fs.readdirSync(server.getPath('node_modules'));
         _.each(packages, function (packageItem) {
 
-            if (_.str.startsWith(packageItem, 'jsnbt')) {
+            if (_.str.startsWith(packageItem, 'jsnbt-')) {
                 if (self.moduleNames.indexOf(packageItem) === -1) {
                     if (fs.lstatSync(server.getPath('node_modules/' + packageItem)).isDirectory()) {
                         var nodeModulePackagePath = server.getPath('node_modules/' + packageItem + '/package.json');
@@ -71,8 +89,15 @@ module.exports = function (grunt) {
 
                             if (nodeModulePackage.main) {
                                 var nodeModuleIndexPath = server.getPath('node_modules/' + packageItem + '/' + nodeModulePackage.main);
-                                registerJsnbtConfig(nodeModuleIndexPath);
-                                self.moduleNames.push(packageItem);
+                                var nodeModuleIndexModule = getModule(server.getPath('node_modules/' + packageItem + '/' + nodeModulePackage.main));
+                                if (nodeModuleIndexModule) {
+
+                                    self.modulePaths.push('node_modules/' + packageItem + '/' + nodeModulePackage.main);
+                                    self.app.register(nodeModuleIndexModule);
+
+                                    self.moduleNames.push(packageItem);
+
+                                }
                             }
                         }
                     }
@@ -108,7 +133,7 @@ module.exports = function (grunt) {
     var getFilesToCopy = function (folder) {
         
         var publicCopyfiles = ['img/**', 'js/**', 'font/**', 'css/**', 'tmpl/**', 'error/**', 'tmp/', 'files/'];
-        _.each(jsnbt.fileGroups, function (fileGroup) {
+        _.each(self.app.config.fileGroups, function (fileGroup) {
             publicCopyfiles.push('files/' + fileGroup + '/');
         });
         
@@ -116,7 +141,7 @@ module.exports = function (grunt) {
             expand: true,
             cwd: 'src/dat/',
             src: ['**'],
-            dest: folder + '/migrations/' + packInfo.name
+            dest: folder + '/migrations/' + mainPackInfo.name
         },
 		{
 		    expand: true,
@@ -162,7 +187,7 @@ module.exports = function (grunt) {
         if (site === undefined || site === 'public') {
             addPath('src/web/public/error');
 
-            _.each(jsnbt.templates, function (tmpl) {
+            _.each(self.app.config.templates, function (tmpl) {
                 addFile('src/web/public/' + _.str.ltrim(tmpl.html, '/'));
             });
             
@@ -254,7 +279,7 @@ module.exports = function (grunt) {
 
         appendJsFiles('core');
 
-        _.each(self.modules, function (module) {
+        _.each(self.app.modules.all, function (module) {
             if (module.domain !== 'core') {
                 appendJsFiles(module.domain);
             }
@@ -341,9 +366,10 @@ module.exports = function (grunt) {
 
         var collections = [];
 
-        _.each(jsnbt.modules, function (module) {
-            if (module.collections && _.isArray(module.collections)) {
-                _.each(module.collections, function (moduleCollection) {
+        _.each(self.app.modules.all, function (module) {
+            var moduleConfig = typeof(module.getConfig) === 'function' ? module.getConfig() : {};
+            if (moduleConfig.collections && _.isArray(moduleConfig.collections)) {
+                _.each(moduleConfig.collections, function (moduleCollection) {
 
                     if (moduleCollection.schema && _.isObject(moduleCollection.schema) && moduleCollection.schema.type === 'object' && _.isObject(moduleCollection.schema.properties)) {
                         var collection = _.find(collections, function (x) { return x.name === moduleCollection.name; });
@@ -416,7 +442,6 @@ module.exports = function (grunt) {
         }
 
         _.each(collections, function (collection) {
-
             var targetFolder = server.getPath(folder + '/resources/' + collection.name);
 
             if (!fs.existsSync(targetFolder)) {
@@ -467,6 +492,15 @@ module.exports = function (grunt) {
     grunt.registerMultiTask('setenv', 'Setting environment', function () {
 
         fs.writeFileSync('www/mode', this.target, {
+            encoding: 'utf-8'
+        });
+
+    });
+
+    grunt.registerMultiTask('setmod', 'Setting environment', function () {
+
+        var modulesText = self.modulePaths.join('\n');
+        fs.writeFileSync('www/modules', modulesText, {
             encoding: 'utf-8'
         });
 
@@ -542,7 +576,7 @@ module.exports = function (grunt) {
         
         var bowerConfigs = [];
 
-        _.each(self.modules, function (module) {
+        _.each(self.app.modules.all, function (module) {
             if (typeof (module.getBower) === 'function') {
                 var bowerConfig = module.getBower();
                 bowerConfigs.push(bowerConfig);
@@ -897,6 +931,11 @@ module.exports = function (grunt) {
         prod: { }
     };
 
+    gruntConfig.setmod = {
+        dev: {},
+        prod: {}
+    };
+
     gruntConfig.watch = {
         adminCss: {
             files: 'src/web/admin/css/**',
@@ -979,8 +1018,8 @@ module.exports = function (grunt) {
 
 
     // 'jshint'
-    grunt.registerTask('dev', ['mod:bower', 'mod:npm', 'bower:dev', 'env:dev', 'clean:dev', 'copy:dev', 'patch:dev', 'deploybower:dev', 'less:dev', 'preprocess:dev', 'clean:devLess', 'cleanempty:dev', 'setenv:dev']);
-    grunt.registerTask('prod', ['mod:bower', 'mod:npm', 'bower:prod', 'env:prod', 'clean:prod', 'copy:prod', 'patch:prod', 'deploybower:prod', 'less:prod', 'preprocess:prod', 'clean:prodLess', 'cssmin:prod', 'clean:prodMinified', 'uglify:prod', 'clean:prodUglified', 'cleanempty:prod', 'setenv:prod']);
+    grunt.registerTask('dev', ['mod:bower', 'mod:npm', 'bower:dev', 'env:dev', 'clean:dev', 'copy:dev', 'patch:dev', 'deploybower:dev', 'less:dev', 'preprocess:dev', 'clean:devLess', 'cleanempty:dev', 'setenv:dev', 'setmod:dev']);
+    grunt.registerTask('prod', ['mod:bower', 'mod:npm', 'bower:prod', 'env:prod', 'clean:prod', 'copy:prod', 'patch:prod', 'deploybower:prod', 'less:prod', 'preprocess:prod', 'clean:prodLess', 'cssmin:prod', 'clean:prodMinified', 'uglify:prod', 'clean:prodUglified', 'cleanempty:prod', 'setenv:prod', 'setmod:prod']);
     
     grunt.registerTask('watch-public-css', ['watch:publicCss']);
     grunt.registerTask('watch-public-js', ['watch:publicJs']);

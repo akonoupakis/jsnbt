@@ -12,7 +12,7 @@ if (self.domain === 'core') {
                 required: true,
                 properties: {
                     homepage: { type: "string", required: true },
-                    loginpage: { type: "string", required: server.jsnbt.restricted || false }
+                    loginpage: { type: "string", required: server.app.restricted || false }
                 }
             }
         }

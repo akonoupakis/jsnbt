@@ -1,6 +1,6 @@
 module.exports = {
     
-    ssl: true,
+    ssl: false,
 
     // locale: 'el',
     

@@ -9,7 +9,7 @@ validate({
             type: "array",
             required: true,
             items: { type: "string" },
-            enum: _.pluck(server.jsnbt.roles, 'name'),
+            enum: _.pluck(server.app.config.roles, 'name'),
             uniqueItems: true
         }
     }

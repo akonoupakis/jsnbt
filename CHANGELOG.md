@@ -19,11 +19,15 @@ Features
 	- messaging config defined mail & sms templates
 	- messaging debug template view on /jsnbt-dev/mail/{templateCode} and on /jsnbt-dev/sms/{templateCode} with an optional ?model=true parameter to view the template debug model
 
+
+
 ## 1.0.103 (2015-04-23)
 
 Features
 
 	- index.view.preparse() && index.view.postparse() with async callbacks
+
+
 
 ## 1.0.102 (2015-04-19)
 
@@ -31,12 +35,16 @@ Features
 
 	- $scope.base.list, $scope.base.list, $scope.base.form for base controllers
 
+
+
 ## 1.0.101 (2015-04-19)
 
 Breaking changes
 
 	- module index files should include domain, public, pointed, section and getVersion() members (moved from config.js)
 	- src folders restructure to app,cfg,dat,web
+
+
 
 ## 1.0.100 (2015-04-18)
 
@@ -51,11 +59,15 @@ Features
 	- Stopwatch timer in ctx
 	- Test tasks on /dbg/{service}/{fn} endpoints through the dbg/index.js main route
 
+
+
 ## 1.0.99 (2015-13-31)
 
 Features:
 
 	- deployd data caching: dpd.collection.getCached() function caching by query, invalidated on POST/PUT/DELETE requests of the same collection.
+
+
 
 ## 1.0.97 (2015-03-26)
 
@@ -64,11 +76,15 @@ Improvements:
 	- common bower components directory, version number in folder names!
 	- the bower.json file contents should be returned in a getBower() function in the index file
 
+
+
 ## 1.0.96 (2015-03-26)
 
 Improvements:
 	
 	- different bower component directories for public and admin configs
+
+
 
 ## 1.0.95 (2015-03-18)
 
@@ -76,11 +92,15 @@ Bugfixes:
 	
 	- grunt fix. was not preprocessing correctly
 
+
+
 ## 1.0.91 (2015-03-13)
 
 Bugfixes:
 	
 	- null user fix. On the first request after an application start the user was null
+
+
 
 ## 1.0.90 (2015-03-12)
 

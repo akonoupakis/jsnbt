@@ -5,9 +5,9 @@ var self = this;
 var languageProperties = {};
 var contentProperties = {};
 
-if (server.jsnbt.localization) {
+if (server.app.localization.enabled) {
 
-    _.each(server.jsnbt.languages, function (lang) {
+    _.each(server.languages, function (lang) {
         languageProperties[lang] = {
             type: "object"
         }
@@ -27,7 +27,7 @@ validate({
         layout: {
             type: 'string',
             required: true,
-            enum: _.pluck(server.jsnbt.layouts, 'id')
+            enum: _.pluck(server.app.config.layouts, 'id')
         },
         content: {
             type: "object",

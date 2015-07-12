@@ -8,7 +8,7 @@ var Messager = function (server) {
 
         mail: {
             getTemplate: function (templateCode, callback) {
-                var template = server.jsnbt.messaging.mail.templates[templateCode];
+                var template = server.app.config.messaging.mail.templates[templateCode];
                 if (template) {
                     callback(null, {
                         subject: template.subject,
@@ -20,7 +20,7 @@ var Messager = function (server) {
                 }
             },
             getModel: function (templateCode, callback) {
-                var template = server.jsnbt.messaging.mail.templates[templateCode];
+                var template = server.app.config.messaging.mail.templates[templateCode];
                 if (template) {
                     callback(null, template.model || {});
                 }
@@ -69,8 +69,8 @@ var Messager = function (server) {
                             extend(true, opts, first.data.messaging.mail);
 
                         if (opts.provider !== undefined && opts.provider !== null) {
-                            if (server.jsnbt.messaging.mail.implementations[opts.provider]) {
-                                server.jsnbt.messaging.mail.implementations[opts.provider].getSender(opts, callback);
+                            if (server.app.config.messaging.mail.implementations[opts.provider]) {
+                                server.app.config.messaging.mail.implementations[opts.provider].getSender(opts, callback);
                             }
                             else {
                                 callback(new Error('mail messager module not found: ' + opts.provider), null);
@@ -87,7 +87,7 @@ var Messager = function (server) {
 
         sms: {
             getTemplate: function (templateCode, callback) {
-                var template = server.jsnbt.messaging.sms.templates[templateCode];
+                var template = server.app.config.messaging.sms.templates[templateCode];
                 if (template) {
                     callback(null, template.body);
                 }
@@ -96,7 +96,7 @@ var Messager = function (server) {
                 }
             },
             getModel: function (templateCode, callback) {
-                var template = server.jsnbt.messaging.sms.templates[templateCode];
+                var template = server.app.config.messaging.sms.templates[templateCode];
                 if (template) {
                     callback(null, template.model || {});
                 }
@@ -135,8 +135,8 @@ var Messager = function (server) {
                             extend(true, opts, first.data.messaging.sms);
 
                         if (opts.provider !== undefined && opts.provider !== null) {
-                            if (server.jsnbt.messaging.sms.implementations[opts.provider]) {
-                                server.jsnbt.messaging.sms.implementations[opts.provider].getSender(opts, callback);
+                            if (server.app.config.messaging.sms.implementations[opts.provider]) {
+                                server.app.config.messaging.sms.implementations[opts.provider].getSender(opts, callback);
                             }
                             else {
                                 callback(new Error('sms messager module not found: ' + opts.provider), null);

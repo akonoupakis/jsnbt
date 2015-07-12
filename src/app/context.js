@@ -12,7 +12,7 @@ var Context = function (server, req, res) {
     var authMngr = require('./cms/authMngr.js')(server);
 
     var applyTemplate = function (ctx) {
-        var installedTemplate = _.first(_.filter(server.jsnbt.templates, function (x) { return x.id === ctx.template; }));
+        var installedTemplate = _.find(server.app.config.templates, function (x) { return x.id === ctx.template; });
         if (installedTemplate) {
             ctx.template = installedTemplate.html;
             return true;
@@ -67,6 +67,8 @@ var Context = function (server, req, res) {
 
     var timer = require('./logging/timer.js')('context: ' + uri.relative);
     timer.start();
+
+    var dbgLogger = require('./logging/debugLogger.js')();
 
     if (uri.path === '/' || uri.path.toLowerCase() === '/index.html')
         uri.path = '/';
@@ -147,7 +149,10 @@ var Context = function (server, req, res) {
         },
 
         restricted: false,
-
+        debug: function (text) {
+            if ((ctx.uri.query.dbg || '').toLowerCase() === 'true')
+                dbgLogger.log(text);
+        },
         error: function (code, stack, html) {
             if (completing)
                 return;
@@ -175,9 +180,10 @@ var Context = function (server, req, res) {
             }
         },
         view: function () {            
-            if ((ctx.uri.query.dbg || '').toLowerCase() === 'true' && (ctx.uri.query.type || '').toLowerCase() === 'json' && server.app.dbg) {
+            if ((ctx.uri.query.dbg || '').toLowerCase() === 'true' && (ctx.uri.query.type || '').toLowerCase() === 'json') {
                 ctx.json({
                     uri: ctx.uri,
+                    logs: dbgLogger.get(),
                     timer: ctx.timer.get()
                 });
             }
@@ -246,7 +252,6 @@ var Context = function (server, req, res) {
             req._routed = true;
             res.end();
         }
-
     };
 
     return ctx;

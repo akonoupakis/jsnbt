@@ -5,7 +5,7 @@ var EntityManager = function(server, name) {
 
     var getEntity = function (name) {
 
-        return _.first(_.filter(server.jsnbt.entities, function (x) { return x.name === name; }));
+        return _.find(server.app.config.entities, function (x) { return x.name === name; });
 
     };
 

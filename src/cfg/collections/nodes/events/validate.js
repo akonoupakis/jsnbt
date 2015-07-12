@@ -9,9 +9,9 @@ var languageStringProperties = {};
 var languageBooleanProperties = {};
 var contentProperties = {};
 
-if (server.jsnbt.localization) {
+if (server.app.localization.enabled) {
 
-    _.each(server.jsnbt.languages, function (lang) {
+    _.each(server.languages, function (lang) {
         languageProperties[lang] = {
             type: "object"
         };
@@ -48,11 +48,11 @@ validate({
         },
         entity: {
             type: 'string',
-            enum: _.pluck(server.jsnbt.entities, 'name')
+            enum: _.pluck(server.app.config.entities, 'name')
         },
         template: {
             type: 'string',
-            enum: _.pluck(server.jsnbt.templates, 'id')
+            enum: _.pluck(server.app.config.templates, 'id')
         },
         pointer: {
             type: 'object',
@@ -65,14 +65,14 @@ validate({
         },
         route: {
             type: 'string',
-            enum: _.pluck(server.jsnbt.routes, 'id')
+            enum: _.pluck(server.app.config.routes, 'id')
         },
         layout: {
             type: 'object',
             properties: {
                 value: {
                     type: 'string',
-                    enum: _.union(_.pluck(server.jsnbt.layouts, 'id'), [''])
+                    enum: _.union(_.pluck(server.app.config.layouts, 'id'), [''])
                 }
             }
         },
@@ -101,7 +101,7 @@ validate({
             properties: {
                 value: {
                     type: 'array',
-                    enum: _.pluck(server.jsnbt.roles, 'name')
+                    enum: _.pluck(server.app.config.roles, 'name')
                 }
             }
         }

@@ -2,7 +2,7 @@ var _ = require('underscore');
 
 var RouterRouteProcessor = function (server, routeId) {
 
-    var configRoute = _.find(server.jsnbt.routes, function (x) { return x.id === routeId; });
+    var configRoute = _.find(server.app.config.routes, function (x) { return x.id === routeId; });
 
     var configRouteFn = configRoute !== undefined ? configRoute.fn : '';
 

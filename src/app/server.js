@@ -1,6 +1,7 @@
 var serverRoot = require('server-root');
 var validation = require('json-validation');
 var extend = require('extend');
+var fs = require('fs');
 var _ = require('underscore');
 
 function Server(app, options) {
@@ -22,8 +23,8 @@ function Server(app, options) {
     
     var logAction = function (dpd, user, collection, action, objectId, objectData, callback) {
         
-        if (server.jsnbt.collections[collection]) {
-            if (server.jsnbt.collections[collection].logging) {
+        if (server.app.config.collections[collection]) {
+            if (server.app.config.collections[collection].logging) {
                 
                 dpd.actions.post({
                     timestamp: new Date().getTime(),
@@ -145,10 +146,10 @@ function Server(app, options) {
                 });
             },
             onValidate: function (scriptContext, collection, object, callback) {
-                if (server.jsnbt.collections[collection]) {
-                    if (server.jsnbt.collections[collection].schema) {
+                if (server.app.config.collections[collection]) {
+                    if (server.app.config.collections[collection].schema) {
                         var validator = new validation.JSONValidation();
-                        var validationResult = validator.validate(object, server.jsnbt.collections[collection].schema);
+                        var validationResult = validator.validate(object, server.app.config.collections[collection].schema);
                         if (!validationResult.ok) {
                             var validationErrors = validationResult.path + ': ' + validationResult.errors.join(' - ');
                             callback(new Error(validationErrors));
@@ -175,7 +176,7 @@ function Server(app, options) {
 
                 authMngr = require('./cms/authMngr.js')(server);
 
-                logger.info('server is listening on:' + opts.port);
+                logger.info('jsnbt server is listening on:' + opts.port);
 
                 started = true;
 
@@ -221,39 +222,16 @@ function Server(app, options) {
 
     server.messager = require('./messager.js')(server);
 
-    var jsnbt = require('./jsnbt.js')();
-
-    try {
-        jsnbt.register('core', app.modules.core);       
-    }
-    catch (err) {
-        logger.error(err);
-        throw err;
-    }
-
-    _.each(app.modules.rest, function (installedModule) {
-        try {
-            jsnbt.register(installedModule.domain, installedModule);
-        }
-        catch (err) {
-            logger.error(err);
-            throw err;
-        }
-    });
-
-    if (app.modules.public) {
-        try {
-            jsnbt.register('public', app.modules.public);
-        }
-        catch (err) {
-            logger.error(err);
-            throw err;
-        }
-    }
-
-    server.jsnbt = jsnbt;
-
     server.app = app;
+
+    var versionInfo = fs.existsSync(serverRoot.getPath('node_modules/jsnbt/package.json')) ?
+        require(serverRoot.getPath('node_modules/jsnbt/package.json')) :
+        require(serverRoot.getPath('package.json'));
+
+    server.version = versionInfo.version;
+
+    server.languages = require('./storage/languages.js');
+    server.countries = require('./storage/countries.js');
 
     return server;
 

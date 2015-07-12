@@ -21,7 +21,7 @@ var PublicRouter = function (server) {
 
                             var inherited = resolved.getInheritedProperties();
 
-                            if (!ctx.restricted && server.jsnbt.restricted) {
+                            if (!ctx.restricted && server.app.restricted) {
                                 if (!authMngr.isInRole(ctx.user, (inherited.roles || []))) {
                                     ctx.restricted = true;
                                 }
@@ -65,7 +65,7 @@ var PublicRouter = function (server) {
                                 ctx.pointer = resolved.pointer || {};
                                 ctx.inherited = inherited;
                                 ctx.layout = ctx.inherited.layout || '';
-                                ctx.language = server.jsnbt.localization ? resolved.language || 'en' : server.jsnbt.locale;
+                                ctx.language = server.app.localization.enabled ? resolved.language || server.app.localization.locale : server.app.localization.locale;
                                 ctx.template = resolved.template || '';
 
                                 ctx.meta = {};
@@ -117,8 +117,8 @@ var PublicRouter = function (server) {
                             }
                         }
                         else {
-                            if (server.jsnbt.localization) {
-                                var languages = server.jsnbt.languages;
+                            if (server.app.localization.enabled) {
+                                var languages = server.languages;
 
                                 var matched = _.filter(languages, function (x) { return _.str.startsWith(ctx.uri.path, '/' + x.code + '/'); });
                                 if (matched.length === 0) {

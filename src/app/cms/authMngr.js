@@ -6,7 +6,7 @@ var AuthorizationManager = function (server) {
     var getSubRoles = function (role) {
         var results = [];
 
-        var matchedRole = _.first(_.filter(server.jsnbt.roles, function (x) { return x.name === role; }));
+        var matchedRole = _.find(server.app.config.roles, function (x) { return x.name === role; });
         if (matchedRole) {
             results.push(role);
 
@@ -46,17 +46,17 @@ var AuthorizationManager = function (server) {
 
         var result = false;
 
-        if (server.jsnbt.collections[section]) {
+        if (server.app.config.collections[section]) {
 
       
-            if (server.jsnbt.collections[section].permissions === false) {
+            if (server.app.config.collections[section].permissions === false) {
                 result = true;
             }
-            else if (_.isArray(server.jsnbt.collections[section].permissions)) {
+            else if (_.isArray(server.app.config.collections[section].permissions)) {
                 var roles = getUserRoles(user);
                 result = false;
 
-                _.each(server.jsnbt.collections[section].permissions, function (perm) {
+                _.each(server.app.config.collections[section].permissions, function (perm) {
                     if (roles.indexOf(perm.role) !== -1) {
                         if (perm.crud.indexOf(permission) !== -1)
                             result = true;
@@ -75,7 +75,7 @@ var AuthorizationManager = function (server) {
             var domainName = sectionParts[1];
             var listName = sectionParts[2];
 
-            var list = _.first(_.filter(server.jsnbt.lists, function (x) { return x.domain === domainName && x.id === listName; }));
+            var list = _.find(server.app.config.lists, function (x) { return x.domain === domainName && x.id === listName; });
             if (list && list.permissions) {
                 var roles = getUserRoles(user);
                 result = false;

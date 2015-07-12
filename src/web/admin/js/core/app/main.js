@@ -4,7 +4,7 @@
 
     "use strict";
 
-    var modules = jsnbt.jsModules.slice(0);
+    var modules = [];
     modules.push('ngRoute');
     modules.push('ngAnimate');
     modules.push('ngSanitize');

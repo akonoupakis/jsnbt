@@ -44,20 +44,20 @@ var Router = function(server, req, res) {
 
     var ignoredPathPrefixes = ['/css/', '/fonts/', '/img/', '/js/', '/tmpl/', '/tmp/', '/files/', '/admin/css/', '/admin/fonts/', '/admin/img/', '/admin/js/', '/admin/tmpl/'];
 
+    var forbiddedPathPrefixes = [];
+
     var notFoundPaths = [];
-    var templatePaths = _.pluck(server.jsnbt.templates, 'path');
+    var templatePaths = _.pluck(server.app.config.templates, 'path');
     notFoundPaths = _.union(notFoundPaths, templatePaths);
     notFoundPaths = _.union(notFoundPaths, ['/tmp/', '/error/', '/admin/error/']);
 
     var formPaths = _.union(
-        _.pluck(_.filter(server.jsnbt.templates, function (x) { return x.form !== undefined; }), 'form'),
-        _.pluck(_.filter(server.jsnbt.lists, function (x) { return x.form !== undefined; }), 'form')
+        _.pluck(_.filter(server.app.config.templates, function (x) { return x.form !== undefined; }), 'form'),
+        _.pluck(_.filter(server.app.config.lists, function (x) { return x.form !== undefined; }), 'form')
     );
 
     var checkForbidded = function (ctx, next) {
         
-        var forbiddedPathPrefixes = [];
-
         var forbidRequest = false;
         for (var i = 0; i < forbiddedPathPrefixes.length; i++) {
             if (_.str.startsWith(ctx.uri.path, forbiddedPathPrefixes[i])) {

@@ -80,7 +80,7 @@ var Parser = function (server) {
 
         mdl.js = {};
 
-        mdl.scripts = isAdmin ? server.jsnbt.scripts : [];
+        mdl.scripts = isAdmin ? server.app.config.scripts : [];
 
         if (isAdmin) {
 

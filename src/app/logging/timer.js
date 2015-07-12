@@ -1,4 +1,3 @@
-var moment = require('moment');
 var _ = require('underscore');
 
 var getDiff = function(earlierDate, laterDate) {

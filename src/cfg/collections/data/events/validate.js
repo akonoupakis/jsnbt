@@ -5,9 +5,9 @@ var self = this;
 var languageProperties = {};
 var contentProperties = {};
 
-if (server.jsnbt.localization) {
+if (server.app.localization.enabled) {
 
-    _.each(server.jsnbt.languages, function (lang) {
+    _.each(server.languages, function (lang) {
         languageProperties[lang] = {
             type: "object"
         }
@@ -27,12 +27,12 @@ validate({
         domain: {
             type: "string",
             required: true,
-            enum: _.pluck(_.uniq(server.jsnbt.lists, function (x) { return x.domain; }), 'domain')
+            enum: _.pluck(_.uniq(server.app.config.lists, function (x) { return x.domain; }), 'domain')
         },
         list: {
             type: "string",
             required: true,
-            enum: _.pluck(_.filter(server.jsnbt.lists, function (x) { return x.domain === self.domain; }), 'id')
+            enum: _.pluck(_.filter(server.app.config.lists, function (x) { return x.domain === self.domain; }), 'id')
         },
         content: {
             type: "object",
