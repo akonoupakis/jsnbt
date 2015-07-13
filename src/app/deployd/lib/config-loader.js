@@ -1,10 +1,10 @@
 var fs = require('fs')
   , path = require('path')
   , _loadTypes = require('./type-loader')
-  , InternalResources = require('./resources/internal-resources')
+  //, InternalResources = require('./resources/internal-resources')
   , Files = require('./resources/files')
   , ClientLib = require('./resources/client-lib')
-  , Dashboard = require('./resources/dashboard')
+  //, Dashboard = require('./resources/dashboard')
   , debug = require('debug')('config-loader')
   , domain = require('domain')
   , async = require('async')
@@ -173,8 +173,8 @@ function addInternalResources(server, basepath, resources, fn) {
     var internals = [
         new Files('', { config: { 'public': publicFolder }, server: server })
       , new ClientLib('dpd.js', { config: { resources: resources }, server: server})
-      , new InternalResources('__resources', {config: {configPath: basepath}, server: server})
-      , new Dashboard('dashboard', {server: server})
+      //, new InternalResources('__resources', {config: {configPath: basepath}, server: server})
+      //, new Dashboard('dashboard', {server: server})
     ];
     async.forEach(internals, loadResourceExtras, function(err) {
       fn(err, resources.concat(internals));  

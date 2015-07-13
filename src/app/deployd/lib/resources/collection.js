@@ -2,13 +2,13 @@ var validation = require('validation')
   , util = require('util')
   , fs = require('fs')
   , path = require('path')
-  , Resource = require('../../resource')
-  , db = require('../../db')
+  , Resource = require('../resource')
+  , db = require('../db')
   , EventEmitter = require('events').EventEmitter
   , debug = require('debug')('collection')
   , path = require('path')
   , jsonValidation = require('json-validation')
-  , Script = require('../../script');
+  , Script = require('../script');
 
 /**
  * A `Collection` validates incoming requests then proxies them into a `Store`.
