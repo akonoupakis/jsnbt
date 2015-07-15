@@ -123,7 +123,7 @@ var Router = function(server, req, res) {
                 ctx.session = session;
 
                 ctx.timer.start('dpd internal client built');
-                dpd = require('./deployd/internal-client').build(server, session, req.stack);
+                dpd = require('./internal-client.js').build(server, session, req.stack);
                 ctx.timer.stop('dpd internal client built');
 
                 ctx.dpd = dpd;

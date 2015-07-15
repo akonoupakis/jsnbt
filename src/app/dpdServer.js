@@ -1,5 +1,5 @@
 var http = require('http');
-var Router = require('./router');
+var Router = require('./routerServer');
 var db = require('./db');
 var util = require('util');
 var Keys = require('./keys');
@@ -62,7 +62,7 @@ function Server(options) {
     // back all memory stores with a db
     this.db = db.create(options.db);
 
-    this.cache = require('./cache.js')();
+    this.cache = require('./cacheServer.js')();
 
     if (options.cache)
         this.cache = options.cache;

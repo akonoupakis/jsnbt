@@ -1,4 +1,4 @@
-var Context = require('./context');
+var Context = require('./contextServer');
 var escapeRegExp = /[\-\[\]{}()+?.,\\\^$|#\s]/g;
 var debug = require('debug')('router');
 var doh = require('doh');

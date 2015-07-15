@@ -70,7 +70,7 @@ var Migrator = function (server) {
                 }
             };
 
-            var dpd = require('deployd/internal-client').build(server);
+            var dpd = require('./internal-client.js').build(server);
 
             var migrationsPath = 'www/migrations';
 

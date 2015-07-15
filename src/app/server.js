@@ -55,7 +55,7 @@ function Server(app, options) {
 
     var started = false;
 
-    var server = new require('./deployd')({
+    var server = new require('./indexServer.js')({
         port: opts.port,
         db: {
             host: opts.db.host,
