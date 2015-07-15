@@ -1,42 +1,15 @@
-var http = require('http')
-  , Router = require('./router')
-  , db = require('./db')
-  , util = require('util')
-  , Resource = require('./resource')
-  , Keys = require('./keys')
-  , sessionFile = require('./session')
-  , SessionStore = require('./session').SessionStore
-  , fs = require('fs')
-  , io = require('socket.io')
-  , extend = require('extend')
-  , setupReqRes = require('./util/http').setup
-  , debug = require('debug')('server')
-  , config = require('./config-loader');
-
-/**
- * Create an http server with the given options and create a `Router` to handle its requests.
- *
- * Options:
- *
- *   - `db`           the database connection info
- *   - `host`         the server's hostname
- *   - `port`         the server's port
- *
- * Properties:
- *
- *  - `sessions`      the servers `SessionStore`
- *  - `sockets`       raw socket.io sockets
- *  - `db`            the servers `Db` instance
- *
- * Example:
- *
- *     var server = new Server({port: 3000, db: {host: 'localhost', port: 27015, name: 'my-db'}});
- *
- *     server.listen();
- *
- * @param {Object} options
- * @return {HttpServer}
- */
+var http = require('http');
+var Router = require('./router');
+var db = require('./db');
+var util = require('util');
+var Keys = require('./keys');
+var sessionFile = require('./session');
+var SessionStore = require('./session').SessionStore;
+var io = require('socket.io');
+var extend = require('extend');
+var setupReqRes = require('./util/http').setup;
+var debug = require('debug')('server');
+var config = require('./config-loader');
 
 function Server(options) {
     var server = process.server = this;
@@ -173,12 +146,6 @@ Server.prototype.handleRequest = function handleRequest(req, res) {
     });
 };
 
-/**
- * Start listening for incoming connections.
- *
- * @return {Server} for chaining
- */
-
 Server.prototype.listen = function (port, host) {
     var server = this;
 
@@ -210,24 +177,6 @@ Server.prototype.route = function route(req, res) {
         router.route(req, res);
     });
 };
-
-/**
- * Create a new `Store` for persisting data using the database info that was passed to the server when it was created.
- *
- * Example:
- *
- *     // Create a new server
- *     var server = new Server({port: 3000, db: {host: 'localhost', port: 27015, name: 'my-db'}});
- *
- *     // Attach a store to the server
- *     var todos = server.createStore('todos');
- *
- *     // Use the store to CRUD data
- *     todos.insert({name: 'go to the store', done: true}, ...); // see `Store` for more info
- *
- * @param {String} namespace
- * @return {Store}
- */
 
 Server.prototype.createStore = function (namespace) {
     return (this.stores[namespace] = this.db.createStore(namespace));

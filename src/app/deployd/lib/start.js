@@ -1,11 +1,7 @@
-var Server = require('./server')
-  , upgrade = require('doh').upgrade
-  , Monitor = require('./monitor')
-  , commands = {};
-  
-/**
- * Commands exposed to parent process.
- */
+var Server = require('./server');
+var upgrade = require('doh').upgrade;
+var Monitor = require('./monitor');
+var commands = {};
 
 commands.start = function (config, fn) {
   var server = new Server(config);

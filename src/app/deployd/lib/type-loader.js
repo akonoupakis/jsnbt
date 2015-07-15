@@ -1,7 +1,6 @@
-var fs = require('fs')
-  , Resource = require('./resource')
-  , debug = require('debug')('type-loader')
-  , domain = require('domain');
+var fs = require('fs');
+var debug = require('debug')('type-loader');
+var domain = require('domain');
 
 module.exports = function loadTypes(basepath, fn) {
   var types = {}

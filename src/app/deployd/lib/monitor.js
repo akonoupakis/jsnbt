@@ -1,8 +1,8 @@
-var ForeverMonitor = require('forever-monitor').Monitor
-  , util = require('util')
-  , uuid = require('./util/uuid')
-  , keypress = require('keypress')
-  , EventEmitter = require('events').EventEmitter;
+var ForeverMonitor = require('forever-monitor').Monitor;
+var util = require('util');
+var uuid = require('./util/uuid');
+var keypress = require('keypress');
+var EventEmitter = require('events').EventEmitter;
 
 function Monitor(script, options) {
   options = options || {};

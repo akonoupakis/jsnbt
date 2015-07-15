@@ -1,21 +1,12 @@
-var Store = require('./db').Store
-, util = require('util')
-,	uuid = require('./util/uuid')
-, Cookies = require('cookies')
-, EventEmitter = require('events').EventEmitter
-, debug = require('debug')('session');
-
-/*!
-* A simple index for storing sesssions in memory.
-*/
+var Store = require('./db').Store;
+var util = require('util');
+var uuid = require('./util/uuid');
+var Cookies = require('cookies');
+var EventEmitter = require('events').EventEmitter;
+var debug = require('debug')('session');
 
 var sessionIndex = {}
   , userSessionIndex = {};
-
-/**
-* A store for persisting sessions inbetween connection / disconnection. 
-* Automatically creates session IDs on inserted objects.
-*/
 
 function SessionStore(namespace, db, sockets) {
   this.sockets = sockets;
@@ -47,13 +38,6 @@ exports.SessionStore = SessionStore;
 SessionStore.prototype.createUniqueIdentifier = function() {
   return uuid.create(128);
 };
-
-/**
-* Create a new `Session` based on an optional `sid` (session id).
-*
-* @param {String} sid
-* @param {Function} callback(err, session)
-*/
 
 SessionStore.prototype.createSession = function(sid, fn) {
   var socketIndex = this.socketIndex
@@ -88,21 +72,6 @@ SessionStore.prototype.createSession = function(sid, fn) {
     });
   }
 };
-
-/**
-* An in memory representation of a client or user connection that can be saved to disk.
-* Data will be passed around via a `Context` to resources.
-* 
-* Example:
-* 
-*    var session = new Session({id: 'my-sid', new SessionStore('sessions', db)});
-*
-*    session.set({uid: 'my-uid'}).save();
-*
-* @param {Object} data
-* @param {Store} store
-* @param {Socket} socket
-*/
 
 function Session(data, store, sockets, rawSockets) {
   var sid;
@@ -180,13 +149,6 @@ function Session(data, store, sockets, rawSockets) {
   });
 }
 
-/**
-* Set properties on the in memory representation of a session.
-*
-* @param {Object} changes
-* @return {Session} this for chaining
-*/
-
 Session.prototype.set = function(object) {
   var session = this
     , data = session.data || (session.data = {});
@@ -196,13 +158,6 @@ Session.prototype.set = function(object) {
   });
   return this;
 };
-
-/**
-* Save the in memory representation of a session to its store.
-*
-* @param {Function} callback(err, data)
-* @return {Session} this for chaining
-*/
 
 Session.prototype.save = function(fn) {
   var session = this
@@ -218,13 +173,6 @@ Session.prototype.save = function(fn) {
   return this;
 };
 
-/**
-* Reset the session using the data in its store. 
-*
-* @param {Function} callback(err, data)
-* @return {Session} this for chaining
-*/
-
 Session.prototype.fetch = function(fn) {
   var session = this;
   this.store.first({id: this.data.id}, function (err, data) {
@@ -233,13 +181,6 @@ Session.prototype.fetch = function(fn) {
   });
   return this;
 };
-
-/**
-* Remove the session.
-*
-* @param {Function} callback(err, data)
-* @return {Session} this for chaining
-*/
 
 Session.prototype.remove = function(fn) {
   var session = this;

@@ -1,24 +1,8 @@
-var internalClient = require('./internal-client')
-  , debug = require('debug')('context')
-  , respond = require('doh').createResponder();
+var internalClient = require('./internal-client');
+var debug = require('debug')('context');
+var respond = require('doh').createResponder();
 
-/**
- * A `Context` gives access to a `req` and `res` object when passed to `resource.handle()`,
- * as well as several utility functions and properties.
- *
- * Properties:
- * - **req** `ServerRequest` req
- * - **res** `ServerResponse` res
- * - **url** `String` The url of the request, stripped of the resource's base path
- * - **body** `Object` The body of the request, if the body is JSON or url encoded
- * - **query** `Object` The query of the request
- * 
- * @param {Resource} resource
- * @param {HttpRequest} req
- * @param {HttpResponse} res
- * @param {Server} server
- */
- 
+
 function Context(resource, req, res, server) {
   var ctx = this;
   this.url = req.url.slice(resource.path.length).split('?')[0];
@@ -47,30 +31,9 @@ function Context(resource, req, res, server) {
   this.dpd = req.dpd || internalClient.build(server, req.session, req.stack);
 }
 
-/**
- * Alias for `ctx.res.end()`
- */
 Context.prototype.end = function() {
   return this.res.end.apply(this.res, arguments);
 };
-
-/**
- * Continuous callback sugar for easily calling res.end().
- *
- * Example:
- *     
- *     // instead of
- *     store.find({foo: 'bar'}, function(err, res) {
- *       if(err) return res.end(JSON.stringify(err));
- *       res.end(JSON.stringify(res));   
- *     })
- * 
- *     // you can just do
- *     store.find({foo: 'bar'}, ctx.done);
- *
- * @param {Error} err
- * @param {Object} response
- */
 
 Context.prototype.done = function(err, res) {
   var body = res

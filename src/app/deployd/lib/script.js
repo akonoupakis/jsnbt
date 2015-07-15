@@ -1,13 +1,9 @@
-var vm = require('vm')
-  , _ = require('underscore')._
-  , EventEmitter = require('events').EventEmitter
-  , sessionFile = require('./session')
-  , path = require('path')
-  , fs = require('fs');
-
-/**
- * A `Script` executes JavaScript src in a sandboxed context and exposes it a set of domain functions.
- */
+var vm = require('vm');
+var _ = require('underscore')._;
+var EventEmitter = require('events').EventEmitter;
+var sessionFile = require('./session');
+var path = require('path');
+var fs = require('fs');
 
 function Script(src, path) {
     try {
@@ -16,10 +12,6 @@ function Script(src, path) {
         this.error = ex;
     }
 }
-
-/**
- * Run the current script in the given sandbox. An optional domain may be provided to extend the sandbox exposed to the script.
- */
 
 Script.prototype.run = function (ctx, domain, fn) {
     

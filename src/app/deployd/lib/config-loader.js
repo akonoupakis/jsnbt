@@ -1,22 +1,13 @@
 var fs = require('fs')
   , path = require('path')
   , _loadTypes = require('./type-loader')
-  //, InternalResources = require('./resources/internal-resources')
   , Files = require('./resources/files')
   , ClientLib = require('./resources/client-lib')
-  //, Dashboard = require('./resources/dashboard')
   , debug = require('debug')('config-loader')
   , domain = require('domain')
   , async = require('async')
   , Q = require('q');
 
-/*!
- * Loads resources from a project folder
- * Callback receives two arguments `(err, resources)`.
- * 
- * @param {String} basepath
- * @param {Function} callback
- */
 module.exports.loadConfig = function(basepath, server, fn) {
   var resources = server.__resourceCache || [];
 

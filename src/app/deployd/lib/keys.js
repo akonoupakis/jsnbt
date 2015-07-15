@@ -1,18 +1,10 @@
-var fs = require('fs')
-  , crypto = require('crypto');
-
-/*!
- * A collection of keys backed by a file.
- */
+var fs = require('fs');
+var crypto = require('crypto');
 
 function Keys(path) {
   this.path = path || '.dpd/keys.json';
 }
 module.exports = Keys;
-
-/*!
- * Get a key from the given keys file.
- */
 
 Keys.prototype.get = function(key, fn) {
   this.readFile(function(err, data) {
@@ -20,17 +12,9 @@ Keys.prototype.get = function(key, fn) {
   });
 };
 
-/*!
- * Generate a key using cryptographically strong pseudo-random data.
- */
-
 Keys.prototype.generate = function() {
   return crypto.randomBytes(256).toString('hex');
 };
-
-/*!
- * Create a new key and save it in the keys file.
- */
 
 Keys.prototype.create = function(fn) {
   var key = this.generate()
@@ -45,10 +29,6 @@ Keys.prototype.create = function(fn) {
     });
   });
 };
-
-/*!
- * Read the contents of the key file as JSON
- */
 
 Keys.prototype.readFile = function(fn) {
   fs.readFile(this.path, 'utf-8', function(err, data) {
@@ -65,11 +45,6 @@ Keys.prototype.readFile = function(fn) {
   });
 };
 
-
-/*!
- * Write the contents of the key file as JSON
- */
-
 Keys.prototype.writeFile = function(data, fn) {
   var str;
 
@@ -81,11 +56,6 @@ Keys.prototype.writeFile = function(data, fn) {
 
   fs.writeFile(this.path, str, fn);
 };
-
-/*
- * Get the first local key
- */
-
 
 Keys.prototype.getLocal = function(fn) {
   this.readFile(function(err, data) {
