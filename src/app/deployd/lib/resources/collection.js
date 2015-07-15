@@ -1,26 +1,14 @@
-var validation = require('validation')
-  , util = require('util')
-  , fs = require('fs')
-  , path = require('path')
-  , Resource = require('../resource')
-  , db = require('../db')
-  , EventEmitter = require('events').EventEmitter
-  , debug = require('debug')('collection')
-  , path = require('path')
-  , jsonValidation = require('json-validation')
-  , Script = require('../script');
-
-/**
- * A `Collection` validates incoming requests then proxies them into a `Store`.
- *
- * Options:
- *
- *   - `path`                the base path a resource should handle
- *   - `config.properties`   the properties of objects the collection should store
- *   - `db`                  the database a collection will use for persistence
- *
- * @param {Object} options
- */
+var validation = require('validation');
+var util = require('util');
+var fs = require('fs');
+var path = require('path');
+var Resource = require('../resource');
+var db = require('../db');
+var EventEmitter = require('events').EventEmitter;
+var debug = require('debug')('collection');
+var path = require('path');
+var jsonValidation = require('json-validation');
+var Script = require('../script');
 
 function Collection(name, options) {
   Resource.apply(this, arguments);
@@ -49,14 +37,6 @@ Collection.dashboard = {
     , '/js/util.js'
   ]
 };
-
-/**
- * Validate the request `body` against the `Collection` `properties`
- * and return an object containing any `errors`.
- *
- * @param {Object} body
- * @return {Object} errors
- */
 
 Collection.prototype.validate = function (body, create) {
   if(!this.properties) this.properties = {};
@@ -92,15 +72,6 @@ Collection.prototype.validate = function (body, create) {
 
   if(Object.keys(errors).length) return errors;
 };
-
-/**
- * Sanitize the request `body` against the `Collection` `properties`
- * and return an object containing only properties that exist in the
- * `Collection.config.properties` object.
- *
- * @param {Object} body
- * @return {Object} sanitized
- */
 
 Collection.prototype.sanitize = function (body) {
   if(!this.properties) return {};
@@ -166,15 +137,6 @@ Collection.prototype.sanitizeQuery = function (query) {
   return sanitized;
 };
 
-/**
- * Handle an incoming http `req` and `res` and execute
- * the correct `Store` proxy function based on `req.method`.
- *
- *
- * @param {ServerRequest} req
- * @param {ServerResponse} res
- */
-
 Collection.prototype.handle = function (ctx) {
   // set id one wasnt provided in the query
   ctx.query.id = ctx.query.id || this.parseId(ctx) || (ctx.body && ctx.body.id);
@@ -210,14 +172,6 @@ Collection.prototype.handle = function (ctx) {
     break;
   }
 };
-
-
-/**
- * Parse the `ctx.url` for an id
- *
- * @param {Context} ctx
- * @return {String} id
- */
 
 Collection.prototype.parseId = function(ctx) {
   if(ctx.url && ctx.url !== '/') return ctx.url.split('/')[1];
@@ -304,14 +258,6 @@ var runValidateEvent = function (ctx, scriptContext, collection, object, callbac
         callback();
     }
 };
-
-/**
- * Find all the objects in a collection that match the given
- * query. Then execute its get script using each object.
- *
- * @param {Context} ctx
- * @param {Function} fn(err, result)
- */
 
 Collection.prototype.find = function (ctx, fn) {
     var collection = this
@@ -415,15 +361,6 @@ Collection.prototype.find = function (ctx, fn) {
     });
 };
 
-/**
- * Execute a `delete` event script, if one exists, using each object found.
- * Then remove a single object that matches the `ctx.query.id`. Finally call
- * `fn(err)` passing an `error` if one occurred.
- *
- * @param {Context} ctx
- * @param {Function} fn(err)
- */
-
 Collection.prototype.remove = function (ctx, fn) {
     var collection = this
       , store = this.store
@@ -477,14 +414,6 @@ Collection.prototype.remove = function (ctx, fn) {
         });
     });
 };
-
-/**
- * Execute the onPost or onPut listener. If it succeeds,
- * save the given item in the collection.
- *
- * @param {Context} ctx
- * @param {Function} fn(err, result)
- */
 
 Collection.prototype.save = function (ctx, fn) {
   var collection = this

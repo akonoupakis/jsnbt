@@ -1,23 +1,12 @@
-var validation = require('validation')
-  , util = require('util')
-  , send = require('send')
-  , Resource = require('../resource')
-  , path = require('path')
-  , debug = require('debug')('files')
-  , fs = require('fs')
-  , url = require('url')
-  , respond = require('doh').createResponder();
-
-/**
- * A `Files` resource proxies incoming requests to the file system.
- *
- * Options:
- *
- *   - `config.public`       the root folder to server public assets
- *
- * @param {Object} options
- * @api private
- */
+var validation = require('validation');
+var util = require('util');
+var send = require('send');
+var Resource = require('../resource');
+var path = require('path');
+var debug = require('debug')('files');
+var fs = require('fs');
+var url = require('url');
+var respond = require('doh').createResponder();
 
 function Files(name, options) {
   Resource.apply(this, arguments);

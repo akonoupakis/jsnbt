@@ -1,24 +1,13 @@
-var validation = require('validation')
-  , util = require('util')
-  , Collection = require('./collection')
-  , db = require('../db')
-  , EventEmitter = require('events').EventEmitter
-  , uuid = require('../util/uuid')
-  , crypto = require('crypto')
-  , SALT_LEN = 256
-  , debug = require('debug')('user-collection');
+var validation = require('validation');
+var util = require('util');
+var Collection = require('./collection');
+var db = require('../db');
+var EventEmitter = require('events').EventEmitter;
+var uuid = require('../util/uuid');
+var crypto = require('crypto');
+var SALT_LEN = 256;
+var debug = require('debug')('user-collection');
 
-/**
- * A `UserCollection` adds user authentication to the Collection resource.
- *
- * Settings:
- *
- *   - `path`                the base path a resource should handle
- *   - `config.properties`   the properties of objects the collection should store 
- *   - `db`                  the database a collection will use for persistence
- *
- * @param {Object} options
- */
 
 function UserCollection(name, options) {
   Collection.apply(this, arguments);
@@ -40,14 +29,6 @@ util.inherits(UserCollection, Collection);
 UserCollection.dashboard = Collection.dashboard;
 UserCollection.events    = Collection.events;
 
-/**
- * Handle an incoming http `req` and `res` and execute
- * the correct `Store` proxy function based on `req.method`.
- *
- *
- * @param {ServerRequest} req
- * @param {ServerResponse} res
- */
 
 UserCollection.prototype.handle = function (ctx) {
   var uc = this;

@@ -1,8 +1,8 @@
-var Resource = require('../resource')
-  , util = require('util')
-  , path = require('path')
-  , fs = require('fs')
-  , async = require('async');
+var Resource = require('../resource');
+var util = require('util');
+var path = require('path');
+var fs = require('fs');
+var async = require('async');
 
 function ClientLib(name, options) {
     Resource.apply(this, arguments);
@@ -17,7 +17,7 @@ ClientLib.prototype.load = function (fn) {
             fs.readFile(path.join(__dirname, '../../clib/dpd.js'), 'utf-8', callback);
         },
         socketIo: function (callback) {
-            fs.readFile(path.join(__dirname, '../../clib/socket.io.min.js'), 'utf-8', callback);
+            fs.readFile(path.join(__dirname, '../../clib/socket.io.js'), 'utf-8', callback);
         },
         ajax: function (callback) {
             fs.readFile(path.join(__dirname, '../../clib/ajax.js'), 'utf-8', callback);

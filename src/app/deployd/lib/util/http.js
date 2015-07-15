@@ -1,12 +1,9 @@
-var Cookies = require('cookies')
-  , qs = require('qs')
-  , parseUrl = require('url').parse
-  , corser = require('corser')
-  , ALLOWED_METHODS = ['GET', 'POST', 'PUT', 'DELETE'];
-  
-/*!
- * A utility for setting up a request and response.
- */
+var Cookies = require('cookies');
+var qs = require('qs');
+var parseUrl = require('url').parse;
+var corser = require('corser');
+var ALLOWED_METHODS = ['GET', 'POST', 'PUT', 'DELETE'];
+
 
 exports.setup = function(req, res, next) {
   var remoteHost = req.headers.origin
@@ -67,17 +64,6 @@ exports.setup = function(req, res, next) {
   });
 };
 
-/*!
- * Attempts to parse the stream. Currently supports the following formats:
- * 
- * - application/json
- * - application/x-www-form-urlencoded (all values are strings)
- * 
- * @param {ServerRequest} req
- * @param {String} mime
- * @param {Function} callback (err)
- */
-
 var parseBody = exports.parseBody = function(req, res, mime, callback) {
   var buf = '';
 
@@ -129,25 +115,16 @@ var parseQuery = exports.parseQuery = function(url) {
   }
 };
 
-/*!
- * Redirects to the given url.
- */
-
 exports.redirect = function(res, url, statusCode) {
   res.statusCode = statusCode || 301;
   res.setHeader("Location", url);
   res.end();
 };
 
-
 var autoParse = {
   'application/x-www-form-urlencoded': parseBody,
   'application/json': parseBody
 };
-
-/*
- * Number parsing that fails in qs
- */
 
 var isInt = /^[0-9]+$/;
 var isFloat = /^[-+]?[0-9]*\.?[0-9]+$/;
