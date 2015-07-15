@@ -1,3 +1,5 @@
+var resourcePrefixPath = 'dpd';
+
 (function (undefined) {
 
     if (!window._dpd) window._dpd = {};

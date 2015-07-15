@@ -26,7 +26,6 @@ ClientLib.prototype.load = function (fn) {
         if (err) return fn(err);
         var file = results.socketIo + "\n\n"
                  + results.ajax + "\n\n"
-                 + "var resourcePrefixPath = 'dpd';" + "\n\n"
                  + results.dpdJs;
         resource.clientLib = file;
         fn();
