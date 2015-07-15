@@ -1,19 +1,5 @@
-var Server = require('./lib/server');
-  //, upgrade = require('doh').upgrade;
-//  , Monitor = require('./lib/monitor');
-
-/**
- * export a simple function that constructs a dpd server based on a config
- */
+var Server = require('./server');
 
 module.exports = function (config) {
-  var server = new Server(config);
-  //upgrade(server);
-  return server;
+  return new Server(config);
 };
-
-/**
- * opt-in process monitoring support
- */
-
-//module.exports.createMonitor = Monitor.createMonitor;

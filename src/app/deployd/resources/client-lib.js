@@ -14,13 +14,13 @@ ClientLib.prototype.load = function (fn) {
 
     async.parallel({
         dpdJs: function (callback) {
-            fs.readFile(path.join(__dirname, '../../clib/dpd.js'), 'utf-8', callback);
+            fs.readFile(path.join(__dirname, '../clib/dpd.js'), 'utf-8', callback);
         },
         socketIo: function (callback) {
-            fs.readFile(path.join(__dirname, '../../clib/socket.io.js'), 'utf-8', callback);
+            fs.readFile(path.join(__dirname, '../clib/socket.io.js'), 'utf-8', callback);
         },
         ajax: function (callback) {
-            fs.readFile(path.join(__dirname, '../../clib/ajax.js'), 'utf-8', callback);
+            fs.readFile(path.join(__dirname, '../clib/ajax.js'), 'utf-8', callback);
         }
     }, function (err, results) {
         if (err) return fn(err);

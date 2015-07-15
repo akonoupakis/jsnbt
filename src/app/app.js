@@ -3,6 +3,7 @@ var path = require('path');
 var extend = require('extend');
 var root = require('server-root');
 var validation = require('json-validation');
+var upgrade = require('doh').upgrade;
 var _ = require('underscore');
 
 var Environment = {
@@ -411,7 +412,7 @@ exports.createServer = function (options) {
     this.path = path.join(__dirname, 'www', 'public');
     
     var server = require('./server.js')(this, opts);
-
+    upgrade(server);
     return server;
 };
 

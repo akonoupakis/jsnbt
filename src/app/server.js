@@ -55,7 +55,7 @@ function Server(app, options) {
 
     var started = false;
 
-    var server = require('./deployd')({
+    var server = new require('./deployd')({
         port: opts.port,
         db: {
             host: opts.db.host,
@@ -234,7 +234,6 @@ function Server(app, options) {
     server.countries = require('./storage/countries.js');
 
     return server;
-
 }
 
 module.exports = Server;
