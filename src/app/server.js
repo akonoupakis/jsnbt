@@ -16,42 +16,23 @@ var validation = require('json-validation');
 var fs = require('fs');
 var _ = require('underscore');
 
-function ServerDPD(options) {
+var logger = require('./logger.js')(this);
+
+function Server(app, options) {
     var server = process.server = this;
     http.Server.call(this);
 
-    // defaults
+    var optsHost = options.host;
+    if (options.host)
+        delete options.host;
+
     this.options = {
+        host: 'localhost',
         port: 2403,
-        db: { port: 27017, host: '127.0.0.1', name: 'deployd' },
-        dpd: {
-            onPreRead: function (scriptContext, collection, callback) {
-                callback();
-            },
-            onPostRead: function (scriptContext, collection, object, callback) {
-                callback();
-            },
-            onPreCreate: function (scriptContext, collection, callback) {
-                callback();
-            },
-            onPostCreate: function (scriptContext, collection, object, callback) {
-                callback();
-            },
-            onPreUpdate: function (scriptContext, collection, object, callback) {
-                callback();
-            },
-            onPostUpdate: function (scriptContext, collection, object, callback) {
-                callback();
-            },
-            onPreDelete: function (scriptContext, collection, object, callback) {
-                callback();
-            },
-            onPostDelete: function (scriptContext, collection, object, callback) {
-                callback();
-            },
-            onValidate: function (scriptContext, collection, object, callback) {
-                callback();
-            }
+        db: {
+            port: 27017,
+            host: '127.0.0.1',
+            name: 'deployd'
         }
     };
 
@@ -59,12 +40,44 @@ function ServerDPD(options) {
 
     debug('started with options %j', options);
 
-    sessionFile.appPath = options.appPath;
+    sessionFile.appPath = __dirname;
 
-    // an object to map a server to its stores
+    var authMngr = null;
+
+    var started = false;
+
+    var logAction = function (dpd, user, collection, action, objectId, objectData, callback) {
+
+        if (server.app.config.collections[collection]) {
+            if (server.app.config.collections[collection].logging) {
+
+                dpd.actions.post({
+                    timestamp: new Date().getTime(),
+                    user: user ? user.id : undefined,
+                    collection: collection,
+                    action: action,
+                    objectId: objectId,
+                    objectData: objectData || {}
+                }, function (results, err) {
+                    if (err) {
+                        callback(err);
+                    }
+                    else {
+                        callback();
+                    }
+                });
+            }
+            else {
+                callback();
+            }
+        }
+        else {
+            callback();
+        }
+    };
+
     this.stores = {};
 
-    // back all memory stores with a db
     this.db = db.create(options.db);
 
     this.cache = require('./cache.js')();
@@ -76,33 +89,175 @@ function ServerDPD(options) {
         sSelf.cache = cache;
     };
 
-    // use socket io for a session based realtime channel
     this.sockets = io.listen(this, {
         'log level': 0
     }).sockets;
 
-    this.dpd = this.options.dpd;
+    this.dpd = {
+        onPreRead: function (scriptContext, collection, callback) {
+            if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'R')) {
+                var accessDenied = new Error('access denied');
+                accessDenied.statusCode = 401;
+                callback(accessDenied);
+            }
+            else {
+                callback();
+            }
+        },
+        onPostRead: function (scriptContext, collection, object, callback) {
+            callback();
+        },
+        onPreCreate: function (scriptContext, collection, callback) {
+            if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'C')) {
+                var accessDenied = new Error('access denied');
+                accessDenied.statusCode = 401;
+                callback(accessDenied);
+            }
+            else {
+                callback();
+            }
+        },
+        onPostCreate: function (scriptContext, collection, object, callback) {
+            logAction(scriptContext.dpd, scriptContext.me, collection, 'create', object.id, object, function (err, res) {
+                if (err) {
+                    callback(err);
+                }
+                else {
+                    if (!scriptContext.internal)
+                        scriptContext.emit(collection + 'Created', object);
 
-    // persist sessions in a store
-    var sessionStore = this.sessions = new SessionStore('sessions', this.db, this.sockets);
+                    callback();
+                }
+            });
+        },
+        onPreUpdate: function (scriptContext, collection, object, callback) {
+            if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'U')) {
+                var accessDenied = new Error('access denied');
+                accessDenied.statusCode = 401;
+                callback(accessDenied);
+            }
+            else {
+                callback();
+            }
+        },
+        onPostUpdate: function (scriptContext, collection, object, callback) {
+            logAction(scriptContext.dpd, scriptContext.me, collection, 'update', object.id, object, function (err, res) {
+                if (err) {
+                    callback(err);
+                }
+                else {
+                    if (!scriptContext.internal)
+                        scriptContext.emit(collection + 'Updated', object);
 
-    // persist keys in a store
-    var keys = this.keys = new Keys();
+                    callback();
+                }
+            });
+        },
+        onPreDelete: function (scriptContext, collection, object, callback) {
+            if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'D')) {
+                var accessDenied = new Error('access denied');
+                accessDenied.statusCode = 401;
+                callback(accessDenied);
+            }
+            else {
+                callback();
+            }
+        },
+        onPostDelete: function (scriptContext, collection, object, callback) {
+            logAction(scriptContext.dpd, scriptContext.me, collection, 'delete', object.id, object, function (err, res) {
+                if (err) {
+                    callback(err);
+                }
+                else {
+                    if (!scriptContext.internal)
+                        scriptContext.emit(collection + 'Deleted', object);
+
+                    callback();
+                }
+            });
+        },
+        onValidate: function (scriptContext, collection, object, callback) {
+            if (server.app.config.collections[collection]) {
+                if (server.app.config.collections[collection].schema) {
+                    var validator = new validation.JSONValidation();
+                    var validationResult = validator.validate(object, server.app.config.collections[collection].schema);
+                    if (!validationResult.ok) {
+                        var validationErrors = validationResult.path + ': ' + validationResult.errors.join(' - ');
+                        callback(new Error(validationErrors));
+                    }
+                    else {
+                        callback();
+                    }
+                }
+                else {
+                    callback();
+                }
+            }
+            else {
+                callback();
+            }
+        }
+    };
+
+    this.sessions = new SessionStore('sessions', this.db, this.sockets);
+
+    this.keys = new Keys();
 
     if (options.events)
         for (var item in options.events)
             this.on(item, options.events[item]);
 
+    this.on('listening', function () {
+        server.host = optsHost;
+        server.port = server.options.port;
+
+        authMngr = require('./cms/authMngr.js')(server);
+
+        logger.info('jsnbt server is listening on:' + server.options.port);
+
+        started = true;
+
+        if (server.next)
+            server.next();
+    });
+
     this.on('request', server.handleRequest);
 
-    server.on('request:error', function (err, req, res) {
-        console.error(req.method, req.url, err.stack || err);
+    this.on('request', function (req, res) {
+        if (started) {
+            var router = new require('./router.js')(server, req, res);
+            router.process();
+        }
+        else {
+            req._routed = true;
+            res.write('503 - Service is starting'); 
+            res.end();
+        }
+    });
+
+    this.on("request:error", function (err, req, res) {
+        logger.error(req.method, req.url, err.stack || err);
         process.exit(1);
     });
-}
-util.inherits(ServerDPD, http.Server);
 
-ServerDPD.prototype.handleRequest = function handleRequest(req, res) {
+    server.getPath = serverRoot.getPath;
+
+    server.messager = require('./messager.js')(server);
+
+    server.app = app;
+
+    var versionInfo = fs.existsSync(serverRoot.getPath('node_modules/jsnbt/package.json')) ?
+        require(serverRoot.getPath('node_modules/jsnbt/package.json')) :
+        require(serverRoot.getPath('package.json'));
+
+    server.version = versionInfo.version;
+
+    server.languages = require('./storage/languages.js');
+    server.countries = require('./storage/countries.js');
+}
+util.inherits(Server, http.Server);
+
+Server.prototype.handleRequest = function handleRequest(req, res) {
     var server = this;
 
     if (req._routed)
@@ -151,7 +306,7 @@ ServerDPD.prototype.handleRequest = function handleRequest(req, res) {
     });
 };
 
-ServerDPD.prototype.listen = function (port, host) {
+Server.prototype.start = function (next) {
     var server = this;
 
     config.loadConfig('./', server, function (err, resourcesInstances) {
@@ -164,13 +319,19 @@ ServerDPD.prototype.listen = function (port, host) {
             server.resources = resourcesInstances;
             var router = new Router(resourcesInstances, server);
             server.router = router;
-            http.Server.prototype.listen.call(server, port || server.options.port, host || server.options.host);
+            http.Server.prototype.listen.call(server, server.options.port, server.options.host);
+
+            if (typeof (next) === 'function') {
+                server.next = next;
+            }
+            else {
+                server.next = undefined;
+            }
         }
     });
-    return this;
 };
 
-ServerDPD.prototype.route = function route(req, res) {
+Server.prototype.route = function route(req, res) {
     var server = this;
 
     config.loadConfig('./', server, function (err, resourcesInstances) {
@@ -183,245 +344,13 @@ ServerDPD.prototype.route = function route(req, res) {
     });
 };
 
-ServerDPD.prototype.createStore = function (namespace) {
+Server.prototype.createStore = function (namespace) {
     return (this.stores[namespace] = this.db.createStore(namespace));
 };
 
 
+module.exports = function (app, options) {
 
+    return new Server(app, options);
 
-
-
-function Server(app, options) {
-
-    var defOpts = {
-        host: '',
-        port: 0,
-        db: {
-            host: '',
-            port: 27017,
-            name: ''
-        }
-    };
-
-    var opts = {};
-    extend(true, opts, defOpts, options);
-    
-    var logger = require('./logger.js')(this);
-    
-    var logAction = function (dpd, user, collection, action, objectId, objectData, callback) {
-        
-        if (server.app.config.collections[collection]) {
-            if (server.app.config.collections[collection].logging) {
-                
-                dpd.actions.post({
-                    timestamp: new Date().getTime(),
-                    user: user ? user.id : undefined,
-                    collection: collection,
-                    action: action,
-                    objectId: objectId,
-                    objectData: objectData || {}
-                }, function (results, err) {
-                    if (err) {
-                        callback(err);
-                    }
-                    else {
-                        callback();
-                    }
-                });
-            }
-            else {
-                callback();
-            }
-        }
-        else {
-            callback();
-        }
-    };
-    
-    var authMngr = null;
-
-    var started = false;
-
-    var server = new ServerDPD({
-        port: opts.port,
-        db: {
-            host: opts.db.host,
-            port: opts.db.port,
-            name: opts.db.name
-        },
-        dpd: {
-            onPreRead: function (scriptContext, collection, callback) {
-                if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'R')) {
-                    var accessDenied = new Error('access denied');
-                    accessDenied.statusCode = 401;
-                    callback(accessDenied);
-                }
-                else {
-                    callback();
-                }
-            },
-            onPostRead: function (scriptContext, collection, object, callback) {
-                callback();
-            },
-            onPreCreate: function (scriptContext, collection, callback) {
-                if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'C')) {
-                    var accessDenied = new Error('access denied');
-                    accessDenied.statusCode = 401;
-                    callback(accessDenied);
-                }
-                else {
-                    callback();
-                }
-            },
-            onPostCreate: function (scriptContext, collection, object, callback) {
-                logAction(scriptContext.dpd, scriptContext.me, collection, 'create', object.id, object, function (err, res) {
-                    if (err) {
-                        callback(err);
-                    }
-                    else {
-                        if (!scriptContext.internal)
-                            scriptContext.emit(collection + 'Created', object);
-
-                        callback();
-                    }
-                });
-            },
-            onPreUpdate: function (scriptContext, collection, object, callback) {
-                if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'U')) {
-                    var accessDenied = new Error('access denied');
-                    accessDenied.statusCode = 401;
-                    callback(accessDenied);
-                }
-                else {
-                    callback();
-                }
-            },
-            onPostUpdate: function (scriptContext, collection, object, callback) {
-                logAction(scriptContext.dpd, scriptContext.me, collection, 'update', object.id, object, function (err, res) {
-                    if (err) {
-                        callback(err);
-                    }
-                    else {
-                        if (!scriptContext.internal)
-                            scriptContext.emit(collection + 'Updated', object);
-
-                        callback();
-                    }
-                });
-            },
-            onPreDelete: function (scriptContext, collection, object, callback) {
-                if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'D')) {
-                    var accessDenied = new Error('access denied');
-                    accessDenied.statusCode = 401;
-                    callback(accessDenied);
-                }
-                else {
-                    callback();
-                }
-            },
-            onPostDelete: function (scriptContext, collection, object, callback) {
-                logAction(scriptContext.dpd, scriptContext.me, collection, 'delete', object.id, object, function (err, res) {
-                    if (err) {
-                        callback(err);
-                    }
-                    else {
-                        if (!scriptContext.internal)
-                            scriptContext.emit(collection + 'Deleted', object);
-
-                        callback();
-                    }
-                });
-            },
-            onValidate: function (scriptContext, collection, object, callback) {
-                if (server.app.config.collections[collection]) {
-                    if (server.app.config.collections[collection].schema) {
-                        var validator = new validation.JSONValidation();
-                        var validationResult = validator.validate(object, server.app.config.collections[collection].schema);
-                        if (!validationResult.ok) {
-                            var validationErrors = validationResult.path + ': ' + validationResult.errors.join(' - ');
-                            callback(new Error(validationErrors));
-                        }
-                        else {
-                            callback();
-                        }
-                    }
-                    else {
-                        callback();
-                    }
-                }
-                else {
-                    callback();
-                }
-            }
-        },
-        cache: require('./cache.js')(this),
-        events: {
-            listening: function () {
-                
-                server.host = opts.host;
-                server.port = opts.port;
-
-                authMngr = require('./cms/authMngr.js')(server);
-
-                logger.info('jsnbt server is listening on:' + opts.port);
-
-                started = true;
-
-                if (server.next)
-                    server.next();
-
-            },
-            request: function (req, res) {
-
-                if (started) {
-                    var router = new require('./router.js')(server, req, res);
-                    router.process();
-                }
-                else {
-                    req._routed = true;
-                    res.write('503 - Service is starting'); 
-                    res.end();
-                }
-
-            },
-            "request:error": function (err, req, res) {
-
-                logger.error(req.method, req.url, err.stack || err);
-                process.exit(1);
-
-            }
-        },
-        appPath: __dirname
-    });
-        
-    server.getPath = serverRoot.getPath;
-
-    server.start = function (next) {
-        server.listen();
-        
-        if (typeof (next) === 'function') {
-            server.next = next;
-        }
-        else {
-            server.next = undefined;
-        }
-    };
-
-    server.messager = require('./messager.js')(server);
-
-    server.app = app;
-
-    var versionInfo = fs.existsSync(serverRoot.getPath('node_modules/jsnbt/package.json')) ?
-        require(serverRoot.getPath('node_modules/jsnbt/package.json')) :
-        require(serverRoot.getPath('package.json'));
-
-    server.version = versionInfo.version;
-
-    server.languages = require('./storage/languages.js');
-    server.countries = require('./storage/countries.js');
-
-    return server;
-}
-
-module.exports = Server;
+};
