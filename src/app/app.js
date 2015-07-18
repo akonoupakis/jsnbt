@@ -407,6 +407,7 @@ exports.createServer = function (options) {
     var opts = {};
     extend(true, opts, defOpts, options);
 
+    //check if directory exists?
     process.chdir('www');
     
     this.path = path.join(__dirname, 'www', 'public');
