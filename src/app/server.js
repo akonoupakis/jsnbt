@@ -6,7 +6,6 @@ var sessionFile = require('./session');
 var SessionStore = require('./session').SessionStore;
 var io = require('socket.io');
 var extend = require('extend');
-var setupReqRes = require('./util/http').setup;
 var debug = require('debug')('server');
 var config = require('./config-loader');
 
@@ -220,24 +219,8 @@ function Server(app, options) {
             server.next();
     });
 
-    //this.on('request', server.handleRequest);
-
-    //this.on('request', function (req, res) {
-    //    if (started) {
-    //        var router = new require('./router.js')(server, req, res);
-    //        router.process();
-    //    }
-    //    else {
-    //        req._routed = true;
-    //        res.write('503 - Service is starting'); 
-    //        res.end();
-    //    }
-    //});
-
     this.on('request', function (req, res) {
         if (started) {
-            //var router = new require('./router.js')(server, req, res);
-            //router.process();
             server.route(req, res);
         }
         else {
@@ -269,55 +252,6 @@ function Server(app, options) {
 }
 util.inherits(Server, http.Server);
 
-Server.prototype.handleRequest = function handleRequest(req, res) {
-    var server = this;
-
-    if (req._routed)
-        return;
-
-    // dont handle socket.io requests
-    if (req.url.indexOf('/socket.io/') === 0) return;
-
-    debug('%s %s', req.method, req.url);
-
-    // add utilites to req and res
-    setupReqRes(req, res, function (err, next) {
-        if (err) return res.end(err.message);
-
-        server.sessions.createSession(req.cookies.get('sid'), function (err, session) {
-
-            if (err) {
-                debug('session error', err, session);
-                throw err;
-            } else {
-                // (re)set the session id
-                req.cookies.set('sid', session.sid);
-                req.session = session;
-
-                var root = req.headers['dpd-ssh-key'] || req.cookies.get('DpdSshKey');
-
-                if (server.options.env === 'development') {
-                    if (root) { req.isRoot = true; }
-                    server.route(req, res);
-                } else if (root) {
-                    // all root requests
-                    // must be authenticated
-                    debug('authenticating', root);
-                    server.keys.get(root, function (err, key) {
-                        if (err) throw err;
-                        if (key) req.isRoot = true;
-                        debug('is root?', session.isRoot);
-                        server.route(req, res);
-                    });
-                } else {
-                    // normal route
-                    server.route(req, res);
-                }
-            }
-        });
-    });
-};
-
 Server.prototype.start = function (next) {
     var server = this;
 
@@ -329,7 +263,6 @@ Server.prototype.start = function (next) {
             process.exit(1);
         } else {
             server.resources = resourcesInstances;
-            //server.router = new Router(resourcesInstances, server);
             http.Server.prototype.listen.call(server, server.options.port, server.options.host);
 
             if (typeof (next) === 'function') {
@@ -347,28 +280,14 @@ Server.prototype.route = function route(req, res) {
 
     if (req.url.indexOf('/socket.io/') === 0) return;
 
-    //config.loadConfig('./', server, function (err, resourcesInstances) {
-    //    if (err) throw err;
-        //var router = new Router(server.resources, server);
-        //server.router = router;
-
-    //    server.resources = resourcesInstances;
-
-    //var router = new Router(server.resources, server);
-    //router.route(req, res);
-
     var router = new require('./router.js')(server, req, res);
-        router.process();
-    //});
+    router.process();
 };
 
 Server.prototype.createStore = function (namespace) {
     return (this.stores[namespace] = this.db.createStore(namespace));
 };
 
-
 module.exports = function (app, options) {
-
     return new Server(app, options);
-
 };
