@@ -75,7 +75,8 @@ UserCollection.prototype.handle = function (ctx) {
 
       this.find(ctx, ctx.done);
     break;
-    case 'POST':
+      case 'POST':
+          
       if(ctx.url === '/login') {
         var path = this.path
           , credentials = ctx.req.body || {};

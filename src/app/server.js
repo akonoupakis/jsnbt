@@ -1,5 +1,4 @@
 var http = require('http');
-var Router = require('./routerServer');
 var db = require('./db');
 var util = require('util');
 var Keys = require('./keys');
@@ -221,12 +220,25 @@ function Server(app, options) {
             server.next();
     });
 
-    this.on('request', server.handleRequest);
+    //this.on('request', server.handleRequest);
+
+    //this.on('request', function (req, res) {
+    //    if (started) {
+    //        var router = new require('./router.js')(server, req, res);
+    //        router.process();
+    //    }
+    //    else {
+    //        req._routed = true;
+    //        res.write('503 - Service is starting'); 
+    //        res.end();
+    //    }
+    //});
 
     this.on('request', function (req, res) {
         if (started) {
-            var router = new require('./router.js')(server, req, res);
-            router.process();
+            //var router = new require('./router.js')(server, req, res);
+            //router.process();
+            server.route(req, res);
         }
         else {
             req._routed = true;
@@ -317,8 +329,7 @@ Server.prototype.start = function (next) {
             process.exit(1);
         } else {
             server.resources = resourcesInstances;
-            var router = new Router(resourcesInstances, server);
-            server.router = router;
+            //server.router = new Router(resourcesInstances, server);
             http.Server.prototype.listen.call(server, server.options.port, server.options.host);
 
             if (typeof (next) === 'function') {
@@ -334,14 +345,21 @@ Server.prototype.start = function (next) {
 Server.prototype.route = function route(req, res) {
     var server = this;
 
-    config.loadConfig('./', server, function (err, resourcesInstances) {
-        if (err) throw err;
-        var router = new Router(resourcesInstances, server);
-        server.router = router;
+    if (req.url.indexOf('/socket.io/') === 0) return;
 
-        server.resources = resourcesInstances;
-        router.route(req, res);
-    });
+    //config.loadConfig('./', server, function (err, resourcesInstances) {
+    //    if (err) throw err;
+        //var router = new Router(server.resources, server);
+        //server.router = router;
+
+    //    server.resources = resourcesInstances;
+
+    //var router = new Router(server.resources, server);
+    //router.route(req, res);
+
+    var router = new require('./router.js')(server, req, res);
+        router.process();
+    //});
 };
 
 Server.prototype.createStore = function (namespace) {

@@ -166,7 +166,7 @@ var ImageRouter = function (server) {
                     ctx.error(405);
                 }
                 else if (!ctx.uri.query.type) {
-                    ctx.error(400);
+                    next();
                 }
                 else {
                     var filePath = decodeURIComponent(ctx.uri.path);

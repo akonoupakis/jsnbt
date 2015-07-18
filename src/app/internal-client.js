@@ -119,7 +119,9 @@ exports.build = function (server, session, stack) {
                     on: function () { }
                 };
 
-                server.router.route(req, res);
+                var resourceRouter = require('./routing/resource.js')(server);
+                var resourceContext = require('./context.js')(server, req, res);
+                resourceRouter.route(resourceContext);
             } else {
                 debug("Recursive call detected - aborting");
                 if (typeof fn === 'function') fn(null, "Recursive call to " + urlKey + " detected");

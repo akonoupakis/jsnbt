@@ -8,9 +8,11 @@ var routerNames = [
     './routing/api.js',
     './routing/image.js',
     './routing/jsnbt.js',
+    './routing/dpd.js',
     './routing/dev.js',
     './routing/upload.js',
     './routing/admin.js',
+    './routing/resource.js',
     './routing/site.js',
     './routing/public.js'
 ];
@@ -25,6 +27,7 @@ var getRouters = function (server) {
 
     routers.push({
         route: function (ctx, next) {
+            console.log(111);
             ctx.error(404);
         }
     });
@@ -40,9 +43,9 @@ var Router = function(server, req, res) {
 
     var logger = require('./logger.js')(this);
 
-    var ignoredPaths = ['dashboard', 'dpd.js', '__resources', 'socket.io', 'favicon.ico', 'app-offline.htm', 'dpd'];
+    var ignoredPaths = []; //['dashboard', 'dpd.js', '__resources', 'socket.io', 'favicon.ico', 'app-offline.htm', 'dpd'];
 
-    var ignoredPathPrefixes = ['/css/', '/fonts/', '/img/', '/js/', '/tmpl/', '/tmp/', '/files/', '/admin/css/', '/admin/fonts/', '/admin/img/', '/admin/js/', '/admin/tmpl/'];
+    var ignoredPathPrefixes = []; //['/css/', '/fonts/', '/img/', '/js/', '/tmpl/', '/tmp/', '/files/', '/admin/css/', '/admin/fonts/', '/admin/img/', '/admin/js/', '/admin/tmpl/'];
 
     var forbiddedPathPrefixes = [];
 
@@ -93,12 +96,7 @@ var Router = function(server, req, res) {
             if (_.filter(formPaths, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length > 0) {
                 processRequest = true;
             }
-
-            if (!processRequest && ctx.uri.first === 'files') {
-                var imageRouter = require('./routing/image.js')(server);
-                processRequest = imageRouter.canRoute(ctx);
-            }
-
+            
             if (processRequest) {
                 req._routed = true;
 
@@ -182,7 +180,6 @@ var Router = function(server, req, res) {
                 router.route(ctx, next);
             };
 
-            
             var first = _.first(routers);
             first.route(ctx, next);
         }
