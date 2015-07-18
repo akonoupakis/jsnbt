@@ -62,7 +62,7 @@ function Server(options) {
     // back all memory stores with a db
     this.db = db.create(options.db);
 
-    this.cache = require('./cacheServer.js')();
+    this.cache = require('./cache.js')();
 
     if (options.cache)
         this.cache = options.cache;
