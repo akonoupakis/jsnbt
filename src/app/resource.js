@@ -8,8 +8,6 @@ function Resource(name, options) {
     EventEmitter.call(this);
     this.name = name;
 
-    //this.path = '/' + name;
-
     this.path = '/dpd/' + name;
     
     options = this.options = options || {};

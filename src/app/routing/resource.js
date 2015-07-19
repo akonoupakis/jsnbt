@@ -36,7 +36,6 @@ function Context(resource, req, res, server) {
     }
 
     this.db = req.db || require('../db.js').build(server, req.session, req.stack);
-    this.server = server;
 }
 
 Context.prototype.end = function () {
