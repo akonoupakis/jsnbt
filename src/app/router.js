@@ -120,15 +120,15 @@ var Router = function(server, req, res) {
                 ctx.session = session;
 
                 ctx.timer.start('db-api built');
-                var db = require('./db.js').build(server, session, req.stack);
+                var dbClient = require('./db.js').build(server, session, req.stack);
                 ctx.timer.stop('db-api built');
 
-                ctx.dpd = db;
+                ctx.db = dbClient;
 
                 if ((session.data && session.data.uid) && !session.user) {
 
                     ctx.timer.start('current user retrieval');
-                    db.users.get(session.data.uid, function (user, err) {
+                    dbClient.users.get(session.data.uid, function (user, err) {
                         ctx.timer.stop('current user retrieval');
                         if (user) {
                             session.user = user;
@@ -148,7 +148,7 @@ var Router = function(server, req, res) {
     var processRequest = function (ctx) {
         ctx.req.cookies.set('sid', ctx.session.sid);
         
-        ctx.req.dpd = ctx.dpd;
+        ctx.req.db = ctx.db;
 
         ctx.req.session = ctx.session;
 

@@ -40,7 +40,7 @@ var Messager = function (server) {
                     callback(err, null);
                 }
             },
-            getSender: function (dpd, callback) {
+            getSender: function (db, callback) {
 
                 var settings = {
                     provider: 'core',
@@ -53,7 +53,7 @@ var Messager = function (server) {
                     ssl: false
                 };
 
-                dpd.settings.getCached({
+                db.settings.getCached({
                     domain: 'core'
                 }, function (res, err) {
                     if (err) {
@@ -113,14 +113,14 @@ var Messager = function (server) {
                     callback(err, null);
                 }
             },
-            getSender: function (dpd, callback) {
+            getSender: function (db, callback) {
            
                 var settings = {
                     provider: 'null',
                     sender: ''
                 };
 
-                dpd.settings.getCached({
+                db.settings.getCached({
                     domain: 'core'
                 }, function (res, err) {
                     if (err) {

@@ -222,7 +222,7 @@ var createScriptContext = function (ctx) {
         },
         query: ctx.query,
         server: ctx.server,
-        dpd: ctx.dpd
+        db: ctx.db
     };
 
     return scriptContext;
@@ -264,7 +264,7 @@ Collection.prototype.find = function (ctx, fn) {
       , store = this.store
       , query = ctx.query || {}
       , session = ctx.session
-      , client = ctx.dpd
+      , client = ctx.db
       , errors
       , data
       , sanitizedQuery = this.sanitizeQuery(query);
@@ -422,7 +422,7 @@ Collection.prototype.save = function (ctx, fn) {
     , item = ctx.body
 
     , query = ctx.query || {}
-    , client = ctx.dpd
+    , client = ctx.db
     , errors = {};
 
   if(!item) return done('You must include an object when saving or updating.');

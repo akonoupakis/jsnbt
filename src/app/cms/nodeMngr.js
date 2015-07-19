@@ -4,7 +4,7 @@ var _ = require('underscore');
 
 _.str = require('underscore.string');
 
-module.exports = function(server, dpd) {
+module.exports = function(server, db) {
 
     var getEntity = function (name) {
         return require('./entityMngr.js')(server, name);
@@ -12,7 +12,7 @@ module.exports = function(server, dpd) {
 
     var resolveHierarchy = function (nodes, node, cb) {
         if (node.parent && node.parent !== '') {
-            dpd.nodes.get(node.parent, function (result, error) {
+            db.nodes.get(node.parent, function (result, error) {
                 if (error)
                     throw error;
                 else {
@@ -34,7 +34,7 @@ module.exports = function(server, dpd) {
         if (server.app.localization.enabled) {
             var defaultLanguage = server.app.localization.locale;
 
-            dpd.languages.get({ active: true, "default": true }, function (defaultLanguages, defaultLanguagesError) {
+            db.languages.get({ active: true, "default": true }, function (defaultLanguages, defaultLanguagesError) {
                 if (defaultLanguagesError)
                     throw defaultLanguagesError;
                 else {
@@ -54,7 +54,7 @@ module.exports = function(server, dpd) {
     var getActiveLanguages = function (cb) {
 
         if (server.app.localization.enabled) {
-            dpd.languages.get({ active: true }, function (dbLanguages, dbLanguagesError) {
+            db.languages.get({ active: true }, function (dbLanguages, dbLanguagesError) {
                 if (dbLanguagesError)
                     throw dbLanguagesError;
                 else
@@ -68,7 +68,7 @@ module.exports = function(server, dpd) {
     };
 
     var resolvePointerUrl = function (returnObj, seoNodes, urlPath, url, cb) {
-        dpd.nodes.get({ id: returnObj.pointer.pointer.nodeId, domain: returnObj.pointer.pointer.domain }, function (pointedNode, pointedNodeError) {
+        db.nodes.get({ id: returnObj.pointer.pointer.nodeId, domain: returnObj.pointer.pointer.domain }, function (pointedNode, pointedNodeError) {
             if (pointedNodeError)
                 throw pointedNodeError;
             else if (!pointedNode)
@@ -82,7 +82,7 @@ module.exports = function(server, dpd) {
                 if (pack) {
                     returnObj.seoNames = pointedSeoNames;
                     returnObj.pointed = pointedNode;
-                    returnObj.dpd = dpd;
+                    returnObj.db = db;
                     pack.url.resolve(returnObj, cb);
                 }
                 else {
@@ -141,7 +141,7 @@ module.exports = function(server, dpd) {
         var seoNamesQuery = {};
         seoNamesQuery['seo.' + (server.app.localization.enabled ? language : server.app.localization.locale)] = { $in: seoNames };
 
-        dpd.nodes.get(seoNamesQuery, function (urlSeoNodes, urlSeoNodesError) {
+        db.nodes.get(seoNamesQuery, function (urlSeoNodes, urlSeoNodesError) {
             if (urlSeoNodesError)
                 throw urlSeoNodesError;
             else {
@@ -189,7 +189,7 @@ module.exports = function(server, dpd) {
                         returnObj.nodes = foundNodes;
                         returnObj.language = language;
                         returnObj.template = matchedNode.template;
-                        returnObj.dpd = dpd;
+                        returnObj.db = db;
                         returnObj.url = '/';
                         cb(returnObj);
                     }
@@ -222,7 +222,7 @@ module.exports = function(server, dpd) {
                         returnObj.nodes = foundNodes;
                         returnObj.route = routerNode.route;
                         returnObj.template = routerNode.template;
-                        returnObj.dpd = dpd;
+                        returnObj.db = db;
                         returnObj.url = fullUrlPart;
                         cb(returnObj);
                     }
@@ -320,18 +320,18 @@ module.exports = function(server, dpd) {
                     var languagePart = defaultLanguage;
                     var urlPart = uri.path;
 
-                    dpd.settings.getCached({ domain: 'core' }, function (settingNodes, settingNodesError) {
+                    db.settings.getCached({ domain: 'core' }, function (settingNodes, settingNodesError) {
                         if (settingNodesError)
                             throw settingNodesError;
                         else {
                             var settingNode = _.first(settingNodes);
                             if (settingNode && settingNode.data && settingNode.data.homepage) {
                                 
-                                dpd.nodes.get(settingNode.data.homepage, function (resolvedNode, resolvedNodeError) {
+                                db.nodes.get(settingNode.data.homepage, function (resolvedNode, resolvedNodeError) {
                                     if (resolvedNodeError)
                                         throw resolvedNodeError;
                                     else {
-                                        dpd.nodes.get({ hierarchy: resolvedNode.hierarchy }, function (resolvedHierarchyNodes, resolvedHierarchyNodesError) {
+                                        db.nodes.get({ hierarchy: resolvedNode.hierarchy }, function (resolvedHierarchyNodes, resolvedHierarchyNodesError) {
                                             if (resolvedHierarchyNodesError) {
                                                 throw resolvedHierarchyNodesError;
                                             }
@@ -431,7 +431,7 @@ module.exports = function(server, dpd) {
                         cb(newUrl);
                     }
                     else {
-                        dpd.nodes.get({ id: { $in: parentHierarchy } }, function (results, error) {
+                        db.nodes.get({ id: { $in: parentHierarchy } }, function (results, error) {
                             if (error) {
                                 throw error;
                             }
@@ -591,7 +591,7 @@ module.exports = function(server, dpd) {
                         cb(newValue);
                     }
                     else {
-                        dpd.nodes.get({ id: { $in: parentHierarchy } }, function (results, error) {
+                        db.nodes.get({ id: { $in: parentHierarchy } }, function (results, error) {
                             if (error) {
                                 throw error;
                             }

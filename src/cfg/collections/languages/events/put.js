@@ -1,7 +1,7 @@
 var self = this;
 
 if (changed('code')) {
-    dpd.languages.get({ code: self.code, id: { $nin: [self.id] } }, function (matched, matchedError) {
+    db.languages.get({ code: self.code, id: { $nin: [self.id] } }, function (matched, matchedError) {
         if (matchedError)
             throw matchedError;
         else
@@ -18,7 +18,7 @@ if (changed('active')) {
 if (changed('default')) {
     if (!self.default) {
 
-        dpd.languages.get({ active: true, 'default': true, id: { $nin: [self.id] } }, function (defaults, defaultsError) {
+        db.languages.get({ active: true, 'default': true, id: { $nin: [self.id] } }, function (defaults, defaultsError) {
             if (defaultsError)
                 throw defaultsError;
             else

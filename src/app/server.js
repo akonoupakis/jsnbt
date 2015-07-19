@@ -44,12 +44,12 @@ function Server(app, options) {
 
     var started = false;
 
-    var logAction = function (dpd, user, collection, action, objectId, objectData, callback) {
+    var logAction = function (db, user, collection, action, objectId, objectData, callback) {
 
         if (server.app.config.collections[collection]) {
             if (server.app.config.collections[collection].logging) {
 
-                dpd.actions.post({
+                db.actions.post({
                     timestamp: new Date().getTime(),
                     user: user ? user.id : undefined,
                     collection: collection,
@@ -116,7 +116,7 @@ function Server(app, options) {
             }
         },
         onPostCreate: function (scriptContext, collection, object, callback) {
-            logAction(scriptContext.dpd, scriptContext.me, collection, 'create', object.id, object, function (err, res) {
+            logAction(scriptContext.db, scriptContext.me, collection, 'create', object.id, object, function (err, res) {
                 if (err) {
                     callback(err);
                 }
@@ -139,7 +139,7 @@ function Server(app, options) {
             }
         },
         onPostUpdate: function (scriptContext, collection, object, callback) {
-            logAction(scriptContext.dpd, scriptContext.me, collection, 'update', object.id, object, function (err, res) {
+            logAction(scriptContext.db, scriptContext.me, collection, 'update', object.id, object, function (err, res) {
                 if (err) {
                     callback(err);
                 }
@@ -162,7 +162,7 @@ function Server(app, options) {
             }
         },
         onPostDelete: function (scriptContext, collection, object, callback) {
-            logAction(scriptContext.dpd, scriptContext.me, collection, 'delete', object.id, object, function (err, res) {
+            logAction(scriptContext.db, scriptContext.me, collection, 'delete', object.id, object, function (err, res) {
                 if (err) {
                     callback(err);
                 }

@@ -392,7 +392,7 @@ function joinPath() {
 
 db.build = function (server, session, stack) {
     var baseMethods
-      , dpd = {};
+      , dpdClient = {};
 
     baseMethods = {
         request: function (method, options, fn) {
@@ -494,12 +494,12 @@ db.build = function (server, session, stack) {
                     jsName = rpath.replace(/[^A-Za-z0-9]/g, '');
                 }
 
-                dpd[jsName] = createResourceClient(server, r, jsName, baseMethods);
+                dpdClient[jsName] = createResourceClient(server, r, jsName, baseMethods);
             }
         });
     }
 
-    return dpd;
+    return dpdClient;
 };
 
 function createResourceClient(server, resource, collection, baseMethods) {
@@ -517,7 +517,7 @@ function createResourceClient(server, resource, collection, baseMethods) {
            var settingsQuery = {};
            _.extend(settingsQuery, settings.query);
 
-           var cacheKey = 'dpd.' + collection + '.' + JSON.stringify(settingsQuery, null, '').replace(/\./g, '-');
+           var cacheKey = 'db.' + collection + '.' + JSON.stringify(settingsQuery, null, '').replace(/\./g, '-');
 
            server.cache.get(cacheKey, function (cachedData) {
                if (!cachedData) {

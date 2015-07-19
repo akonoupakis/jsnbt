@@ -94,7 +94,7 @@ Script.prototype.run = function (ctx, domain, fn) {
             done(err);
         });
 
-        domain.dpd = ctx.dpd;
+        domain.db = ctx.db;
 
         if (fn) {
             // if a callback is expected, count callbacks

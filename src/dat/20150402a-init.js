@@ -1,6 +1,6 @@
 ﻿module.exports = {
 
-    process: function (dpd, next, error) {
+    process: function (db, next, error) {
         next();
     }
 

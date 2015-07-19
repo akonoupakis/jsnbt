@@ -1,5 +1,5 @@
 var authMngr = requireApp('cms/authMngr.js')(server);
-var node = requireApp('cms/nodeMngr.js')(server, dpd);
+var node = requireApp('cms/nodeMngr.js')(server, db);
 
 var _ = require('underscore');
 

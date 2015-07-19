@@ -1,7 +1,7 @@
 var self = this;
 
 if (changed('key')) {
-    dpd.texts.get({
+    db.texts.get({
         group: self.group,
         key: self.key,
         id: { $nin: [self.id] }

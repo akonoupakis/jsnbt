@@ -1,4 +1,4 @@
-var node = requireApp('cms/nodeMngr.js')(server, dpd);
+var node = requireApp('cms/nodeMngr.js')(server, db);
 
 var self = this;
 

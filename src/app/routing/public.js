@@ -17,7 +17,7 @@ var PublicRouter = function (server) {
                     .root('public')
                     .on('error', function (err) {
                         try {
-                            var node = require('../cms/nodeMngr.js')(server, ctx.dpd);
+                            var node = require('../cms/nodeMngr.js')(server, ctx.db);
 
                             node.resolveUrl(ctx.uri.url, function (resolved) {
 
@@ -33,14 +33,14 @@ var PublicRouter = function (server) {
 
                                     if (ctx.restricted) {
 
-                                        ctx.dpd.settings.getCached({ domain: 'core' }, function (settingNodes, settingNodesError) {
+                                        ctx.db.settings.getCached({ domain: 'core' }, function (settingNodes, settingNodesError) {
                                             if (settingNodesError) {
                                                 ctx.error(500, settingNodesError);
                                             }
                                             else {
                                                 var settingNode = _.first(settingNodes);
                                                 if (settingNode && settingNode.data && settingNode.data.loginpage) {
-                                                    ctx.dpd.nodes.get(settingNode.data.loginpage, function (loginNode, loginNodeError) {
+                                                    ctx.db.nodes.get(settingNode.data.loginpage, function (loginNode, loginNodeError) {
                                                         if (loginNodeError) {
                                                             ctx.error(500, loginNodeError);
                                                         }
@@ -126,7 +126,7 @@ var PublicRouter = function (server) {
 
                                         var matched = _.filter(languages, function (x) { return _.str.startsWith(ctx.uri.path, '/' + x.code + '/'); });
                                         if (matched.length === 0) {
-                                            ctx.dpd.languages.get({ active: true, "default": true }, function (defaultLanguages, defaultLanguagesError) {
+                                            ctx.db.languages.get({ active: true, "default": true }, function (defaultLanguages, defaultLanguagesError) {
                                                 if (defaultLanguagesError) {
                                                     ctx.error(500, defaultLanguagesError);
                                                 }
