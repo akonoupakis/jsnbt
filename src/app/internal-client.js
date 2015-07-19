@@ -56,7 +56,6 @@ function joinPath() {
 }
 
 
-
 exports.build = function (server, session, stack) {
     var baseMethods
       , dpd = {};
@@ -121,7 +120,7 @@ exports.build = function (server, session, stack) {
 
                 var resourceRouter = require('./routing/resource.js')(server);
                 var resourceContext = require('./context.js')(server, req, res);
-                resourceRouter.route(resourceContext);
+                resourceRouter.process(resourceContext);
             } else {
                 debug("Recursive call detected - aborting");
                 if (typeof fn === 'function') fn(null, "Recursive call to " + urlKey + " detected");

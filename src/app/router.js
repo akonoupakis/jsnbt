@@ -189,7 +189,7 @@ var Router = function(server, req, res) {
 
         process: function () {
 
-            var ctx = require('./context.js')(server, req, res);
+            var ctx = new require('./context.js')(server, req, res);
 
             checkForbidded(ctx, function () {
                 checkFound(ctx, function () {

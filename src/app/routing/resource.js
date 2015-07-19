@@ -1,14 +1,84 @@
-var Context = require('../contextServer');
 var escapeRegExp = /[\-\[\]{}()+?.,\\\^$|#\s]/g;
+var internalClient = require('../internal-client');
 var debug = require('debug')('router');
 var doh = require('doh');
 var error404 = doh.createResponder();
+var respond = require('doh').createResponder();
 var async = require('async');
 var Cookies = require('cookies');
 var qs = require('qs');
 var parseUrl = require('url').parse;
 var corser = require('corser');
 var ALLOWED_METHODS = ['GET', 'POST', 'PUT', 'DELETE'];
+
+function Context(resource, req, res, server) {
+    var ctx = this;
+    this.url = req.url.slice(resource.path.length).split('?')[0];
+    console.log(req.url, this.url);
+    if (this.url.indexOf('/') !== 0) this.url = '/' + this.url;
+
+    this.req = req;
+    this.res = res;
+    this.body = req.body;
+    this.query = req.query || {};
+    this.server = server;
+    this.session = req.session;
+    this.method = req && req.method;
+
+    var done = this.done;
+    this.done = function () {
+        done.apply(ctx, arguments);
+    };
+
+    if ((this.query && typeof this.query.$limitRecursion !== 'undefined') || (this.body && typeof this.body.$limitRecursion !== 'undefined')) {
+        var recursionLimit = this.query.$limitRecursion || this.body.$limitRecursion || 0;
+        req.stack = req.stack || [];
+        req.stack.recursionLimit = recursionLimit;
+    }
+
+    this.dpd = req.dpd || internalClient.build(server, ctx, req.session, req.stack);
+}
+
+Context.prototype.end = function () {
+    return this.res.end.apply(this.res, arguments);
+};
+
+Context.prototype.done = function (err, res) {
+    var body = res
+      , type = 'application/json';
+
+    // default response
+    var status = this.res.statusCode = this.res.statusCode || 200;
+
+    if (err) {
+        debug('%j', err);
+        if (status < 400) this.res.statusCode = 400;
+        if (err.statusCode) this.res.statusCode = err.statusCode;
+        respond(err, this.req, this.res);
+    } else {
+        if (typeof body == 'object') {
+            body = JSON.stringify(body);
+        } else {
+            type = 'text/html; charset=utf-8';
+        }
+
+        try {
+            if (status != 204 && status != 304) {
+                if (body) {
+                    this.res.setHeader('Content-Length', Buffer.isBuffer(body)
+                         ? body.length
+                         : Buffer.byteLength(body));
+                }
+                this.res.setHeader('Content-Type', type);
+                this.res.end(body);
+            } else {
+                this.res.end();
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+};
 
 function Router(resources, server) {
     this.resources = resources || [];
@@ -25,8 +95,10 @@ Router.prototype.route = function (req, res, next) {
     async.series([function (fn) {
         async.forEach(router.resources, function (resource, fn) {
             if (resource.handleSession) {
+                
                 var ctx = new Context(resource, req, res, server);
                 resource.handleSession(ctx, fn);
+
             } else {
                 fn();
             }
@@ -45,9 +117,10 @@ Router.prototype.route = function (req, res, next) {
             process.nextTick(function () {
                 if (resource) {
                     debug('routing %s to %s', req.url, resource.path);
+
                     ctx = new Context(resource, req, res, server);
                     ctx.router = router;
-
+                    
                     if (ctx.session) ctx.session.isRoot = req.isRoot || false;
 
                     var furl = ctx.url.replace('/', '');
@@ -57,9 +130,14 @@ Router.prototype.route = function (req, res, next) {
                         resource.handle(ctx, nextResource);
                     }
                 } else {
-                    debug('404 %s', req.url);
-                    res.statusCode = 404;
-                    error404({ message: 'resource not found' }, req, res);
+                    if (next) {
+                        next();
+                    }
+                    else {
+                        debug('404 %s', req.url);
+                        res.statusCode = 404;
+                        error404('Resource Not Found', req, res);
+                    }
                 }
             });
         });
@@ -234,8 +312,8 @@ var ResourceRouter = function (server) {
     return {
 
         route: function (ctx, next) {
-            if (ctx.uri.first === 'dpd' && ctx.uri.parts.length > 1) {
-                setupRequest(ctx.req, ctx.res, function (err, next) {
+            if (ctx.uri.first === 'dpd' && ctx.uri.parts.length > 1) {                
+                setupRequest(ctx.req, ctx.res, function (err) {
                     if (err) return ctx.res.end(err.message);
                     var router = new Router(server.resources, server);
                     router.route(ctx.req, ctx.res, next);
@@ -244,8 +322,15 @@ var ResourceRouter = function (server) {
             else {
                 next();
             }
-        }
+        },
 
+        process: function (ctx) {
+            setupRequest(ctx.req, ctx.res, function (err) {
+                if (err) return ctx.res.end(err.message);
+                var router = new Router(server.resources, server);
+                router.route(ctx.req, ctx.res);
+            });
+        }
     };
 
 };
