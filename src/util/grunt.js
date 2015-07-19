@@ -362,6 +362,8 @@ module.exports = function (grunt) {
 
         var collections = [];
 
+        console.log(22, self.app.config.collections);
+
         _.each(self.app.modules.all, function (module) {
             var moduleConfig = typeof(module.getConfig) === 'function' ? module.getConfig() : {};
             if (moduleConfig.collections && _.isArray(moduleConfig.collections)) {
@@ -414,8 +416,8 @@ module.exports = function (grunt) {
 
                         });
 
-                        if (moduleCollection.getEvents && _.isFunction(moduleCollection.getEvents)) {
-                            var moduleCollectionEvents = moduleCollection.getEvents();
+                        if (moduleCollection.events && _.isObject(moduleCollection.events)) {
+                            var moduleCollectionEvents = moduleCollection.events;
 
                             _.each(events, function (event) {
                                 if (moduleCollectionEvents[event] && _.isString(moduleCollectionEvents[event])) {
