@@ -1,13 +1,12 @@
 var http = require('http');
 var db = require('./db');
 var util = require('util');
-var Keys = require('./keys');
 var sessionFile = require('./session');
 var SessionStore = require('./session').SessionStore;
 var io = require('socket.io');
 var extend = require('extend');
 var debug = require('debug')('server');
-var config = require('./config-loader');
+var configLoader = require('./config-loader');
 
 var serverRoot = require('server-root');
 var validation = require('json-validation');
@@ -199,8 +198,6 @@ function Server(app, options) {
 
     this.sessions = new SessionStore('sessions', this.db, this.sockets);
 
-    this.keys = new Keys();
-
     if (options.events)
         for (var item in options.events)
             this.on(item, options.events[item]);
@@ -255,7 +252,7 @@ util.inherits(Server, http.Server);
 Server.prototype.start = function (next) {
     var server = this;
 
-    config.loadConfig('./', server, function (err, resourcesInstances) {
+    configLoader.loadConfig('./', server, function (err, resourcesInstances) {
         if (err) {
             console.error();
             console.error("Error loading resources: ");

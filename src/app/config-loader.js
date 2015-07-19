@@ -1,8 +1,6 @@
 var fs = require('fs')
   , path = require('path')
   , _loadTypes = require('./type-loader')
-//  , Files = require('./resources/files')
-  //, ClientLib = require('./resources/client-lib')
   , debug = require('debug')('config-loader')
   , domain = require('domain')
   , async = require('async')
@@ -24,7 +22,7 @@ module.exports.loadConfig = function(basepath, server, fn) {
   async.waterfall([
       async.apply(loadResourceDir, basepath)
     , async.apply(loadResources, getTypes, basepath, server)
-    , async.apply(addInternalResources, server, basepath)
+    //, async.apply(addInternalResources, server, basepath)
   ], function(err, result) {
     if (server.options && server.options.env !== 'development') {
       server.__resourceCache = result;
@@ -34,13 +32,13 @@ module.exports.loadConfig = function(basepath, server, fn) {
 };
 
 function loadTypes(fn) {
-  _loadTypes(function(defaults, types) {
-    Object.keys(types).forEach(function(key) {
-      defaults[key] = types[key];
+    _loadTypes(function (defaults, types) {
+        Object.keys(types).forEach(function (key) {
+            defaults[key] = types[key];
+        });
+        types = defaults;
+        fn(null, types);
     });
-    types = defaults;
-    fn(null, types);
-  });
 }
 
 function loadResourceDir(basepath, fn) {
@@ -138,35 +136,35 @@ function loadResourceExtras(resource, fn) {
   });
 }
 
-function addInternalResources(server, basepath, resources, fn) {
-  var publicFolderQ = Q.fcall(function() {
-    var defaultFolder = './public';
+//function addInternalResources(server, basepath, resources, fn) {
+//  var publicFolderQ = Q.fcall(function() {
+//    var defaultFolder = './public';
 
-    if (server.options && typeof server.options.env === 'string') {
-      var altPublic = './public-' + server.options.env;  
-      var altPublicExistsQ = Q.defer();
-      fs.exists(altPublic, function(exists) {
-        altPublicExistsQ.resolve(exists);
-      });
-      return altPublicExistsQ.promise.then(function(exists) {
-        if (exists) {
-          return altPublic;
-        } else {
-          return defaultFolder;
-        }
-      });
-    } else {
-      return defaultFolder;
-    }
-  });
+//    if (server.options && typeof server.options.env === 'string') {
+//      var altPublic = './public-' + server.options.env;  
+//      var altPublicExistsQ = Q.defer();
+//      fs.exists(altPublic, function(exists) {
+//        altPublicExistsQ.resolve(exists);
+//      });
+//      return altPublicExistsQ.promise.then(function(exists) {
+//        if (exists) {
+//          return altPublic;
+//        } else {
+//          return defaultFolder;
+//        }
+//      });
+//    } else {
+//      return defaultFolder;
+//    }
+//  });
 
-  publicFolderQ.then(function(publicFolder) {
-    var internals = [
+//  publicFolderQ.then(function(publicFolder) {
+//    var internals = [
  
-    ];
-    async.forEach(internals, loadResourceExtras, function(err) {
-      fn(err, resources.concat(internals));  
-    });
-  });
+//    ];
+//    async.forEach(internals, loadResourceExtras, function(err) {
+//      fn(err, resources.concat(internals));  
+//    });
+//  });
 
-}
+//}

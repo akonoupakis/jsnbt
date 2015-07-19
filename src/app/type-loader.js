@@ -13,7 +13,7 @@ module.exports = function loadTypes(basepath, fn) {
 
   var path = basepath || '.';
 
-  // read default lib resources
+    // read default lib resources
   fs.readdir(__dirname + '/resources', function(err, dir) {
     dir.forEach(function(file) {
       if(file.indexOf('.js') == file.length - 3 || file.indexOf('.') === -1) {

@@ -4,16 +4,14 @@ var util = require('util');
 var path = require('path');
 var Script = require('./script');
 
-var rootResources = ['', 'dpd.js', '__resources', 'dashboard'];
 function Resource(name, options) {
     EventEmitter.call(this);
     this.name = name;
 
-    this.path = '/' + name;
+    //this.path = '/' + name;
 
-    if (rootResources.indexOf(name) == -1) {
-        this.path = '/dpd/' + name;
-    }
+    this.path = '/dpd/' + name;
+    
     options = this.options = options || {};
     this.config = options.config || {};
     this.events = {};
