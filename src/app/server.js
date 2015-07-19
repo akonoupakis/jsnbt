@@ -1,5 +1,5 @@
 var http = require('http');
-var db = require('./db');
+var database = require('./db');
 var util = require('util');
 var sessionFile = require('./session');
 var SessionStore = require('./session').SessionStore;
@@ -45,37 +45,39 @@ function Server(app, options) {
 
     var logAction = function (db, user, collection, action, objectId, objectData, callback) {
 
-        if (server.app.config.collections[collection]) {
-            if (server.app.config.collections[collection].logging) {
+        //if (server.app.config.collections[collection]) {
+        //    if (server.app.config.collections[collection].logging) {
 
-                db.actions.post({
-                    timestamp: new Date().getTime(),
-                    user: user ? user.id : undefined,
-                    collection: collection,
-                    action: action,
-                    objectId: objectId,
-                    objectData: objectData || {}
-                }, function (results, err) {
-                    if (err) {
-                        callback(err);
-                    }
-                    else {
-                        callback();
-                    }
-                });
-            }
-            else {
-                callback();
-            }
-        }
-        else {
-            callback();
-        }
+        //        db.actions.post({
+        //            timestamp: new Date().getTime(),
+        //            user: user ? user.id : undefined,
+        //            collection: collection,
+        //            action: action,
+        //            objectId: objectId,
+        //            objectData: objectData || {}
+        //        }, function (results, err) {
+        //            if (err) {
+        //                callback(err);
+        //            }
+        //            else {
+        //                callback();
+        //            }
+        //        });
+        //    }
+        //    else {
+        //        callback();
+        //    }
+        //}
+        //else {
+        //    callback();
+        //}
+
+        callback();
     };
 
     this.stores = {};
 
-    this.db = db.create(options.db);
+    this.db = database.create(options.db);
 
     this.cache = require('./cache.js')();
 

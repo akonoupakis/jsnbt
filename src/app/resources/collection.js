@@ -167,7 +167,7 @@ Collection.prototype.handle = function (ctx) {
     case 'POST':
       this.save(ctx, ctx.done);
     break;
-    case 'DELETE':
+      case 'DELETE':
       this.remove(ctx, ctx.done);
     break;
   }
@@ -213,7 +213,6 @@ Collection.prototype.indexOf = function(id, ctx, fn) {
 };
 
 var createScriptContext = function (ctx) {
-
     var scriptContext = {
         me: ctx.session.user,
         internal: ctx.req.internal,
@@ -380,7 +379,6 @@ Collection.prototype.remove = function (ctx, fn) {
             store.remove(sanitizedQuery, fn);
             if (session.emitToAll) session.emitToAll(collection.name + ':changed');
         }
-
         runPreEvent(ctx, 'Delete', createScriptContext(ctx), collection.name, result, function (preErr) {
             if (preErr) {
                 done(preErr);

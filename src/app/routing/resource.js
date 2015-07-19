@@ -36,6 +36,7 @@ function Context(resource, req, res, server) {
     }
 
     this.db = req.db || require('../db.js').build(server, req.session, req.stack);
+    this.server = server;
 }
 
 Context.prototype.end = function () {
@@ -46,7 +47,6 @@ Context.prototype.done = function (err, res) {
     var body = res
       , type = 'application/json';
 
-    // default response
     var status = this.res.statusCode = this.res.statusCode || 200;
 
     if (err) {
