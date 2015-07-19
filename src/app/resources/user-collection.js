@@ -3,7 +3,6 @@ var util = require('util');
 var Collection = require('./collection');
 var db = require('../db');
 var EventEmitter = require('events').EventEmitter;
-var uuid = require('../util/uuid');
 var crypto = require('crypto');
 var SALT_LEN = 256;
 var debug = require('debug')('user-collection');
@@ -105,7 +104,7 @@ UserCollection.prototype.handle = function (ctx) {
       /* falls through */
     case 'PUT':
       if(ctx.body && ctx.body.password) {
-        var salt = uuid.create(SALT_LEN);
+        var salt = db.uuid.create(SALT_LEN);
         ctx.body.password = salt + this.hash(ctx.body.password, salt);
       }
       var isSelf = ctx.session.user && ctx.session.user.id === ctx.query.id || (ctx.body && ctx.body.id);

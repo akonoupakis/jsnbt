@@ -1,6 +1,6 @@
+var db = require('./db');
 var Store = require('./db').Store;
 var util = require('util');
-var uuid = require('./util/uuid');
 var Cookies = require('cookies');
 var EventEmitter = require('events').EventEmitter;
 var debug = require('debug')('session');
@@ -36,7 +36,7 @@ util.inherits(SessionStore, Store);
 exports.SessionStore = SessionStore;
 
 SessionStore.prototype.createUniqueIdentifier = function() {
-  return uuid.create(128);
+  return db.uuid.create(128);
 };
 
 SessionStore.prototype.createSession = function(sid, fn) {

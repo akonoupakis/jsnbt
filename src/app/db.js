@@ -2,7 +2,6 @@ var db = module.exports = {};
 var util = require('util');
 var EventEmitter = require('events').EventEmitter;
 var mongodb = require('mongodb');
-var uuid = require('./util/uuid');
 var scrub = require('scrubber').scrub;
 var debug = require('debug')('db');
 var cache = require('./cache.js');
@@ -145,7 +144,7 @@ Store.prototype.scrubQuery = function (query) {
 
 
 Store.prototype.createUniqueIdentifier = function() {
-  return uuid.create();
+  return db.uuid.create();
 };
 
 
@@ -388,7 +387,6 @@ function joinPath() {
         return p && typeof p === 'string';
     }).join('/'));
 }
-
 
 db.build = function (server, session, stack) {
     var baseMethods
@@ -676,3 +674,100 @@ function parsePostSignature(args) {
 
     return settings;
 }
+
+
+
+
+
+function Alea() {
+    function Mash() {
+        var n = 0xefc8249d;
+
+        var mash = function (data) {
+            data = data.toString();
+            for (var i = 0; i < data.length; i++) {
+                n += data.charCodeAt(i);
+                var h = 0.02519603282416938 * n;
+                n = h >>> 0;
+                h -= n;
+                h *= n;
+                n = h >>> 0;
+                h -= n;
+                n += h * 0x100000000; // 2^32
+            }
+            return (n >>> 0) * 2.3283064365386963e-10; // 2^-32
+        };
+
+        mash.version = 'Mash 0.9';
+        return mash;
+    }
+
+    return (function (args) {
+        var s0 = 0;
+        var s1 = 0;
+        var s2 = 0;
+        var c = 1;
+
+        if (args.length == 0) {
+            args = [+new Date];
+        }
+        var mash = Mash();
+        s0 = mash(' ');
+        s1 = mash(' ');
+        s2 = mash(' ');
+
+        for (var i = 0; i < args.length; i++) {
+            s0 -= mash(args[i]);
+            if (s0 < 0) {
+                s0 += 1;
+            }
+            s1 -= mash(args[i]);
+            if (s1 < 0) {
+                s1 += 1;
+            }
+            s2 -= mash(args[i]);
+            if (s2 < 0) {
+                s2 += 1;
+            }
+        }
+        mash = null;
+
+        var random = function () {
+            var t = 2091639 * s0 + c * 2.3283064365386963e-10; // 2^-32
+            s0 = s1;
+            s1 = s2;
+            return s2 = t - (c = t | 0);
+        };
+        random.uint32 = function () {
+            return random() * 0x100000000; // 2^32
+        };
+        random.fract53 = function () {
+            return random() +
+              (random() * 0x200000 | 0) * 1.1102230246251565e-16; // 2^-53
+        };
+        random.version = 'Alea 0.9';
+        random.args = args;
+        return random;
+
+    }(Array.prototype.slice.call(arguments)));
+}
+
+// instantiate RNG.  use the default seed, which is current time.
+var random = new Alea();
+
+db.uuid = {
+    
+    create: function (length) {
+        length = length || 16;
+        var s = [];
+        var hexDigits = "0123456789abcdef";
+        for (var i = 0; i < length; i++) {
+            s[i] = hexDigits.substr(Math.floor(random() * 0x10), 1);
+        }
+        s[length - 3] = hexDigits.substr((s[length - 3] & 0x3) | 0x8, 1);
+
+        // return the uuid
+        return s.join('');
+    }
+
+};
