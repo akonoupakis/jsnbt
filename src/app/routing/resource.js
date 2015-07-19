@@ -1,5 +1,4 @@
 var escapeRegExp = /[\-\[\]{}()+?.,\\\^$|#\s]/g;
-var internalClient = require('../internal-client');
 var debug = require('debug')('router');
 var doh = require('doh');
 var error404 = doh.createResponder();
@@ -14,7 +13,7 @@ var ALLOWED_METHODS = ['GET', 'POST', 'PUT', 'DELETE'];
 function Context(resource, req, res, server) {
     var ctx = this;
     this.url = req.url.slice(resource.path.length).split('?')[0];
-    console.log(req.url, this.url);
+
     if (this.url.indexOf('/') !== 0) this.url = '/' + this.url;
 
     this.req = req;
@@ -36,7 +35,7 @@ function Context(resource, req, res, server) {
         req.stack.recursionLimit = recursionLimit;
     }
 
-    this.dpd = req.dpd || internalClient.build(server, ctx, req.session, req.stack);
+    this.dpd = req.dpd || require('../db.js').build(server, ctx, req.session, req.stack);
 }
 
 Context.prototype.end = function () {

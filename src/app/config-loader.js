@@ -162,8 +162,7 @@ function addInternalResources(server, basepath, resources, fn) {
 
   publicFolderQ.then(function(publicFolder) {
     var internals = [
- //       new Files('', { config: { 'public': publicFolder }, server: server })
-   //   , new ClientLib('dpd.js', { config: { resources: resources }, server: server})
+ 
     ];
     async.forEach(internals, loadResourceExtras, function(err) {
       fn(err, resources.concat(internals));  

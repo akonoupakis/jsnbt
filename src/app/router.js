@@ -27,7 +27,6 @@ var getRouters = function (server) {
 
     routers.push({
         route: function (ctx, next) {
-            console.log(111);
             ctx.error(404);
         }
     });
@@ -120,16 +119,16 @@ var Router = function(server, req, res) {
 
                 ctx.session = session;
 
-                ctx.timer.start('dpd internal client built');
-                dpd = require('./internal-client.js').build(server, session, req.stack);
-                ctx.timer.stop('dpd internal client built');
+                ctx.timer.start('db-api built');
+                var db = require('./db.js').build(server, session, req.stack);
+                ctx.timer.stop('db-api built');
 
-                ctx.dpd = dpd;
+                ctx.dpd = db;
 
                 if ((session.data && session.data.uid) && !session.user) {
 
                     ctx.timer.start('current user retrieval');
-                    dpd.users.get(session.data.uid, function (user, err) {
+                    db.users.get(session.data.uid, function (user, err) {
                         ctx.timer.stop('current user retrieval');
                         if (user) {
                             session.user = user;
