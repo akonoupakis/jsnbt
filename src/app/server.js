@@ -6,8 +6,7 @@ var SessionStore = require('./session').SessionStore;
 var io = require('socket.io');
 var extend = require('extend');
 var debug = require('debug')('server');
-var configLoader = require('./config-loader');
-
+var async = require('async');
 var serverRoot = require('server-root');
 var validation = require('json-validation');
 var fs = require('fs');
@@ -251,17 +250,79 @@ function Server(app, options) {
 }
 util.inherits(Server, http.Server);
 
+var getResources = function (server, cb) {
+   
+    var resources = [];
+    var asyncFns = [];
+
+    Object.keys(server.app.config.collections).forEach(function (collectionName) {
+
+        var collection = server.app.config.collections[collectionName];
+
+        asyncFns.push(function (fn) {
+            var config = {
+                type: (collection.users === true ? 'User' : '') + 'Collection',
+                properties: {}
+            };
+
+            var propertyKeys = _.keys(collection.schema.properties);
+
+            _.each(propertyKeys, function (propertyKey, propertyIndex) {
+
+                var collectionProperty = collection.schema.properties[propertyKey];
+
+                var propertyRequired = collectionProperty.type === 'boolean' ? false : (collectionProperty.required || false);
+
+                var property = {
+                    name: propertyKey,
+                    type: collectionProperty.type,
+                    typeLabel: propertyKey,
+                    required: propertyRequired,
+                    id: propertyKey,
+                    order: propertyIndex
+                };
+
+                config.properties[propertyKey] = property;
+            });
+
+            o = {
+                config: config
+                , server: server
+                , db: server.db
+                , configPath: 'resources\\' + collectionName
+            }
+
+            var rType = collection.users ? require('./resources/user-collection.js') : require('./resources/collection.js');
+            var resource = new rType(collectionName, o);
+            resources.push(resource);
+
+            if (resource.load) {
+                resource.load(function () {
+                    fn();
+                });
+            } else {
+                fn();
+            }
+        });
+
+    });
+
+    async.series(asyncFns, function (err, results) {
+        cb(err, resources);
+    });
+};
+
 Server.prototype.start = function (next) {
     var server = this;
 
-    configLoader.loadConfig('./', server, function (err, resourcesInstances) {
+    getResources(server, function (err, resources) {
         if (err) {
             console.error();
             console.error("Error loading resources: ");
             console.error(err.stack || err);
             process.exit(1);
         } else {
-            server.resources = resourcesInstances;
+            server.resources = resources;
             http.Server.prototype.listen.call(server, server.options.port, server.options.host);
 
             if (typeof (next) === 'function') {
@@ -271,6 +332,7 @@ Server.prototype.start = function (next) {
                 server.next = undefined;
             }
         }
+
     });
 };
 
