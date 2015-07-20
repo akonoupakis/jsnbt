@@ -8,7 +8,6 @@ var routerNames = [
     './routing/api.js',
     './routing/image.js',
     './routing/jsnbt.js',
-    './routing/dpd.js',
     './routing/dev.js',
     './routing/upload.js',
     './routing/admin.js',

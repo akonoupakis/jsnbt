@@ -288,7 +288,6 @@ var getResources = function (server, cb) {
 
             var o = {
                 config: config,
-                server: server,
                 db: server.db
             }
 
