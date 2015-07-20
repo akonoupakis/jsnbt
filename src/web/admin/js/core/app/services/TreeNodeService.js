@@ -13,7 +13,7 @@
                 var deferred = $q.defer();
                 
                 if (parentIds.length > 0) {
-                    dpd.nodes.get({
+                    jsnbt.db.nodes.get({
                         parent: {
                             $in: parentIds
                         },
@@ -39,7 +39,7 @@
             var getDomainNodes = function (domain, parentIds, entities) {
                 var deferred = $q.defer();
 
-                dpd.nodes.get({
+                jsnbt.db.nodes.get({
                     domain: domain,
                     parent: {
                         $in: parentIds
@@ -63,7 +63,7 @@
                 var deferred = $q.defer();
 
                 if (ids.length > 0) {
-                    dpd.nodes.get({
+                    jsnbt.db.nodes.get({
                         id: {
                             $in: ids
                         }

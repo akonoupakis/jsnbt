@@ -79,7 +79,7 @@ function createXMLHTTPObject() {
   return xmlhttp;
 }
 
-if (!window._dpd) window._dpd = {};
-window._dpd.ajax = sendRequest;
+if (!window._PROXY) window._PROXY = {};
+window._PROXY.ajax = sendRequest;
 
 })();

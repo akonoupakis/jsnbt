@@ -15,7 +15,7 @@
             if (['single', 'multiple'].indexOf($scope.mode) === -1)
                 $scope.mode = 'single';
             
-            PagedDataService.get(dpd.data.get, {
+            PagedDataService.get(jsnbt.db.data.get, {
                 domain: $scope.domain,
                 list: $scope.list
             }, undefined, undefined, ($scope.mode === 'single' ? [$scope.selected] : $scope.selected)).then(function (response) {

@@ -21,7 +21,7 @@
                 load: function () {
                     var deferred = $q.defer();
 
-                    PagedDataService.get(dpd.data.get, {
+                    PagedDataService.get(jsnbt.db.data.get, {
                         domain: $routeParams.domain,
                         list: $routeParams.list
                     }).then(function (response) {

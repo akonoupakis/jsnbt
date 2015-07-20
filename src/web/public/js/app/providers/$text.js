@@ -17,7 +17,7 @@
 
                             var matches = typeof (match) === 'string' ? [match] : match;
 
-                            dpd.texts.get({
+                            jsnbt.db.texts.get({
                                 $or: [{
                                     key: {
                                         $in: matches

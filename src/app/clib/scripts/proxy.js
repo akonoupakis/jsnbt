@@ -1,8 +1,8 @@
-var resourcePrefixPath = 'jsnbt-db';
-
 (function (undefined) {
 
-    if (!window._dpd) window._dpd = {};
+    var resourcePrefixPath = 'jsnbt-db';
+
+    if (!window._PROXY) window._PROXY = {};
 
     var root = window.location.protocol + '//' + window.location.hostname;
     if (window.location.port !== '') {
@@ -110,7 +110,7 @@ var resourcePrefixPath = 'jsnbt-db';
         get: function (options, fn) {
             var query = encodeIfComplex(options.query);
 
-            return _dpd.ajax(root + joinPath(BASE_URL, options.path), {
+            return _PROXY.ajax(root + joinPath(BASE_URL, options.path), {
                 method: "GET"
               , query: query
               , success: returnSuccess(fn)
@@ -120,7 +120,7 @@ var resourcePrefixPath = 'jsnbt-db';
       , del: function (options, fn) {
           var query = encodeIfComplex(options.query);
 
-          return _dpd.ajax(root + joinPath(BASE_URL, options.path), {
+          return _PROXY.ajax(root + joinPath(BASE_URL, options.path), {
               method: "DELETE"
             , query: query
             , success: returnSuccess(fn)
@@ -130,7 +130,7 @@ var resourcePrefixPath = 'jsnbt-db';
       , count: function (options, fn) {
           var query = encodeIfComplex(options.query);
 
-          return _dpd.ajax(root + joinPath(BASE_URL, options.path, 'count'), {
+          return _PROXY.ajax(root + joinPath(BASE_URL, options.path, 'count'), {
               method: "GET"
           , query: query
           , success: returnSuccess(fn)
@@ -142,7 +142,7 @@ var resourcePrefixPath = 'jsnbt-db';
           if (query) query = '?' + query;
           else query = '';
 
-          return _dpd.ajax(root + joinPath(BASE_URL, options.path) + query, {
+          return _PROXY.ajax(root + joinPath(BASE_URL, options.path) + query, {
               method: method
             , contentType: options.body && "application/json"
             , data: JSON.stringify(options.body || {}) || "{}"
@@ -239,7 +239,7 @@ var resourcePrefixPath = 'jsnbt-db';
             return joinPath(resource, path);
     }
 
-    window.dpd = function (resource) {
+    window.PROXY = function (resource) {
 
         if (resourcePrefixPath)
             if (resource)
@@ -305,11 +305,11 @@ var resourcePrefixPath = 'jsnbt-db';
         return r;
     };
 
-    window.dpd.on = function () {
+    window.PROXY.on = function () {
         socket.on.apply(socket, arguments);
     };
 
-    window.dpd.once = function (name, fn) {
+    window.PROXY.once = function (name, fn) {
         var _fn = function () {
             socket.removeListener(name, _fn);
             fn.apply(this, arguments);
@@ -317,7 +317,7 @@ var resourcePrefixPath = 'jsnbt-db';
         socket.on(name, _fn);
     };
 
-    window.dpd.off = function (name, fn) {
+    window.PROXY.off = function (name, fn) {
         if (fn == null) {
             socket.removeAllListeners(name);
         } else {
@@ -326,19 +326,19 @@ var resourcePrefixPath = 'jsnbt-db';
     };
 
     var isSocketReady = false;
-    window.dpd.once('connect', function () {
+    window.PROXY.once('connect', function () {
         isSocketReady = true;
     });
 
-    window.dpd.socketReady = function (fn) {
+    window.PROXY.socketReady = function (fn) {
         if (isSocketReady) {
             setTimeout(fn, 0);
         } else {
-            window.dpd.once('connect', fn);
+            window.PROXY.once('connect', fn);
         }
     };
 
-    window.dpd.socket = socket;
+    window.PROXY.socket = socket;
 
 
 })();

@@ -355,8 +355,8 @@ module.exports = function (grunt) {
 
     grunt.registerMultiTask('script', 'Creates the precompiled jsnbt script', function () {
 
-        var jsnbtObject = new require('./src/app/clib/jsnbt.js')(self.app);
-        var file = jsnbtObject.get();
+        var script = new require('./src/app/clib/script.js')(self.app);
+        var file = script.get();
 
         fs.writeFileSync(server.getPath('www/public/jsnbt.js'), file, {
             encoding: 'utf8'

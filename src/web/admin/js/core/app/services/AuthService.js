@@ -10,7 +10,7 @@
             AuthService.login = function (username, password) {
                 var deferred = $q.defer();
 
-                dpd.users.login({
+                jsnbt.db.users.login({
                     username: username,
                     password: password
                 }, function (response, error) {
@@ -19,7 +19,7 @@
                     }
                     else {
                         if (response.id) {
-                            dpd.users.me(function (userResponse, userError) {
+                            jsnbt.db.users.me(function (userResponse, userError) {
                                 if (userError) {
                                     deferred.reject(userError);
                                 }
@@ -43,7 +43,7 @@
             AuthService.get = function () {
                 var deferred = $q.defer();
 
-                dpd.users.me(function (userResponse, userError) {
+                jsnbt.db.users.me(function (userResponse, userError) {
                     if (userError) {
                         deferred.reject(userError);
                     }
@@ -61,7 +61,7 @@
             AuthService.count = function () {
                 var deferred = $q.defer();
 
-                dpd.users.get({}, function (userResponse, userError) {
+                jsnbt.db.users.get({}, function (userResponse, userError) {
                     if (userError) {
                         deferred.reject(userError);
                     }
@@ -76,7 +76,7 @@
             AuthService.logout = function () {
                 var deferred = $q.defer();
 
-                dpd.users.logout(function () {
+                jsnbt.db.users.logout(function () {
                     deferred.resolve();
                 });
 

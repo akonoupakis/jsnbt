@@ -183,20 +183,20 @@
                 }, 100);
             };
 
-            dpd.on(DATA_EVENTS.userUpdated, function (user) {
+            jsnbt.db.on(DATA_EVENTS.userUpdated, function (user) {
                 if ($scope.current.user)
                     if (user.id === $scope.current.user.id)
                         $scope.current.setUser(user);
             });
 
-            dpd.on(DATA_EVENTS.languageCreated, function (language) {
+            jsnbt.db.on(DATA_EVENTS.languageCreated, function (language) {
                 fn.setApplicationLanguages().then(function () {
                     if (language.default)
                         $scope.defaults.language = language.code;
                 });
             });
 
-            dpd.on(DATA_EVENTS.languageDeleted, function (language) {
+            jsnbt.db.on(DATA_EVENTS.languageDeleted, function (language) {
                 fn.setApplicationLanguages();
             });
             

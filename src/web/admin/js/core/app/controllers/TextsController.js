@@ -17,7 +17,7 @@
                 load: function () {
                     var deferred = $q.defer();
 
-                    PagedDataService.get(dpd.texts.get, {}).then(function (response) {
+                    PagedDataService.get(jsnbt.db.texts.get, {}).then(function (response) {
                         deferred.resolve(response);
                     }, function (error) {
                         deferred.reject(error);

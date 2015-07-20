@@ -11,7 +11,7 @@
             var loadStores = function () {
                 var deferred = $q.defer();
 
-                dpd.nodeurls.get({
+                jsnbt.db.nodeurls.get({
                     language: $scope.language,
                     hierarchy: $scope.pageId,
                     nodeId: {
