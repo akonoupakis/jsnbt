@@ -462,7 +462,7 @@ module.exports = function(server, db) {
                                     for (var langItem in urlKeys) {
                                         var langUrl = '';
                                         var fullyResolved = true;
-                                        if (_.filter(server.languages, function (x) { return x.code === langItem; }).length > 0) {
+                                        if (_.filter(server.app.languages, function (x) { return x.code === langItem; }).length > 0) {
                                             _.each(hierarchyNodes, function (hnode) {
                                                 if (hnode.seo[langItem]) {
                                                     langUrl += '/' + hnode.seo[langItem];
@@ -619,7 +619,7 @@ module.exports = function(server, db) {
 
                                     for (var langItem in lastNode.active) {
                                         var langActive = true;
-                                        if (_.filter(server.languages, function (x) { return x.code === langItem; }).length > 0) {
+                                        if (_.filter(server.app.languages, function (x) { return x.code === langItem; }).length > 0) {
                                             _.each(hierarchyNodes, function (hnode) {
                                                 if (!hnode.active[langItem]) {
                                                     langActive = false;

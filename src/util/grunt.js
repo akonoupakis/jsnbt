@@ -467,6 +467,8 @@ module.exports = function (grunt) {
         fs.writeFileSync(server.getPath('www/public/dpd.js'), file, {
             encoding: 'utf8'
         });
+
+        console.log(self.app.version);
     });
 
     grunt.registerMultiTask('patch', 'Patch the copied with the package files', function () {

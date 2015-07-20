@@ -11,7 +11,7 @@ var JsnbtRouter = function (server) {
     var getJsnbtObject = function () {
 
         var result = {
-            version: server.version,
+            version: server.app.version,
             localization: server.app.localization,
             restricted: server.app.restricted,
             ssl: server.app.ssl

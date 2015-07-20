@@ -238,15 +238,6 @@ function Server(app, options) {
     server.messager = require('./messager.js')(server);
 
     server.app = app;
-
-    var versionInfo = fs.existsSync(serverRoot.getPath('node_modules/jsnbt/package.json')) ?
-        require(serverRoot.getPath('node_modules/jsnbt/package.json')) :
-        require(serverRoot.getPath('package.json'));
-
-    server.version = versionInfo.version;
-
-    server.languages = require('./storage/languages.js');
-    server.countries = require('./storage/countries.js');
 }
 util.inherits(Server, http.Server);
 

@@ -122,7 +122,7 @@ var PublicRouter = function (server) {
                                 }
                                 else {
                                     if (server.app.localization.enabled) {
-                                        var languages = server.languages;
+                                        var languages = server.app.languages;
 
                                         var matched = _.filter(languages, function (x) { return _.str.startsWith(ctx.uri.path, '/' + x.code + '/'); });
                                         if (matched.length === 0) {

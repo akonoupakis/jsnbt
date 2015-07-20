@@ -87,6 +87,15 @@ exports.config = {
 
 };
 
+var versionInfo = fs.existsSync(root.getPath('node_modules/jsnbt/package.json')) ?
+    require(root.getPath('node_modules/jsnbt/package.json')) :
+    require(root.getPath('package.json'));
+
+exports.version = versionInfo.version;
+
+exports.languages = require('./storage/languages.js');
+exports.countries = require('./storage/countries.js');
+
 exports.register = function (module) {
 
     var self = this;
