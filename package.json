@@ -30,13 +30,11 @@
     "src/app/**",
     "src/cfg/**",
     "src/dat/**",
-    "src/util/**",
     "src/web/admin/**",
     "src/web/bower.json",
-	"src/bower.js",
-	"src/grunt.js",
-	"src/npm.js",
-    "scripts/**"
+	"scripts/**",
+	"installer.js",
+	"gruntfile.js"
   ],
   "scripts": {
     "install": "node scripts/install.js",
@@ -63,7 +61,6 @@
     "underscore.string": "2.3.3",
     "validation": "*",
     "mongodb": "1.0.2",
-    "request": "2.x.x",
     "socket.io": "0.9.x",
     "debug": ">= 0.7.0",
     "scrubber": "*",
