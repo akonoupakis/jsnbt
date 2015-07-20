@@ -1,6 +1,5 @@
 var validation = require('validation');
 var util = require('util');
-var fs = require('fs');
 var path = require('path');
 var Resource = require('../resource');
 var db = require('../db');
@@ -8,7 +7,6 @@ var EventEmitter = require('events').EventEmitter;
 var debug = require('debug')('collection');
 var path = require('path');
 var jsonValidation = require('json-validation');
-var Script = require('../script');
 
 function Collection(name, options) {
   Resource.apply(this, arguments);

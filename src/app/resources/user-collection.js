@@ -1,4 +1,3 @@
-var validation = require('validation');
 var util = require('util');
 var Collection = require('./collection');
 var db = require('../db');

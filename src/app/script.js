@@ -3,7 +3,6 @@ var _ = require('underscore')._;
 var EventEmitter = require('events').EventEmitter;
 var sessionFile = require('./session');
 var path = require('path');
-var fs = require('fs');
 
 function Script(src, path) {
     try {

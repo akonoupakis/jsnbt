@@ -9,7 +9,6 @@ var debug = require('debug')('server');
 var async = require('async');
 var serverRoot = require('server-root');
 var validation = require('json-validation');
-var fs = require('fs');
 var _ = require('underscore');
 
 var logger = require('./logger.js')(this);

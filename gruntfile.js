@@ -341,11 +341,11 @@ module.exports = function (grunt) {
 
     grunt.registerMultiTask('mod', 'Install & pack modules', function () {
         var runFn = function (mod) {
-            var modMngr = require(mod === 'bower' ? './npm.js' : './bower.js');
+            var modMngr = require('./installer.js');
             if (fs.existsSync(server.getPath(mod))) {
                 var found = fs.readdirSync(server.getPath(mod));
                 _.each(found, function (f) {
-                    modMngr.install(f, true);
+                    modMngr[mod].install(f, true);
                 });
             }
         };
