@@ -356,122 +356,21 @@ module.exports = function (grunt) {
     });
 
     grunt.registerMultiTask('patch', 'Patch the copied with the package files', function () {
-
-        var folder = 'www';
-        var events = ['get', 'post', 'put', 'validate', 'delete'];
-
-        var collections = [];
-
-        console.log(22, self.app.config.collections);
-
-        _.each(self.app.modules.all, function (module) {
-            var moduleConfig = typeof(module.getConfig) === 'function' ? module.getConfig() : {};
-            if (moduleConfig.collections && _.isArray(moduleConfig.collections)) {
-                _.each(moduleConfig.collections, function (moduleCollection) {
-
-                    if (moduleCollection.schema && _.isObject(moduleCollection.schema) && moduleCollection.schema.type === 'object' && _.isObject(moduleCollection.schema.properties)) {
-                        var collection = _.find(collections, function (x) { return x.name === moduleCollection.name; });
-                        if (collection === undefined) {
-                            collection = {
-                                name: moduleCollection.name,
-                                config: {
-                                    type: (moduleCollection.users === true ? 'User' : '') + 'Collection',
-                                    properties: {}
-                                },
-                                events: {
-                                    get: undefined,
-                                    post: undefined,
-                                    put: undefined,
-                                    validate: undefined,
-                                    delete: undefined,
-                                }
-                            };
-
-                            collections.push(collection);
-                        }
-
-                        var propertyKeys = _.keys(moduleCollection.schema.properties);
-
-                        _.each(propertyKeys, function (propertyKey, propertyIndex) {
-
-                            var collectionProperty = moduleCollection.schema.properties[propertyKey];
-
-                            var propertyRequired = collectionProperty.type === 'boolean' ? false : (collectionProperty.required || false);
-
-                            var property = {
-                                name: propertyKey,
-                                type: collectionProperty.type,
-                                typeLabel: propertyKey,
-                                required: propertyRequired,
-                                id: propertyKey,
-                                order: propertyIndex
-                            };
-
-                            if (collection.config.properties[propertyKey]) {
-                                _.extend(module.config.properties[propertyKey], property);
-                            }
-                            else {
-                                collection.config.properties[propertyKey] = property;
-                            }
-
-                        });
-
-                        if (moduleCollection.events && _.isObject(moduleCollection.events)) {
-                            var moduleCollectionEvents = moduleCollection.events;
-
-                            _.each(events, function (event) {
-                                if (moduleCollectionEvents[event] && _.isString(moduleCollectionEvents[event])) {
-                                    if (collection.events[event] === undefined)
-                                        collection.events[event] = '';
-                                    else
-                                        collection.events[event] += '\n\n';
-
-                                    collection.events[event] += moduleCollectionEvents[event];
-                                }
-                            });
-                        }
-                    }
-                });
-            }
-        });
         
-        if (!fs.existsSync(server.getPath(folder + '/resources'))) {
-            fs.create(server.getPath(folder + '/resources'));
-        }
-
-        _.each(collections, function (collection) {
-            var targetFolder = server.getPath(folder + '/resources/' + collection.name);
-
-            if (!fs.existsSync(targetFolder)) {
-                fs.create(targetFolder);
-            }
-
-            var targetConfigFile = server.getPath(folder + '/resources/' + collection.name + '/config.json');
-            fs.writeFileSync(targetConfigFile, JSON.stringify(collection.config, null, '\t'), 'utf-8');
-
-            _.each(events, function (event) {
-                var targetEventFile = server.getPath(folder + '/resources/' + collection.name + '/' + event + '.js');
-                if (collection.events[event] && _.isString(collection.events[event])) {
-                    fs.writeFileSync(targetEventFile, collection.events[event], 'utf-8');
-                };
-            });
-        });
-
-        var modMngr = require('./npm.js');
         if (fs.existsSync(server.getPath('src/pck'))) {
             var found = fs.readdirSync(server.getPath('src/pck'));
             _.each(found, function (f) {
 
                 if (fs.existsSync(server.getPath('src/pck/' + f + '/web/public'))) {
-                    deployFiles(server.getPath('src/pck/' + f + '/web/public'), server.getPath(folder + '/public'));
+                    deployFiles(server.getPath('src/pck/' + f + '/web/public'), server.getPath('www/public'));
                 }
 
                 if (fs.existsSync(server.getPath('src/pck/' + f + '/web/admin'))) {
-                    deployFiles(server.getPath('src/pck/' + f + '/web/admin'), server.getPath(folder + '/public/admin'));
+                    deployFiles(server.getPath('src/pck/' + f + '/web/admin'), server.getPath('www/public/admin'));
                 }
 
                 if (fs.existsSync(server.getPath('src/pck/' + f + '/dat'))) {
-                    deployFiles(server.getPath('src/pck/' + f + '/dat'), server.getPath(folder + '/migrations/' + f));
+                    deployFiles(server.getPath('src/pck/' + f + '/dat'), server.getPath('www/migrations/' + f));
                 }
             });
         }

@@ -125,23 +125,9 @@ Script.prototype.run = function (ctx, domain, fn) {
     });
 };
 
-var cachedPaths = {};
-
-Script.load = function (path, fn) {
-    if (cachedPaths[path]) {
-        fn(null, new Script(cachedPaths[path], path));
-    }
-    else {
-        fs.readFile(path, 'utf-8', function (err, val) {
-            if (val) {
-                cachedPaths[path] = val;
-                fn(err, new Script(val, path));
-            } else {
-                cachedPaths[path] = '';
-                fn(err, new Script('', path));
-            }
-        });
-    }
+Script.load = function (name, src, fn) {
+    var script = new Script(src, name);
+    fn(null, script);
 };
 
 function wrapError(err) {

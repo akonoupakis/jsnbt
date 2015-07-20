@@ -262,7 +262,8 @@ var getResources = function (server, cb) {
         asyncFns.push(function (fn) {
             var config = {
                 type: (collection.users === true ? 'User' : '') + 'Collection',
-                properties: {}
+                properties: {},
+                events: collection.events || {}
             };
 
             var propertyKeys = _.keys(collection.schema.properties);
@@ -285,11 +286,10 @@ var getResources = function (server, cb) {
                 config.properties[propertyKey] = property;
             });
 
-            o = {
-                config: config
-                , server: server
-                , db: server.db
-                , configPath: 'resources\\' + collectionName
+            var o = {
+                config: config,
+                server: server,
+                db: server.db
             }
 
             var rType = collection.users ? require('./resources/user-collection.js') : require('./resources/collection.js');

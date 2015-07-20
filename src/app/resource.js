@@ -55,24 +55,27 @@ Resource.prototype.load = function (fn) {
     var resource = this
       , eventNames = this.constructor && this.constructor.events
       , remaining = eventNames && eventNames.length
-      , configPath = this.options && this.options.configPath
       , events = this.events = {};
-
+    
     if (remaining) {
         eventNames.forEach(function (e) {
-
-            var fileName = e.toLowerCase() + '.js'
-              , filePath = path.join(configPath, fileName);
-
-            Script.load(filePath, function (err, script) {
-                if (script) {
-                    events[e] = script;
-                }
+            if (resource.config.events[e.toLowerCase()]) {
+                Script.load(resource.name, resource.config.events[e.toLowerCase()], function (err, script) {
+                    if (script) {
+                        events[e] = script;
+                    }
+                    remaining--;
+                    if (remaining <= 0) {
+                        fn();
+                    }
+                });
+            }
+            else {
                 remaining--;
                 if (remaining <= 0) {
                     fn();
                 }
-            });
+            }
         });
     } else {
         fn();
