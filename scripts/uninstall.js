@@ -1,6 +1,6 @@
 var config = require('../package');
-var npm = require('../src/util/npm.js')
+var installer = require('../installer.js')
 
 console.log('uninstalling ' + config.name + ' v' + config.version);
-npm.unpack(config.name);
+installer.npm.unpack(config.name);
 console.log('uninstalled ' + config.name + ' v' + config.version);

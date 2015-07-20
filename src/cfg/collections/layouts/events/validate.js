@@ -7,7 +7,7 @@ var contentProperties = {};
 
 if (server.app.localization.enabled) {
 
-    _.each(server.languages, function (lang) {
+    _.each(server.app.languages, function (lang) {
         languageProperties[lang] = {
             type: "object"
         }

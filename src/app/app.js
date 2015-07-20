@@ -3,6 +3,7 @@ var path = require('path');
 var extend = require('extend');
 var root = require('server-root');
 var validation = require('json-validation');
+var upgrade = require('doh').upgrade;
 var _ = require('underscore');
 
 var Environment = {
@@ -85,6 +86,15 @@ exports.config = {
     }
 
 };
+
+var versionInfo = fs.existsSync(root.getPath('node_modules/jsnbt/package.json')) ?
+    require(root.getPath('node_modules/jsnbt/package.json')) :
+    require(root.getPath('package.json'));
+
+exports.version = versionInfo.version;
+
+exports.languages = require('./storage/languages.js');
+exports.countries = require('./storage/countries.js');
 
 exports.register = function (module) {
 
@@ -406,12 +416,13 @@ exports.createServer = function (options) {
     var opts = {};
     extend(true, opts, defOpts, options);
 
+    //check if directory exists?
     process.chdir('www');
     
     this.path = path.join(__dirname, 'www', 'public');
     
     var server = require('./server.js')(this, opts);
-
+    upgrade(server);
     return server;
 };
 

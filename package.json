@@ -30,10 +30,11 @@
     "src/app/**",
     "src/cfg/**",
     "src/dat/**",
-    "src/util/**",
     "src/web/admin/**",
     "src/web/bower.json",
-    "scripts/**"
+	"scripts/**",
+	"installer.js",
+	"gruntfile.js"
   ],
   "scripts": {
     "install": "node scripts/install.js",
@@ -43,10 +44,8 @@
     "MD5": "1.2.1",
     "async": "0.8.0",
     "bower": "1.2.7",
-    "connect": "3.3.3",
     "cookies": "0.3.0",
     "custom-logger": "0.2.1",
-    "deployd": "git://github.com/akonoupakis/deployd",
     "easyimage": "1.0.3",
     "emailjs": "0.3.16",
     "extend": "2.0.0",
@@ -59,10 +58,20 @@
     "parseUri": "1.2.3-2",
     "server-root": "0.0.9",
     "underscore": "1.6.0",
-    "underscore.string": "2.3.3"
+    "underscore.string": "2.3.3",
+    "validation": "*",
+    "mongodb": "1.0.2",
+    "socket.io": "0.9.x",
+    "debug": ">= 0.7.0",
+    "scrubber": "*",
+    "send": "0.0.2",		
+    "doh": ">=0.0.4",
+    "corser": "~1.1.1",		
+    "qs": "~0.6.5",
+	"fs-extra": "0.22.1"
   },
-  "devDependencies": {
-    "argv": "*",
+  "devDependencies": {		
+    "less": "*",		
     "grunt": "*",
     "grunt-contrib-clean": "*",
     "grunt-contrib-copy": "*",
@@ -72,7 +81,7 @@
     "grunt-contrib-uglify": "*",
     "grunt-contrib-watch": "*",
     "grunt-env": "*",
-    "grunt-preprocess": "*",
+    "grunt-preprocess": "*",		
     "jsnbt-docs": "*"
   }
 }

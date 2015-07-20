@@ -1,6 +1,6 @@
 var self = this;
 
-dpd.layouts.get({
+db.layouts.get({
     layout: self.layout,
     id: { $nin: [self.id] }
 }, function (matched, matchedError) {

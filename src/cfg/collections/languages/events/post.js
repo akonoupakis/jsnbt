@@ -1,6 +1,6 @@
 var self = this;
 
-dpd.languages.get({ code: self.code }, function (matched, matchedError) {
+db.languages.get({ code: self.code }, function (matched, matchedError) {
     if (matchedError)
         throw matchedError;
     else

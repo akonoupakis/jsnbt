@@ -6,7 +6,7 @@ validate({
         code: {
             type: "string",
             required: true,
-            enum: _.pluck(server.languages, 'code')
+            enum: _.pluck(server.app.languages, 'code')
         }
     }
 });

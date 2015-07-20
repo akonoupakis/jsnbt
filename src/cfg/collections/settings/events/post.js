@@ -1,6 +1,6 @@
 var self = this;
 
-dpd.settings.get({
+db.settings.get({
     domain: self.domain
 }, function (matched, matchedError) {
     if (matchedError)

@@ -15,7 +15,7 @@
                 load: function () {
                     var deferred = $q.defer();
 
-                    PagedDataService.get(dpd.languages.get, {
+                    PagedDataService.get(jsnbt.db.languages.get, {
                         $sort: {
                             name: 1
                         }

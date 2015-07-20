@@ -21,21 +21,21 @@ var Migrator = function (server) {
                 onSuccess();
             };
 
-            var runMigration = function (dpd) {
+            var runMigration = function (db) {
                 var migration = migrations.shift();
                 if (migration) {
-                    dpd.migrations.count({
+                    db.migrations.count({
                         module: migration.module,
                         name: migration.name
                     }, function (result, err) {
                         if (err) {
-                            runMigration(dpd);
+                            runMigration(db);
                         }
                         else {
                             if (result.count === 0) {
-                                migration.fn.process(dpd, function () {
+                                migration.fn.process(db, function () {
 
-                                    dpd.migrations.post({
+                                    db.migrations.post({
                                         module: migration.module,
                                         name: migration.name,
                                         processedOn: new Date().getTime()
@@ -47,7 +47,7 @@ var Migrator = function (server) {
                                         else {
                                             logger.info('migration processed: ' + migration.module + ', ' + migration.name);
                                             migrationsCount++;
-                                            runMigration(dpd);
+                                            runMigration(db);
                                         }
                                     });
 
@@ -57,7 +57,7 @@ var Migrator = function (server) {
                                 });
                             }
                             else {
-                                runMigration(dpd);
+                                runMigration(db);
                             }
                         }
                     });
@@ -70,7 +70,7 @@ var Migrator = function (server) {
                 }
             };
 
-            var dpd = require('deployd/lib/internal-client').build(server);
+            var db = require('./db.js').build(server);
 
             var migrationsPath = 'www/migrations';
 
@@ -102,7 +102,7 @@ var Migrator = function (server) {
             }
 
             logger.info('server is updating migrations');
-            runMigration(dpd);
+            runMigration(db);
 
         }
 

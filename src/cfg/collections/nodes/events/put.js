@@ -1,4 +1,4 @@
-var node = requireApp('cms/nodeMngr.js')(server, dpd);
+var node = requireApp('cms/nodeMngr.js')(server, db);
 
 var _ = require('underscore');
 
@@ -7,7 +7,7 @@ var self = this;
 var processChildren = function (domain, hierarchy) {
     if (hierarchy.length > 0) {
         var nodeId = hierarchy[hierarchy.length - 1];
-        dpd.nodes.get({ domain: domain, parent: nodeId }, function (results, error) {
+        db.nodes.get({ domain: domain, parent: nodeId }, function (results, error) {
             if (error) {
                 throw error;
             }
@@ -17,7 +17,7 @@ var processChildren = function (domain, hierarchy) {
                     newHierarchy.push(nodeResult.id);
                     nodeResult.hierarchy = newHierarchy.slice(0);
                     
-                    dpd.nodes.put(nodeResult.id, nodeResult, function (result, err) {
+                    db.nodes.put(nodeResult.id, nodeResult, function (result, err) {
                         if (err)
                             throw err;
                     });
@@ -51,7 +51,7 @@ else {
         }
 
         if (seoNamesChanged) {
-            dpd.nodes.get({ parent: self.parent, domain: self.domain, id: { $nin: [self.id] } }, function (siblingNodes, siblingNodesError) {
+            db.nodes.get({ parent: self.parent, domain: self.domain, id: { $nin: [self.id] } }, function (siblingNodes, siblingNodesError) {
                 if (siblingNodesError)
                     throw siblingNodesError;
                 else {

@@ -1089,11 +1089,11 @@
                 }
             });
             
-            dpd.on(DATA_EVENTS.nodeUpdated, function (node) {
+            jsnbt.db.on(DATA_EVENTS.nodeUpdated, function (node) {
                 // updated from another user??
             });
             
-            dpd.on(DATA_EVENTS.nodeDeleted, function (node) {
+            jsnbt.db.on(DATA_EVENTS.nodeDeleted, function (node) {
                 // throw 404 if is current not found
             });
 

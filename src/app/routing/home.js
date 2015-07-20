@@ -12,7 +12,7 @@ var HomeRouter = function (server) {
             if (ctx.uri.path === '/') {
                 
                 try {
-                    var node = require('../cms/nodeMngr.js')(server, ctx.dpd);
+                    var node = require('../cms/nodeMngr.js')(server, ctx.db);
                     
                     ctx.timer.start('node retrieval');
 
@@ -33,14 +33,14 @@ var HomeRouter = function (server) {
                             }
 
                             if (ctx.restricted) {
-                                ctx.dpd.settings.getCached({ domain: 'core' }, function (settingNodes, settingNodesError) {
+                                ctx.db.settings.getCached({ domain: 'core' }, function (settingNodes, settingNodesError) {
                                     if (settingNodesError) {
                                         ctx.error(500, settingNodesError);
                                     }
                                     else {
                                         var settingNode = _.first(settingNodes);
                                         if (settingNode && settingNode.data && settingNode.data.loginpage) {
-                                            ctx.dpd.nodes.get(settingNode.data.loginpage, function (loginNode, loginNodeError) {
+                                            ctx.db.nodes.get(settingNode.data.loginpage, function (loginNode, loginNodeError) {
                                                 if (loginNodeError) {
                                                     ctx.error(500, loginNodeError);
                                                 }

@@ -20,7 +20,7 @@
                                     ctx.error(parseErr);
                                 }
                                 else {
-                                    server.messager.mail.getSender(ctx.dpd, function (senderErr, sender) {
+                                    server.messager.mail.getSender(ctx.db, function (senderErr, sender) {
                                         if (senderErr) {
                                             ctx.error(senderErr);
                                         }
