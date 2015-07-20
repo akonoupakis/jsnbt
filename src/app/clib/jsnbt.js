@@ -1,11 +1,14 @@
 ﻿var fs = require('fs-extra');
 var path = require('path');
-var server = require('server-root');
+var extend = require('extend');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
 
 var JsnbtObject = function (app) {
+
+    var languages = require('../storage/languages.js');
+    var countries = require('../storage/countries.js');
 
     var getResources = function () {
 
@@ -54,6 +57,108 @@ var JsnbtObject = function (app) {
 
         return resources;
     };
+
+    var getJsnbtObject = function () {
+
+        var result = {
+            version: app.version,
+            localization: app.localization,
+            restricted: app.restricted,
+            ssl: app.ssl
+        };
+
+        var applyArrayInObject = function (selfName, resultName, identifier) {
+            result[resultName] = {};
+            _.each(app.config[selfName], function (selfItem) {
+                result[resultName][selfItem[identifier]] = selfItem;
+            });
+        };
+
+        result.fileGroups = app.config.fileGroups;
+
+        result.modules = {};
+        _.each(app.modules.all, function (module) {
+
+            if (module.domain !== 'core') {
+                result.modules[module.domain] = {
+                    name: module.name,
+                    domain: module.domain,
+                    type: module.type,
+                    version: module.version,
+                    pointed: module.pointed,
+                    section: module.section,
+                    browsable: module.browsable === undefined || module.browsable === true
+                }
+
+                if (module.config) {
+                    extend(true, result.modules[module.domain], module.config);
+                }
+            }
+        });
+
+        result.lists = [];
+        _.each(app.config.lists, function (list) {
+            var newList = {};
+            extend(true, newList, list);
+            delete newList.permissions;
+            result.lists.push(newList);
+        });
+
+        result.injects = app.config.injects;
+
+        applyArrayInObject('entities', 'entities', 'name');
+
+        applyArrayInObject('roles', 'roles', 'name');
+
+        applyArrayInObject('sections', 'sections', 'name');
+
+        applyArrayInObject('templates', 'templates', 'id');
+
+        applyArrayInObject('layouts', 'layouts', 'id');
+
+        applyArrayInObject('containers', 'containers', 'id');
+
+        applyArrayInObject('routes', 'routes', 'id');
+
+        applyArrayInObject('languages', 'languages', 'code');
+
+        applyArrayInObject('countries', 'countries', 'code');
+
+        result.messaging = {
+            mail: {},
+            sms: {}
+        };
+
+        for (var mailImplementationName in app.config.messaging.mail.implementations) {
+            var mailImplementation = app.config.messaging.mail.implementations[mailImplementationName];
+            result.messaging.mail[mailImplementationName] = {
+                domain: mailImplementationName,
+                name: mailImplementation.provider,
+                settingsTmpl: mailImplementation.settingsTmpl
+            }
+        }
+
+        for (var smsImplementationName in app.config.messaging.sms.implementations) {
+            var smsImplementation = app.config.messaging.sms.implementations[smsImplementationName];
+            result.messaging.sms[smsImplementationName] = {
+                domain: smsImplementationName,
+                name: smsImplementation.provider,
+                settingsTmpl: smsImplementation.settingsTmpl
+            }
+        }
+
+        result.languages = {};
+        _.each(languages, function (language) {
+            result.languages[language.code] = language;
+        });
+
+        result.countries = {};
+        _.each(countries, function (country) {
+            result.countries[country.code] = country;
+        });
+
+        return result;
+    }
 
     return {
 
@@ -118,8 +223,12 @@ var JsnbtObject = function (app) {
                 file += '\n';
             });
 
-            return file;
+            var jsnbtObj = getJsnbtObject();
+            file += '\n';
+            file += 'var jsnbt = ' + JSON.stringify(jsnbtObj, null, '\t');
+            file += '\n';
 
+            return file;
         }
 
     }
