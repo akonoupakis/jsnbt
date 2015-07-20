@@ -1,3 +1,3 @@
 module.exports = function (grunt) {
-    require('./src/util/grunt.js')(grunt);
+    require('./src/grunt.js')(grunt);
 };

@@ -1,5 +1,4 @@
-var fs = require('./fs.js');
-var path = require('path');
+var fs = require('fs-extra');
 var server = require('server-root');
 var _ = require('underscore');
 
@@ -16,10 +15,10 @@ module.exports = {
 
         if (fs.existsSync(server.getPath('node_modules/' + name)))
             if (force === true)
-                fs.delete(server.getPath('node_modules/' + name));
+                fs.deleteSync(server.getPath('node_modules/' + name));
 
         if (!fs.existsSync(server.getPath('node_modules/' + name)))
-            fs.copy(server.getPath('npm/' + name), server.getPath('node_modules/' + name));
+            fs.copySync(server.getPath('npm/' + name), server.getPath('node_modules/' + name));
 
         this.pack(name, force);
     },
@@ -32,12 +31,12 @@ module.exports = {
             if (fs.existsSync(sourcePath)) {
                 if (fs.existsSync(targetPath)) {
                     if (force) {
-                        fs.delete(targetPath, true);
-                        fs.copy(sourcePath, targetPath);
+                        fs.deleteSync(targetPath);
+                        fs.copySync(sourcePath, targetPath);
                     }
                 }
                 else {
-                    fs.copy(sourcePath, targetPath);
+                    fs.copySync(sourcePath, targetPath);
                 }
             }
         }
@@ -46,7 +45,7 @@ module.exports = {
     unpack: function (name) {
         var targetPath = server.getPath('src/pck/' + name);
         if (fs.existsSync(targetPath)) {
-            fs.delete(targetPath, true);
+            fs.deleteSync(targetPath, true);
         }
     }
 };

@@ -1,5 +1,4 @@
-var fs = require('./fs.js');
-var path = require('path');
+var fs = require('fs-extra');
 var server = require('server-root');
 var _ = require('underscore');
 
@@ -16,10 +15,10 @@ module.exports = {
 
         if (fs.existsSync(server.getPath('bower_components/' + name)))
             if (force === true)
-                fs.delete(server.getPath('bower_components/' + name)); 
+                fs.deleteSync(server.getPath('bower_components/' + name));
 
         if (!fs.existsSync(server.getPath('bower_components/' + name)))
-            fs.copy(server.getPath('bower/' + name), server.getPath('bower_components/' + name));
+            fs.copySync(server.getPath('bower/' + name), server.getPath('bower_components/' + name));
     }
 
 };

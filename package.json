@@ -33,6 +33,9 @@
     "src/util/**",
     "src/web/admin/**",
     "src/web/bower.json",
+	"src/bower.js",
+	"src/grunt.js",
+	"src/npm.js",
     "scripts/**"
   ],
   "scripts": {
@@ -84,7 +87,8 @@
     "opener": "~1.3.0",
     "corser": "~1.1.1",
     "semver": "1.1.x",
-    "qs": "~0.6.5"
+    "qs": "~0.6.5",
+	"fs-extra": "0.22.1"
   },
   "devDependencies": {
     "mocha": "*",

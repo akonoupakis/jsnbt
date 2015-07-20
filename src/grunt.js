@@ -1,4 +1,4 @@
-var fs = require('./fs.js');
+var fs = require('fs-extra');
 var path = require('path');
 var server = require('server-root');
 var _ = require('underscore');
@@ -9,7 +9,7 @@ module.exports = function (grunt) {
 
     var self = this;
 
-    this.app = require('../app/app.js');
+    this.app = require('./app/app.js');
     this.modulePaths = [];
     
     var getModule = function (indexPath) {
@@ -313,10 +313,10 @@ module.exports = function (grunt) {
     
     var deployFiles = function (source, target) {
         if (!fs.existsSync(target)) {
-            fs.create(target);
+            fs.mkdirpSync(target);
         }
 
-        fs.copy(source, target, false);
+        fs.copySync(source, target);
         diffLessFile(source + '/css/_.less', target + '/css/_.less');
     };
 
@@ -394,8 +394,8 @@ module.exports = function (grunt) {
             }
 
             var rType = collection.users ?
-                require('../app/resources/user-collection.js') :
-                require('../app/resources/collection.js');
+                require('./app/resources/user-collection.js') :
+                require('./app/resources/collection.js');
             var resource = new rType(collectionName, o);
             resources.push(resource);
         });
@@ -405,9 +405,9 @@ module.exports = function (grunt) {
 
     grunt.registerMultiTask('script', 'Creates the precompiled jsnbt script', function () {
 
-        var scriptSocketIo = fs.readFileSync(path.join(__dirname, '/clib/socket.io.js'), 'utf8');
-        var scriptAjax = fs.readFileSync(path.join(__dirname, '/clib/ajax.js'), 'utf8');
-        var scriptDpd = fs.readFileSync(path.join(__dirname, '/clib/dpd.js'), 'utf8');
+        var scriptSocketIo = fs.readFileSync(path.join(__dirname, '/app/clib/scripts/socket.io.js'), 'utf8');
+        var scriptAjax = fs.readFileSync(path.join(__dirname, '/app/clib/scripts/ajax.js'), 'utf8');
+        var scriptDpd = fs.readFileSync(path.join(__dirname, '/app/clib/scripts/dpd.js'), 'utf8');
 
         var file = scriptSocketIo + "\n\n"
             + scriptAjax + "\n\n"
@@ -493,11 +493,39 @@ module.exports = function (grunt) {
     });
     
     grunt.registerMultiTask('cleanempty', 'Clean empty folders', function () {
+        
+        function cleanFolder(folder, recursive) {
+            if (fs.existsSync(folder)) {
+                if (fs.lstatSync(folder).isDirectory()) {
+                    var children = fs.readdirSync(folder);
+                    if (children.length === 0) {
+                        fs.rmdirSync(folder);
+                    }
+                    else {
+                        if (recursive) {
+                            children.forEach(function (childItemName) {
+                                if (fs.lstatSync(folder + '/' + childItemName).isDirectory()) {
+                                    cleanFolder(folder + '/' + childItemName, recursive);
+                                }
+                            });
+                        }
 
-        var folder = 'www';
+                        children = fs.readdirSync(folder);
+                        if (children.length === 0) {
+                            fs.rmdirSync(folder);
+                        }
+                    }
+                }
+            }
+        }
 
         _.each(this.data.src, function (item) {
-            fs.clean(item, true);
+            
+            if (fs.existsSync(item)) {
+                if (fs.lstatSync(item).isDirectory()) {
+                    cleanFolder(item, true);
+                }
+            }
         });
 
     });
@@ -619,9 +647,9 @@ module.exports = function (grunt) {
 
                                                 if (fs.existsSync(sourceDir)) {
                                                     if (!fs.existsSync(targetDir))
-                                                        fs.create(targetDir);
+                                                        fs.mkdirpSync(targetDir);
 
-                                                    fs.copy(sourceDir, targetDir, true);
+                                                    fs.copySync(sourceDir, targetDir);
                                                 }
                                             });
                                         });
@@ -645,9 +673,9 @@ module.exports = function (grunt) {
                                                     var targetFolder = targetFile.substring(0, targetFile.lastIndexOf('/'));
 
                                                     if (!fs.existsSync(targetFolder))
-                                                        fs.create(targetFolder);
+                                                        fs.mkdirpSync(targetFolder);
 
-                                                    fs.copy(sourceFile, targetFile, true);
+                                                    fs.copySync(sourceFile, targetFile);
                                                 }
                                             });
                                         });
@@ -663,20 +691,20 @@ module.exports = function (grunt) {
 
     var gruntConfig = {};
 
-    fs.create('./src');
-    fs.create('./src/app');
-    fs.create('./src/cfg');
-    fs.create('./src/dat');
-    fs.create('./src/pck');
-    fs.create('./src/web');
-    fs.create('./src/web/public');
-    fs.create('./src/web/public/css');
-    fs.create('./src/web/public/error');
-    fs.create('./src/web/public/files');
-    fs.create('./src/web/public/img');
-    fs.create('./src/web/public/js');
-    fs.create('./src/web/public/tmp');
-    fs.create('./src/web/public/tmpl');
+    fs.mkdirpSync('./src');
+    fs.mkdirpSync('./src/app');
+    fs.mkdirpSync('./src/cfg');
+    fs.mkdirpSync('./src/dat');
+    fs.mkdirpSync('./src/pck');
+    fs.mkdirpSync('./src/web');
+    fs.mkdirpSync('./src/web/public');
+    fs.mkdirpSync('./src/web/public/css');
+    fs.mkdirpSync('./src/web/public/error');
+    fs.mkdirpSync('./src/web/public/files');
+    fs.mkdirpSync('./src/web/public/img');
+    fs.mkdirpSync('./src/web/public/js');
+    fs.mkdirpSync('./src/web/public/tmp');
+    fs.mkdirpSync('./src/web/public/tmpl');
 
     gruntConfig.pkg = grunt.file.readJSON('package.json');
     
