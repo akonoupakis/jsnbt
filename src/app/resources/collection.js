@@ -1,11 +1,9 @@
 var validation = require('validation');
 var util = require('util');
-var path = require('path');
 var Resource = require('../resource');
 var db = require('../db');
 var EventEmitter = require('events').EventEmitter;
 var debug = require('debug')('collection');
-var path = require('path');
 var jsonValidation = require('json-validation');
 
 function Collection(name, options) {
@@ -19,22 +17,12 @@ function Collection(name, options) {
   }
 }
 util.inherits(Collection, Resource);
+
 Collection.external = {};
+
 Collection.prototype.clientGeneration = true;
 
-Collection.events  = ['Get', 'Validate', 'Post', 'Put', 'Delete'];
-Collection.dashboard = {
-    path: path.join(__dirname, 'dashboard')
-  , pages: ['Properties', 'Data', 'Events', 'API']
-  , scripts: [
-      '/js/lib/jquery-ui-1.8.22.custom.min.js'
-    , '/js/lib/knockout-2.1.0.js'
-    , '/js/lib/knockout.mapping.js'
-    , '/js/util/knockout-util.js'
-    , '/js/util/key-constants.js'
-    , '/js/util.js'
-  ]
-};
+Collection.events = ['Get', 'Validate', 'Post', 'Put', 'Delete'];
 
 Collection.prototype.validate = function (body, create) {
   if(!this.properties) this.properties = {};
@@ -679,8 +667,6 @@ function createDomain(data, errors) {
   };
   return domain;
 }
-
-Collection.defaultPath = '/my-objects';
 
 Collection.prototype.configDeleted = function(config, fn) {
   debug('resource deleted');

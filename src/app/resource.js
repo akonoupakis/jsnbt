@@ -1,7 +1,6 @@
 var parse = require('url').parse;
 var EventEmitter = require('events').EventEmitter;
 var util = require('util');
-var path = require('path');
 var Script = require('./script');
 
 function Resource(name, options) {
@@ -86,12 +85,12 @@ Resource.prototype.handle = function (ctx, next) {
     ctx.end();
 };
 
-Resource.toJSON = function () {
-    return {
-        type: this.name,
-        defaultPath: '/my-resource'
-    };
-};
+//Resource.toJSON = function () {
+//    return {
+//        type: this.name,
+//        defaultPath: '/my-resource'
+//    };
+//};
 
 Resource.prototype.clientGeneration = false;
 

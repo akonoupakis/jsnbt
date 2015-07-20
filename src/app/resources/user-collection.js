@@ -6,17 +6,13 @@ var crypto = require('crypto');
 var SALT_LEN = 256;
 var debug = require('debug')('user-collection');
 
-
 function UserCollection(name, options) {
   Collection.apply(this, arguments);
-
-  var config = this.config;
-
+    
   if(!this.properties) {
     this.properties = {};
   }
 
-  // username and password are required
   this.properties.username = this.properties.username || {type: 'string'};
   this.properties.username.required = true;
   this.properties.password = this.properties.password || {type: 'string'};
@@ -24,9 +20,7 @@ function UserCollection(name, options) {
 }
 util.inherits(UserCollection, Collection);
 
-UserCollection.dashboard = Collection.dashboard;
 UserCollection.events    = Collection.events;
-
 
 UserCollection.prototype.handle = function (ctx) {
   var uc = this;
@@ -151,9 +145,6 @@ UserCollection.prototype.handleSession = function (ctx, fn) {
 UserCollection.prototype.hash = function (password, salt) {
   return crypto.createHmac('sha256', salt).update(password).digest('hex');
 };
-
-UserCollection.label = 'Users Collection';
-UserCollection.defaultPath = '/users';
 
 UserCollection.prototype.clientGenerationGet = ['me'];
 UserCollection.prototype.clientGenerationExec = ['login', 'logout'];
