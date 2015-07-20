@@ -91,97 +91,102 @@ function Server(app, options) {
         'log level': 0
     }).sockets;
 
-    this.dpd = {
-        onPreRead: function (scriptContext, collection, callback) {
-            if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'R')) {
-                var accessDenied = new Error('access denied');
-                accessDenied.statusCode = 401;
-                callback(accessDenied);
-            }
-            else {
-                callback();
-            }
-        },
-        onPostRead: function (scriptContext, collection, object, callback) {
-            callback();
-        },
-        onPreCreate: function (scriptContext, collection, callback) {
-            if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'C')) {
-                var accessDenied = new Error('access denied');
-                accessDenied.statusCode = 401;
-                callback(accessDenied);
-            }
-            else {
-                callback();
-            }
-        },
-        onPostCreate: function (scriptContext, collection, object, callback) {
-            logAction(scriptContext.db, scriptContext.me, collection, 'create', object.id, object, function (err, res) {
-                if (err) {
-                    callback(err);
+    this.events = {
+        db: {
+            onPreRead: function (scriptContext, collection, callback) {
+                if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'R')) {
+                    var accessDenied = new Error('access denied');
+                    accessDenied.statusCode = 401;
+                    callback(accessDenied);
                 }
                 else {
-                    if (!scriptContext.internal)
-                        scriptContext.emit(collection + 'Created', object);
-
                     callback();
                 }
-            });
-        },
-        onPreUpdate: function (scriptContext, collection, object, callback) {
-            if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'U')) {
-                var accessDenied = new Error('access denied');
-                accessDenied.statusCode = 401;
-                callback(accessDenied);
-            }
-            else {
+            },
+            onPostRead: function (scriptContext, collection, object, callback) {
                 callback();
-            }
-        },
-        onPostUpdate: function (scriptContext, collection, object, callback) {
-            logAction(scriptContext.db, scriptContext.me, collection, 'update', object.id, object, function (err, res) {
-                if (err) {
-                    callback(err);
+            },
+            onPreCreate: function (scriptContext, collection, callback) {
+                if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'C')) {
+                    var accessDenied = new Error('access denied');
+                    accessDenied.statusCode = 401;
+                    callback(accessDenied);
                 }
                 else {
-                    if (!scriptContext.internal)
-                        scriptContext.emit(collection + 'Updated', object);
-
                     callback();
                 }
-            });
-        },
-        onPreDelete: function (scriptContext, collection, object, callback) {
-            if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'D')) {
-                var accessDenied = new Error('access denied');
-                accessDenied.statusCode = 401;
-                callback(accessDenied);
-            }
-            else {
-                callback();
-            }
-        },
-        onPostDelete: function (scriptContext, collection, object, callback) {
-            logAction(scriptContext.db, scriptContext.me, collection, 'delete', object.id, object, function (err, res) {
-                if (err) {
-                    callback(err);
+            },
+            onPostCreate: function (scriptContext, collection, object, callback) {
+                logAction(scriptContext.db, scriptContext.me, collection, 'create', object.id, object, function (err, res) {
+                    if (err) {
+                        callback(err);
+                    }
+                    else {
+                        if (!scriptContext.internal)
+                            scriptContext.emit(collection + 'Created', object);
+
+                        callback();
+                    }
+                });
+            },
+            onPreUpdate: function (scriptContext, collection, object, callback) {
+                if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'U')) {
+                    var accessDenied = new Error('access denied');
+                    accessDenied.statusCode = 401;
+                    callback(accessDenied);
                 }
                 else {
-                    if (!scriptContext.internal)
-                        scriptContext.emit(collection + 'Deleted', object);
-
                     callback();
                 }
-            });
-        },
-        onValidate: function (scriptContext, collection, object, callback) {
-            if (server.app.config.collections[collection]) {
-                if (server.app.config.collections[collection].schema) {
-                    var validator = new validation.JSONValidation();
-                    var validationResult = validator.validate(object, server.app.config.collections[collection].schema);
-                    if (!validationResult.ok) {
-                        var validationErrors = validationResult.path + ': ' + validationResult.errors.join(' - ');
-                        callback(new Error(validationErrors));
+            },
+            onPostUpdate: function (scriptContext, collection, object, callback) {
+                logAction(scriptContext.db, scriptContext.me, collection, 'update', object.id, object, function (err, res) {
+                    if (err) {
+                        callback(err);
+                    }
+                    else {
+                        if (!scriptContext.internal)
+                            scriptContext.emit(collection + 'Updated', object);
+
+                        callback();
+                    }
+                });
+            },
+            onPreDelete: function (scriptContext, collection, object, callback) {
+                if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'D')) {
+                    var accessDenied = new Error('access denied');
+                    accessDenied.statusCode = 401;
+                    callback(accessDenied);
+                }
+                else {
+                    callback();
+                }
+            },
+            onPostDelete: function (scriptContext, collection, object, callback) {
+                logAction(scriptContext.db, scriptContext.me, collection, 'delete', object.id, object, function (err, res) {
+                    if (err) {
+                        callback(err);
+                    }
+                    else {
+                        if (!scriptContext.internal)
+                            scriptContext.emit(collection + 'Deleted', object);
+
+                        callback();
+                    }
+                });
+            },
+            onValidate: function (scriptContext, collection, object, callback) {
+                if (server.app.config.collections[collection]) {
+                    if (server.app.config.collections[collection].schema) {
+                        var validator = new validation.JSONValidation();
+                        var validationResult = validator.validate(object, server.app.config.collections[collection].schema);
+                        if (!validationResult.ok) {
+                            var validationErrors = validationResult.path + ': ' + validationResult.errors.join(' - ');
+                            callback(new Error(validationErrors));
+                        }
+                        else {
+                            callback();
+                        }
                     }
                     else {
                         callback();
@@ -190,9 +195,6 @@ function Server(app, options) {
                 else {
                     callback();
                 }
-            }
-            else {
-                callback();
             }
         }
     };

@@ -40,7 +40,7 @@ var Router = function(server, req, res) {
 
     var logger = require('./logger.js')(this);
 
-    var ignoredPaths = []; //['dashboard', 'dpd.js', '__resources', 'socket.io', 'favicon.ico', 'app-offline.htm', 'dpd'];
+    var ignoredPaths = []; // ['__resources'];
 
     var ignoredPathPrefixes = []; //['/css/', '/fonts/', '/img/', '/js/', '/tmpl/', '/tmp/', '/files/', '/admin/css/', '/admin/fonts/', '/admin/img/', '/admin/js/', '/admin/tmpl/'];
 

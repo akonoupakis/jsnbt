@@ -229,11 +229,11 @@ var createScriptContext = function (ctx) {
 };
 
 var runPreEvent = function (ctx, event, scriptContext, collection, object, callback) {
-    if (ctx.server.dpd && ctx.server.dpd['onPre' + event]) {
+    if (ctx.server.events && ctx.server.events.db && ctx.server.events.db['onPre' + event]) {
         if (event === 'Read' || event === 'Create')
-            ctx.server.dpd['onPre' + event](scriptContext, collection, callback);
+            ctx.server.events.db['onPre' + event](scriptContext, collection, callback);
         else
-            ctx.server.dpd['onPre' + event](scriptContext, collection, object, callback);
+            ctx.server.events.db['onPre' + event](scriptContext, collection, object, callback);
     }
     else {
         callback();
@@ -241,8 +241,8 @@ var runPreEvent = function (ctx, event, scriptContext, collection, object, callb
 };
 
 var runPostEvent = function (ctx, event, scriptContext, collection, object, callback) {
-    if (ctx.server.dpd && ctx.server.dpd['onPost' + event]) {
-        ctx.server.dpd['onPost' + event](scriptContext, collection, object, callback);
+    if (ctx.server.events && ctx.server.events.db && ctx.server.events.db['onPost' + event]) {
+        ctx.server.events.db['onPost' + event](scriptContext, collection, object, callback);
     }
     else {
         callback();
@@ -250,8 +250,8 @@ var runPostEvent = function (ctx, event, scriptContext, collection, object, call
 };
 
 var runValidateEvent = function (ctx, scriptContext, collection, object, callback) {
-    if (ctx.server.dpd && ctx.server.dpd.onValidate) {
-        ctx.server.dpd.onValidate(scriptContext, collection, object, callback);
+    if (ctx.server.events && ctx.server.events.db && ctx.server.events.db.onValidate) {
+        ctx.server.events.db.onValidate(scriptContext, collection, object, callback);
     }
     else {
         callback();

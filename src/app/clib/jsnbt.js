@@ -179,8 +179,8 @@ var JsnbtObject = function (app) {
                 var jsName = r.path.replace(/[^A-Za-z0-9]/g, '')
                   , i;
 
-                if (rpath.indexOf('/dpd/') == 0) {
-                    rpath = rpath.substring('dpd'.length + 1);
+                if (rpath.indexOf('/jsnbt-db/') == 0) {
+                    rpath = rpath.substring('jsnbt-db'.length + 1);
                     jsName = rpath.replace(/[^A-Za-z0-9]/g, '');
                 }
 

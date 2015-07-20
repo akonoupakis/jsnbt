@@ -390,7 +390,7 @@ function joinPath() {
 
 db.build = function (server, session, stack) {
     var baseMethods
-      , dpdClient = {};
+      , dataClient = {};
 
     baseMethods = {
         request: function (method, options, fn) {
@@ -487,17 +487,17 @@ db.build = function (server, session, stack) {
 
                 var jsName = r.path.replace(/[^A-Za-z0-9]/g, '');
 
-                if (rpath.indexOf('/dpd/') == 0) {
-                    rpath = rpath.substring('dpd'.length + 1);
+                if (rpath.indexOf('/jsnbt-db/') == 0) {
+                    rpath = rpath.substring('jsnbt-db'.length + 1);
                     jsName = rpath.replace(/[^A-Za-z0-9]/g, '');
                 }
 
-                dpdClient[jsName] = createResourceClient(server, r, jsName, baseMethods);
+                dataClient[jsName] = createResourceClient(server, r, jsName, baseMethods);
             }
         });
     }
 
-    return dpdClient;
+    return dataClient;
 };
 
 function createResourceClient(server, resource, collection, baseMethods) {

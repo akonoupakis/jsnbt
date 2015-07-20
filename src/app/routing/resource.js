@@ -310,7 +310,7 @@ var ResourceRouter = function (server) {
     return {
 
         route: function (ctx, next) {
-            if (ctx.uri.first === 'dpd' && ctx.uri.parts.length > 1) {                
+            if (ctx.uri.first === 'jsnbt-db' && ctx.uri.parts.length > 1) {
                 setupRequest(ctx.req, ctx.res, function (err) {
                     if (err) return ctx.res.end(err.message);
                     var router = new Router(server.resources, server);

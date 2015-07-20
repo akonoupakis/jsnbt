@@ -8,7 +8,7 @@ function Resource(name, options) {
     EventEmitter.call(this);
     this.name = name;
 
-    this.path = '/dpd/' + name;
+    this.path = '/jsnbt-db/' + name;
     
     options = this.options = options || {};
     this.config = options.config || {};

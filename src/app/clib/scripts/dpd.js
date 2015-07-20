@@ -1,4 +1,4 @@
-var resourcePrefixPath = 'dpd';
+var resourcePrefixPath = 'jsnbt-db';
 
 (function (undefined) {
 
