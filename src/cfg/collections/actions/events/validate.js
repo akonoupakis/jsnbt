@@ -1,7 +1,5 @@
 var _ = require('underscore');
 
-console.log('val ac');
-
 validate({
     type: 'object',
     properties: {

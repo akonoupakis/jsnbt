@@ -323,11 +323,8 @@ var ResourceRouter = function (server) {
         },
 
         process: function (ctx) {
-            setupRequest(ctx.req, ctx.res, function (err) {
-                if (err) return ctx.res.end(err.message);
-                var router = new Router(server.resources, server);
-                router.route(ctx.req, ctx.res);
-            });
+            var router = new Router(server.resources, server);
+            router.route(ctx.req, ctx.res);
         }
     };
 
