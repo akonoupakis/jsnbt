@@ -48,6 +48,17 @@ module.exports = {
         }
     },
 
+    //routeNode: function (server, ctx, resolved, next) {
+
+    //    console.log(ctx.uri.url, ctx.restricted);
+    //    if (ctx.restricted) {
+    //        console.log('restricted page');
+    //    }
+
+    //    next();
+
+    //},
+
     routeSearch: function (server, ctx, next) {
 
         var notimp = true;

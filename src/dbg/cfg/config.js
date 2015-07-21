@@ -4,8 +4,6 @@ module.exports = {
 
     // locale: 'el',
     
-    restricted: true,
-
     fileGroups: [],
 
     images: require('./images.js'),

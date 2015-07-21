@@ -37,8 +37,6 @@ exports.localization = {
 
 exports.ssl = false;
 
-exports.restricted = false;
-
 exports.modules = {
     core: undefined,
     rest: [],
@@ -298,11 +296,7 @@ exports.register = function (module) {
                 self.localization.locale = language.code;
             }
         }
-
-        if (moduleConfig.restricted !== undefined) {
-            self.restricted = moduleConfig.restricted;
-        }
-
+        
         applyArray('templates', 'id');
         
         applyArray('layouts', 'id');

@@ -63,7 +63,6 @@ var Script = function (app) {
         var result = {
             version: app.version,
             localization: app.localization,
-            restricted: app.restricted,
             ssl: app.ssl
         };
 
