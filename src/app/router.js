@@ -4,15 +4,15 @@ var _ = require('underscore');
 _.str = require('underscore.string');
 
 var routerNames = [
-    './routing/home.js',
-    './routing/api.js',
-    './routing/image.js',
-    './routing/dev.js',
-    './routing/upload.js',
-    './routing/admin.js',
-    './routing/resource.js',
-    './routing/site.js',
-    './routing/public.js'
+    './route/home.js',
+    './route/api.js',
+    './route/image.js',
+    './route/dev.js',
+    './route/upload.js',
+    './route/admin.js',
+    './route/resource.js',
+    './route/site.js',
+    './route/public.js'
 ];
 
 var getRouters = function (server) {
@@ -118,7 +118,7 @@ var Router = function(server, req, res) {
                 ctx.session = session;
 
                 ctx.timer.start('db-api built');
-                var dbClient = require('./db.js').build(server, session, req.stack);
+                var dbClient = require('./database.js').build(server, session, req.stack);
                 ctx.timer.stop('db-api built');
 
                 ctx.db = dbClient;

@@ -1,5 +1,5 @@
-var error = require('./error.js');
-var view = require('./view.js');
+var error = require('./tmpl/error.js');
+var view = require('./tmpl/view.js');
 var parseUri = require('parseUri');
 var cookies = require('cookies');
 var jsuri = require('jsuri');
@@ -65,10 +65,10 @@ var Context = function (server, req, res) {
 
     uri = new parseUri(('http://' + server.host + uri.path).toLowerCase() + (uri.query !== '' ? '?' + uri.query : ''));
 
-    var timer = require('./logging/timer.js')('context: ' + uri.relative);
+    var timer = require('./log/timeLogger.js')('context: ' + uri.relative);
     timer.start();
 
-    var dbgLogger = require('./logging/debugLogger.js')();
+    var dbgLogger = require('./log/debugLogger.js')();
 
     if (uri.path === '/' || uri.path.toLowerCase() === '/index.html')
         uri.path = '/';

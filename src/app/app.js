@@ -15,8 +15,8 @@ var logger = require('./logger.js')(this);
 
 var configSchema = require('../cfg/schema.json');
 
-var languages = require('./storage/languages.js');
-var countries = require('./storage/countries.js');
+var languages = require('./data/store/languages.js');
+var countries = require('./data/store/countries.js');
 
 exports.domain = 'core';
 exports.browsable = false;
@@ -91,8 +91,8 @@ var versionInfo = fs.existsSync(root.getPath('node_modules/jsnbt/package.json'))
 
 exports.version = versionInfo.version;
 
-exports.languages = require('./storage/languages.js');
-exports.countries = require('./storage/countries.js');
+exports.languages = require('./data/store/languages.js');
+exports.countries = require('./data/store/countries.js');
 
 exports.register = function (module) {
 

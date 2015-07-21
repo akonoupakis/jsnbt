@@ -443,7 +443,7 @@ db.build = function (server, session, stack) {
                     on: function () { }
                 };
 
-                var resourceRouter = require('./routing/resource.js')(server);
+                var resourceRouter = require('./route/resource.js')(server);
                 var resourceContext = require('./context.js')(server, req, res);
                 resourceRouter.process(resourceContext);
             } else {

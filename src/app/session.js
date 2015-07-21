@@ -1,5 +1,5 @@
-var db = require('./db');
-var Store = require('./db').Store;
+var db = require('./database');
+var Store = require('./database').Store;
 var util = require('util');
 var Cookies = require('cookies');
 var EventEmitter = require('events').EventEmitter;

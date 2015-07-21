@@ -34,7 +34,7 @@ function Context(resource, req, res, server) {
         req.stack.recursionLimit = recursionLimit;
     }
 
-    this.db = req.db || require('../db.js').build(server, req.session, req.stack);
+    this.db = req.db || require('../database.js').build(server, req.session, req.stack);
 }
 
 Context.prototype.end = function () {

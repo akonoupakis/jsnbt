@@ -70,7 +70,7 @@ var Migrator = function (server) {
                 }
             };
 
-            var db = require('./db.js').build(server);
+            var db = require('./database.js').build(server);
 
             var migrationsPath = 'www/migrations';
 

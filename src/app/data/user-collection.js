@@ -1,6 +1,6 @@
 var util = require('util');
 var Collection = require('./collection');
-var db = require('../db');
+var db = require('../database');
 var EventEmitter = require('events').EventEmitter;
 var crypto = require('crypto');
 var SALT_LEN = 256;

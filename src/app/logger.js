@@ -12,13 +12,13 @@ module.exports = function (scope) {
     
     var errorFn = logger.error;
     logger.error = function (method, path, err) {
-        require('./logging/fileLogger.js')('error').log(method, path, err);        
+        require('./log/fileLogger.js')('error').log(method, path, err);        
         errorFn(method, path, err);
     };
 
     var fatalFn = logger.fatal;
     logger.fatal = function (method, path, err) {
-        require('./logging/fileLogger.js')('fatal').log(method, path, err);
+        require('./log/fileLogger.js')('fatal').log(method, path, err);
         fatalFn(method, path, err);
     };
 

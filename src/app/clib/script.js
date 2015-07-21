@@ -7,8 +7,8 @@ _.str = require('underscore.string');
 
 var Script = function (app) {
 
-    var languages = require('../storage/languages.js');
-    var countries = require('../storage/countries.js');
+    var languages = require('../data/store/languages.js');
+    var countries = require('../data/store/countries.js');
 
     var getResources = function () {
 
@@ -19,8 +19,8 @@ var Script = function (app) {
             var collectionConfig = app.config.collections[collectionName];
 
             var rType = collectionConfig.users ?
-                require('../resources/user-collection.js') :
-                require('../resources/collection.js');
+                require('../data/user-collection.js') :
+                require('../data/collection.js');
 
             var resource = new rType(undefined, collectionConfig);
 

@@ -1,6 +1,6 @@
 var util = require('util');
 var Resource = require('../resource');
-var db = require('../db');
+var db = require('../database');
 var EventEmitter = require('events').EventEmitter;
 var extend = require('extend');
 var jsonValidation = require('json-validation');

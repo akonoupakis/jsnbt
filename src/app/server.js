@@ -1,5 +1,5 @@
 var http = require('http');
-var database = require('./db');
+var database = require('./database');
 var util = require('util');
 var sessionFile = require('./session');
 var SessionStore = require('./session').SessionStore;
@@ -226,7 +226,7 @@ var getResources = function (server, cb) {
         var collectionConfig = server.app.config.collections[collectionName];
 
         asyncFns.push(function (fn) {
-            var rType = collectionConfig.users ? require('./resources/user-collection.js') : require('./resources/collection.js');
+            var rType = collectionConfig.users ? require('./data/user-collection.js') : require('./data/collection.js');
             var resource = new rType(server, collectionConfig);
             resources.push(resource);
 
