@@ -6,17 +6,11 @@ var crypto = require('crypto');
 var SALT_LEN = 256;
 var debug = require('debug')('user-collection');
 
-function UserCollection(name, options) {
+function UserCollection(server, config) {
   Collection.apply(this, arguments);
-    
-  if(!this.properties) {
-    this.properties = {};
-  }
-
-  this.properties.username = this.properties.username || {type: 'string'};
-  this.properties.username.required = true;
-  this.properties.password = this.properties.password || {type: 'string'};
-  this.properties.password.required = true;
+   
+  this.config.schema.properties.username = this.config.schema.properties.username || { type: 'string', required: true };
+  this.config.schema.properties.password = this.config.schema.properties.password || { type: 'string', required: true };
 }
 util.inherits(UserCollection, Collection);
 

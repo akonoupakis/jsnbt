@@ -3,14 +3,16 @@ var EventEmitter = require('events').EventEmitter;
 var util = require('util');
 var Script = require('./script');
 
-function Resource(name, options) {
+function Resource(server, config) {
     EventEmitter.call(this);
-    this.name = name;
 
-    this.path = '/jsnbt-db/' + name;
+    this.config = config;
+    this.config.events = this.config.events || {};
     
-    options = this.options = options || {};
-    this.config = options.config || {};
+    this.name = this.config.name;
+
+    this.path = '/jsnbt-db/' + this.config.name;
+    
     this.events = {};
     var instance = this;
     if (this.constructor.external) {
@@ -84,13 +86,6 @@ Resource.prototype.load = function (fn) {
 Resource.prototype.handle = function (ctx, next) {
     ctx.end();
 };
-
-//Resource.toJSON = function () {
-//    return {
-//        type: this.name,
-//        defaultPath: '/my-resource'
-//    };
-//};
 
 Resource.prototype.clientGeneration = false;
 

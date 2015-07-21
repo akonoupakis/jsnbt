@@ -48,16 +48,17 @@ module.exports = {
         }
     },
 
-    //routeNode: function (server, ctx, resolved, next) {
+    routeNode: function (server, ctx, resolved, next) {
 
-    //    console.log(ctx.uri.url, ctx.restricted);
-    //    if (ctx.restricted) {
-    //        console.log('restricted page');
-    //    }
+        if (ctx.restricted) {
+            console.log('restricted page; intercepted here, could redirect to a login page');
+            next();
+        }
+        else {
+            next();
+        }
 
-    //    next();
-
-    //},
+    },
 
     routeSearch: function (server, ctx, next) {
 

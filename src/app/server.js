@@ -248,42 +248,43 @@ var getResources = function (server, cb) {
 
     Object.keys(server.app.config.collections).forEach(function (collectionName) {
 
-        var collection = server.app.config.collections[collectionName];
+        var collectionConfig = server.app.config.collections[collectionName];
 
         asyncFns.push(function (fn) {
-            var config = {
-                type: (collection.users === true ? 'User' : '') + 'Collection',
-                properties: {},
-                events: collection.events || {}
-            };
+            //var config = {
+            //    type: (collection.users === true ? 'User' : '') + 'Collection',
+            //    properties: {},
+            //    events: collection.events || {}
+            //};
 
-            var propertyKeys = _.keys(collection.schema.properties);
+            //var propertyKeys = _.keys(collection.schema.properties);
 
-            _.each(propertyKeys, function (propertyKey, propertyIndex) {
+            //_.each(propertyKeys, function (propertyKey, propertyIndex) {
 
-                var collectionProperty = collection.schema.properties[propertyKey];
+            //    var collectionProperty = collection.schema.properties[propertyKey];
 
-                var propertyRequired = collectionProperty.type === 'boolean' ? false : (collectionProperty.required || false);
+            //    var propertyRequired = collectionProperty.type === 'boolean' ? false : (collectionProperty.required || false);
 
-                var property = {
-                    name: propertyKey,
-                    type: collectionProperty.type,
-                    typeLabel: propertyKey,
-                    required: propertyRequired,
-                    id: propertyKey,
-                    order: propertyIndex
-                };
+            //    var property = {
+            //        name: propertyKey,
+            //        type: collectionProperty.type,
+            //        typeLabel: propertyKey,
+            //        required: propertyRequired,
+            //        id: propertyKey,
+            //        order: propertyIndex
+            //    };
 
-                config.properties[propertyKey] = property;
-            });
+            //    config.properties[propertyKey] = property;
+            //});
 
-            var o = {
-                config: config,
-                db: server.db
-            }
+            //var o = {
+            //    config: config,
+            //    db: server.db
+            //}
 
-            var rType = collection.users ? require('./resources/user-collection.js') : require('./resources/collection.js');
-            var resource = new rType(collectionName, o);
+            var rType = collectionConfig.users ? require('./resources/user-collection.js') : require('./resources/collection.js');
+            //var resource = new rType(collectionName, o);
+            var resource = new rType(server, collectionConfig);
             resources.push(resource);
 
             if (resource.load) {

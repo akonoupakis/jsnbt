@@ -6,14 +6,12 @@ var EventEmitter = require('events').EventEmitter;
 var debug = require('debug')('collection');
 var jsonValidation = require('json-validation');
 
-function Collection(name, options) {
+function Collection(server, config) {
   Resource.apply(this, arguments);
+
   var config = this.config;
-  if(config) {
-    this.properties = config.properties;
-  }
-  if (options) {
-    this.store = options.db && options.db.createStore(this.name);
+  if (server && server.db) {
+      this.store = server.db && server.db.createStore(this.name);
   }
 }
 util.inherits(Collection, Resource);
@@ -27,10 +25,10 @@ Collection.events = ['Get', 'Validate', 'Post', 'Put', 'Delete'];
 Collection.prototype.validate = function (body, create) {
   if(!this.properties) this.properties = {};
 
-  var keys = Object.keys(this.properties)
-    , props = this.properties
+  var keys = Object.keys(this.config.schema.properties)
+    , props = this.config.schema.properties
     , errors = {};
-
+    
   keys.forEach(function (key) {
     var prop = props[key]
       , val = body[key]
@@ -60,10 +58,10 @@ Collection.prototype.validate = function (body, create) {
 };
 
 Collection.prototype.sanitize = function (body) {
-  if(!this.properties) return {};
+  if(!this.config.schema.properties) return {};
 
   var sanitized = {}
-    , props = this.properties
+    , props = this.config.schema.properties
     , keys = Object.keys(props);
 
   keys.forEach(function (key) {
@@ -91,7 +89,7 @@ Collection.prototype.sanitize = function (body) {
 
 Collection.prototype.sanitizeQuery = function (query) {
   var sanitized = {}
-    , props = this.properties || {}
+    , props = this.config.schema.properties || {}
     , keys = query && Object.keys(query);
 
   keys && keys.forEach(function (key) {
@@ -669,36 +667,13 @@ function createDomain(data, errors) {
   return domain;
 }
 
-Collection.prototype.configDeleted = function(config, fn) {
-  debug('resource deleted');
-  return this.store.remove(fn);
-};
+//Collection.external.rename = function (options, ctx, fn) {
+//  if(!ctx.req && !ctx.req.isRoot) return fn(new Error('cannot rename multiple'));
 
-Collection.prototype.configChanged = function(config, fn) {
-  var store = this.store;
-
-  debug('resource changed');
-
-  var properties = config && config.properties
-    , renames;
-
-  if(config.id && config.id !== this.name) {
-    store.rename(config.id.replace('/', ''), function (err) {
-        fn(err);
-    });
-    return;
-  }
-
-  fn(null);
-};
-
-Collection.external.rename = function (options, ctx, fn) {
-  if(!ctx.req && !ctx.req.isRoot) return fn(new Error('cannot rename multiple'));
-
-  if(options.properties) {
-    this.store.update({}, {$rename: options.properties}, fn);
-  }
-};
+//  if(options.properties) {
+//    this.store.update({}, {$rename: options.properties}, fn);
+//  }
+//};
 
 Collection.prototype.execCommands = function (type, obj, commands) {
   try {

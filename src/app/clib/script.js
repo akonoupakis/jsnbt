@@ -16,42 +16,14 @@ var Script = function (app) {
 
         Object.keys(app.config.collections).forEach(function (collectionName) {
 
-            var collection = app.config.collections[collectionName];
+            var collectionConfig = app.config.collections[collectionName];
 
-            var config = {
-                type: (collection.users === true ? 'User' : '') + 'Collection',
-                properties: {},
-                events: collection.events || {}
-            };
-
-            var propertyKeys = _.keys(collection.schema.properties);
-
-            _.each(propertyKeys, function (propertyKey, propertyIndex) {
-
-                var collectionProperty = collection.schema.properties[propertyKey];
-
-                var propertyRequired = collectionProperty.type === 'boolean' ? false : (collectionProperty.required || false);
-
-                var property = {
-                    name: propertyKey,
-                    type: collectionProperty.type,
-                    typeLabel: propertyKey,
-                    required: propertyRequired,
-                    id: propertyKey,
-                    order: propertyIndex
-                };
-
-                config.properties[propertyKey] = property;
-            });
-
-            var o = {
-                config: config
-            }
-
-            var rType = collection.users ?
+            var rType = collectionConfig.users ?
                 require('../resources/user-collection.js') :
                 require('../resources/collection.js');
-            var resource = new rType(collectionName, o);
+
+            var resource = new rType(undefined, collectionConfig);
+
             resources.push(resource);
         });
 
