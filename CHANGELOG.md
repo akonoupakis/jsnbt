@@ -7,7 +7,7 @@
 	- removed dpd resources. encapsulated part of its api in the core engine
 	- former dpd api is now under jsnbt.db, and the rest resources are located under the /jsnbt-db/ url prefix
 	- removed login page infrastructure. restricted nodes end up to a 401 response, but the flow could be intercepted on a new module function (routeNode)
-	
+	- changed the api response from (res, err) to (err, res) as in common nodejs
 
 ## 1.0.104 (2015-06-01)
 

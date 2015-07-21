@@ -306,6 +306,9 @@ module.exports = function (grunt) {
 		}, {
 		    src: ['./' + folder + '/public/js/init.js'],
 		    dest: './' + folder + '/public/js/init.min.js'
+		}, {
+		    src: ['./' + folder + '/public/jsnbt.js'],
+		    dest: './' + folder + '/public/jsnbt.min.js'
 		}];
     };
 
