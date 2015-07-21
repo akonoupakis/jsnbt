@@ -12,7 +12,7 @@ module.exports = function(server, db) {
 
     var resolveHierarchy = function (nodes, node, cb) {
         if (node.parent && node.parent !== '') {
-            db.nodes.get(node.parent, function (result, error) {
+            db.nodes.get(node.parent, function (error, result) {
                 if (error)
                     throw error;
                 else {
@@ -34,7 +34,7 @@ module.exports = function(server, db) {
         if (server.app.localization.enabled) {
             var defaultLanguage = server.app.localization.locale;
 
-            db.languages.get({ active: true, "default": true }, function (defaultLanguages, defaultLanguagesError) {
+            db.languages.get({ active: true, "default": true }, function (defaultLanguagesError, defaultLanguages) {
                 if (defaultLanguagesError)
                     throw defaultLanguagesError;
                 else {
@@ -54,7 +54,7 @@ module.exports = function(server, db) {
     var getActiveLanguages = function (cb) {
 
         if (server.app.localization.enabled) {
-            db.languages.get({ active: true }, function (dbLanguages, dbLanguagesError) {
+            db.languages.get({ active: true }, function (dbLanguagesError, dbLanguages) {
                 if (dbLanguagesError)
                     throw dbLanguagesError;
                 else
@@ -68,7 +68,7 @@ module.exports = function(server, db) {
     };
 
     var resolvePointerUrl = function (returnObj, seoNodes, urlPath, url, cb) {
-        db.nodes.get({ id: returnObj.pointer.pointer.nodeId, domain: returnObj.pointer.pointer.domain }, function (pointedNode, pointedNodeError) {
+        db.nodes.get({ id: returnObj.pointer.pointer.nodeId, domain: returnObj.pointer.pointer.domain }, function (pointedNodeError, pointedNode) {
             if (pointedNodeError)
                 throw pointedNodeError;
             else if (!pointedNode)
@@ -141,7 +141,7 @@ module.exports = function(server, db) {
         var seoNamesQuery = {};
         seoNamesQuery['seo.' + (server.app.localization.enabled ? language : server.app.localization.locale)] = { $in: seoNames };
 
-        db.nodes.get(seoNamesQuery, function (urlSeoNodes, urlSeoNodesError) {
+        db.nodes.get(seoNamesQuery, function (urlSeoNodesError, urlSeoNodes) {
             if (urlSeoNodesError)
                 throw urlSeoNodesError;
             else {
@@ -320,18 +320,18 @@ module.exports = function(server, db) {
                     var languagePart = defaultLanguage;
                     var urlPart = uri.path;
 
-                    db.settings.getCached({ domain: 'core' }, function (settingNodes, settingNodesError) {
+                    db.settings.getCached({ domain: 'core' }, function (settingNodesError, settingNodes) {
                         if (settingNodesError)
                             throw settingNodesError;
                         else {
                             var settingNode = _.first(settingNodes);
                             if (settingNode && settingNode.data && settingNode.data.homepage) {
                                 
-                                db.nodes.get(settingNode.data.homepage, function (resolvedNode, resolvedNodeError) {
+                                db.nodes.get(settingNode.data.homepage, function (resolvedNodeError, resolvedNode) {
                                     if (resolvedNodeError)
                                         throw resolvedNodeError;
                                     else {
-                                        db.nodes.get({ hierarchy: resolvedNode.hierarchy }, function (resolvedHierarchyNodes, resolvedHierarchyNodesError) {
+                                        db.nodes.get({ hierarchy: resolvedNode.hierarchy }, function (resolvedHierarchyNodesError, resolvedHierarchyNodes) {
                                             if (resolvedHierarchyNodesError) {
                                                 throw resolvedHierarchyNodesError;
                                             }
@@ -431,7 +431,7 @@ module.exports = function(server, db) {
                         cb(newUrl);
                     }
                     else {
-                        db.nodes.get({ id: { $in: parentHierarchy } }, function (results, error) {
+                        db.nodes.get({ id: { $in: parentHierarchy } }, function (error, results) {
                             if (error) {
                                 throw error;
                             }
@@ -591,7 +591,7 @@ module.exports = function(server, db) {
                         cb(newValue);
                     }
                     else {
-                        db.nodes.get({ id: { $in: parentHierarchy } }, function (results, error) {
+                        db.nodes.get({ id: { $in: parentHierarchy } }, function (error, results) {
                             if (error) {
                                 throw error;
                             }

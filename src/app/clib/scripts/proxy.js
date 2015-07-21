@@ -95,14 +95,14 @@
     function returnSuccess(fn) {
         return function (data) {
             if (fn === consoleLog) return console.log(data);
-            if (typeof fn === 'function') fn(data);
+            if (typeof fn === 'function') fn(null, data);
         };
     }
 
     function returnError(fn) {
         return function (data) {
             if (fn === consoleLog) return console.error(data);
-            if (typeof fn === 'function') fn(null, data);
+            if (typeof fn === 'function') fn(data);
         };
     }
 

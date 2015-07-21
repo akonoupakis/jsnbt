@@ -27,7 +27,7 @@ var Migrator = function (server) {
                     db.migrations.count({
                         module: migration.module,
                         name: migration.name
-                    }, function (result, err) {
+                    }, function (err, result) {
                         if (err) {
                             runMigration(db);
                         }
@@ -39,7 +39,7 @@ var Migrator = function (server) {
                                         module: migration.module,
                                         name: migration.name,
                                         processedOn: new Date().getTime()
-                                    }, function (response, err) {
+                                    }, function (err, response) {
                                         if (err) {
                                             logger.error(err);
                                             error(err);

@@ -21,7 +21,7 @@
                             $in: entities
                         },
                         "$sort": { "order": 1 }
-                    }, function (results, error) {
+                    }, function (error, results) {
                         if (error)
                             deferred.reject(error);
                         else {
@@ -48,7 +48,7 @@
                         $in: entities
                     },
                     "$sort": { "order": 1 }
-                }, function (results, error) {
+                }, function (error, results) {
                     if (error)
                         deferred.reject(error);
                     else {
@@ -67,7 +67,7 @@
                         id: {
                             $in: ids
                         }
-                    }, function (results, error) {
+                    }, function (error, results) {
                         if (error)
                             deferred.reject(error);
                         else {

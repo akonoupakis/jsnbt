@@ -5,7 +5,7 @@ if (changed('key')) {
         group: self.group,
         key: self.key,
         id: { $nin: [self.id] }
-    }, function (matched, matchedError) {
+    }, function (matchedError, matched) {
         if (matchedError)
             throw matchedError;
         else

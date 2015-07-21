@@ -1,7 +1,7 @@
 var self = this;
 
 if (changed('code')) {
-    db.languages.get({ code: self.code, id: { $nin: [self.id] } }, function (matched, matchedError) {
+    db.languages.get({ code: self.code, id: { $nin: [self.id] } }, function (matchedError, matched) {
         if (matchedError)
             throw matchedError;
         else
@@ -18,7 +18,7 @@ if (changed('active')) {
 if (changed('default')) {
     if (!self.default) {
 
-        db.languages.get({ active: true, 'default': true, id: { $nin: [self.id] } }, function (defaults, defaultsError) {
+        db.languages.get({ active: true, 'default': true, id: { $nin: [self.id] } }, function (defaultsError, defaults) {
             if (defaultsError)
                 throw defaultsError;
             else

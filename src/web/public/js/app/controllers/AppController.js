@@ -191,7 +191,7 @@
 
             jsnbt.db.layouts.get({
                 layout: 'eshop'
-            }, function (res, err) {
+            }, function (err, res) {
                 
                 var eshopLayout = res[0];
                 jsnbt.db.layouts.put(eshopLayout, {
@@ -212,7 +212,7 @@
             //    content: {
             //        testData: 'aAaAaA-bBB'
             //    }
-            //}, function (res, err) {
+            //}, function (err, res) {
             //    console.log(err, res);
             //});
 

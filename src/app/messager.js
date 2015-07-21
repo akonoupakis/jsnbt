@@ -55,7 +55,7 @@ var Messager = function (server) {
 
                 db.settings.getCached({
                     domain: 'core'
-                }, function (res, err) {
+                }, function (err, res) {
                     if (err) {
                         callback(err, null);
                     }
@@ -122,7 +122,7 @@ var Messager = function (server) {
 
                 db.settings.getCached({
                     domain: 'core'
-                }, function (res, err) {
+                }, function (err, res) {
                     if (err) {
                         callback(err, null);
                     }

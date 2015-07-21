@@ -27,7 +27,7 @@
                                         $in: matches
                                     }
                                 }]
-                            }, function (results, error) {
+                            }, function (error, results) {
                                 if (error) {
                                     deferred.reject(error);
                                 }

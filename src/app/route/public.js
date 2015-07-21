@@ -83,7 +83,7 @@ var PublicRouter = function (server) {
 
             var matched = _.filter(languages, function (x) { return _.str.startsWith(ctx.uri.path, '/' + x.code + '/'); });
             if (matched.length === 0) {
-                ctx.db.languages.getCached({ active: true, "default": true }, function (defaultLanguages, defaultLanguagesError) {
+                ctx.db.languages.getCached({ active: true, "default": true }, function (defaultLanguagesError, defaultLanguages) {
                     if (defaultLanguagesError) {
                         ctx.error(500, defaultLanguagesError);
                     }

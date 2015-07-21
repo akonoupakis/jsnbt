@@ -3,7 +3,7 @@ var self = this;
 db.texts.get({
     group: self.group,
     key: self.key
-}, function (matched, matchedError) {
+}, function (matchedError, matched) {
     if (matchedError)
         throw matchedError;
     else

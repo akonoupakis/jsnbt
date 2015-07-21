@@ -2,7 +2,7 @@ var self = this;
 
 db.settings.get({
     domain: self.domain
-}, function (matched, matchedError) {
+}, function (matchedError, matched) {
     if (matchedError)
         throw matchedError;
     else

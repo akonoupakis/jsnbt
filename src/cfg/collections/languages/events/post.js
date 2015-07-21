@@ -1,6 +1,6 @@
 var self = this;
 
-db.languages.get({ code: self.code }, function (matched, matchedError) {
+db.languages.get({ code: self.code }, function (matchedError, matched) {
     if (matchedError)
         throw matchedError;
     else

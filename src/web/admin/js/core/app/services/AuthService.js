@@ -13,13 +13,13 @@
                 jsnbt.db.users.login({
                     username: username,
                     password: password
-                }, function (response, error) {
+                }, function (error, response) {
                     if (error) {
                         deferred.reject(error);
                     }
                     else {
                         if (response.id) {
-                            jsnbt.db.users.me(function (userResponse, userError) {
+                            jsnbt.db.users.me(function (userError, userResponse) {
                                 if (userError) {
                                     deferred.reject(userError);
                                 }
@@ -43,7 +43,7 @@
             AuthService.get = function () {
                 var deferred = $q.defer();
 
-                jsnbt.db.users.me(function (userResponse, userError) {
+                jsnbt.db.users.me(function (userError, userResponse) {
                     if (userError) {
                         deferred.reject(userError);
                     }
@@ -61,7 +61,7 @@
             AuthService.count = function () {
                 var deferred = $q.defer();
 
-                jsnbt.db.users.get({}, function (userResponse, userError) {
+                jsnbt.db.users.get({}, function (userError, userResponse) {
                     if (userError) {
                         deferred.reject(userError);
                     }

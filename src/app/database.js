@@ -429,12 +429,12 @@ db.build = function (server, session, stack) {
                         if (typeof fn === 'function') {
                             if (res.statusCode === 200 || res.statusCode === 204) {
                                 try {
-                                    fn(JSON.parse(data), null);
+                                    fn(null, JSON.parse(data));
                                 } catch (ex) {
                                     fn(data, null);
                                 }
                             } else {
-                                fn(null, data);
+                                fn(data, null);
                             }
                         }
                     },

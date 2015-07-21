@@ -23,7 +23,7 @@
                                 if (typeof (arg) !== 'function')
                                     params.push(arg);
                             });
-                            params.push(function (result, error) {
+                            params.push(function (error, result) {
                                 if (error) {
                                     if (error.status) {
                                         if (!double) {

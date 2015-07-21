@@ -49,7 +49,7 @@ function Server(app, options) {
                     action: action,
                     objectId: objectId,
                     objectData: objectData || {}
-                }, function (results, err) {
+                }, function (err, results) {
                     if (err) {
                         callback(err);
                     }
