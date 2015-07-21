@@ -3,8 +3,8 @@ var app = require('jsnbt-docs');
 
 var server = app.createServer({
     title: 'jsnbt documentation',
-    host: hosts.host,
-    port: hosts.port + 1,
+    host: hosts.docs.host,
+    port: hosts.docs.port,
     root: 'docs'
 });
 
