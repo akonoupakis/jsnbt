@@ -8,6 +8,21 @@ module.exports = {
     images: require('./images.js'),
 
     scripts: [],
+
+    //scripts: {
+
+    //    admin: [
+    //        '/admin/js/app/controllers/AppController.js',
+    //        '/admin/js/app/main.js'
+    //    ]
+
+    //},
+
+    //styles: {
+
+    //    admin: ['/public/css/_.less', '/public/css/style.less']
+
+    //},
     
     entities: require('./entities.js'),
 
