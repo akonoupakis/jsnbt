@@ -2,7 +2,9 @@ module.exports = [{
     id: 'home',
     name: 'home page',
     html: '/tmpl/index.html',
-    restricted: ['page']
+    restricted: ['page'],
+    scripts: ['lib', 'common'],
+    styles: ['common']
 }, {
     id: 'login',
     name: 'login page',

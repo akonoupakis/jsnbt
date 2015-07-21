@@ -8,7 +8,25 @@ module.exports = {
 
     images: require('./images.js'),
 
-    scripts: [],
+    //scripts: {
+    
+    //    common: [
+    //        '/js/app/controllers/AppController.js',
+    //        '/js/app/main.js'
+    //    ],
+    //    lib: [
+    //        '/js/app/controllers/AppController.js',
+    //        '/js/app/main.js',
+    //        '/js/index.js'
+    //    ]
+    
+    //},
+
+    //styles: {
+
+    //    common: 'css/_.less'
+
+    //},
     
     entities: [],
 
