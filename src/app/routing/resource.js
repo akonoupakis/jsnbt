@@ -1,5 +1,4 @@
 var escapeRegExp = /[\-\[\]{}()+?.,\\\^$|#\s]/g;
-var debug = require('debug')('router');
 var doh = require('doh');
 var error404 = doh.createResponder();
 var respond = require('doh').createResponder();
@@ -49,7 +48,6 @@ Context.prototype.done = function (err, res) {
     var status = this.res.statusCode = this.res.statusCode || 200;
 
     if (err) {
-        debug('%j', err);
         if (status < 400) this.res.statusCode = 400;
         if (err.statusCode) this.res.statusCode = err.statusCode;
         respond(err, this.req, this.res);
@@ -114,8 +112,6 @@ Router.prototype.route = function (req, res, next) {
         handler.run(function () {
             process.nextTick(function () {
                 if (resource) {
-                    debug('routing %s to %s', req.url, resource.path);
-
                     ctx = new Context(resource, req, res, server);
                     ctx.router = router;
                     
@@ -132,7 +128,6 @@ Router.prototype.route = function (req, res, next) {
                         next();
                     }
                     else {
-                        debug('404 %s', req.url);
                         res.statusCode = 404;
                         error404('Resource Not Found', req, res);
                     }
@@ -146,8 +141,6 @@ Router.prototype.route = function (req, res, next) {
 Router.prototype.matchResources = function (url) {
     var router = this
       , result;
-
-    debug('resources %j', this.resources.map(function (r) { return r.path; }));
 
     if (!this.resources || !this.resources.length) return [];
 

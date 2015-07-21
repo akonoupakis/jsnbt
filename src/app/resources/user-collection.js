@@ -4,7 +4,6 @@ var db = require('../db');
 var EventEmitter = require('events').EventEmitter;
 var crypto = require('crypto');
 var SALT_LEN = 256;
-var debug = require('debug')('user-collection');
 
 function UserCollection(server, config) {
   Collection.apply(this, arguments);
@@ -48,7 +47,6 @@ UserCollection.prototype.handle = function (ctx) {
   switch(ctx.req.method) {
     case 'GET':
       if(ctx.url === '/me') {
-        debug('session %j', ctx.session.data);
         if(!(ctx.session && ctx.session.data && ctx.session.data.uid)) {
           ctx.res.statusCode = 204;
           return ctx.done();
@@ -67,8 +65,6 @@ UserCollection.prototype.handle = function (ctx) {
         var path = this.path
           , credentials = ctx.req.body || {};
 
-        debug('trying to login as %s', credentials.username);
-
         this.store.first({username: credentials.username}, function(err, user) {
           if(err) return ctx.done(err);
 
@@ -77,7 +73,6 @@ UserCollection.prototype.handle = function (ctx) {
               , hash = user.password.substr(SALT_LEN);
 
             if(hash === uc.hash(credentials.password, salt)) {
-              debug('logged in as %s', credentials.username);
               ctx.session.set({path: path, uid: user.id}).save(ctx.done);
               return;
             }
@@ -115,7 +110,6 @@ UserCollection.prototype.handle = function (ctx) {
       }
     break;
     case 'DELETE':
-      debug('removing', ctx.query, ctx.done);
       this.remove(ctx, ctx.done);
     break;
   }

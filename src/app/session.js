@@ -3,7 +3,6 @@ var Store = require('./db').Store;
 var util = require('util');
 var Cookies = require('cookies');
 var EventEmitter = require('events').EventEmitter;
-var debug = require('debug')('session');
 
 var sessionIndex = {}
   , userSessionIndex = {};
@@ -184,7 +183,6 @@ Session.prototype.fetch = function(fn) {
 
 Session.prototype.remove = function(fn) {
   var session = this;
-  debug('Removing %s', this.data.id);
 
   delete sessionIndex[this.data.id];
   delete userSessionIndex[this.data.uid]; // TODO: Don't delete all of a user's sessions

@@ -2,7 +2,6 @@ var util = require('util');
 var Resource = require('../resource');
 var db = require('../db');
 var EventEmitter = require('events').EventEmitter;
-var debug = require('debug')('collection');
 var extend = require('extend');
 var jsonValidation = require('json-validation');
 
@@ -201,13 +200,11 @@ Collection.prototype.find = function (ctx, fn) {
       , sanitizedQuery = this.sanitizeQuery(query);
 
     function done(err, result) {
-        debug("Get listener called back with", err || result);
         if (typeof query.id === 'string' && (result && result.length === 0) || !result) {
             err = err || {
                 message: 'not found',
                 statusCode: 404
             };
-            debug('could not find object by id %s', query.id);
         }
         if (err) {
             return fn(err);
@@ -219,17 +216,13 @@ Collection.prototype.find = function (ctx, fn) {
         fn(null, result);
     }
 
-    debug('finding %j; sanitized %j', query, sanitizedQuery);
-
     runPreEvent(ctx, 'Read', createScriptContext(ctx), this.name, null, function (preErr) {
         if (preErr) {
             return done(preErr);
         }
         else {
             store.find(sanitizedQuery, function (err, result) {
-                debug("Find Callback");
                 if (err) return done(err);
-                debug('found %j', err || result || 'none');
                 if (!collection.shouldRunEvent(collection.events.Get, ctx)) {
                     return done(err, result);
                 }
@@ -375,12 +368,9 @@ Collection.prototype.save = function (ctx, fn) {
     if (item.id) {
         query.id = item.id;
     }
-
-    debug('saving %j with id %s', item, query.id);
-
+    
     function done(err, item) {
         errors = domain && domain.hasErrors() && { errors: errors };
-        debug('errors: %j', err);
         fn(errors || err, item);
     }
 
@@ -504,11 +494,9 @@ Collection.prototype.save = function (ctx, fn) {
         if (collection.shouldRunEvent(collection.events.Post, ctx)) {
             collection.events.Post.run(ctx, domain, function (err) {
                 if (err) {
-                    debug('onPost script error %j', err);
                     return done(err);
                 }
                 if (err || domain.hasErrors()) return done(err || errors);
-                debug('inserting item', item);
                 store.insert(item, function () {
                     runPostEvent(ctx, 'Create', createScriptContext(ctx), collection.name, item, function (postErr) {
                         if (postErr) {
@@ -561,7 +549,6 @@ function createDomain(data, errors) {
     var hasErrors = false;
     var domain = {
         error: function (key, val) {
-            debug('error %s %s', key, val);
             errors[key] = val || true;
             hasErrors = true;
         },
@@ -654,7 +641,7 @@ Collection.prototype.execCommands = function (type, obj, commands) {
       });
     }
   } catch(e) {
-    debug('error while executing commands', type, obj, commands);
+    console.log('error while executing commands', type, obj, commands);
   }
   return this;
 };

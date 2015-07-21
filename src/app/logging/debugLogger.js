@@ -6,7 +6,6 @@ var DebugLogger = function () {
 
         log: function (text) {
             messages.push(text);
-            console.log(text);
         },
 
         get: function () {

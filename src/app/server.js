@@ -5,10 +5,8 @@ var sessionFile = require('./session');
 var SessionStore = require('./session').SessionStore;
 var io = require('socket.io');
 var extend = require('extend');
-var debug = require('debug')('server');
 var async = require('async');
 var serverRoot = require('server-root');
-var validation = require('json-validation');
 var _ = require('underscore');
 
 var logger = require('./logger.js')(this);
@@ -32,9 +30,7 @@ function Server(app, options) {
     };
 
     extend(true, this.options, options);
-
-    debug('started with options %j', options);
-
+    
     sessionFile.appPath = __dirname;
 
     var authMngr = null;

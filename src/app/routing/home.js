@@ -9,6 +9,7 @@ var HomeRouter = function (server) {
     var process = function (ctx, resolved, inherited) {
 
         if (ctx.restricted) {
+            ctx.debug('node ' + resolved.page.id + ' is restricted');
             ctx.error(401);
         }
         else {
@@ -40,10 +41,12 @@ var HomeRouter = function (server) {
             if (resolved.pointer) {
                 var pointerRouter = require('./processors/pointer.js')(server, resolved.pointer.pointer.domain);
                 if (pointerRouter) {
+                    ctx.debug('node ' + resolved.page.id + ' is pointing to ' + resolved.pointer.pointer.nodeId);
                     pointerRouter.route(ctx);
                 }
                 else {
                     if (ctx.node) {
+                        ctx.debug('node ' + resolved.page.id + ' has a custom route: ' + resolved.route);
                         ctx.view();
                     }
                     else {
@@ -56,6 +59,7 @@ var HomeRouter = function (server) {
 
                 var routeRouter = require('./processors/router.js')(server, resolved.route);
                 if (routeRouter) {
+                    ctx.debug('node ' + resolved.page.id + ' has a custom route: ' + resolved.route);
                     routeRouter.route(ctx);
                 }
                 else {
@@ -63,7 +67,7 @@ var HomeRouter = function (server) {
                 }
             }
             else {
-                ctx.debug('node rendering: ' + resolved.page.id);
+                ctx.debug('node ' + resolved.page.id + ' is rendering');
                 ctx.view();
             }
         }
@@ -84,7 +88,7 @@ var HomeRouter = function (server) {
                         ctx.timer.stop('node retrieval');
 
                         if (resolved && resolved.page)
-                            ctx.debug('node found: ' + resolved.page.id);
+                            ctx.debug('node resolved: ' + resolved.page.id);
 
                         if (resolved && resolved.page && resolved.isActive()) {
                             
@@ -106,8 +110,8 @@ var HomeRouter = function (server) {
                             }
                         }
                         else {
-                            ctx.debug('node inactive: ' + resolved.page.id);
-                            ctx.error(404);
+                            ctx.debug('node ' + resolved.page.id + ' is inactive');
+                            next();
                         }
                     });
                 }

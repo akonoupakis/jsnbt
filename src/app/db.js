@@ -3,7 +3,6 @@ var util = require('util');
 var EventEmitter = require('events').EventEmitter;
 var mongodb = require('mongodb');
 var scrub = require('scrubber').scrub;
-var debug = require('debug')('db');
 var cache = require('./cache.js');
 var _ = require('underscore');
 
@@ -137,7 +136,7 @@ Store.prototype.scrubQuery = function (query) {
       }
     });  
   } catch(ex) {
-    debug(ex);
+    console.log(ex);
   }
   
 };
@@ -275,10 +274,6 @@ Store.prototype.update = function (query, object, fn) {
   }
   
   multi = query._id ? false : true;
-
-  debug('update - query', query);
-  debug('update - object', object);
-  debug('update - command', command);
 
   collection(this, function (err, col) {
       col.update(query, command, {multi: multi}, function(err) {
@@ -420,7 +415,6 @@ db.build = function (server, session, stack) {
             urlKey = req.method + ' ' + req.url;
 
             req.stack = stack || [];
-            debug("Stack: %j", stack);
 
             recursions = req.stack.filter(function (s) { return s === urlKey; }).length;
 
@@ -428,7 +422,6 @@ db.build = function (server, session, stack) {
 
             if (recursions < recursionLimit) {
                 req.stack.push(urlKey);
-                debug("Putting %s on stack", urlKey);
 
                 res = {
                     setHeader: function () { },
@@ -454,7 +447,6 @@ db.build = function (server, session, stack) {
                 var resourceContext = require('./context.js')(server, req, res);
                 resourceRouter.process(resourceContext);
             } else {
-                debug("Recursive call detected - aborting");
                 if (typeof fn === 'function') fn(null, "Recursive call to " + urlKey + " detected");
             }
         }

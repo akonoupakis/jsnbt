@@ -1,15 +1,13 @@
 ## 1.0.113
 
-Improvements
-
 	- no further need of server-dev or server-prod start up file. it now gets the environment status from grunting, so one start up file (server-app.js) is enough
-	- hosts.json, having the host as it should be on a base href, and the port that the application is hosted on
-
-Breaking changes
-
 	- deployment target changed from "dev/dist" to "www"
-
-
+	- hosts.json, having the host as it should be on a base href, and the port that the application is hosted on
+	- no "public" flag on the site module. the domain code "public" is sufficient
+	- removed dpd resources. encapsulated part of its api in the core engine
+	- former dpd api is now under jsnbt.db, and the rest resources are located under the /jsnbt-db/ url prefix
+	- removed login page infrastructure. restricted nodes end up to a 401 response, but the flow could be intercepted on a new module function (routeNode)
+	
 
 ## 1.0.104 (2015-06-01)
 

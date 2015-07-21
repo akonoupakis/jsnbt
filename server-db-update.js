@@ -1,13 +1,10 @@
 var hosts = require('./hosts.json');
 var app = require('./src/app/app.js');
 
-app.init({
-    title: 'jsnbt - db'
-});
+app.init();
 
 var server = app.createServer({
-    env: 'dev',
-    host: 'localhost',
+    host: hosts.host,
     port: hosts.port - 1,
     db: {
         host: 'localhost',

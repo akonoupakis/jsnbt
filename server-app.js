@@ -1,9 +1,7 @@
 var hosts = require('./hosts.json');
 var app = require('./src/app/app.js');
 
-app.init({
-    title: 'jsnbt'
-});
+app.init();
 
 var server = app.createServer({
     host: hosts.host,

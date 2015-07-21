@@ -61,7 +61,6 @@
     "underscore.string": "2.3.3",
     "mongodb": "1.0.2",
     "socket.io": "0.9.x",
-    "debug": ">= 0.7.0",
     "scrubber": "*",
     "send": "0.0.2",		
     "doh": ">=0.0.4",

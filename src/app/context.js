@@ -150,8 +150,9 @@ var Context = function (server, req, res) {
 
         restricted: false,
         debug: function (text) {
-            if ((ctx.uri.query.dbg || '').toLowerCase() === 'true')
+            if ((ctx.uri.query.dbg || '').toLowerCase() === 'true') {
                 dbgLogger.log(text);
+            }
         },
         error: function (code, stack, html) {
             if (completing)

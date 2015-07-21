@@ -12,6 +12,7 @@ var PublicRouter = function (server) {
         
     var process = function (ctx, resolved, inherited) {
         if (ctx.restricted) {
+            ctx.debug('node ' + resolved.page.id + ' is restricted');
             ctx.error(401, 'Access denied');
         }
         else {
@@ -43,10 +44,12 @@ var PublicRouter = function (server) {
             if (resolved.pointer) {
                 var pointerRouter = require('./processors/router.js')(server, resolved.pointer.pointer.domain);
                 if (pointerRouter) {
+                    ctx.debug('node ' + resolved.page.id + ' is pointing to ' + resolved.pointer.pointer.nodeId);
                     pointerRouter.route(ctx);
                 }
                 else {
                     if (ctx.node) {
+                        ctx.debug('node ' + resolved.page.id + ' has a custom route: ' + resolved.route);
                         ctx.view();
                     }
                     else {
@@ -59,6 +62,7 @@ var PublicRouter = function (server) {
 
                 var routeRouter = require('./processors/router.js')(server, resolved.route);
                 if (routeRouter) {
+                    ctx.debug('node ' + resolved.page.id + ' has a custom route: ' + resolved.route);
                     routeRouter.route(ctx);
                 }
                 else {
@@ -66,9 +70,51 @@ var PublicRouter = function (server) {
                 }
             }
             else {
+                ctx.debug('node ' + resolved.page.id + ' is rendering');
                 ctx.view();
             }
         }
+    };
+
+    var resolveLanguage = function (node, ctx, next) {
+
+        if (server.app.localization.enabled) {
+            var languages = server.app.languages;
+
+            var matched = _.filter(languages, function (x) { return _.str.startsWith(ctx.uri.path, '/' + x.code + '/'); });
+            if (matched.length === 0) {
+                ctx.db.languages.getCached({ active: true, "default": true }, function (defaultLanguages, defaultLanguagesError) {
+                    if (defaultLanguagesError) {
+                        ctx.error(500, defaultLanguagesError);
+                    }
+                    else {
+                        var defaultLanguage = _.first(defaultLanguages);
+                        if (defaultLanguage) {
+                            node.resolveUrl('/' + defaultLanguage.code + ctx.uri.path, function (newUrlResolved) {
+                                if (newUrlResolved) {
+                                    var targetUrl = '/' + defaultLanguage.code + ctx.uri.url;
+                                    ctx.debug('redirecting to ' + targetUrl);
+                                    ctx.redirect(targetUrl, 301);
+                                }
+                                else {
+                                    next();
+                                }
+                            });
+                        }
+                        else {
+                            next();
+                        }
+                    }
+                });
+            }
+            else {
+                next();
+            }
+        }
+        else {
+            next();
+        }
+
     };
 
     return {
@@ -82,62 +128,40 @@ var PublicRouter = function (server) {
 
                             node.resolveUrl(ctx.uri.url, function (resolved) {
 
-                                if (resolved && resolved.page && resolved.isActive()) {
+                                if (resolved && resolved.page) {
+                                    ctx.debug('node resolved: ' + resolved.page.id);
 
-                                    var inherited = resolved.getInheritedProperties();
+                                    if (resolved.isActive()) {
 
-                                    if (!ctx.restricted) {
-                                        if (!authMngr.isInRole(ctx.user, (inherited.roles || []))) {
-                                            ctx.restricted = true;
+                                        var inherited = resolved.getInheritedProperties();
+
+                                        if (!ctx.restricted) {
+                                            if (!authMngr.isInRole(ctx.user, (inherited.roles || []))) {
+                                                ctx.restricted = true;
+                                            }
                                         }
-                                    }
 
-                                    if (server.app.modules.public && typeof (server.app.modules.public.routeNode) === 'function') {
-                                        server.app.modules.public.routeNode(server, ctx, resolved, function () {
-                                            process(ctx, resolved, inherited);
-                                        });
-                                    }
-                                    else {
-                                        process(ctx, resolved, inherited);
-                                    }
-                                }
-                                else {
-                                    if (server.app.localization.enabled) {
-                                        var languages = server.app.languages;
-
-                                        var matched = _.filter(languages, function (x) { return _.str.startsWith(ctx.uri.path, '/' + x.code + '/'); });
-                                        if (matched.length === 0) {
-                                            console.log(11);
-                                            ctx.db.languages.getCached({ active: true, "default": true }, function (defaultLanguages, defaultLanguagesError) {
-                                                if (defaultLanguagesError) {
-                                                    ctx.error(500, defaultLanguagesError);
-                                                }
-                                                else {
-                                                    var defaultLanguage = _.first(defaultLanguages);
-                                                    if (defaultLanguage) {
-                                                        var newUrl = '/' + defaultLanguage.code + ctx.uri.path;
-                                                        node.resolveUrl(newUrl, function (newUrlResolved) {
-                                                            if (newUrlResolved) {
-                                                                ctx.redirect(newUrl, 301);
-                                                            }
-                                                            else {
-                                                                next();
-                                                            }
-                                                        });
-                                                    }
-                                                    else {
-                                                        next();
-                                                    }
-                                                }
+                                        if (server.app.modules.public && typeof (server.app.modules.public.routeNode) === 'function') {
+                                            server.app.modules.public.routeNode(server, ctx, resolved, function () {
+                                                process(ctx, resolved, inherited);
                                             });
                                         }
                                         else {
-                                            next();
+                                            process(ctx, resolved, inherited);
                                         }
                                     }
                                     else {
-                                        next();
+                                        if (!resolved.isActive()) {
+                                            ctx.debug('node ' + resolved.page.id + ' is inactive');
+                                            next();
+                                        }
+                                        else {
+                                            resolveLanguage(node, ctx, next);
+                                        }
                                     }
+                                }
+                                else {
+                                    resolveLanguage(node, ctx, next);
                                 }
                             });
                         }
