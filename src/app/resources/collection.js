@@ -199,8 +199,9 @@ Collection.prototype.indexOf = function(id, ctx, fn) {
 };
 
 var createScriptContext = function (ctx) {
+
     var scriptContext = {
-        me: ctx.session.user,
+        me: (ctx.session || {}).user,
         internal: ctx.req.internal,
         emit: function (event, data) {
             if (ctx.session.emitToAll) ctx.session.emitToAll(event, data);
