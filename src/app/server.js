@@ -172,27 +172,6 @@ function Server(app, options) {
                         callback();
                     }
                 });
-            },
-            onValidate: function (scriptContext, collection, object, callback) {
-                if (server.app.config.collections[collection]) {
-                    if (server.app.config.collections[collection].schema) {
-                        var validator = new validation.JSONValidation();
-                        var validationResult = validator.validate(object, server.app.config.collections[collection].schema);
-                        if (!validationResult.ok) {
-                            var validationErrors = validationResult.path + ': ' + validationResult.errors.join(' - ');
-                            callback(new Error(validationErrors));
-                        }
-                        else {
-                            callback();
-                        }
-                    }
-                    else {
-                        callback();
-                    }
-                }
-                else {
-                    callback();
-                }
             }
         }
     };

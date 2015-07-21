@@ -1,15 +1,14 @@
-var validation = require('validation');
 var util = require('util');
 var Resource = require('../resource');
 var db = require('../db');
 var EventEmitter = require('events').EventEmitter;
 var debug = require('debug')('collection');
+var extend = require('extend');
 var jsonValidation = require('json-validation');
 
 function Collection(server, config) {
   Resource.apply(this, arguments);
 
-  var config = this.config;
   if (server && server.db) {
       this.store = server.db && server.db.createStore(this.name);
   }
@@ -23,177 +22,134 @@ Collection.prototype.clientGeneration = true;
 Collection.events = ['Get', 'Validate', 'Post', 'Put', 'Delete'];
 
 Collection.prototype.validate = function (body, create) {
-  if(!this.properties) this.properties = {};
 
-  var keys = Object.keys(this.config.schema.properties)
-    , props = this.config.schema.properties
-    , errors = {};
-    
-  keys.forEach(function (key) {
-    var prop = props[key]
-      , val = body[key]
-      , type = prop.type || 'string';
+    var errors = {};
 
-    debug('validating %s against %j', key, prop);
-
-    if(validation.exists(val)) {
-      // coercion
-      if(type === 'number') val = Number(val);
-
-      if(!validation.isType(val, type)) {
-        debug('failed to validate %s as %s', key, type);
-        errors[key] = 'must be a ' + type;
-      }
-    } else if(prop.required) {
-      debug('%s is required', key);
-      if(create) {
-        errors[key] = 'is required';
-      }
-    } else if(type === 'boolean') {
-      body[key] = false;
+    var validator = new jsonValidation.JSONValidation();
+    var validationResult = validator.validate(body, this.config.schema);
+    if (!validationResult.ok) {
+        errors['schema'] = validationResult.path + ': ' + validationResult.errors.join(' - ');
     }
-  });
 
-  if(Object.keys(errors).length) return errors;
+    if (Object.keys(errors).length) return errors;
+
 };
 
 Collection.prototype.sanitize = function (body) {
-  if(!this.config.schema.properties) return {};
+    var sanitized = {};
 
-  var sanitized = {}
-    , props = this.config.schema.properties
-    , keys = Object.keys(props);
+    extend(true, sanitized, body);
 
-  keys.forEach(function (key) {
-    var prop = props[key]
-    , expected = prop.type
-    , val = body[key]
-    , actual = typeof val;
-
-    // skip properties that do not exist
-    if(!prop) return;
-
-    if(expected == actual) {
-      sanitized[key] = val;
-    } else if (expected === 'array' && Array.isArray(val)) {
-      sanitized[key] = val;
-    } else if(expected == 'number' && actual == 'string') {
-      sanitized[key] = parseFloat(val);
-    } else if(expected == 'string' && actual == 'number') {
-      sanitized[key] = '' + val;
-    }
-  });
-
-  return sanitized;
+    return sanitized;
 };
 
 Collection.prototype.sanitizeQuery = function (query) {
-  var sanitized = {}
-    , props = this.config.schema.properties || {}
-    , keys = query && Object.keys(query);
+    var sanitized = {}
+      , props = this.config.schema.properties || {}
+      , keys = query && Object.keys(query);
 
-  keys && keys.forEach(function (key) {
-    var prop = props[key] || props[key.split('.')[0]]
-    , expected = prop && prop.type
-    , val = query[key]
-    , actual = typeof val;
+    keys && keys.forEach(function (key) {
+        var prop = props[key] || props[key.split('.')[0]]
+        , expected = prop && prop.type
+        , val = query[key]
+        , actual = typeof val;
 
-    // skip properties that do not exist, but allow $ queries and id
-    if(!prop && key.indexOf('$') !== 0 && key !== 'id') return;
+        // skip properties that do not exist, but allow $ queries and id
+        if (!prop && key.indexOf('$') !== 0 && key !== 'id') return;
 
-    // hack - $limitRecursion and $skipEvents are not mongo properties so we'll get rid of them, too
-    if (key === '$limitRecursion') return;
-    if (key === '$skipEvents') return;
+        // hack - $limitRecursion and $skipEvents are not mongo properties so we'll get rid of them, too
+        if (key === '$limitRecursion') return;
+        if (key === '$skipEvents') return;
 
-    if(expected == 'string' && actual == 'number') {
-      sanitized[key] = '' + val;
-    } else if(expected == 'number' && actual == 'string') {
-      sanitized[key] = parseFloat(val);
-    } else if(expected == 'boolean' && actual != 'boolean') {
-      sanitized[key] = (val === 'true') ? true : false;
-    } else if(expected == 'object') {
-      sanitized[key] = val;
-    }  else if (typeof val !== 'undefined') {
-      sanitized[key] = val;
-    }
-  });
+        if (expected == 'string' && actual == 'number') {
+            sanitized[key] = '' + val;
+        } else if (expected == 'number' && actual == 'string') {
+            sanitized[key] = parseFloat(val);
+        } else if (expected == 'boolean' && actual != 'boolean') {
+            sanitized[key] = (val === 'true') ? true : false;
+        } else if (expected == 'object') {
+            sanitized[key] = val;
+        } else if (typeof val !== 'undefined') {
+            sanitized[key] = val;
+        }
+    });
 
-  return sanitized;
+    return sanitized;
 };
 
 Collection.prototype.handle = function (ctx) {
-  // set id one wasnt provided in the query
-  ctx.query.id = ctx.query.id || this.parseId(ctx) || (ctx.body && ctx.body.id);
+    // set id one wasnt provided in the query
+    ctx.query.id = ctx.query.id || this.parseId(ctx) || (ctx.body && ctx.body.id);
 
-  if (ctx.req.method == "GET" && ctx.query.id === 'count') {
-    delete ctx.query.id;
-    this.count(ctx, ctx.done);
-    return;
-  }
+    if (ctx.req.method == "GET" && ctx.query.id === 'count') {
+        delete ctx.query.id;
+        this.count(ctx, ctx.done);
+        return;
+    }
 
-  if (ctx.req.method == "GET" && ctx.query.id === 'index-of') {
-    delete ctx.query.id;
-    var id = ctx.url.split('/').filter(function(p) { return p; })[1];
-    this.indexOf(id, ctx, ctx.done);
-    return;
-  }
+    if (ctx.req.method == "GET" && ctx.query.id === 'index-of') {
+        delete ctx.query.id;
+        var id = ctx.url.split('/').filter(function (p) { return p; })[1];
+        this.indexOf(id, ctx, ctx.done);
+        return;
+    }
 
-  switch(ctx.req.method) {
-    case 'GET':
-      this.find(ctx, ctx.done);
-    break;
-    case 'PUT':
-      if (typeof ctx.query.id != 'string' && !ctx.req.isRoot) {
-        ctx.done("must provide id to update an object");
-        break;
-      }
-    /* falls through */
-    case 'POST':
-      this.save(ctx, ctx.done);
-    break;
-      case 'DELETE':
-      this.remove(ctx, ctx.done);
-    break;
-  }
+    switch (ctx.req.method) {
+        case 'GET':
+            this.find(ctx, ctx.done);
+            break;
+        case 'PUT':
+            if (typeof ctx.query.id != 'string' && !ctx.req.isRoot) {
+                ctx.done("must provide id to update an object");
+                break;
+            }
+            /* falls through */
+        case 'POST':
+            this.save(ctx, ctx.done);
+            break;
+        case 'DELETE':
+            this.remove(ctx, ctx.done);
+            break;
+    }
 };
 
-Collection.prototype.parseId = function(ctx) {
-  if(ctx.url && ctx.url !== '/') return ctx.url.split('/')[1];
+Collection.prototype.parseId = function (ctx) {
+    if (ctx.url && ctx.url !== '/') return ctx.url.split('/')[1];
 };
 
-Collection.prototype.count = function(ctx, fn) {
+Collection.prototype.count = function (ctx, fn) {
     var collection = this
       , store = this.store
       , sanitizedQuery = this.sanitizeQuery(ctx.query || {});
 
     store.count(sanitizedQuery, function (err, result) {
-      if (err) return fn(err);
+        if (err) return fn(err);
 
-      fn(null, {count: result});
+        fn(null, { count: result });
     });
 };
 
-Collection.prototype.indexOf = function(id, ctx, fn) {
-  if (ctx.session.isRoot) {
-    var collection = this
-      , store = this.store
-      , sanitizedQuery = this.sanitizeQuery(ctx.query || {});
+Collection.prototype.indexOf = function (id, ctx, fn) {
+    if (ctx.session.isRoot) {
+        var collection = this
+          , store = this.store
+          , sanitizedQuery = this.sanitizeQuery(ctx.query || {});
 
-    sanitizedQuery.$fields = {id: 1};
+        sanitizedQuery.$fields = { id: 1 };
 
-    store.find(sanitizedQuery, function (err, result) {
-      if (err) return fn(err);
+        store.find(sanitizedQuery, function (err, result) {
+            if (err) return fn(err);
 
-      var indexOf = result.map(function(r) { return r.id }).indexOf(id);
+            var indexOf = result.map(function (r) { return r.id }).indexOf(id);
 
-      fn(null, {index: indexOf});
-    });
-  } else {
-    fn({
-      message: "Must be root to get index",
-      statusCode: 403
-    });
-  }
+            fn(null, { index: indexOf });
+        });
+    } else {
+        fn({
+            message: "Must be root to get index",
+            statusCode: 403
+        });
+    }
 };
 
 var createScriptContext = function (ctx) {
@@ -234,15 +190,6 @@ var runPostEvent = function (ctx, event, scriptContext, collection, object, call
     }
 };
 
-var runValidateEvent = function (ctx, scriptContext, collection, object, callback) {
-    if (ctx.server.events && ctx.server.events.db && ctx.server.events.db.onValidate) {
-        ctx.server.events.db.onValidate(scriptContext, collection, object, callback);
-    }
-    else {
-        callback();
-    }
-};
-
 Collection.prototype.find = function (ctx, fn) {
     var collection = this
       , store = this.store
@@ -255,17 +202,17 @@ Collection.prototype.find = function (ctx, fn) {
 
     function done(err, result) {
         debug("Get listener called back with", err || result);
-        if(typeof query.id === 'string' && (result && result.length === 0) || !result) {
+        if (typeof query.id === 'string' && (result && result.length === 0) || !result) {
             err = err || {
                 message: 'not found',
                 statusCode: 404
             };
             debug('could not find object by id %s', query.id);
         }
-        if(err) {
+        if (err) {
             return fn(err);
         }
-        if(typeof query.id === 'string' && Array.isArray(result)) {
+        if (typeof query.id === 'string' && Array.isArray(result)) {
             return fn(null, result[0]);
         }
 
@@ -334,7 +281,7 @@ Collection.prototype.find = function (ctx, fn) {
                             if (postErr) {
                                 done(postErr);
                             }
-                            else{
+                            else {
                                 done(null, data);
                             }
                         });
@@ -399,281 +346,259 @@ Collection.prototype.remove = function (ctx, fn) {
 };
 
 Collection.prototype.save = function (ctx, fn) {
-  var collection = this
-    , store = this.store
-    , session = ctx.session
-    , item = ctx.body
+    var collection = this
+      , store = this.store
+      , session = ctx.session
+      , item = ctx.body
 
-    , query = ctx.query || {}
-    , client = ctx.db
-    , errors = {};
+      , query = ctx.query || {}
+      , client = ctx.db
+      , errors = {};
 
-  if(!item) return done('You must include an object when saving or updating.');
-    
-  // build command object
-  var commands = {};
-  Object.keys(item).forEach(function (key) {
-    if(item[key] && typeof item[key] === 'object' && !Array.isArray(item[key])) {
-      Object.keys(item[key]).forEach(function (k) {
-        if(k[0] == '$') {
-          commands[key] = item[key];
+    if (!item) return done('You must include an object when saving or updating.');
+
+    // build command object
+    var commands = {};
+    Object.keys(item).forEach(function (key) {
+        if (item[key] && typeof item[key] === 'object' && !Array.isArray(item[key])) {
+            Object.keys(item[key]).forEach(function (k) {
+                if (k[0] == '$') {
+                    commands[key] = item[key];
+                }
+            });
         }
-      });
+    });
+
+    item = this.sanitize(item);
+
+    // handle id on either body or query
+    if (item.id) {
+        query.id = item.id;
     }
-  });
 
-  item = this.sanitize(item);
+    debug('saving %j with id %s', item, query.id);
 
-  // handle id on either body or query
-  if(item.id) {
-    query.id = item.id;
-  }
+    function done(err, item) {
+        errors = domain && domain.hasErrors() && { errors: errors };
+        debug('errors: %j', err);
+        fn(errors || err, item);
+    }
 
-  debug('saving %j with id %s', item, query.id);
+    var domain = createDomain(item, errors);
 
-  function done(err, item) {
-    errors = domain && domain.hasErrors() && {errors: errors};
-    debug('errors: %j', err);
-    fn(errors || err, item);
-  }
+    domain.protect = function (property) {
+        delete domain.data[property];
+    };
 
-  var domain = createDomain(item, errors);
+    domain.changed = function (property) {
+        if (domain.data.hasOwnProperty(property)) {
+            if (domain.previous && domain.previous[property] === domain.data[property]) {
+                return false;
+            }
 
-  domain.protect = function(property) {
-    delete domain.data[property];
-  };
-
-  domain.changed =  function (property) {
-    if(domain.data.hasOwnProperty(property)) {
-      if(domain.previous && domain.previous[property] === domain.data[property]) {
+            return true;
+        }
         return false;
-      }
+    };
 
-      return true;
+    domain.previous = {};
+
+    function put() {
+        var id = query.id
+          , sanitizedQuery = collection.sanitizeQuery(query)
+          , prev = {};
+
+        store.first(sanitizedQuery, function (err, obj) {
+            if (!obj) {
+                if (Object.keys(sanitizedQuery) === 1) {
+                    return done(new Error("No object exists with that id"));
+                } else {
+                    return done(new Error("No object exists that matches that query"));
+                }
+            }
+            if (err) return done(err);
+
+            // copy previous obj
+            Object.keys(obj).forEach(function (key) {
+                prev[key] = obj[key];
+            });
+
+            // merge changes
+            Object.keys(item).forEach(function (key) {
+                obj[key] = item[key];
+            });
+
+            prev.id = id;
+            item = obj;
+            domain['this'] = item;
+            domain.data = item;
+            domain.previous = prev;
+
+            collection.execCommands('update', item, commands);
+
+            var errs = collection.validate(item);
+
+            if (errs) return done({ errors: errs });
+
+            function runPutEvent(err) {
+                if (err) {
+                    return done(err);
+                }
+
+                if (collection.shouldRunEvent(collection.events.Put, ctx)) {
+                    collection.events.Put.run(ctx, domain, commit);
+                } else {
+                    commit();
+                }
+            }
+
+            function commit(err) {
+                if (err || domain.hasErrors()) {
+                    return done(err || errors);
+                }
+
+                delete item.id;
+                store.update({ id: query.id }, item, function (err) {
+                    if (err) return done(err);
+                    item.id = id;
+
+                    runPostEvent(ctx, 'Update', createScriptContext(ctx), collection.name, item, function (err, res) {
+                        if (err) {
+                            done(err, null);
+                        }
+                        else {
+                            done(null, item);
+                            if (session && session.emitToAll) session.emitToAll(collection.name + ':changed');
+                        }
+                    });
+
+                });
+            }
+
+            runPreEvent(ctx, 'Update', createScriptContext(ctx), collection.name, item, function (preErr) {
+                if (preErr) {
+                    done(preErr);
+                }
+                else {
+                    if (collection.shouldRunEvent(collection.events.Validate, ctx)) {
+                        collection.events.Validate.run(ctx, domain, function (err) {
+                            if (err || domain.hasErrors()) return done(err || errors);
+                            runPutEvent(err);
+                        });
+                    } else {
+                        runPutEvent();
+                    }
+                }
+            });
+        });
     }
-    return false;
-  };
 
-  domain.previous = {};
+    function post() {
+        var errs = collection.validate(item, true);
 
-  function put() {
-      var id = query.id
-        , sanitizedQuery = collection.sanitizeQuery(query)
-        , prev = {};
+        if (errs) return done({ errors: errs });
 
-      store.first(sanitizedQuery, function (err, obj) {
-          if (!obj) {
-              if (Object.keys(sanitizedQuery) === 1) {
-                  return done(new Error("No object exists with that id"));
-              } else {
-                  return done(new Error("No object exists that matches that query"));
-              }
-          }
-          if (err) return done(err);
+        // generate id before event listener
+        item.id = store.createUniqueIdentifier();
 
-          // copy previous obj
-          Object.keys(obj).forEach(function (key) {
-              prev[key] = obj[key];
-          });
-
-          // merge changes
-          Object.keys(item).forEach(function (key) {
-              obj[key] = item[key];
-          });
-
-          prev.id = id;
-          item = obj;
-          domain['this'] = item;
-          domain.data = item;
-          domain.previous = prev;
-
-          collection.execCommands('update', item, commands);
-
-          var errs = collection.validate(item);
-
-          if (errs) return done({ errors: errs });
-
-          function runPutEvent(err) {
-              if (err) {
-                  return done(err);
-              }
-
-              if (collection.shouldRunEvent(collection.events.Put, ctx)) {
-                  collection.events.Put.run(ctx, domain, commit);
-              } else {
-                  commit();
-              }
-          }
-
-          function commit(err) {
-              if (err || domain.hasErrors()) {
-                  return done(err || errors);
-              }
-
-              delete item.id;
-              store.update({ id: query.id }, item, function (err) {
-                  if (err) return done(err);
-                  item.id = id;
-
-                  runPostEvent(ctx, 'Update', createScriptContext(ctx), collection.name, item, function (err, res) {
-                      if (err) {
-                          done(err, null);
-                      }
-                      else {
-                          done(null, item);
-                          if (session && session.emitToAll) session.emitToAll(collection.name + ':changed');
-                      }
-                  });
-
-              });
-          }
-
-          runPreEvent(ctx, 'Update', createScriptContext(ctx), collection.name, item, function (preErr) {
-              if (preErr) {
-                  done(preErr);
-              }
-              else {
-                  runValidateEvent(ctx, createScriptContext(ctx), collection.name, item, function (valErr) {
-                      if (valErr) {
-                          done(valErr);
-                      }
-                      else {
-                          if (collection.shouldRunEvent(collection.events.Validate, ctx)) {
-                              collection.events.Validate.run(ctx, domain, function (err) {
-                                  if (err || domain.hasErrors()) return done(err || errors);
-                                  runPutEvent(err);
-                              });
-                          } else {
-                              runPutEvent();
-                          }
-                      }
-                  });
-              }
-          });
-      });
-  }
-
-  function post() {
-    var errs = collection.validate(item, true);
-
-    if(errs) return done({errors: errs});
-
-    // generate id before event listener
-    item.id = store.createUniqueIdentifier();
-
-    if(collection.shouldRunEvent(collection.events.Post, ctx)) {
-      collection.events.Post.run(ctx, domain, function (err) {
-        if(err) {
-          debug('onPost script error %j', err);
-          return done(err);
+        if (collection.shouldRunEvent(collection.events.Post, ctx)) {
+            collection.events.Post.run(ctx, domain, function (err) {
+                if (err) {
+                    debug('onPost script error %j', err);
+                    return done(err);
+                }
+                if (err || domain.hasErrors()) return done(err || errors);
+                debug('inserting item', item);
+                store.insert(item, function () {
+                    runPostEvent(ctx, 'Create', createScriptContext(ctx), collection.name, item, function (postErr) {
+                        if (postErr) {
+                            done(postErr);
+                        }
+                        else {
+                            done(null, item);
+                            if (session && session.emitToAll) session.emitToAll(collection.name + ':changed');
+                        }
+                    });
+                });
+            });
+        } else {
+            store.insert(item, function () {
+                runPostEvent(ctx, 'Create', createScriptContext(ctx), collection.name, item, function (postErr) {
+                    if (postErr) {
+                        done(postErr);
+                    }
+                    else {
+                        done(null, item);
+                        if (session && session.emitToAll) session.emitToAll(collection.name + ':changed');
+                    }
+                });
+            });
         }
-        if(err || domain.hasErrors()) return done(err || errors);
-        debug('inserting item', item);
-        store.insert(item, function() {
-            runPostEvent(ctx, 'Create', createScriptContext(ctx), collection.name, item, function (postErr) {
-                if (postErr) {
-                    done(postErr);
-                }
-                else {
-                    done(null, item);
-                    if (session && session.emitToAll) session.emitToAll(collection.name + ':changed');
-                }
-            });
-        });
-      });
+    }
+
+    if (query.id) {
+        put();
     } else {
-        store.insert(item, function () {
-            runPostEvent(ctx, 'Create', createScriptContext(ctx), collection.name, item, function (postErr) {
-                if (postErr) {
-                    done(postErr);
+        runPreEvent(ctx, 'Create', createScriptContext(ctx), collection.name, item, function (preErr) {
+            if (preErr) {
+                done(preErr);
+            }
+            else {
+                if (collection.shouldRunEvent(collection.events.Validate, ctx)) {
+                    collection.events.Validate.run(ctx, domain, function (err) {
+                        if (err || domain.hasErrors()) return done(err || errors);
+                        post();
+                    });
+                } else {
+                    post();
                 }
-                else {
-                    done(null, item);
-                    if (session && session.emitToAll) session.emitToAll(collection.name + ':changed');
-                }
-            });
+            }
         });
     }
-  }
-
-  if (query.id) {
-      put();
-  } else {
-      runPreEvent(ctx, 'Create', createScriptContext(ctx), collection.name, item, function (preErr) {
-          if (preErr) {
-              done(preErr);
-          }
-          else {
-              runValidateEvent(ctx, createScriptContext(ctx), collection.name, item, function (valErr) {
-                  if (valErr) {
-                      done(valErr);
-                  }
-                  else {
-                      if (collection.shouldRunEvent(collection.events.Validate, ctx)) {
-                          collection.events.Validate.run(ctx, domain, function (err) {
-                              if (err || domain.hasErrors()) return done(err || errors);
-                              post();
-                          });
-                      } else {
-                          post();
-                      }
-                  }
-              });
-          }
-      });
-  }
 };
 
 function createDomain(data, errors) {
-  var hasErrors = false;
-  var domain = {
-    error: function(key, val) {
-      debug('error %s %s', key, val);
-      errors[key] = val || true;
-      hasErrors = true;
-    },
-    errorIf: function(condition, key, value) {
-      if (condition) {
-        domain.error(key, value);
-      }
-    },
-    errorUnless: function(condition, key, value) {
-      domain.errorIf(!condition, key, value);
-    },
-    hasErrors: function() {
-      return hasErrors;
-    },
-    hide: function(property) {
-      delete domain.data[property];
-    },
-    validate: function (schema) {
-        var obj = domain['this'];
+    var hasErrors = false;
+    var domain = {
+        error: function (key, val) {
+            debug('error %s %s', key, val);
+            errors[key] = val || true;
+            hasErrors = true;
+        },
+        errorIf: function (condition, key, value) {
+            if (condition) {
+                domain.error(key, value);
+            }
+        },
+        errorUnless: function (condition, key, value) {
+            domain.errorIf(!condition, key, value);
+        },
+        hasErrors: function () {
+            return hasErrors;
+        },
+        hide: function (property) {
+            delete domain.data[property];
+        },
+        validate: function (schema) {
+            var obj = domain['this'];
 
-        var validator = new jsonValidation.JSONValidation();
-        var validationResult = validator.validate(obj, schema);
-        if (!validationResult.ok) {
-            var validationErrors = {};
-            validationErrors[validationResult.path] = validationResult.errors;
-            domain.error('validation', validationErrors);
-            return false;
-        }
-        else {
-            return true;
-        }
-    },
-    'this': data,
-    data: data
-  };
-  return domain;
+            var validator = new jsonValidation.JSONValidation();
+            var validationResult = validator.validate(obj, schema);
+            if (!validationResult.ok) {
+                var validationErrors = {};
+                validationErrors[validationResult.path] = validationResult.errors;
+                domain.error('validation', validationErrors);
+                return false;
+            }
+            else {
+                return true;
+            }
+        },
+        'this': data,
+        data: data
+    };
+    return domain;
 }
-
-//Collection.external.rename = function (options, ctx, fn) {
-//  if(!ctx.req && !ctx.req.isRoot) return fn(new Error('cannot rename multiple'));
-
-//  if(options.properties) {
-//    this.store.update({}, {$rename: options.properties}, fn);
-//  }
-//};
 
 Collection.prototype.execCommands = function (type, obj, commands) {
   try {
@@ -734,10 +659,10 @@ Collection.prototype.execCommands = function (type, obj, commands) {
   return this;
 };
 
-Collection.prototype.shouldRunEvent = function(ev, ctx) {
-  var skipEvents = ctx && ((ctx.body && ctx.body.$skipEvents) || (ctx.query && ctx.query.$skipEvents))
-    , rootPrevent = ctx && ctx.session && ctx.session.isRoot && skipEvents;
-  return !rootPrevent && ev;
+Collection.prototype.shouldRunEvent = function (ev, ctx) {
+    var skipEvents = ctx && ((ctx.body && ctx.body.$skipEvents) || (ctx.query && ctx.query.$skipEvents))
+      , rootPrevent = ctx && ctx.session && ctx.session.isRoot && skipEvents;
+    return !rootPrevent && ev;
 };
 
 module.exports = Collection;

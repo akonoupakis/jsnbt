@@ -59,7 +59,6 @@
     "server-root": "0.0.9",
     "underscore": "1.6.0",
     "underscore.string": "2.3.3",
-    "validation": "*",
     "mongodb": "1.0.2",
     "socket.io": "0.9.x",
     "debug": ">= 0.7.0",
