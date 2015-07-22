@@ -11,10 +11,10 @@ var Context = function (server, req, res) {
 
     var authMngr = require('./cms/authMngr.js')(server);
 
-    var applyTemplate = function (ctx) {
+    var checkTemplate = function (ctx) {
         var installedTemplate = _.find(server.app.config.templates, function (x) { return x.id === ctx.template; });
         if (installedTemplate) {
-            ctx.template = installedTemplate.html;
+            //ctx.template = installedTemplate.html;
             return true;
         }
         else {
@@ -147,7 +147,7 @@ var Context = function (server, req, res) {
                 return href;
             }
         },
-
+        
         restricted: false,
         debug: function (text) {
             if ((ctx.uri.query.dbg || '').toLowerCase() === 'true') {
@@ -201,7 +201,7 @@ var Context = function (server, req, res) {
                     if (_.str.startsWith(this.template, '/'))
                         view(server, this);
                     else {
-                        if (applyTemplate(this)) {                            
+                        if (checkTemplate(this)) {                            
                             view(server, this);
                         }
                         else {

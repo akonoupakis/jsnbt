@@ -8,36 +8,16 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- @if NODE_ENV='DEVELOPMENT' -->
-    <link rel="stylesheet" href="css/style.css" />
-
-    <% _.each(js.lib, function(file) { %>
-    <script type="text/javascript" src="<%= file %>"></script>
-    <% }); %>
-    
-    <script type="text/javascript" src="jsnbt.js"></script>
-
-    <% _.each(js.app, function(file) { %>
-    <script type="text/javascript" src="<%= file %>"></script>
-    <% }); %>
-    <script type="text/javascript" src="js/init.js"></script>
-    <!-- @endif -->
-    <!-- @if NODE_ENV='PRODUCTION' -->
-    <link rel="stylesheet" href="css/style.min.css" />
-
-    <script type="text/javascript" src="js/lib.min.js"></script>
-
-    <script type="text/javascript" src="jsnbt.js"></script>
-
-    <script type="text/javascript" src="js/app.min.js"></script>
-
-    <script type="text/javascript" src="js/init.min.js"></script>
-    <!-- @endif -->
+    <% _.each(styles, function(file) { %>
+    <link rel="stylesheet" href="<%= file %>" /><% }); %>
 </head>
 <body>
     <h1><b><%= error %></b> <%= text %></h1>
     <!-- @if NODE_ENV='DEVELOPMENT' -->
     <p><%= stack %></p>
     <!-- @endif -->
+
+    <% _.each(scripts, function(file) { %>
+    <script type="text/javascript" src="<%= file %>"></script><% }); %>
 </body>
 </html>

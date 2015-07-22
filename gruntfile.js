@@ -230,22 +230,28 @@ module.exports = function (grunt) {
     };
 
     var getFilesToLess = function (folder, site) {
-        var files = [];
 
-        if (site === undefined || site === 'admin') {
-            files.push({
-                src: folder + '/public/admin/css/**/*.less',
-                dest: folder + '/public/admin/css/style.css'
-            });
-        }
-        if (site === undefined || site === 'public') {
-            files.push({
-                src: folder + '/public/css/*.less',
-                dest: folder + '/public/css/style.css'
-            });
-        }
+        fs.emptyDirSync('./' + folder + '/tmp/styles');
 
-        return files;
+        var results = [];
+
+        var bundler = require('./src/app/tmpl/bundle.js')(self.app);
+
+        _.each(self.app.config.templates, function (tmpl) {
+            if (tmpl.styles && _.isArray(tmpl.styles)) {
+                var styleBundle = bundler.getStyleBundle(tmpl.styles);
+                _.each(styleBundle.raw, function (r) {
+                    if (r.items.length > 0) {
+                        results.push({
+                            src: _.map(r.items, function (x) { return './' + folder + '/public' + x }),
+                            dest: './' + folder + '/public' + r.target
+                        });
+                    }
+                });
+            }
+        });
+        
+        return results;
     };
 
     var getLessPaths = function (folder) {
@@ -258,58 +264,27 @@ module.exports = function (grunt) {
 
     getFilesToUglify = function (folder) {
 
-        var adminLibPaths = [];
-        var adminAppPaths = [];
+        fs.emptyDirSync('./' + folder + '/tmp/scripts');
 
-        var appendJsFiles = function (domain) {
-            adminLibPaths.push('./' + folder + '/public/admin/js/' + domain + '/lib/*.js');
-            adminLibPaths.push('./' + folder + '/public/admin/js/' + domain + '/lib/**/**.js');
-            adminLibPaths.push('./' + folder + '/public/admin/js/' + domain + '/lib/**/**/**.js');
+        var results = [];
 
-            adminAppPaths.push('./' + folder + '/public/admin/js/' + domain + '/app/*.js');
-            adminAppPaths.push('./' + folder + '/public/admin/js/' + domain + '/app/**/**.js');
-            adminAppPaths.push('./' + folder + '/public/admin/js/' + domain + '/app/**/**/**.js');
-        }
+        var bundler = require('./src/app/tmpl/bundle.js')(self.app);
 
-        appendJsFiles('core');
-
-        _.each(self.app.modules.all, function (module) {
-            if (module.domain !== 'core') {
-                appendJsFiles(module.domain);
+        _.each(self.app.config.templates, function (tmpl) {
+            if (tmpl.scripts && _.isArray(tmpl.scripts)) {
+                var scriptBundle = bundler.getScriptBundle(tmpl.scripts);
+                _.each(scriptBundle.raw, function (r) {
+                    if (r.items.length > 0) {
+                        results.push({
+                            src: _.map(r.items, function (x) { return './' + folder + '/public' + x }),
+                            dest: './' + folder + '/public' + r.target
+                        });
+                    }
+                });
             }
         });
-
-        return [{
-            src: adminLibPaths,
-            dest: './' + folder + '/public/admin/js/lib.min.js'
-        }, {
-            src: adminAppPaths,
-            dest: './' + folder + '/public/admin/js/app.min.js'
-        }, {
-            src: ['./' + folder + '/public/admin/js/init.js'],
-            dest: './' + folder + '/public/admin/js/init.min.js'
-        },
-		{
-		    src: [
-                './' + folder + '/public/js/lib/*.js',
-                './' + folder + '/public/js/lib/**/**.js',
-                './' + folder + '/public/js/lib/**/**/**.js'
-		    ],
-		    dest: './' + folder + '/public/js/lib.min.js'
-		}, {
-		    src: [
-                './' + folder + '/public/js/app/main.js',
-                './' + folder + '/public/js/app/**/**.js',
-                './' + folder + '/public/js/app/**/**/**.js'
-		    ],
-		    dest: './' + folder + '/public/js/app.min.js'
-		}, {
-		    src: ['./' + folder + '/public/js/init.js'],
-		    dest: './' + folder + '/public/js/init.min.js'
-		}, {
-		    src: ['./' + folder + '/public/jsnbt.js'],
-		    dest: './' + folder + '/public/jsnbt.min.js'
-		}];
+        
+        return results;
     };
 
     var deployFiles = function (source, target) {
@@ -958,8 +933,9 @@ module.exports = function (grunt) {
 
 
     // 'jshint'
-    grunt.registerTask('dev', ['mod:bower', 'mod:npm', 'bower:dev', 'env:dev', 'clean:dev', 'copy:dev', 'script:dev', 'patch:dev', 'deploybower:dev', 'less:dev', 'preprocess:dev', 'clean:devLess', 'cleanempty:dev', 'setenv:dev', 'setmod:dev']);
-    grunt.registerTask('prod', ['mod:bower', 'mod:npm', 'bower:prod', 'env:prod', 'clean:prod', 'copy:prod', 'script:prod', 'patch:prod', 'deploybower:prod', 'less:prod', 'preprocess:prod', 'clean:prodLess', 'cssmin:prod', 'clean:prodMinified', 'uglify:prod', 'clean:prodUglified', 'cleanempty:prod', 'setenv:prod', 'setmod:prod']);
+    grunt.registerTask('dev', ['mod:bower', 'mod:npm', 'bower:dev', 'env:dev', 'clean:dev', 'setenv:dev', 'setmod:dev', 'copy:dev', 'script:dev', 'patch:dev', 'deploybower:dev', 'less:dev', 'preprocess:dev', 'clean:devLess', 'cleanempty:dev']);
+    //grunt.registerTask('prod', ['mod:bower', 'mod:npm', 'bower:prod', 'env:prod', 'clean:prod', 'copy:prod', 'script:prod', 'patch:prod', 'deploybower:prod', 'less:prod', 'preprocess:prod', 'clean:prodLess', 'cssmin:prod', 'clean:prodMinified', 'uglify:prod', 'clean:prodUglified', 'cleanempty:prod', 'setenv:prod', 'setmod:prod']);
+    grunt.registerTask('prod', ['mod:bower', 'mod:npm', 'bower:prod', 'env:prod', 'clean:prod', 'setenv:prod', 'setmod:prod', 'copy:prod', 'script:prod', 'patch:prod', 'deploybower:prod', 'less:prod', 'preprocess:prod', 'clean:prodLess', 'cssmin:prod', 'clean:prodMinified', 'uglify:prod', 'cleanempty:prod']);
 
     grunt.registerTask('watch-public-css', ['watch:publicCss']);
     grunt.registerTask('watch-public-js', ['watch:publicJs']);

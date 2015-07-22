@@ -7,26 +7,6 @@ module.exports = {
     fileGroups: [],
 
     images: require('./images.js'),
-
-    //scripts: {
-    
-    //    common: [
-    //        '/js/app/controllers/AppController.js',
-    //        '/js/app/main.js'
-    //    ],
-    //    lib: [
-    //        '/js/app/controllers/AppController.js',
-    //        '/js/app/main.js',
-    //        '/js/index.js'
-    //    ]
-    
-    //},
-
-    //styles: {
-
-    //    common: 'css/_.less'
-
-    //},
     
     entities: [],
 
@@ -43,6 +23,10 @@ module.exports = {
     containers: require('./containers.js'),
 
     templates: require('./templates.js'),
+
+    scripts: require('./scripts.js'),
+
+    styles: require('./styles.js'),
 
     lists: require('./lists.js'),
 

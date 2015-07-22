@@ -46,8 +46,6 @@ exports.modules = {
 
 exports.config = {
     
-    scripts: [],
-
     fileGroups: [],
 
     images: [],
@@ -67,6 +65,10 @@ exports.config = {
     layouts: [],
 
     containers: [],
+
+    scripts: { },
+
+    styles: { },
 
     templates: [],
 
@@ -166,7 +168,9 @@ exports.register = function (module) {
         }
     };
     
-    applyTextArray('scripts');
+    applyArrayInObject('scripts', 'name');
+
+    applyArrayInObject('styles', 'name');
         
     var entityDefaults = {
         name: '',
@@ -278,11 +282,11 @@ exports.register = function (module) {
         }
     }
     
-    if (module.domain === 'core') {
-        self.modules.core = module;
+    if (module.domain === 'public' || module.domain === 'core') {
+        applyArray('templates', 'id');
     }
-    else if (module.domain === 'public') {
 
+    if (module.domain === 'public') {
         module.browsable = false;
 
         if (moduleConfig.ssl !== undefined) {
@@ -296,9 +300,7 @@ exports.register = function (module) {
                 self.localization.locale = language.code;
             }
         }
-        
-        applyArray('templates', 'id');
-        
+
         applyArray('layouts', 'id');
 
         applyArray('containers', 'id');
@@ -318,7 +320,12 @@ exports.register = function (module) {
                 });
             }
         }
+    }
 
+    if (module.domain === 'core') {
+        self.modules.core = module;
+    }
+    else if (module.domain === 'public') {
         self.modules.public = module;
     }
     else {

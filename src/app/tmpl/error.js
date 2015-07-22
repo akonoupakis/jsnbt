@@ -16,13 +16,16 @@ var errors = {
 
 var ErrorRenderer = function (server, ctx, error, stack) {
     
+    ctx.template = 'error';
     var tmplPath = '../www/public/error/';
-    if (ctx.uri.first === 'admin')
+
+    if (ctx.uri.first === 'admin') {
+        ctx.template = 'admin-error';
         tmplPath = '../www/public/admin/error/';
+    }
 
     var tmplFilePath = tmplPath + error + '.html';
     var tmplDefaultFilePath = tmplPath + 'error.html';
-    var baseHref = ctx.uri.getBaseHref();
 
     var errorContent = '';
     if (fs.existsSync(tmplFilePath)) {
@@ -50,7 +53,7 @@ var ErrorRenderer = function (server, ctx, error, stack) {
         ctx.meta.title = server.app.title + (server.app.title ? ' | ' : '') + ctx.meta.title;
 
     ctx.halt = true;
-    
+
     require('./html.js')(server).parse(ctx, errorContent, {
         error: error,
         text: text,

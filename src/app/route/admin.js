@@ -31,7 +31,7 @@ var AdminRouter = function (server) {
                     }
                     else {
                         if (viewPath !== null) {
-                            ctx.template = viewPath;
+                            ctx.template = 'admin';
 
                             ctx.robots.noindex = true;
                             ctx.robots.nofollow = true;

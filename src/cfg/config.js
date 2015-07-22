@@ -7,22 +7,9 @@ module.exports = {
 
     images: require('./images.js'),
 
-    scripts: [],
+    scripts: require('./scripts.js'),
 
-    //scripts: {
-
-    //    admin: [
-    //        '/admin/js/app/controllers/AppController.js',
-    //        '/admin/js/app/main.js'
-    //    ]
-
-    //},
-
-    //styles: {
-
-    //    admin: ['/public/css/_.less', '/public/css/style.less']
-
-    //},
+    styles: require('./styles.js'),
     
     entities: require('./entities.js'),
 
@@ -35,5 +22,7 @@ module.exports = {
     lists: [],
 
     messaging: require('./messaging.js'),
+
+    templates: require('./templates.js')
 
 }
