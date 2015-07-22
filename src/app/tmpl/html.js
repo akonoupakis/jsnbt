@@ -82,8 +82,8 @@ var Parser = function (server) {
             mdl.robots = robotNames.join(',');
 
         mdl.js = {};
-
-        mdl.scripts = isAdmin ? server.app.config.scripts : [];
+        
+        mdl.scripts = []; // isAdmin ? server.app.config.scripts : [];
 
         if (isAdmin) {
 

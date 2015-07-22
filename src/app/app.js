@@ -46,8 +46,6 @@ exports.modules = {
 
 exports.config = {
     
-    scripts: [],
-
     fileGroups: [],
 
     images: [],
@@ -68,7 +66,36 @@ exports.config = {
 
     containers: [],
 
-    templates: [],
+    scripts: {
+        adminLib: {
+            items: []
+        },
+        adminApp: {
+            items: []
+        },
+        adminStart: {
+            items: []
+        }
+    },
+
+    styles: {
+        admin: {
+            items: []
+        }
+    },
+
+    templates: [{
+        id: 'admin',
+        name: 'admin page',
+        html: '/admin/index.html',
+        restricted: ['na'],
+        scripts: [
+            ['adminLib', 'adminApp', 'adminStart']
+        ],
+        styles: [
+            ['common']
+        ]
+    }],
 
     routes: [],
 
@@ -166,7 +193,9 @@ exports.register = function (module) {
         }
     };
     
-    applyTextArray('scripts');
+    applyArrayInObject('scripts', 'name');
+
+    applyArrayInObject('styles', 'name');
         
     var entityDefaults = {
         name: '',
@@ -296,9 +325,9 @@ exports.register = function (module) {
                 self.localization.locale = language.code;
             }
         }
-        
+    
         applyArray('templates', 'id');
-        
+
         applyArray('layouts', 'id');
 
         applyArray('containers', 'id');

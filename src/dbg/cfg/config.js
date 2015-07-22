@@ -8,25 +8,39 @@ module.exports = {
 
     images: require('./images.js'),
 
-    //scripts: {
-    
-    //    common: [
-    //        '/js/app/controllers/AppController.js',
-    //        '/js/app/main.js'
-    //    ],
-    //    lib: [
-    //        '/js/app/controllers/AppController.js',
-    //        '/js/app/main.js',
-    //        '/js/index.js'
-    //    ]
-    
-    //},
+    scripts: [{
+        name: 'common',
+        items: [
+            '/js/app/controllers/AppController.js',
+            '/js/app/main.js'
+        ]
+    }, {
+        name: 'gmaps',
+        process: false,
+        items: [
+                'http://asdasd.com/asdfasf/qwerqwerqw'
+        ]
+    }, {
+        name: 'lib',
+        items: [
+            '/js/app/controllers/AppController.js',
+            '/js/app/main.js',
+            '/js/index.js'
+        ]
+    }],
 
-    //styles: {
-
-    //    common: 'css/_.less'
-
-    //},
+    styles: [{
+        name: 'common',
+        items: [
+                'css/_.less'
+        ]
+    }, {
+        name: 'gfonts',
+        process: false,
+        items: [
+            'http://asdfasdf.qwerqwer.com/asdfasf/asdf/'
+        ]
+    }],
     
     entities: [],
 

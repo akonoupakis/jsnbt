@@ -36,4 +36,18 @@ module.exports = {
 
     messaging: require('./messaging.js'),
 
+    templates: [{
+        id: 'admin',
+        name: 'admin page',
+        html: '/admin/index.html',
+        restricted: ['na'],
+        scripts: [
+            ['lib', 'common'],
+            'gmaps'
+        ],
+        styles: [
+            ['common']
+        ]
+    }]
+
 }

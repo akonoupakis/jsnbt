@@ -3,8 +3,13 @@ module.exports = [{
     name: 'home page',
     html: '/tmpl/index.html',
     restricted: ['page'],
-    scripts: ['lib', 'common'],
-    styles: ['common']
+    scripts: [
+        ['lib', 'common'],
+        'gmaps'
+    ],
+    styles: [
+        ['common']
+    ]
 }, {
     id: 'login',
     name: 'login page',
