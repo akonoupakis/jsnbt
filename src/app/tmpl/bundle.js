@@ -250,28 +250,14 @@ var Bundle = function (app) {
 
         };
 
-        if (app.dbg) {
-            _.each(data, function (tmplStyle) {
-                if (_.isString(tmplStyle)) {
-                    addGroupStyles(tmplStyle);
-                }
-                if (_.isArray(tmplStyle)) {
-                    _.each(tmplStyle, function (tmplStyleItem) {
-                        addGroupStyles(tmplStyleItem);
-                    });
-                }
-            });
-        }
-        else {
-            _.each(data, function (tmplStyle) {
-                if (_.isString(tmplStyle)) {
-                    addCombinedStyles([tmplStyle]);
-                }
-                if (_.isArray(tmplStyle)) {
-                    addCombinedStyles(tmplStyle);
-                }
-            });
-        }
+        _.each(data, function (tmplStyle) {
+            if (_.isString(tmplStyle)) {
+                addCombinedStyles([tmplStyle]);
+            }
+            if (_.isArray(tmplStyle)) {
+                addCombinedStyles(tmplStyle);
+            }
+        });
 
         return styles;
     };
