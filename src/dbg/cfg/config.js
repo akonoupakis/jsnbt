@@ -7,40 +7,6 @@ module.exports = {
     fileGroups: [],
 
     images: require('./images.js'),
-
-    scripts: [{
-        name: 'common',
-        items: [
-            '/js/app/controllers/AppController.js',
-            '/js/app/main.js'
-        ]
-    }, {
-        name: 'gmaps',
-        process: false,
-        items: [
-                'http://asdasd.com/asdfasf/qwerqwerqw'
-        ]
-    }, {
-        name: 'lib',
-        items: [
-            '/js/app/controllers/AppController.js',
-            '/js/app/main.js',
-            '/js/index.js'
-        ]
-    }],
-
-    styles: [{
-        name: 'common',
-        items: [
-                'css/_.less'
-        ]
-    }, {
-        name: 'gfonts',
-        process: false,
-        items: [
-            'http://asdfasdf.qwerqwer.com/asdfasf/asdf/'
-        ]
-    }],
     
     entities: [],
 
@@ -57,6 +23,10 @@ module.exports = {
     containers: require('./containers.js'),
 
     templates: require('./templates.js'),
+
+    scripts: require('./scripts.js'),
+
+    styles: require('./styles.js'),
 
     lists: require('./lists.js'),
 

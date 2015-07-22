@@ -49,7 +49,7 @@ var Router = function(server, req, res) {
     var notFoundPaths = [];
     var templatePaths = _.pluck(server.app.config.templates, 'path');
     notFoundPaths = _.union(notFoundPaths, templatePaths);
-    notFoundPaths = _.union(notFoundPaths, ['/tmp/', '/error/', '/admin/error/']);
+    notFoundPaths = _.union(notFoundPaths, ['/error/', '/admin/error/']);
 
     var formPaths = _.union(
         _.pluck(_.filter(server.app.config.templates, function (x) { return x.form !== undefined; }), 'form'),

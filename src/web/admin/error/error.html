@@ -13,12 +13,8 @@
     <meta name="keywords" content="<%= meta.keywords %>" />
     <meta name="description" content="<%= meta.description %>" />
 
-    <!-- @if NODE_ENV='DEVELOPMENT' -->
-    <link rel="stylesheet" href="css/style.css" />
-    <!-- @endif -->
-    <!-- @if NODE_ENV='PRODUCTION' -->
-    <link rel="stylesheet" href="css/style.min.css" />
-    <!-- @endif -->
+    <% _.each(styles, function(file) { %>
+    <link rel="stylesheet" href="<%= file %>" /><% }); %>
 </head>
 <body>
     <h1><b><%= error %></b> <%= text %></h1>
@@ -26,29 +22,7 @@
     <p><%= stack %></p>
     <!-- @endif -->
 
-
-    <!-- @if NODE_ENV='DEVELOPMENT' -->
-    <% _.each(scripts, function(file) { %><script type="text/javascript" src="<%= file %>"></script>
-    <% }); %>
-
-    <% _.each(js.lib, function(file) { %><script type="text/javascript" src="<%= file %>"></script>
-    <% }); %>
-
-    <script type="text/javascript" src="../jsnbt.js"></script>
-
-    <% _.each(js.app, function(file) { %><script type="text/javascript" src="<%= file %>"></script>
-    <% }); %>
-
-    <script type="text/javascript" src="js/init.js"></script>
-    <!-- @endif -->
-    <!-- @if NODE_ENV='PRODUCTION' -->
-    <script type="text/javascript" src="js/lib.min.js"></script>
-
-    <script type="text/javascript" src="../jsnbt.js"></script>
-
-    <script type="text/javascript" src="js/app.min.js"></script>
-
-    <script type="text/javascript" src="js/init.min.js"></script>
-    <!-- @endif -->
+    <% _.each(scripts, function(file) { %>
+    <script type="text/javascript" src="<%= file %>"></script><% }); %>
 </body>
 </html>

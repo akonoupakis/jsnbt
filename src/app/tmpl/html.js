@@ -1,4 +1,3 @@
-var fs = require('fs');
 var extend = require('extend');
 var _ = require('underscore');
 
@@ -6,34 +5,8 @@ _.str = require('underscore.string');
 
 var Parser = function (server) {
 
-    var findJsFiles = function (paths, files, isAdmin) {
-        if (!_.str.endsWith(paths, '/'))
-            paths += '/';
-
-        if (fs.existsSync(paths)) {
-            var filesInternal = fs.readdirSync(paths);
-            filesInternal.forEach(function (file) {
-
-                if (fs.lstatSync(paths + file).isFile()) {
-
-                    var targetFile = (paths + file);
-                    if (isAdmin)
-                        targetFile = targetFile.substring(targetFile.indexOf('/public/admin/') + '/public/admin/'.length);
-                    else
-                        targetFile = targetFile.substring(targetFile.indexOf('/public/') + '/public/'.length);
-
-                    files.push(targetFile);
-                }
-            });
-
-            filesInternal.forEach(function (file) {
-                if (fs.lstatSync(paths + file).isDirectory()) {
-                    findJsFiles(paths + file + '/', files, isAdmin);
-                }
-            });
-        }
-    }
-
+    var bundle = require('./bundle.js')(server.app);
+    
     var prepare = function (ctx, tmpl, model, callback) {
         var mdl = {
             baseHref: ctx.uri.getBaseHref(),
@@ -81,49 +54,14 @@ var Parser = function (server) {
         if (robotNames.length > 0)
             mdl.robots = robotNames.join(',');
 
-        mdl.js = {};
+        var installedTemplate = _.find(server.app.config.templates, function (x) { return x.id === ctx.template; });
+
+        var styleBundle = bundle.getStyleBundle(installedTemplate.styles);
+        mdl.styles = styleBundle.items;
+
+        var scriptBundle = bundle.getScriptBundle(installedTemplate.scripts);
+        mdl.scripts = scriptBundle.items;
         
-        mdl.scripts = []; // isAdmin ? server.app.config.scripts : [];
-
-        if (isAdmin) {
-
-            var appFiles = [];
-            findJsFiles('../www/public/admin/js/core/app/', appFiles, true);
-
-            _.each(server.app.modules.all, function (pack) {
-
-                if (pack.domain !== 'core') {
-                    if (fs.existsSync('../www/public/admin/js/' + pack.domain + '/app/')) {
-                        findJsFiles('../www/public/admin/js/' + pack.domain + '/app/', appFiles, true);
-                    }
-                }
-            });
-
-            mdl.js.app = appFiles;
-
-            var libFiles = [];
-            findJsFiles('../www/public/admin/js/core/lib/', libFiles, true);
-
-            _.each(server.app.modules.all, function (pack) {
-                if (pack.domain !== 'core') {
-                    if (fs.existsSync('../www/public/admin/js/' + pack.domain + '/lib/')) {
-                        findJsFiles('../www/public/admin/js/' + pack.domain + '/lib/', libFiles, true);
-                    }
-                }
-            });
-
-            mdl.js.lib = libFiles;
-        }
-        else {
-            var appFiles = [];
-            findJsFiles('../www/public/js/app/', appFiles, false);
-            mdl.js.app = appFiles;
-
-            var libFiles = [];
-            findJsFiles('../www/public/js/lib/', libFiles, false);
-            mdl.js.lib = libFiles;
-        }
-
         if (!mdl.meta.title || mdl.meta.title === '') {
             mdl.meta.title = server.app.title;
         }

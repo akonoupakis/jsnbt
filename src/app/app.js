@@ -66,36 +66,11 @@ exports.config = {
 
     containers: [],
 
-    scripts: {
-        adminLib: {
-            items: []
-        },
-        adminApp: {
-            items: []
-        },
-        adminStart: {
-            items: []
-        }
-    },
+    scripts: { },
 
-    styles: {
-        admin: {
-            items: []
-        }
-    },
+    styles: { },
 
-    templates: [{
-        id: 'admin',
-        name: 'admin page',
-        html: '/admin/index.html',
-        restricted: ['na'],
-        scripts: [
-            ['adminLib', 'adminApp', 'adminStart']
-        ],
-        styles: [
-            ['common']
-        ]
-    }],
+    templates: [],
 
     routes: [],
 
@@ -307,11 +282,11 @@ exports.register = function (module) {
         }
     }
     
-    if (module.domain === 'core') {
-        self.modules.core = module;
+    if (module.domain === 'public' || module.domain === 'core') {
+        applyArray('templates', 'id');
     }
-    else if (module.domain === 'public') {
 
+    if (module.domain === 'public') {
         module.browsable = false;
 
         if (moduleConfig.ssl !== undefined) {
@@ -325,8 +300,6 @@ exports.register = function (module) {
                 self.localization.locale = language.code;
             }
         }
-    
-        applyArray('templates', 'id');
 
         applyArray('layouts', 'id');
 
@@ -347,7 +320,12 @@ exports.register = function (module) {
                 });
             }
         }
+    }
 
+    if (module.domain === 'core') {
+        self.modules.core = module;
+    }
+    else if (module.domain === 'public') {
         self.modules.public = module;
     }
     else {
