@@ -32,9 +32,9 @@
     "src/dat/**",
     "src/web/admin/**",
     "src/web/bower.json",
-	"scripts/**",
-	"installer.js",
-	"gruntfile.js"
+    "scripts/**",
+    "installer.js",
+    "gruntfile.js"
   ],
   "scripts": {
     "install": "node scripts/install.js",
@@ -62,14 +62,14 @@
     "mongodb": "1.0.2",
     "socket.io": "0.9.x",
     "scrubber": "*",
-    "send": "0.0.2",		
+    "send": "0.0.2",
     "doh": ">=0.0.4",
-    "corser": "~1.1.1",		
+    "corser": "~1.1.1",
     "qs": "~0.6.5",
-	"fs-extra": "0.22.1"
+    "fs-extra": "0.22.1"
   },
-  "devDependencies": {		
-    "less": "*",		
+  "devDependencies": {
+    "less": "*",
     "grunt": "*",
     "grunt-contrib-clean": "*",
     "grunt-contrib-copy": "*",
@@ -79,7 +79,7 @@
     "grunt-contrib-uglify": "*",
     "grunt-contrib-watch": "*",
     "grunt-env": "*",
-    "grunt-preprocess": "*",		
+    "grunt-preprocess": "*",
     "jsnbt-docs": "*"
   }
 }

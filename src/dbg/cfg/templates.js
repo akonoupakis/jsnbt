@@ -1,7 +1,7 @@
 module.exports = [{
     id: 'error',
     name: 'error page',
-    html: '/error/500.html',
+    html: '/error/error.html',
     restricted: [''],
     scripts: [
         ['lib', 'app']
