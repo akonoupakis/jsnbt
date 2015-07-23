@@ -114,7 +114,7 @@ var Bundle = function (app) {
 
         };
 
-        if (app.dbg) {
+        if (app.environment === 'dev') {
             _.each(data, function (tmplScript) {
                 if (_.isString(tmplScript)) {
                     addGroupScripts(tmplScript);

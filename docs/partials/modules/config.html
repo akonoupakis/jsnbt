@@ -5,21 +5,11 @@
 </p>
     
 <dcs-definition>
-    <dcs-definition-title type="string">domain</dcs-definition-title>
-    <dcs-definition-desc>the domain identifier for the module. this should be easy to identify, and if possible limited to one word for consistency</dcs-definition-desc>
-
     <dcs-definition-title type="bool">browsable</dcs-definition-title>
     <dcs-definition-desc>indicates whether this module is to be shown in the admin modules list</dcs-definition-desc>
 
     <dcs-definition-title type="bool">pointed</dcs-definition-title>
     <dcs-definition-desc>indicates whether if the content of this module can be linked to a pointer node</dcs-definition-desc>
-
-    <dcs-definition-title type="string">version</dcs-definition-title>
-    <dcs-definition-desc>returns the module version</dcs-definition-desc>
-    <dcs-definition-sample>version: require('../../package.json').version</dcs-definition-sample>
-
-    <dcs-definition-title type="string">jsModule</dcs-definition-title>
-    <dcs-definition-desc>the js angular module to be injected in the admin angular module configuration</dcs-definition-desc>
 
     <dcs-definition-title type="array">entities</dcs-definition-title>
     <dcs-definition-desc>entity type injections for the data in the "nodes" collection</dcs-definition-desc>
@@ -146,10 +136,56 @@
 }]</dcs-definition-sample>
 
     <dcs-definition-title type="array">scripts</dcs-definition-title>
-    <dcs-definition-desc>a collection of js script urls to be included in the admin pages</dcs-definition-desc>
-    <dcs-definition-sample>scripts: [
-    'http://maps.google.com/maps/api/js?sensor=true'
-]</dcs-definition-sample>
+    <dcs-definition-desc>the script bundles and whether they are processed and minified or not</dcs-definition-desc>
+    <dcs-definition-sample>scripts: [{
+    name: 'lib',
+    items: [
+        '/js/lib/angular.js',
+        '/js/lib/jquery.js',
+        '/js/lib/underscore.js',
+        '/js/lib/underscore.string.js'
+    ]
+}, {
+    name: 'app',
+    items: [
+        '/jsnbt.js',
+        '/js/app/main.js',
+        '/js/app/controllers/AppController.js',
+        '/js/app/providers/$context.js',
+        '/js/app/providers/$data.js',
+        '/js/app/providers/$image.js',
+        '/js/app/providers/$jsnbt.js',
+        '/js/app/providers/$link.js',
+        '/js/app/providers/$text.js',
+        '/js/init.js'
+    ]
+}, {
+    name: 'gmaps',
+    process: false,
+    items: [
+        'http://maps.google.com/maps/api/js?sensor=true'
+    ]
+}]</dcs-definition-sample>
+
+    <dcs-definition-title type="array">styles</dcs-definition-title>
+    <dcs-definition-desc>the style bundles and whether they are processed and minified or not</dcs-definition-desc>
+    <dcs-definition-sample>styles: [{
+    name: 'lib',
+    items: [
+            '/css/_.less'
+    ]
+}, {
+    name: 'app',
+    items: [
+            '/css/style.less'
+    ]
+}, {
+    name: 'inline',
+    process: false,
+    items: [
+
+    ]
+}]</dcs-definition-sample>
 
     <dcs-definition-title type="array">lists</dcs-definition-title>
     <dcs-definition-desc>custom data lists along with their role permissions</dcs-definition-desc>

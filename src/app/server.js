@@ -74,13 +74,6 @@ function Server(app, options) {
 
     this.cache = require('./cache.js')();
 
-    if (options.cache)
-        this.cache = options.cache;
-
-    this.setCache = function (cache) {
-        sSelf.cache = cache;
-    };
-
     this.sockets = io.listen(this, {
         'log level': 0
     }).sockets;

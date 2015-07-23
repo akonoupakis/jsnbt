@@ -400,9 +400,12 @@ exports.init = function (options) {
 }
 
 exports.createServer = function (options) {
-    this.dbg = fs.readFileSync('www/mode', {
+    var mode = fs.readFileSync('www/mode', {
         encoding: 'utf8'
-    }) !== 'prod'; 
+    }); 
+
+    this.dbg = mode !== 'prod';
+    this.environment = mode === 'prod' ? Environment.Production : Environment.Development;
 
     var defOpts = {
         host: '',

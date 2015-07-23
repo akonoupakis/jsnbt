@@ -18,10 +18,8 @@
         description: "meta description",
         keywords: "meta keywords"
     },
-    js: { 
-        lib: [],
-        app: []
-    },
+    styles: [],
+    scripts: [],
     params: [{
         name: "layout",
         content: ""
@@ -59,32 +57,19 @@ These include the current layout, page id, pointer id and any others that might 
     &lt;meta name="&lt;%= p.name %&gt;" content="&lt;%= p.content %&gt;" /&gt;
     &lt;% }); %&gt;
 </pre>
-<h4>js.lib</h4>
-<p>In production environment, all the js files in "/js/lib" are merged and minified to a /js/lib.min.js file.<br />
-   Currently, jsnbt picks them all in alphabetical order. <br />
-    The js.lib part of the model contains the js files in order to be used in debug mode.</p>
+<h4>styles</h4>
+<p>The css budle files</p>
 <pre>
-    &lt;!-- @if NODE_ENV='DEVELOPMENT' --&gt;
-    &lt;% _.each(js.lib, function(file) { %&gt;
-    &lt;script type="text/javascript" src="&lt;%= file %&gt;"&gt;&lt;/script&gt;
+    &lt;% _.each(styles, function(file) { %&gt;
+    &lt;link rel="stylesheet" href="&lt;%= file %&gt;" /&gt;
     &lt;% }); %&gt;
-    &lt;!-- @endif --&gt;
-
-    &lt;!-- @if NODE_ENV='PRODUCTION' --&gt;
-    &lt;script type="text/javascript" src="js/lib.min.js"&gt;&lt;/script&gt;
-    &lt;!-- @endif --&gt;
 </pre>
-<h4>js.app</h4>
-<p>Similarly, files in "/js/app" are minified to "/js/app.min.js".</p>
+<h4>scripts</h4>
+<p>Similarly, the js bundle files</p>
 <pre>
-    &lt;!-- @if NODE_ENV='DEVELOPMENT' --&gt;
-    &lt;% _.each(js.app, function(file) { %&gt;
+    &lt;% _.each(scripts, function(file) { %&gt;
     &lt;script type="text/javascript" src="&lt;%= file %&gt;"&gt;&lt;/script&gt;
     &lt;% }); %&gt;
-    &lt;!-- @endif --&gt;
-    &lt;!-- @if NODE_ENV='PRODUCTION' --&gt;
-    &lt;script type="text/javascript" src="js/app.min.js"&gt;&lt;/script&gt;
-    &lt;!-- @endif --&gt;
 </pre>
 <br />
 <h4>All together..</h4>
@@ -106,35 +91,19 @@ These include the current layout, page id, pointer id and any others that might 
     &lt;meta name="&lt;%= p.name %&gt;" content="&lt;%= p.content %&gt;" /&gt;
     &lt;% }); %&gt;
 
-    &lt;!-- @if NODE_ENV='DEVELOPMENT' --&gt;
-    &lt;link rel="stylesheet" href="css/style.css" /&gt;
+    &lt;% _.each(styles, function(file) { %&gt;
+    &lt;link rel="stylesheet" href="&lt;%= file %&gt;" /&gt;
+    &lt;% }); %&gt;
 
-    &lt;% _.each(js.lib, function(file) { %&gt;
+    &lt;% _.each(scripts, function(file) { %&gt;
     &lt;script type="text/javascript" src="&lt;%= file %&gt;"&gt;&lt;/script&gt;
     &lt;% }); %&gt;
-    &lt;script type="text/javascript" src="dpd.js"&gt;&lt;/script&gt;
-    &lt;script type="text/javascript" src="jsnbt.js"&gt;&lt;/script&gt;
-    &lt;% _.each(js.app, function(file) { %&gt;
-    &lt;script type="text/javascript" src="&lt;%= file %&gt;"&gt;&lt;/script&gt;
-    &lt;% }); %&gt;
-    &lt;script type="text/javascript" src="js/init.js"&gt;&lt;/script&gt;
-    &lt;!-- @endif --&gt;
-
-    &lt;!-- @if NODE_ENV='PRODUCTION' --&gt;
-    &lt;link rel="stylesheet" href="css/style.min.css" /&gt;
-
-    &lt;script type="text/javascript" src="js/lib.min.js"&gt;&lt;/script&gt;
-    &lt;script type="text/javascript" src="dpd.js"&gt;&lt;/script&gt;
-    &lt;script type="text/javascript" src="jsnbt.js"&gt;&lt;/script&gt;
-    &lt;script type="text/javascript" src="js/app.min.js"&gt;&lt;/script&gt;
-    &lt;script type="text/javascript" src="js/init.min.js"&gt;&lt;/script&gt;
-    &lt;!-- @endif --&gt;
 &lt;/head&gt;</pre>
 
 <br />
 <h3>error templates</h3>
 <p>As in our proper templates, the jsnbt will render an error template when an error is occured.<br />
-    The system selects a file from the "errors/" folder depending on their status code.
+    The system selects a file from the "error/" folder depending on their status code.
 </p><p>
-    So, for a 500 error, the cms will render the "/errors/500.html" error template and if not exists it will try for "/errors/error.html".
+    So, for a 500 error, the cms will render the "/error/500.html" error template and if not exists it will try for "/error/error.html".
 </p>
