@@ -27,7 +27,7 @@
         {
           "src": "jquery-2.1.3/dist/jquery.js",
           "dest": [
-            "admin/js/core/lib/a-jquery.js"
+            "admin/js/core/lib/jquery.js"
           ]
         }
       ]
@@ -37,7 +37,7 @@
         {
           "src": "angular-1.3.15/angular.js",
           "dest": [
-            "admin/js/core/lib/b-angular.js"
+            "admin/js/core/lib/angular.js"
           ]
         }
       ]
@@ -47,7 +47,7 @@
         {
           "src": "angular-route-1.3.15/angular-route.js",
           "dest": [
-            "admin/js/core/lib/angular-lib/angular.route.js"
+            "admin/js/core/lib/angular/angular.route.js"
           ]
         }
       ]
@@ -57,7 +57,7 @@
         {
           "src": "angular-animate-1.3.15/angular-animate.js",
           "dest": [
-            "admin/js/core/lib/angular-lib/angular.animate.js"
+            "admin/js/core/lib/angular/angular.animate.js"
           ]
         }
       ]
@@ -67,7 +67,7 @@
         {
           "src": "angular-sanitize-1.3.15/angular-sanitize.js",
           "dest": [
-            "admin/js/core/lib/angular-lib/angular.sanitize.js"
+            "admin/js/core/lib/angular/angular.sanitize.js"
           ]
         }
       ]
@@ -77,7 +77,7 @@
         {
           "src": "angular-strap-2.1.6/dist/angular-strap.js",
           "dest": [
-            "admin/js/core/lib/angular-lib/angular.strap.js"
+            "admin/js/core/lib/angular/angular.strap.js"
           ]
         }
       ]
@@ -87,7 +87,7 @@
         {
           "src": "angular-ui-sortable-0.13.3/sortable.js",
           "dest": [
-            "admin/js/core/lib/angular-lib/angular-ui-sortable.js"
+            "admin/js/core/lib/angular/angular-ui-sortable.js"
           ]
         }
       ]
