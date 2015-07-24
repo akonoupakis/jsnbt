@@ -347,6 +347,9 @@ exports.init = function (options) {
 
     this.title = opts.title;
         
+    if (!fs.existsSync(root.getPath('www')))
+       throw new Error('deployment directory not found! run grunt!');
+
     var coreModule = {
         domain: 'core',
         version: self.getVersion(),
@@ -400,6 +403,9 @@ exports.init = function (options) {
 }
 
 exports.createServer = function (options) {
+    if (!fs.existsSync(root.getPath('www')))
+        throw new Error('deployment directory not found! run grunt!');
+
     var mode = fs.readFileSync('www/mode', {
         encoding: 'utf8'
     }); 
@@ -419,8 +425,7 @@ exports.createServer = function (options) {
 
     var opts = {};
     extend(true, opts, defOpts, options);
-
-    //check if directory exists?
+    
     process.chdir('www');
     
     this.path = path.join(__dirname, 'www', 'public');
