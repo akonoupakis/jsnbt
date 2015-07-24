@@ -8,6 +8,8 @@ var jsonValidation = require('json-validation');
 function Collection(server, config) {
   Resource.apply(this, arguments);
 
+  this.server = server;
+
   if (server && server.db) {
       this.store = server.db && server.db.createStore(this.name);
   }
@@ -168,21 +170,141 @@ var createScriptContext = function (ctx) {
 
 };
 
-var runPreEvent = function (ctx, event, scriptContext, collection, object, callback) {
-    if (ctx.server.events && ctx.server.events.db && ctx.server.events.db['onPre' + event]) {
+var logAction = function (server, db, user, collection, action, objectId, objectData, callback) {
+
+    if (server.app.config.collections[collection]) {
+        if (server.app.config.collections[collection].logging) {
+
+            db.actions.post({
+                timestamp: new Date().getTime(),
+                user: user ? user.id : undefined,
+                collection: collection,
+                action: action,
+                objectId: objectId,
+                objectData: objectData || {}
+            }, function (err, results) {
+                if (err) {
+                    callback(err);
+                }
+                else {
+                    callback();
+                }
+            });
+        }
+        else {
+            callback();
+        }
+    }
+    else {
+        callback();
+    }
+
+};
+
+var events = {
+    onPreRead: function (server, scriptContext, collection, callback) {
+        var authMngr = require('../cms/authMngr.js')(server);
+        if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'R')) {
+            var accessDenied = new Error('access denied');
+            accessDenied.statusCode = 401;
+            callback(accessDenied);
+        }
+        else {
+            callback();
+        }
+    },
+    onPostRead: function (server, scriptContext, collection, object, callback) {
+        callback();
+    },
+    onPreCreate: function (server, scriptContext, collection, callback) {
+        var authMngr = require('../cms/authMngr.js')(server);
+        if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'C')) {
+            var accessDenied = new Error('access denied');
+            accessDenied.statusCode = 401;
+            callback(accessDenied);
+        }
+        else {
+            callback();
+        }
+    },
+    onPostCreate: function (server, scriptContext, collection, object, callback) {
+        logAction(server, scriptContext.db, scriptContext.me, collection, 'create', object.id, object, function (err, res) {
+            if (err) {
+                callback(err);
+            }
+            else {
+                if (!scriptContext.internal)
+                    scriptContext.emit(collection + 'Created', object);
+
+                callback();
+            }
+        });
+    },
+    onPreUpdate: function (server, scriptContext, collection, object, callback) {
+        var authMngr = require('../cms/authMngr.js')(server);
+        if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'U')) {
+            var accessDenied = new Error('access denied');
+            accessDenied.statusCode = 401;
+            callback(accessDenied);
+        }
+        else {
+            callback();
+        }
+    },
+    onPostUpdate: function (server, scriptContext, collection, object, callback) {
+        logAction(server, scriptContext.db, scriptContext.me, collection, 'update', object.id, object, function (err, res) {
+            if (err) {
+                callback(err);
+            }
+            else {
+                if (!scriptContext.internal)
+                    scriptContext.emit(collection + 'Updated', object);
+
+                callback();
+            }
+        });
+    },
+    onPreDelete: function (server, scriptContext, collection, object, callback) {
+        var authMngr = require('../cms/authMngr.js')(server);
+        if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'D')) {
+            var accessDenied = new Error('access denied');
+            accessDenied.statusCode = 401;
+            callback(accessDenied);
+        }
+        else {
+            callback();
+        }
+    },
+    onPostDelete: function (server, scriptContext, collection, object, callback) {
+        logAction(server, scriptContext.db, scriptContext.me, collection, 'delete', object.id, object, function (err, res) {
+            if (err) {
+                callback(err);
+            }
+            else {
+                if (!scriptContext.internal)
+                    scriptContext.emit(collection + 'Deleted', object);
+
+                callback();
+            }
+        });
+    }
+};
+
+var runPreEvent = function (server, ctx, event, scriptContext, collection, object, callback) {
+    if (events['onPre' + event]) {
         if (event === 'Read' || event === 'Create')
-            ctx.server.events.db['onPre' + event](scriptContext, collection, callback);
+            events['onPre' + event](server, scriptContext, collection, callback);
         else
-            ctx.server.events.db['onPre' + event](scriptContext, collection, object, callback);
+            events['onPre' + event](server, scriptContext, collection, object, callback);
     }
     else {
         callback();
     }
 };
 
-var runPostEvent = function (ctx, event, scriptContext, collection, object, callback) {
-    if (ctx.server.events && ctx.server.events.db && ctx.server.events.db['onPost' + event]) {
-        ctx.server.events.db['onPost' + event](scriptContext, collection, object, callback);
+var runPostEvent = function (server, ctx, event, scriptContext, collection, object, callback) {
+    if (events['onPost' + event]) {
+        events['onPost' + event](server, scriptContext, collection, object, callback);
     }
     else {
         callback();
@@ -216,7 +338,7 @@ Collection.prototype.find = function (ctx, fn) {
         fn(null, result);
     }
 
-    runPreEvent(ctx, 'Read', createScriptContext(ctx), this.name, null, function (preErr) {
+    runPreEvent(collection.server, ctx, 'Read', createScriptContext(ctx), this.name, null, function (preErr) {
         if (preErr) {
             return done(preErr);
         }
@@ -248,7 +370,7 @@ Collection.prototype.find = function (ctx, fn) {
 
                             remaining--;
 
-                            runPostEvent(ctx, 'Read', createScriptContext(ctx), collection.name, data, function (postErr) {
+                            runPostEvent(collection.server, ctx, 'Read', createScriptContext(ctx), collection.name, data, function (postErr) {
                                 if (postErr) {
                                     done(postErr);
                                 }
@@ -270,7 +392,7 @@ Collection.prototype.find = function (ctx, fn) {
                     collection.events.Get.run(ctx, domain, function (err) {
                         if (err) return done(err);
 
-                        runPostEvent(ctx, 'Read', createScriptContext(ctx), collection.name, data, function (postErr) {
+                        runPostEvent(collection.server, ctx, 'Read', createScriptContext(ctx), collection.name, data, function (postErr) {
                             if (postErr) {
                                 done(postErr);
                             }
@@ -304,7 +426,7 @@ Collection.prototype.remove = function (ctx, fn) {
             store.remove(sanitizedQuery, fn);
             if (session.emitToAll) session.emitToAll(collection.name + ':changed');
         }
-        runPreEvent(ctx, 'Delete', createScriptContext(ctx), collection.name, result, function (preErr) {
+        runPreEvent(collection.server, ctx, 'Delete', createScriptContext(ctx), collection.name, result, function (preErr) {
             if (preErr) {
                 done(preErr);
             }
@@ -314,7 +436,7 @@ Collection.prototype.remove = function (ctx, fn) {
 
                     domain['this'] = domain.data = result;
                     collection.events.Delete.run(ctx, domain, function () {
-                        runPostEvent(ctx, 'Delete', createScriptContext(ctx), collection.name, result, function (postErr) {
+                        runPostEvent(collection.server, ctx, 'Delete', createScriptContext(ctx), collection.name, result, function (postErr) {
                             if (postErr) {
                                 done(postErr);
                             }
@@ -324,7 +446,7 @@ Collection.prototype.remove = function (ctx, fn) {
                         });
                     });
                 } else {
-                    runPostEvent(ctx, 'Delete', createScriptContext(ctx), collection.name, result, function (postErr) {
+                    runPostEvent(collection.server, ctx, 'Delete', createScriptContext(ctx), collection.name, result, function (postErr) {
                         if (postErr) {
                             done(postErr);
                         }
@@ -452,7 +574,7 @@ Collection.prototype.save = function (ctx, fn) {
                     if (err) return done(err);
                     item.id = id;
 
-                    runPostEvent(ctx, 'Update', createScriptContext(ctx), collection.name, item, function (err, res) {
+                    runPostEvent(collection.server, ctx, 'Update', createScriptContext(ctx), collection.name, item, function (err, res) {
                         if (err) {
                             done(err, null);
                         }
@@ -465,7 +587,7 @@ Collection.prototype.save = function (ctx, fn) {
                 });
             }
 
-            runPreEvent(ctx, 'Update', createScriptContext(ctx), collection.name, item, function (preErr) {
+            runPreEvent(collection.server, ctx, 'Update', createScriptContext(ctx), collection.name, item, function (preErr) {
                 if (preErr) {
                     done(preErr);
                 }
@@ -498,7 +620,7 @@ Collection.prototype.save = function (ctx, fn) {
                 }
                 if (err || domain.hasErrors()) return done(err || errors);
                 store.insert(item, function () {
-                    runPostEvent(ctx, 'Create', createScriptContext(ctx), collection.name, item, function (postErr) {
+                    runPostEvent(collection.server, ctx, 'Create', createScriptContext(ctx), collection.name, item, function (postErr) {
                         if (postErr) {
                             done(postErr);
                         }
@@ -511,7 +633,7 @@ Collection.prototype.save = function (ctx, fn) {
             });
         } else {
             store.insert(item, function () {
-                runPostEvent(ctx, 'Create', createScriptContext(ctx), collection.name, item, function (postErr) {
+                runPostEvent(collection.server, ctx, 'Create', createScriptContext(ctx), collection.name, item, function (postErr) {
                     if (postErr) {
                         done(postErr);
                     }
@@ -527,7 +649,7 @@ Collection.prototype.save = function (ctx, fn) {
     if (query.id) {
         put();
     } else {
-        runPreEvent(ctx, 'Create', createScriptContext(ctx), collection.name, item, function (preErr) {
+        runPreEvent(collection.server, ctx, 'Create', createScriptContext(ctx), collection.name, item, function (preErr) {
             if (preErr) {
                 done(preErr);
             }

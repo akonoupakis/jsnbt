@@ -32,41 +32,8 @@ function Server(app, options) {
     extend(true, this.options, options);
     
     sessionFile.appPath = __dirname;
-
-    var authMngr = null;
-
+    
     var started = false;
-
-    var logAction = function (db, user, collection, action, objectId, objectData, callback) {
-
-        if (server.app.config.collections[collection]) {
-            if (server.app.config.collections[collection].logging) {
-
-                db.actions.post({
-                    timestamp: new Date().getTime(),
-                    user: user ? user.id : undefined,
-                    collection: collection,
-                    action: action,
-                    objectId: objectId,
-                    objectData: objectData || {}
-                }, function (err, results) {
-                    if (err) {
-                        callback(err);
-                    }
-                    else {
-                        callback();
-                    }
-                });
-            }
-            else {
-                callback();
-            }
-        }
-        else {
-            callback();
-        }
-
-    };
 
     this.stores = {};
 
@@ -77,94 +44,7 @@ function Server(app, options) {
     this.sockets = io.listen(this, {
         'log level': 0
     }).sockets;
-
-    this.events = {
-        db: {
-            onPreRead: function (scriptContext, collection, callback) {
-                if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'R')) {
-                    var accessDenied = new Error('access denied');
-                    accessDenied.statusCode = 401;
-                    callback(accessDenied);
-                }
-                else {
-                    callback();
-                }
-            },
-            onPostRead: function (scriptContext, collection, object, callback) {
-                callback();
-            },
-            onPreCreate: function (scriptContext, collection, callback) {
-                if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'C')) {
-                    var accessDenied = new Error('access denied');
-                    accessDenied.statusCode = 401;
-                    callback(accessDenied);
-                }
-                else {
-                    callback();
-                }
-            },
-            onPostCreate: function (scriptContext, collection, object, callback) {
-                logAction(scriptContext.db, scriptContext.me, collection, 'create', object.id, object, function (err, res) {
-                    if (err) {
-                        callback(err);
-                    }
-                    else {
-                        if (!scriptContext.internal)
-                            scriptContext.emit(collection + 'Created', object);
-
-                        callback();
-                    }
-                });
-            },
-            onPreUpdate: function (scriptContext, collection, object, callback) {
-                if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'U')) {
-                    var accessDenied = new Error('access denied');
-                    accessDenied.statusCode = 401;
-                    callback(accessDenied);
-                }
-                else {
-                    callback();
-                }
-            },
-            onPostUpdate: function (scriptContext, collection, object, callback) {
-                logAction(scriptContext.db, scriptContext.me, collection, 'update', object.id, object, function (err, res) {
-                    if (err) {
-                        callback(err);
-                    }
-                    else {
-                        if (!scriptContext.internal)
-                            scriptContext.emit(collection + 'Updated', object);
-
-                        callback();
-                    }
-                });
-            },
-            onPreDelete: function (scriptContext, collection, object, callback) {
-                if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'D')) {
-                    var accessDenied = new Error('access denied');
-                    accessDenied.statusCode = 401;
-                    callback(accessDenied);
-                }
-                else {
-                    callback();
-                }
-            },
-            onPostDelete: function (scriptContext, collection, object, callback) {
-                logAction(scriptContext.db, scriptContext.me, collection, 'delete', object.id, object, function (err, res) {
-                    if (err) {
-                        callback(err);
-                    }
-                    else {
-                        if (!scriptContext.internal)
-                            scriptContext.emit(collection + 'Deleted', object);
-
-                        callback();
-                    }
-                });
-            }
-        }
-    };
-
+    
     this.sessions = new SessionStore('sessions', this.db, this.sockets);
 
     if (options.events)
@@ -174,9 +54,7 @@ function Server(app, options) {
     this.on('listening', function () {
         server.host = optsHost;
         server.port = server.options.port;
-
-        authMngr = require('./cms/authMngr.js')(server);
-
+        
         logger.info('jsnbt server is listening on:' + server.options.port);
 
         started = true;
