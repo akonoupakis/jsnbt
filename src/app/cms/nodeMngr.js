@@ -315,7 +315,7 @@ module.exports = function(server, db) {
             var urlPart = '';
 
             getDefaultLanguage(function (defaultLanguage) {
-
+                
                 if (uri.path === '/') {
                     var languagePart = defaultLanguage;
                     var urlPart = uri.path;

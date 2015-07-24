@@ -83,34 +83,39 @@ var HomeRouter = function (server) {
                     var node = require('../cms/nodeMngr.js')(server, ctx.db);
                     
                     ctx.timer.start('node retrieval');
-
+                    
                     node.resolveUrl(ctx.uri.url, function (resolved) {
+                    
                         ctx.timer.stop('node retrieval');
 
-                        if (resolved && resolved.page)
+                        if (resolved && resolved.page) {
                             ctx.debug('node resolved: ' + resolved.page.id);
 
-                        if (resolved && resolved.page && resolved.isActive()) {
-                            
-                            var inherited = resolved.getInheritedProperties();
+                            if (resolved.isActive()) {
 
-                            if (!ctx.restricted) {
-                                if (!authMngr.isInRole(ctx.user, (inherited.roles || []))) {
-                                    ctx.restricted = true;
+                                var inherited = resolved.getInheritedProperties();
+
+                                if (!ctx.restricted) {
+                                    if (!authMngr.isInRole(ctx.user, (inherited.roles || []))) {
+                                        ctx.restricted = true;
+                                    }
+                                }
+
+                                if (server.app.modules.public && typeof (server.app.modules.public.routeNode) === 'function') {
+                                    server.app.modules.public.routeNode(server, ctx, resolved, function () {
+                                        process(ctx, resolved, inherited);
+                                    });
+                                }
+                                else {
+                                    process(ctx, resolved, inherited);
                                 }
                             }
-
-                            if (server.app.modules.public && typeof (server.app.modules.public.routeNode) === 'function') {
-                                server.app.modules.public.routeNode(server, ctx, resolved, function () {
-                                    process(ctx, resolved, inherited);
-                                });
-                            }
                             else {
-                                process(ctx, resolved, inherited);
+                                ctx.debug('node ' + resolved.page.id + ' is inactive');
+                                next();
                             }
                         }
                         else {
-                            ctx.debug('node ' + resolved.page.id + ' is inactive');
                             next();
                         }
                     });
