@@ -1,7 +1,4 @@
 var escapeRegExp = /[\-\[\]{}()+?.,\\\^$|#\s]/g;
-var doh = require('doh');
-var error404 = doh.createResponder();
-var respond = require('doh').createResponder();
 var async = require('async');
 var Cookies = require('cookies');
 var qs = require('qs');
@@ -50,7 +47,9 @@ Context.prototype.done = function (err, res) {
     if (err) {
         if (status < 400) this.res.statusCode = 400;
         if (err.statusCode) this.res.statusCode = err.statusCode;
-        respond(err, this.req, this.res);
+        this.res.write(new Buffer(JSON.stringify(err, null, this.server.app.dbg ? '\t' : '')));
+        this.req._routed = true;
+        this.res.end();
     } else {
         if (typeof body == 'object') {
             body = JSON.stringify(body);
@@ -108,32 +107,32 @@ Router.prototype.route = function (req, res, next) {
         var resource = resources[i++]
           , ctx;
 
-        var handler = doh.createHandler({ req: req, res: res, server: server });
-        handler.run(function () {
-            process.nextTick(function () {
-                if (resource) {
-                    ctx = new Context(resource, req, res, server);
-                    ctx.router = router;
-                    
-                    if (ctx.session) ctx.session.isRoot = req.isRoot || false;
+        if (resource) {
+            ctx = new Context(resource, req, res, server);
+            ctx.router = router;
 
-                    var furl = ctx.url.replace('/', '');
-                    if (resource.external && resource.external[furl]) {
-                        resource.external[furl](ctx.body, ctx, ctx.done);
-                    } else {
-                        resource.handle(ctx, nextResource);
-                    }
-                } else {
-                    if (next) {
-                        next();
-                    }
-                    else {
-                        res.statusCode = 404;
-                        error404('Resource Not Found', req, res);
-                    }
-                }
-            });
-        });
+            if (ctx.session) ctx.session.isRoot = req.isRoot || false;
+
+            var furl = ctx.url.replace('/', '');
+            if (resource.external && resource.external[furl]) {
+                resource.external[furl](ctx.body, ctx, ctx.done);
+            } else {
+                resource.handle(ctx, nextResource);
+            }
+        } else {
+            if (next) {
+                next();
+            }
+            else {
+                res.statusCode = 404;
+                res.write(new Buffer(JSON.stringify({
+                    "message": "not found",
+                    "statusCode": 404
+                }, null, server.app.dbg ? '\t' : '')));
+                req._routed = true;
+                res.end();
+            }
+        }
     }
 
 };
