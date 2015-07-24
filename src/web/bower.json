@@ -195,7 +195,7 @@
         {
           "src": "angular-bootstrap-0.11.2/ui-bootstrap.js",
           "dest": [
-            "admin/js/core/lib/angular-lib/angular-bootstrap.js"
+            "admin/js/core/lib/angular/angular-bootstrap.js"
           ]
         }
       ]

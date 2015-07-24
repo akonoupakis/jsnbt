@@ -95,7 +95,6 @@ module.exports = [{
         '/admin/js/core/app/providers/$fn.js',
         '/admin/js/core/app/providers/$jsnbt.js',
         '/admin/js/core/app/providers/$logger.js',
-        '/admin/js/core/app/providers/$package.js',
         '/admin/js/core/app/providers/$queue.js',
         '/admin/js/core/app/services/AuthService.js',
         '/admin/js/core/app/services/FileService.js',

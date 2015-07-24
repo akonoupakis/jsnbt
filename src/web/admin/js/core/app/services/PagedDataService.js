@@ -29,7 +29,7 @@
                     $limit: limit
                 });
 
-                var params = [qry, function (results, error) {
+                var params = [qry, function (error, results) {
                     if (error)
                         deferred.reject(error);
                     else {

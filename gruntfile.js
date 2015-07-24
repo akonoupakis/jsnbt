@@ -231,7 +231,7 @@ module.exports = function (grunt) {
 
     var getFilesToLess = function (folder, site) {
 
-        fs.emptyDirSync('./' + folder + '/tmp/styles');
+        fs.emptyDirSync('./' + folder + '/public/tmp/styles');
 
         var results = [];
 
@@ -264,7 +264,7 @@ module.exports = function (grunt) {
 
     getFilesToUglify = function (folder) {
 
-        fs.emptyDirSync('./' + folder + '/tmp/scripts');
+        fs.emptyDirSync('./' + folder + '/public/tmp/scripts');
 
         var results = [];
 
