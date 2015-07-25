@@ -428,16 +428,21 @@ module.exports = function (grunt) {
 
         var add = function (successMessage, bowerPackage) {
             tasks.push(function (cb) {
-                exec('bower install ' + bowerPackage.name + '-' + bowerPackage.version + '=' + bowerPackage.name + '#' + bowerPackage.version
-                    + ' --config.analytics=false'
-                    + ' -f',
-                    { cwd: './' }, function (err, stdout, stderr) {
-                        if (err)
-                            throw err;
+                if (!fs.existsSync(server.getPath('bower_components/' + bowerPackage.name + '-' + bowerPackage.version))) {
+                    exec('bower install ' + bowerPackage.name + '-' + bowerPackage.version + '=' + bowerPackage.name + '#' + bowerPackage.version
+                        + ' --config.analytics=false'
+                        + ' -f',
+                        { cwd: './' }, function (err, stdout, stderr) {
+                            if (err)
+                                throw err;
 
-                        grunt.log.ok(successMessage);
-                        cb();
-                    });
+                            grunt.log.ok(successMessage);
+                            cb();
+                        });
+                }
+                else {
+                    cb();
+                }
             });
         };
 
@@ -469,9 +474,7 @@ module.exports = function (grunt) {
                         name: dep,
                         version: bowerConfig.dependencies[dep]
                     };
-                    if (!fs.existsSync(server.getPath('bower_components/' + packOptions.name + '-' + packOptions.version))) {
-                        bowerPackages.push(packOptions);
-                    }
+                    bowerPackages.push(packOptions);                    
                 }
             }
         });

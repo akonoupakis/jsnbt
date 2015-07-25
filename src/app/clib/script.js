@@ -128,6 +128,16 @@ var Script = function (app) {
             result.countries[country.code] = country;
         });
 
+        result.collections = {};
+
+        Object.keys(app.config.collections).forEach(function (collection) {
+            result.collections[collection] = {};
+            if (app.config.collections[collection].default) {
+                result.collections[collection].default = app.config.collections[collection].default;
+                
+            }
+        });
+        
         return result;
     }
 

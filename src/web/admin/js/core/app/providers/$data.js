@@ -14,7 +14,7 @@
                 },
                 $get: function ($q, $rootScope, AUTH_EVENTS) {
                     var Data = {};
-                   
+
                     var getPromise = function (name, fn, args, double) {
                         var deferred = $q.defer();
 
@@ -66,47 +66,36 @@
 
                         return deferred.promise;
                     };
+                    
+                    var collectionNames = Object.keys(jsnbt.collections);
+                    _.each(collectionNames, function (collectionName) {
 
-                    Data.getNames = function () {
-                        var names = [];
+                        Data[collectionName] = {};
 
-                        for (var name in angular.defaults)
-                            names.push(name);
+                        Data[collectionName].get = function () {
+                            return getPromise.apply(getPromise, [collectionName, 'get', arguments]);
+                        };
 
-                        return names;
-                    };
+                        Data[collectionName].post = function () {
+                            return getPromise.apply(getPromise, [collectionName, 'post', arguments]);
+                        };
 
-                    Data.register = function (name, defaults) {
-                        if (!angular.defaults[name]) {
-                            angular.defaults[name] = defaults;
+                        Data[collectionName].put = function () {
+                            return getPromise.apply(getPromise, [collectionName, 'put', arguments]);
+                        };
 
-                            Data[name] = {};
-
-                            Data[name].get = function () {
-                                return getPromise.apply(getPromise, [name, 'get', arguments]);
-                            };
-
-                            Data[name].post = function () {
-                                return getPromise.apply(getPromise, [name, 'post', arguments]);
-                            };
-
-                            Data[name].put = function () {
-                                return getPromise.apply(getPromise, [name, 'put', arguments]);
-                            };
-
-                            Data[name].del = function () {
-                                return getPromise.apply(getPromise, [name, 'del', arguments]);
-                            };
-                        }
-                    };
+                        Data[collectionName].del = function () {
+                            return getPromise.apply(getPromise, [collectionName, 'del', arguments]);
+                        };
+                    });
 
                     Data.create = function (name, obj) {
                         var result = {};
 
                         var defaults = {};
 
-                        if (angular.defaults[name]) {
-                            $.extend(true, defaults, angular.defaults[name]);
+                        if (jsnbt.collections[name] && jsnbt.collections[name].default) {
+                            $.extend(true, defaults, jsnbt.collections[name].default);
                         }
 
                         $.extend(true, result, defaults, obj);
@@ -116,85 +105,5 @@
                     return Data;
                 }
             };
-        }])
-        .run(['$data', function ($data) {
-
-            $data.register('users', {
-                username: undefined,
-                password: undefined,
-                firstName: undefined,
-                lastName: undefined,
-                roles: []
-            });
-            
-            $data.register('layouts', {
-                layout: '',
-                content: {
-                    localized: {}
-                }
-            });
-
-            $data.register('nodes', {
-                name: '',
-                domain: 'core',                
-                entity: 'page',
-                parent: '',
-                layout: {
-                    inherits: true,
-                    value: ''
-                },
-                content: {
-                    localized: {}
-                },
-                seo: {},
-                active: {},
-                secure: {
-                    inherits: true,
-                    value: false
-                },
-                meta: {},
-                createdOn: new Date().getTime(),
-                modifiedOn: new Date().getTime(),
-                roles: {
-                    inherits: true,
-                    values: []
-                },
-                robots: {
-                    inherits: true,
-                    values: []
-                },                
-                hierarchy: []
-            });
-
-            $data.register('languages', {
-                code: '',
-                name: '',
-                active: false,
-                default: false
-            });
-
-            $data.register('data', {
-                domain: '',
-                list: '',
-                name: '',
-                content: {
-                    localized: {}
-                },
-                createdOn: new Date().getTime(),
-                modifiedOn: new Date().getTime()
-            });
-
-            $data.register('texts', {
-                key: '',
-                value: {},
-                group: undefined
-            });
-
-            $data.register('settings', {
-                domain: '',
-                data: {}
-            });
-
-        }]);
-        
+        }]);        
 })();

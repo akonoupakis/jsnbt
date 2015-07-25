@@ -40,9 +40,9 @@ var Router = function(server, req, res) {
 
     var logger = require('./logger.js')(this);
 
-    var ignoredPaths = []; // ['__resources'];
+    var ignoredPaths = [];
 
-    var ignoredPathPrefixes = []; //['/css/', '/fonts/', '/img/', '/js/', '/tmpl/', '/tmp/', '/files/', '/admin/css/', '/admin/fonts/', '/admin/img/', '/admin/js/', '/admin/tmpl/'];
+    var ignoredPathPrefixes = [];
 
     var forbiddedPathPrefixes = [];
 
