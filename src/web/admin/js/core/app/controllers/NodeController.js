@@ -225,6 +225,7 @@
                         if ($scope.node.parent && $scope.node.parent !== '') {
                             $data.nodes.get($scope.node.parent).then(function (parentResult) {
                                 hierarchy = parentResult.hierarchy.slice(0);
+                                
                                 hierarchy.push($scope.node.id);
 
                                 setLocInternal(hierarchy);
@@ -233,7 +234,10 @@
                             });
                         }
                         else {
-                            hierarchy = [$scope.node.id];
+                            hierarchy = [];
+
+                            if ($scope.node.id)
+                                hierarchy.push($scope.node.id);
 
                             setLocInternal(hierarchy);
                         }                       
@@ -352,24 +356,29 @@
 
                 getHierarchyNodes: function () {
                     var deferred = $q.defer();
-
+                    
                     var hierarchyNodeIds = _.filter($scope.node.hierarchy, function (x) { return x !== $scope.id; });
-                    $data.nodes.get({ id: { $in: hierarchyNodeIds } }).then(function (nodes) {
+                    if (hierarchyNodeIds.length > 0) {
+                        $data.nodes.get({ id: { $in: hierarchyNodeIds } }).then(function (nodes) {
 
-                        var hierarchyNodes = [];
+                            var hierarchyNodes = [];
 
-                        $($scope.node.hierarchy).each(function (i, item) {
-                            var matchedNode = _.first(_.filter(nodes, function (x) { return x.id === item; }));
-                            if (matchedNode) {
-                                hierarchyNodes.push(matchedNode);
-                            }
+                            $($scope.node.hierarchy).each(function (i, item) {
+                                var matchedNode = _.first(_.filter(nodes, function (x) { return x.id === item; }));
+                                if (matchedNode) {
+                                    hierarchyNodes.push(matchedNode);
+                                }
+                            });
+
+                            deferred.resolve(hierarchyNodes);
+
+                        }, function (error) {
+                            deferred.reject(error);
                         });
-
-                        deferred.resolve(hierarchyNodes);
-
-                    }, function (error) {
-                        deferred.reject(error);
-                    });
+                    }
+                    else {
+                        deferred.resolve([]);
+                    }
 
                     return deferred.promise;
                 },
