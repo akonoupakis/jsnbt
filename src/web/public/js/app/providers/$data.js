@@ -84,7 +84,7 @@
                         };
                     };
 
-                    for (var dbName in jsnbt.db) {
+                    for (var dbName in jsnbt.collections) {
                         register(dbName);
                     }
 
