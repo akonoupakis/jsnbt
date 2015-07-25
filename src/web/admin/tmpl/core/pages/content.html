@@ -19,25 +19,25 @@
                     <label>languages</label>
                 </li>
                 <li ng-show="isAuthorized('layouts')">
-                    <a href="javascript:;" ng-click="goto('layouts')">
+                    <a href="javascript:;" ng-click="goto('layouts', application.localization.enabled && application.languages.length === 0)" class="{{application.localization.enabled && application.languages.length === 0 ? 'disabled' : ''}}">
                         <img src="img/core/content/layouts.png" style="height: 128px" />
                     </a>
                     <label>layouts</label>
                 </li>
                 <li ng-show="isAuthorized('nodes')">
-                    <a href="javascript:;" ng-click="goto('nodes')">
+                    <a href="javascript:;" ng-click="goto('nodes', application.localization.enabled && application.languages.length === 0)" class="{{application.localization.enabled && application.languages.length === 0 ? 'disabled' : ''}}">
                         <img src="img/core/content/nodes.png" style="height: 128px" />
                     </a>
                     <label>nodes</label>
                 </li>
                 <li ng-show="isAuthorized('data')">
-                    <a href="javascript:;" ng-click="goto('data')">
+                    <a href="javascript:;" ng-click="goto('data', application.localization.enabled && application.languages.length === 0)" class="{{application.localization.enabled && application.languages.length === 0 ? 'disabled' : ''}}">
                         <img src="img/core/content/data.png" style="height: 128px" />
                     </a>
                     <label>data</label>
                 </li>
                 <li ng-show="isAuthorized('texts')">
-                    <a href="javascript:;" ng-click="goto('texts')">
+                    <a href="javascript:;" ng-click="goto('texts', application.localization.enabled && application.languages.length === 0)" class="{{application.localization.enabled && application.languages.length === 0 ? 'disabled' : ''}}">
                         <img src="img/core/content/texts.png" style="height: 128px" />
                     </a>
                     <label>texts</label>

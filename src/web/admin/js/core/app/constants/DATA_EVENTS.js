@@ -10,27 +10,27 @@
             dataUpdated: 'dataUpdated',
             dataDeleted: 'dataDeleted',
 
-            languageCreated: 'languageCreated',
-            languageUpdated: 'languageUpdated',
-            languageDeleted: 'languageDeleted',
+            languageCreated: 'languagesCreated',
+            languageUpdated: 'languagesUpdated',
+            languageDeleted: 'languagesDeleted',
 
-            nodeCreated: 'nodeCreated',
-            nodeUpdated: 'nodeUpdated',
-            nodeDeleted: 'nodeDeleted',
+            nodeCreated: 'nodesCreated',
+            nodeUpdated: 'nodesUpdated',
+            nodeDeleted: 'nodesDeleted',
 
-            settingCreated: 'settingCreated',
-            settingUpdated: 'settingUpdated',
-            settingDeleted: 'settingDeleted',
+            settingCreated: 'settingsCreated',
+            settingUpdated: 'settingsUpdated',
+            settingDeleted: 'settingsDeleted',
 
-            textCreated: 'textCreated',
-            textUpdated: 'textUpdated',
-            textDeleted: 'textDeleted',
+            textCreated: 'textsCreated',
+            textUpdated: 'textsUpdated',
+            textDeleted: 'textsDeleted',
 
-            userCreated: 'userCreated',
-            userUpdated: 'userUpdated',
+            userCreated: 'usersCreated',
+            userUpdated: 'usersUpdated',
 
-            layoutCreated: 'layoutCreated',
-            layoutUpdated: 'layoutUpdated'
+            layoutCreated: 'layoutsCreated',
+            layoutUpdated: 'layoutsUpdated'
 
         });
 })();

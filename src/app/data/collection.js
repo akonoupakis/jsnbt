@@ -579,8 +579,8 @@ Collection.prototype.save = function (ctx, fn) {
                             done(err, null);
                         }
                         else {
-                            done(null, item);
                             if (session && session.emitToAll) session.emitToAll(collection.name + ':changed');
+                            done(null, item);
                         }
                     });
 
