@@ -18,8 +18,7 @@
         <hr />
 
         <div class="row" id="settings-page" data-scrollspy="home page">
-            <ctrl-node class="{{ application.restricted ? 'col-md-6' : 'col-md-12' }}" ng-model="settings.homepage" ng-domain="'core'" ng-required="true" ng-options="{entities: ['page']}" ng-label="home page"></ctrl-node>
-            <ctrl-node class="col-md-6" ng-model="settings.loginpage" ng-domain="'core'" ng-required="true" ng-options="{entities: ['page']}" ng-label="login page" ng-show="application.restricted" ng-disabled="!application.restricted"></ctrl-node>
+            <ctrl-node class="col-md-12" ng-model="settings.homepage" ng-domain="'core'" ng-required="true" ng-options="{entities: ['page']}" ng-label="home page"></ctrl-node>
         </div>
         
         <hr />

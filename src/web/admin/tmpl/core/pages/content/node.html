@@ -135,10 +135,10 @@
             <hr />
         </div>
 
-        <div id="page-permissions" data-scrollspy="permissions" ng-show="application.restricted && entity.properties.permissions">
+        <div id="page-permissions" data-scrollspy="permissions" ng-show="entity.properties.permissions">
             <div class="row">
-                <ctrl-check-list class="col-md-10" ng-model="nodeRoles" ng-options="roles" ng-required="true" ng-disabled="!application.restricted || !entity.properties.permissions || node.roles.inherits" ng-label="permissions"></ctrl-check-list>
-                <ctrl-check class="col-md-2" ng-model="node.roles.inherits" ng-disabled="!application.restricted || !entity.properties.permissions" ng-label="inheritance"></ctrl-check>                
+                <ctrl-check-list class="col-md-10" ng-model="nodeRoles" ng-options="roles" ng-required="true" ng-disabled="!entity.properties.permissions || node.roles.inherits" ng-label="permissions"></ctrl-check-list>
+                <ctrl-check class="col-md-2" ng-model="node.roles.inherits" ng-disabled="!entity.properties.permissions" ng-label="inheritance"></ctrl-check>                
             </div>
 
             <hr />

@@ -11,8 +11,7 @@ if (self.domain === 'core') {
                 type: 'object',
                 required: true,
                 properties: {
-                    homepage: { type: "string", required: true },
-                    loginpage: { type: "string", required: server.jsnbt.restricted || false }
+                    homepage: { type: "string", required: true }
                 }
             }
         }

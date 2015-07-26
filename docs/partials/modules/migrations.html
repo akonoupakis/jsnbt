@@ -1,3 +1,14 @@
-﻿<p>
-    data migrations per module
-</p>
+﻿<p>So far, all good. You define the site collections and start populating the data.</p>
+<p>At some point in the future, you will introduce new functionality that requires changes in one of your collections.<br />
+    Using mongo as the datasource, structural changes are automatic. What happens with changes in the data though?</p>
+<p>Each module may record a number of scripts under a /src/dat/ folder named alphabetically in the order that they need to be run against the database ()e.g. 20150402a-init.js, 20150404a-addedSmth.js, 20150404b-addedSmthElse.js).</p>
+<p>The status of the migration scripts are captured in the "migrations" data collection.</p>
+<p>A data migration script should look like:</p>
+<dcs-code>module.exports = {
+
+    process: function (db, next, error) {
+        // process here the db and call next();
+        next();
+    }
+
+};</dcs-code>

@@ -4,7 +4,7 @@ var _ = require('underscore');
 
 _.str = require('underscore.string');
 
-module.exports = function(server, dpd) {
+module.exports = function(server, db) {
 
     var getEntity = function (name) {
         return require('./entityMngr.js')(server, name);
@@ -12,7 +12,7 @@ module.exports = function(server, dpd) {
 
     var resolveHierarchy = function (nodes, node, cb) {
         if (node.parent && node.parent !== '') {
-            dpd.nodes.get(node.parent, function (result, error) {
+            db.nodes.get(node.parent, function (error, result) {
                 if (error)
                     throw error;
                 else {
@@ -31,10 +31,10 @@ module.exports = function(server, dpd) {
 
     var getDefaultLanguage = function (cb) {
 
-        if (server.jsnbt.localization) {
-            var defaultLanguage = 'en';
+        if (server.app.localization.enabled) {
+            var defaultLanguage = server.app.localization.locale;
 
-            dpd.languages.get({ active: true, "default": true }, function (defaultLanguages, defaultLanguagesError) {
+            db.languages.get({ active: true, "default": true }, function (defaultLanguagesError, defaultLanguages) {
                 if (defaultLanguagesError)
                     throw defaultLanguagesError;
                 else {
@@ -46,15 +46,15 @@ module.exports = function(server, dpd) {
             });
         }
         else {
-            cb('en');
+            cb(server.app.localization.locale);
         }
 
     };
 
     var getActiveLanguages = function (cb) {
 
-        if (server.jsnbt.localization) {
-            dpd.languages.get({ active: true }, function (dbLanguages, dbLanguagesError) {
+        if (server.app.localization.enabled) {
+            db.languages.get({ active: true }, function (dbLanguagesError, dbLanguages) {
                 if (dbLanguagesError)
                     throw dbLanguagesError;
                 else
@@ -62,27 +62,27 @@ module.exports = function(server, dpd) {
             });
         }
         else {
-            cb(['en']);
+            cb([server.app.localization.locale]);
         }
 
     };
 
     var resolvePointerUrl = function (returnObj, seoNodes, urlPath, url, cb) {
-        dpd.nodes.get({ id: returnObj.pointer.pointer.nodeId, domain: returnObj.pointer.pointer.domain }, function (pointedNode, pointedNodeError) {
+        db.nodes.get({ id: returnObj.pointer.pointer.nodeId, domain: returnObj.pointer.pointer.domain }, function (pointedNodeError, pointedNode) {
             if (pointedNodeError)
                 throw pointedNodeError;
             else if (!pointedNode)
                 throw new Error('pointed node not found');
             else {
                 var pointedSeoNames = _.str.trim(urlPath, '/') !== '' ? _.str.trim(urlPath, '/').split('/') : [];
-                var pack = _.first(_.filter(server.jsnbt.modules, function (x) {
+                var pack = _.find(server.app.modules.rest, function (x) {
                     return x.domain === pointedNode.domain
                       && x.url && _.isObject(x.url) && _.isFunction(x.url.resolve);
-                }));
+                });
                 if (pack) {
                     returnObj.seoNames = pointedSeoNames;
                     returnObj.pointed = pointedNode;
-                    returnObj.dpd = dpd;
+                    returnObj.db = db;
                     pack.url.resolve(returnObj, cb);
                 }
                 else {
@@ -99,7 +99,7 @@ module.exports = function(server, dpd) {
 
                         _.each(pointedSeoNames, function (pointedSeoName) {
                             var matchedPointedSeoNode = _.first(_.filter(seoNodes, function (x) {
-                                return x.seo[server.jsnbt.localization ? returnObj.language : 'en'].toLowerCase() === pointedSeoName.toLowerCase() &&
+                                return x.seo[server.app.localization.enabled ? returnObj.language : server.app.localization.locale].toLowerCase() === pointedSeoName.toLowerCase() &&
                                     x.parent === pointedLoopParentId &&
                                     x.domain === pointedNode.domain;
                             }));
@@ -139,9 +139,9 @@ module.exports = function(server, dpd) {
         var seoNames = _.str.trim(url, '/').split('/');
 
         var seoNamesQuery = {};
-        seoNamesQuery['seo.' + (server.jsnbt.localization ? language : 'en')] = { $in: seoNames };
+        seoNamesQuery['seo.' + (server.app.localization.enabled ? language : server.app.localization.locale)] = { $in: seoNames };
 
-        dpd.nodes.get(seoNamesQuery, function (urlSeoNodes, urlSeoNodesError) {
+        db.nodes.get(seoNamesQuery, function (urlSeoNodesError, urlSeoNodes) {
             if (urlSeoNodesError)
                 throw urlSeoNodesError;
             else {
@@ -152,7 +152,7 @@ module.exports = function(server, dpd) {
 
                 _.each(seoNames, function (seoName) {
                     var matchedSeoNode = _.first(_.filter(urlSeoNodes, function (x) {
-                        return x.seo[server.jsnbt.localization ? language : 'en'].toLowerCase() === seoName.toLowerCase() &&
+                        return x.seo[server.app.localization.enabled ? language : server.app.localization.locale].toLowerCase() === seoName.toLowerCase() &&
                             x.parent === loopParentId &&
                             x.domain === 'core';
                     }));
@@ -189,7 +189,7 @@ module.exports = function(server, dpd) {
                         returnObj.nodes = foundNodes;
                         returnObj.language = language;
                         returnObj.template = matchedNode.template;
-                        returnObj.dpd = dpd;
+                        returnObj.db = db;
                         returnObj.url = '/';
                         cb(returnObj);
                     }
@@ -222,7 +222,7 @@ module.exports = function(server, dpd) {
                         returnObj.nodes = foundNodes;
                         returnObj.route = routerNode.route;
                         returnObj.template = routerNode.template;
-                        returnObj.dpd = dpd;
+                        returnObj.db = db;
                         returnObj.url = fullUrlPart;
                         cb(returnObj);
                     }
@@ -281,18 +281,18 @@ module.exports = function(server, dpd) {
 
                     var inherited = {};
 
-                    if (!server.jsnbt.collections.nodes.inheritablePropertyNames) {
+                    if (!server.app.config.collections.nodes.inheritablePropertyNames) {
                         var inheritablePropertyNames = [];
-                        var propertyKeys = _.keys(server.jsnbt.collections.nodes.schema.properties);
+                        var propertyKeys = _.keys(server.app.config.collections.nodes.schema.properties);
                         _.each(propertyKeys, function (propertyKey) {
-                            var prop = server.jsnbt.collections.nodes.schema.properties[propertyKey];
+                            var prop = server.app.config.collections.nodes.schema.properties[propertyKey];
                             if (prop.type === 'object' && prop.inheritable === true)
                                 inheritablePropertyNames.push(propertyKey);
                         });
-                        server.jsnbt.collections.nodes.inheritablePropertyNames = inheritablePropertyNames;
+                        server.app.config.collections.nodes.inheritablePropertyNames = inheritablePropertyNames;
                     }
 
-                    _.each(server.jsnbt.collections.nodes.inheritablePropertyNames, function (inheritedName) {
+                    _.each(server.app.config.collections.nodes.inheritablePropertyNames, function (inheritedName) {
                         _.each(rSelf.nodes, function (rnode) {
                             if (rnode[inheritedName] && !rnode[inheritedName].inherits === true) {
                                 if (rnode[inheritedName].value)
@@ -315,23 +315,23 @@ module.exports = function(server, dpd) {
             var urlPart = '';
 
             getDefaultLanguage(function (defaultLanguage) {
-
+                
                 if (uri.path === '/') {
                     var languagePart = defaultLanguage;
                     var urlPart = uri.path;
 
-                    dpd.settings.getCached({ domain: 'core' }, function (settingNodes, settingNodesError) {
+                    db.settings.getCached({ domain: 'core' }, function (settingNodesError, settingNodes) {
                         if (settingNodesError)
                             throw settingNodesError;
                         else {
                             var settingNode = _.first(settingNodes);
                             if (settingNode && settingNode.data && settingNode.data.homepage) {
-
-                                dpd.nodes.get(settingNode.data.homepage, function (resolvedNode, resolvedNodeError) {
+                                
+                                db.nodes.get(settingNode.data.homepage, function (resolvedNodeError, resolvedNode) {
                                     if (resolvedNodeError)
                                         throw resolvedNodeError;
                                     else {
-                                        dpd.nodes.get({ hierarchy: resolvedNode.hierarchy }, function (resolvedHierarchyNodes, resolvedHierarchyNodesError) {
+                                        db.nodes.get({ hierarchy: resolvedNode.hierarchy }, function (resolvedHierarchyNodesError, resolvedHierarchyNodes) {
                                             if (resolvedHierarchyNodesError) {
                                                 throw resolvedHierarchyNodesError;
                                             }
@@ -366,7 +366,7 @@ module.exports = function(server, dpd) {
                     });
                 }
                 else {
-                    if (server.jsnbt.localization) {
+                    if (server.app.localization.enabled) {
                         getActiveLanguages(function (activeLanguages) {
                             if (activeLanguages.length > 0) {
                                 var parts = _.str.trim(uri.path, '/').split('/');
@@ -387,7 +387,7 @@ module.exports = function(server, dpd) {
                         });
                     }
                     else {
-                        languagePart = 'en';
+                        languagePart = server.app.localization.locale;
                         urlPart = _.str.rtrim(uri.path, '/');
 
                         resolveUrl(returnObj, languagePart, urlPart, (uri.query !== '' ? '?' + uri.query : ''), cb);
@@ -431,7 +431,7 @@ module.exports = function(server, dpd) {
                         cb(newUrl);
                     }
                     else {
-                        dpd.nodes.get({ id: { $in: parentHierarchy } }, function (results, error) {
+                        db.nodes.get({ id: { $in: parentHierarchy } }, function (error, results) {
                             if (error) {
                                 throw error;
                             }
@@ -462,7 +462,7 @@ module.exports = function(server, dpd) {
                                     for (var langItem in urlKeys) {
                                         var langUrl = '';
                                         var fullyResolved = true;
-                                        if (_.filter(server.jsnbt.languages, function (x) { return x.code === langItem; }).length > 0) {
+                                        if (_.filter(server.app.languages, function (x) { return x.code === langItem; }).length > 0) {
                                             _.each(hierarchyNodes, function (hnode) {
                                                 if (hnode.seo[langItem]) {
                                                     langUrl += '/' + hnode.seo[langItem];
@@ -477,7 +477,7 @@ module.exports = function(server, dpd) {
 
                                         if (langUrl !== '' && fullyResolved) {
                                             var resolvedLangUrl = '';
-                                            if (lastNode.domain === 'core' && server.jsnbt.localization && getEntity(lastNode.entity).isLocalized()) {
+                                            if (lastNode.domain === 'core' && server.app.localization.enabled && getEntity(lastNode.entity).isLocalized()) {
                                                 resolvedLangUrl += '/' + langItem;
                                             }
 
@@ -493,10 +493,10 @@ module.exports = function(server, dpd) {
 
                                     cache.add('node.url.' + parentCacheKey, parentUrl, function (parentCachedValue) {
 
-                                        var pack = _.first(_.filter(server.jsnbt.modules, function (x) {
+                                        var pack = _.find(server.app.modules.all, function (x) {
                                             return x.domain === firstNode.domain
                                                   && x.url && _.isObject(x.url) && _.isFunction(x.url.build);
-                                        }));
+                                        });
                                         if (pack) {
                                             extend(true, newUrl, parentUrl);
 
@@ -531,7 +531,7 @@ module.exports = function(server, dpd) {
             }
             else {
 
-                var pack = _.first(_.filter(server.jsnbt.modules, function (x) { return x.domain === node.domain && typeof (x.build) === 'function'; }));
+                var pack = _.find(server.app.modules.rest, function (x) { return x.domain === node.domain && typeof (x.build) === 'function'; });
                 if (pack) {
                     pack.build({
                         nodes: [],
@@ -545,7 +545,7 @@ module.exports = function(server, dpd) {
                     for (var langItem in node.seo) {
                         var seoName = node.seo[langItem];
                         var resolvedLangUrl = '';
-                        if (node.domain === 'core' && server.jsnbt.localization && getEntity(node.entity).isLocalized()) {
+                        if (node.domain === 'core' && server.app.localization.enabled && getEntity(node.entity).isLocalized()) {
                             resolvedLangUrl += '/' + langItem;
                         }
                         resolvedLangUrl += '/' + seoName;
@@ -591,7 +591,7 @@ module.exports = function(server, dpd) {
                         cb(newValue);
                     }
                     else {
-                        dpd.nodes.get({ id: { $in: parentHierarchy } }, function (results, error) {
+                        db.nodes.get({ id: { $in: parentHierarchy } }, function (error, results) {
                             if (error) {
                                 throw error;
                             }
@@ -619,7 +619,7 @@ module.exports = function(server, dpd) {
 
                                     for (var langItem in lastNode.active) {
                                         var langActive = true;
-                                        if (_.filter(server.jsnbt.languages, function (x) { return x.code === langItem; }).length > 0) {
+                                        if (_.filter(server.app.languages, function (x) { return x.code === langItem; }).length > 0) {
                                             _.each(hierarchyNodes, function (hnode) {
                                                 if (!hnode.active[langItem]) {
                                                     langActive = false;

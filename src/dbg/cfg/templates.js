@@ -1,8 +1,25 @@
 module.exports = [{
+    id: 'error',
+    name: 'error page',
+    html: '/err/error.html',
+    restricted: [''],
+    scripts: [
+        ['lib', 'app']
+    ],
+    styles: [
+        ['lib', 'app']
+    ]
+}, {
     id: 'home',
     name: 'home page',
     html: '/tmpl/index.html',
-    restricted: ['page']
+    restricted: ['page'],
+    scripts: [
+        ['lib', 'app']
+    ],
+    styles: [
+        ['lib', 'app']
+    ]
 }, {
     id: 'login',
     name: 'login page',

@@ -4,9 +4,9 @@ var self = this;
 
 var languageProperties = {};
 
-if (server.jsnbt.localization) {
+if (server.app.localization.enabled) {
 
-    _.each(server.jsnbt.languages, function (lang) {
+    _.each(server.app.languages, function (lang) {
         languageProperties[lang] = {
             type: "string"
         }

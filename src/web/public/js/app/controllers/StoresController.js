@@ -11,13 +11,13 @@
             var loadStores = function () {
                 var deferred = $q.defer();
 
-                dpd.nodeurls.get({
+                jsnbt.db.nodeurls.get({
                     language: $scope.language,
                     hierarchy: $scope.pageId,
                     nodeId: {
                         $nin: [$scope.pageId]
                     }
-                }, function (results, error) {
+                }, function (error, results) {
                     if (error) {
                         deferred.reject(error);
                     }

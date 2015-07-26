@@ -9,7 +9,7 @@ var anyUsers = function (cb) {
         cb(server.app.anyUsers);
     }
     else {
-        dpd.users.count({}, function (result) {
+        db.users.count({}, function (err, result) {
             server.app.anyUsers = result.count > 0;
             cb(server.app.anyUsers);
         });

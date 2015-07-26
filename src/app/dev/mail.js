@@ -4,7 +4,7 @@
 
         route: function (ctx, next) {
 
-            if (ctx.uri.first === 'jsnbt-dev' && server.app.dbg && ctx.uri.parts.length > 2) {
+            if (ctx.uri.parts.length > 2) {
 
                 var templateCode = ctx.uri.parts[2];
                 server.messager.mail.getTemplate(templateCode, function (err, tmpl) {
@@ -40,6 +40,9 @@
                     }
                 });
 
+            }
+            else {
+                next();
             }
 
         }

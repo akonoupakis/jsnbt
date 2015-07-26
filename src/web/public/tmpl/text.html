@@ -10,40 +10,13 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!--meta-->
     <title><%= meta.title %></title>
     <meta name="keywords" content="<%= meta.keywords %>" />
     <meta name="description" content="<%= meta.description %>" />
-
-    <% _.each(params, function(p) { %><meta name="<%= p.name %>" content="<%= p.content %>" />
-    <% }); %>
-
-    <!-- @if NODE_ENV='DEVELOPMENT' -->
-    <link rel="stylesheet" href="css/style.css" />
-
-    <% _.each(js.lib, function(file) { %>
-    <script type="text/javascript" src="<%= file %>"></script>
-    <% }); %>
-    <script type="text/javascript" src="dpd.js"></script>
-    <script type="text/javascript" src="jsnbt.js"></script>
-
-    <% _.each(js.app, function(file) { %>
-    <script type="text/javascript" src="<%= file %>"></script>
-    <% }); %>
-    <script type="text/javascript" src="js/init.js"></script>
-    <!-- @endif -->
-    <!-- @if NODE_ENV='PRODUCTION' -->
-    <link rel="stylesheet" href="css/style.min.css" />
-
-    <script type="text/javascript" src="js/lib.min.js"></script>
-
-    <script type="text/javascript" src="dpd.js"></script>
-    <script type="text/javascript" src="jsnbt.js"></script>
-
-    <script type="text/javascript" src="js/app.min.js"></script>
-
-    <script type="text/javascript" src="js/init.min.js"></script>
-    <!-- @endif -->
+    <% _.each(params, function(p) { %>
+    <meta name="<%= p.name %>" content="<%= p.content %>" /><% }); %>
+    <% _.each(styles, function(file) { %>
+    <link rel="stylesheet" href="<%= file %>" /><% }); %>
 </head>
 <body ng-controller="AppController" ng-init="setTexts('common', 'country', 'aboutLabel')">
     <section>
@@ -57,12 +30,9 @@
             about translated text: {{ text.aboutLabel }}
             <br />
             country el translated text: {{ text.country.GR }}
-
-            <hr />
-            sample text : {{ page.title }}
-            <hr />
-            layout samnple : {{ layout.header }}
         </div>
     </section>
+    <% _.each(scripts, function(file) { %>
+    <script type="text/javascript" src="<%= file %>"></script><% }); %>
 </body>
 </html>

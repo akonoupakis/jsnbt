@@ -14,13 +14,19 @@
         </p>
     </li>
     <li>
+        <h4>hosts.js</h4>
+        <p>
+            This is the hosting configuration file. This should be kept out of source control systems and should not be overriden during deployment.
+        </p>
+    </li>
+    <li>
         <h4>gruntfile.js</h4>
         <p>
             This is used by the grunt task runner to bundle the site to a deployment target folder (dev/dist) in order to be started by the node web server.
             <br />
             The jsnbt grunt process is fairly complicated, so it has been embedded in the jsnbt core code and will be covered in next chapters.
             <br />
-            In your gruntfile, you should point the grunt function to <b>jsnbt/src/util/grunt.js</b>.
+            In your gruntfile, you should point the grunt function to <b>jsnbt/gruntfile.js</b>.
         </p>
     </li>
     <li>
@@ -40,9 +46,9 @@
         </p>
     </li>
     <li>
-        <h4>server-dev.js / server-prod.js</h4>
+        <h4>server-app.js</h4>
         <p>
-            Runs the application on the respective deployment target.
+            Runs the application in node.
         </p>
     </li>
 </ul>
@@ -59,9 +65,9 @@
 <p>
     Run <b>grunt dev</b> or <b>grunt prod</b> to grunt the app (this also downloads any bower components needed).
     <br />
-    Run <b>node server-dev.js</b> or <b>node server-prod.js</b> to run the app.
+    Run <b>node server-app.js</b> to run the app.
 </p>
 <h3>you're done</h3>
 <p>
-    You can hit the /admin section to create your first sa user and access the administration panel and you can hit the /dashboard section for the deployd dashboard.
+    You can hit the /admin section to create your first sa user and access the administration panel.
 </p>

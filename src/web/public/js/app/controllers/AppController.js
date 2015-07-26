@@ -35,7 +35,7 @@
             $scope.localizedUrls = [];
 
             // method to be triggered on ng-init. 
-            // the arguments would be either key or group names to filter on dpd.texts
+            // the arguments would be either key or group names to filter on jsnbt.db.texts
             // the results will form an object with grouped text entries as intended from the data structure
             $scope.setTexts = function () {
                 var textKeys = _.filter(arguments, function (x) { return typeof(x) === 'string' });
@@ -189,12 +189,12 @@
             });
 
 
-            dpd.layouts.get({
+            jsnbt.db.layouts.get({
                 layout: 'eshop'
-            }, function (res, err) {
+            }, function (err, res) {
                 
                 var eshopLayout = res[0];
-                dpd.layouts.put(eshopLayout, {
+                jsnbt.db.layouts.put(eshopLayout, {
                     layout: 'eshop',
                     content: {
                         testData: 'td2',
@@ -207,12 +207,12 @@
             });
 
            
-            //dpd.layouts.post({
+            //jsnbt.db.layouts.post({
             //    layout: 'eshop',
             //    content: {
             //        testData: 'aAaAaA-bBB'
             //    }
-            //}, function (res, err) {
+            //}, function (err, res) {
             //    console.log(err, res);
             //});
 

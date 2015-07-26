@@ -1,4 +1,4 @@
-var node = requireApp('cms/nodeMngr.js')(server, dpd);
+var node = requireApp('cms/nodeMngr.js')(server, db);
 
 var _ = require('underscore');
 
@@ -7,7 +7,7 @@ var self = this;
 var entity = requireApp('cms/entityMngr.js')(server, self.entity);
 
 if (entity.hasProperty('seo')) {
-    dpd.nodes.get({ parent: self.parent, domain: self.domain, id: { $nin: [self.id] } }, function (siblingNodes, siblingNodesError) {
+    db.nodes.get({ parent: self.parent, domain: self.domain, id: { $nin: [self.id] } }, function (siblingNodesError, siblingNodes) {
         if (siblingNodesError)
             throw siblingNodesError;
         else {

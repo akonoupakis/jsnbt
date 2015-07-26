@@ -31,7 +31,7 @@
                             active: false,
                             default: false,
                         });
-
+                        
                         var activeLanguageCodes = _.pluck($scope.application.languages, 'code');
                         $scope.languages = _.filter($scope.defaults.languages, function (x) { return activeLanguageCodes.indexOf(x.code) === -1; });
 

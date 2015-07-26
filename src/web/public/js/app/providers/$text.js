@@ -17,7 +17,7 @@
 
                             var matches = typeof (match) === 'string' ? [match] : match;
 
-                            dpd.texts.get({
+                            jsnbt.db.texts.get({
                                 $or: [{
                                     key: {
                                         $in: matches
@@ -27,7 +27,7 @@
                                         $in: matches
                                     }
                                 }]
-                            }, function (results, error) {
+                            }, function (error, results) {
                                 if (error) {
                                     deferred.reject(error);
                                 }

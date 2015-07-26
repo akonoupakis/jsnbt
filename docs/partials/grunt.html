@@ -5,10 +5,10 @@
     We use grunt to prepare the a target folder with the nessesary app files for deployment.
 </p>
 <p>
-    In general lines, grunting, gets the files from all installed modules from their "src/" folders and merges them to the deployment folder target  ("dev/" or "dist/").
+    In general lines, grunting, gets the files from all installed modules from their "src/" folders and merges them to the deployment folder target ("www/").
 </p>
 <p>
-    Upon grunt, the "src/public/" ends to "{target}/public/" and the "src/admin/" ends to "{target}/public/admin/" ready as wanted by the app so that the admin would reside in a "/admin" directory.
+    Upon grunt, the "src/public/" files are placed in "/www/public/" and the "src/admin/" files in "/www/public/admin/" ready as wanted by the app so that the admin would reside in a "/admin" directory.
 </p>
 <p>
     The "src/app/" location containing all server side code is left out as it is always triggered from the downloaded npm packages, from "node_modules".

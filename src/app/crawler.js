@@ -12,7 +12,7 @@ var Crawler = function (server) {
         crawl: function (url, onSuccess, onError) {
 
             var childArgs = [
-                path.join(__dirname, 'crawling', 'phantom.js'),
+                path.join(__dirname, 'crawl', 'phantom.js'),
                 url
             ];
 

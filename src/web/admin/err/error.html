@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html lang="<%= language %>" ng-controller="AppController">
+<head>
+    <base href="<%= baseHref %>" />
+    <meta charset="utf-8" />
+
+    <meta name="robots" content="noindex,nofollow" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--meta-->
+    <title><%= meta.title %></title>
+    <meta name="keywords" content="<%= meta.keywords %>" />
+    <meta name="description" content="<%= meta.description %>" />
+
+    <% _.each(styles, function(file) { %>
+    <link rel="stylesheet" href="<%= file %>" /><% }); %>
+</head>
+<body>
+    <h1><b><%= error %></b> <%= text %></h1>
+    <!-- @if NODE_ENV='DEVELOPMENT' -->
+    <p><%= stack %></p>
+    <!-- @endif -->
+
+    <% _.each(scripts, function(file) { %>
+    <script type="text/javascript" src="<%= file %>"></script><% }); %>
+</body>
+</html>

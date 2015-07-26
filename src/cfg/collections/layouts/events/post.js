@@ -1,8 +1,8 @@
 var self = this;
 
-dpd.layouts.get({
+db.layouts.get({
     layout: self.layout
-}, function (matched, matchedError) {
+}, function (matchedError, matched) {
     if (matchedError)
         throw matchedError;
     else

@@ -13,7 +13,7 @@
                 var deferred = $q.defer();
                 
                 if (parentIds.length > 0) {
-                    dpd.nodes.get({
+                    jsnbt.db.nodes.get({
                         parent: {
                             $in: parentIds
                         },
@@ -21,7 +21,7 @@
                             $in: entities
                         },
                         "$sort": { "order": 1 }
-                    }, function (results, error) {
+                    }, function (error, results) {
                         if (error)
                             deferred.reject(error);
                         else {
@@ -39,7 +39,7 @@
             var getDomainNodes = function (domain, parentIds, entities) {
                 var deferred = $q.defer();
 
-                dpd.nodes.get({
+                jsnbt.db.nodes.get({
                     domain: domain,
                     parent: {
                         $in: parentIds
@@ -48,7 +48,7 @@
                         $in: entities
                     },
                     "$sort": { "order": 1 }
-                }, function (results, error) {
+                }, function (error, results) {
                     if (error)
                         deferred.reject(error);
                     else {
@@ -63,11 +63,11 @@
                 var deferred = $q.defer();
 
                 if (ids.length > 0) {
-                    dpd.nodes.get({
+                    jsnbt.db.nodes.get({
                         id: {
                             $in: ids
                         }
-                    }, function (results, error) {
+                    }, function (error, results) {
                         if (error)
                             deferred.reject(error);
                         else {

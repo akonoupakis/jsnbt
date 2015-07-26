@@ -48,6 +48,18 @@ module.exports = {
         }
     },
 
+    routeNode: function (server, ctx, resolved, next) {
+
+        if (ctx.restricted) {
+            console.log('restricted page; intercepted here, could redirect to a login page');
+            next();
+        }
+        else {
+            next();
+        }
+
+    },
+
     routeSearch: function (server, ctx, next) {
 
         var notimp = true;

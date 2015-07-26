@@ -1,0 +1,31 @@
+{
+	"name": "",
+    "domain": "core",                
+    "entity": "page",
+    "parent": "",
+    "layout": {
+        "inherits": true,
+        "value": ""
+    },
+    "content": {
+        "localized": {}
+    },
+    "seo": {},
+    "active": {},
+    "secure": {
+        "inherits": true,
+        "value": false
+    },
+    "meta": {},
+    "createdOn": 0,
+    "modifiedOn": 0,
+    "roles": {
+        "inherits": true,
+        "values": []
+    },
+    "robots": {
+        "inherits": true,
+        "values": []
+    },                
+    "hierarchy": []
+}

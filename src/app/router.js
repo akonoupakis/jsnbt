@@ -4,15 +4,15 @@ var _ = require('underscore');
 _.str = require('underscore.string');
 
 var routerNames = [
-    './routing/home.js',
-    './routing/api.js',
-    './routing/image.js',
-    './routing/jsnbt.js',
-    './routing/dev.js',
-    './routing/upload.js',
-    './routing/admin.js',
-    './routing/site.js',
-    './routing/public.js'
+    './route/home.js',
+    './route/api.js',
+    './route/image.js',
+    './route/dev.js',
+    './route/upload.js',
+    './route/admin.js',
+    './route/resource.js',
+    './route/site.js',
+    './route/public.js'
 ];
 
 var getRouters = function (server) {
@@ -40,24 +40,24 @@ var Router = function(server, req, res) {
 
     var logger = require('./logger.js')(this);
 
-    var ignoredPaths = ['dashboard', 'dpd.js', '__resources', 'socket.io', 'favicon.ico', 'app-offline.htm', 'dpd'];
+    var ignoredPaths = [];
 
-    var ignoredPathPrefixes = ['/css/', '/font/', '/img/', '/js/', '/tmpl/', '/tmp/', '/files/', '/admin/css/', '/admin/font/', '/admin/img/', '/admin/js/', '/admin/tmpl/'];
+    var ignoredPathPrefixes = [];
+
+    var forbiddedPathPrefixes = [];
 
     var notFoundPaths = [];
-    var templatePaths = _.pluck(server.jsnbt.templates, 'path');
+    var templatePaths = _.pluck(server.app.config.templates, 'path');
     notFoundPaths = _.union(notFoundPaths, templatePaths);
-    notFoundPaths = _.union(notFoundPaths, ['/tmp/', '/error/', '/admin/error/']);
+    notFoundPaths = _.union(notFoundPaths, ['/error/', '/admin/error/']);
 
     var formPaths = _.union(
-        _.pluck(_.filter(server.jsnbt.templates, function (x) { return x.form !== undefined; }), 'form'),
-        _.pluck(_.filter(server.jsnbt.lists, function (x) { return x.form !== undefined; }), 'form')
+        _.pluck(_.filter(server.app.config.templates, function (x) { return x.form !== undefined; }), 'form'),
+        _.pluck(_.filter(server.app.config.lists, function (x) { return x.form !== undefined; }), 'form')
     );
 
     var checkForbidded = function (ctx, next) {
         
-        var forbiddedPathPrefixes = [];
-
         var forbidRequest = false;
         for (var i = 0; i < forbiddedPathPrefixes.length; i++) {
             if (_.str.startsWith(ctx.uri.path, forbiddedPathPrefixes[i])) {
@@ -93,12 +93,7 @@ var Router = function(server, req, res) {
             if (_.filter(formPaths, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length > 0) {
                 processRequest = true;
             }
-
-            if (!processRequest && ctx.uri.first === 'files') {
-                var imageRouter = require('./routing/image.js')(server);
-                processRequest = imageRouter.canRoute(ctx);
-            }
-
+            
             if (processRequest) {
                 req._routed = true;
 
@@ -122,16 +117,16 @@ var Router = function(server, req, res) {
 
                 ctx.session = session;
 
-                ctx.timer.start('dpd internal client built');
-                dpd = require('deployd/lib/internal-client').build(server, session, req.stack);
-                ctx.timer.stop('dpd internal client built');
+                ctx.timer.start('db-api built');
+                var dbClient = require('./database.js').build(server, session, req.stack);
+                ctx.timer.stop('db-api built');
 
-                ctx.dpd = dpd;
+                ctx.db = dbClient;
 
                 if ((session.data && session.data.uid) && !session.user) {
 
                     ctx.timer.start('current user retrieval');
-                    dpd.users.get(session.data.uid, function (user, err) {
+                    dbClient.users.get(session.data.uid, function (user, err) {
                         ctx.timer.stop('current user retrieval');
                         if (user) {
                             session.user = user;
@@ -151,7 +146,7 @@ var Router = function(server, req, res) {
     var processRequest = function (ctx) {
         ctx.req.cookies.set('sid', ctx.session.sid);
         
-        ctx.req.dpd = ctx.dpd;
+        ctx.req.db = ctx.db;
 
         ctx.req.session = ctx.session;
 
@@ -162,7 +157,7 @@ var Router = function(server, req, res) {
                 ctxInteral.error(404);
             }
             else {
-                fs.readFile(server.getPath(server.app.directory + '/public' + ctx.uri.path), function (readErr, readResults) {
+                fs.readFile(server.getPath('www/public' + ctx.uri.path), function (readErr, readResults) {
                     if (readErr) {
                         ctx.error(500, readErr);
                     }
@@ -182,7 +177,6 @@ var Router = function(server, req, res) {
                 router.route(ctx, next);
             };
 
-            
             var first = _.first(routers);
             first.route(ctx, next);
         }
@@ -192,7 +186,7 @@ var Router = function(server, req, res) {
 
         process: function () {
 
-            var ctx = require('./context.js')(server, req, res);
+            var ctx = new require('./context.js')(server, req, res);
 
             checkForbidded(ctx, function () {
                 checkFound(ctx, function () {

@@ -13,17 +13,25 @@
     <dcs-definition-title type="function">init(application)</dcs-definition-title>
     <dcs-definition-desc>runs on application start</dcs-definition-desc>
 
-    <dcs-definition-title type="function">getConfig()</dcs-definition-title>
-    <dcs-definition-desc>returns the module's cofiguration as a json object</dcs-definition-desc>
-
+    <dcs-definition-title type="function">getName()</dcs-definition-title>
+    <dcs-definition-desc>returns the module's name</dcs-definition-desc>
+    
     <dcs-definition-title type="function">getVersion()</dcs-definition-title>
     <dcs-definition-desc>returns the module's current version</dcs-definition-desc>
 
+    <dcs-definition-title type="function">getConfig()</dcs-definition-title>
+    <dcs-definition-desc>returns the module's cofiguration as a json object</dcs-definition-desc>
+    
     <dcs-definition-title type="function">getBower()</dcs-definition-title>
     <dcs-definition-desc>returns the module's bower cofiguration as a json object</dcs-definition-desc>
 
-    <dcs-definition-title type="function">route(server, ctx, next)</dcs-definition-title>
-    <dcs-definition-desc>could intercept the routing process here, or trigger the next router</dcs-definition-desc>
+    <dcs-definition-title type="function">routePointer(server, ctx, next)</dcs-definition-title>
+    <dcs-definition-desc>specify a custom pointer routing process<br />
+        the system invokes this method on a specific module if a pointer points to a node of the module
+    </dcs-definition-desc>
+
+    <dcs-definition-title type="function">routeApi(server, ctx, serviceName, fnName, fields, files, next)</dcs-definition-title>
+    <dcs-definition-desc>targets modules that expose a jsnbt api under /jsnbt-api/{domain}/{serviceName}/{fnName}/ for the module's domain</dcs-definition-desc>
 
     <dcs-definition-title type="function">view.preparse(server, ctx, preparsingContext, next)</dcs-definition-title>
     <dcs-definition-desc>could change the preparsingContext.model and the preparsingContext.tmpl before rendering</dcs-definition-desc>
@@ -31,46 +39,36 @@
     <dcs-definition-title type="function">view.postparse(server, ctx, postparsingContext, next)</dcs-definition-title>
     <dcs-definition-desc>could change the postparsingContext.html upon render</dcs-definition-desc>
 
-    <dcs-definition-title type="function">routePointer(server, ctx, next)</dcs-definition-title>
-    <dcs-definition-desc>
-        specify a custom pointer routing process<br />
-        the system invokes this method on a specific module if a pointer points to a node of the module
-    </dcs-definition-desc>
-
-    <dcs-definition-title type="function">routeApi(server, ctx, serviceName, fnName, fields, files, next)</dcs-definition-title>
-    <dcs-definition-desc>targets modules that expose a jsnbt api under /jsnbt-api/{domain}/{serviceName}/{fnName}/ for the module's domain</dcs-definition-desc>
-
     <dcs-definition-sample>var app = null;
 
 module.exports = {
 
     domain: 'public',
-    public: true,
 
     init: function (application) {
         app = application;
     },
 
-    getConfig: function () {
-        return require('../cfg/config.js');
+    getName: function () {
+        return require('../../package.json').name;
     },
 
     getVersion: function () {
         return require('../../package.json').version;
     },
 
+    getConfig: function () {
+        return require('../cfg/config.js');
+    },
+
     getBower: function () {
         return require('../src/web/bower.json');
     },
-
-    route: function (ctx, next) {
-        next();
-    },
-
+    
     routeApi: function (server, ctx, serviceName, fnName, fields, files, next) {
         next();
     },
-
+    
     routePointer: function (server, ctx, next) {
         next();
     },

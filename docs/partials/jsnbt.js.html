@@ -1,0 +1,57 @@
+﻿<p>Upon grunting, the jsnbt.js file is written to the root of the web application (www/jsnbt.js)</p>
+<p>This starts a jsnbt js namespace that exposes all merged configuration from all installed modules, as well as ap powerful data api.</p>
+<pre>&lt;script type="text/javascript" src="jsnbt.js"&gt;&lt;/script&gt;</pre>
+
+<dcs-container title="jsnbt.js &raquo; db" title-level="3" spy-title="db" spy-level="2">
+    <p>The admin and the site have access to the app data through this api.</p>
+    <p>For each data collection, api functions are generated for CRUD use for these collections as the following</p>
+    <dcs-code>// read
+jsnbt.db.nodes.get({
+    id: 'XXX'
+}, function (err, res) {
+    if (err) {
+        throw err;
+    }
+    else {
+        console.log(res);
+    }
+});
+
+// create
+jsnbt.db.nodes.post({
+    text: ''
+}, function (err, res) {
+    if (err) {
+        throw err;
+    }
+    else {
+        console.log(res);
+    }
+});
+
+// update
+jsnbt.db.nodes.put({
+    id: 'XXX'
+}, {
+    text: ''
+}, function (err, res) {
+    if (err) {
+        throw err;
+    }
+    else {
+        console.log(res);
+    }
+});
+
+// delete
+jsnbt.db.nodes.del({
+    id: 'XXX'
+}, function (err, res) {
+    if (err) {
+        throw err;
+    }
+    else {
+        console.log(res);
+    }
+});</dcs-code>
+</dcs-container>

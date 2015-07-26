@@ -1,16 +1,12 @@
 module.exports = {
     
-    ssl: true,
+    ssl: false,
 
     // locale: 'el',
     
-    restricted: true,
-
     fileGroups: [],
 
     images: require('./images.js'),
-
-    scripts: [],
     
     entities: [],
 
@@ -27,6 +23,10 @@ module.exports = {
     containers: require('./containers.js'),
 
     templates: require('./templates.js'),
+
+    scripts: require('./scripts.js'),
+
+    styles: require('./styles.js'),
 
     lists: require('./lists.js'),
 

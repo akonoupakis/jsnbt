@@ -6,7 +6,7 @@ validate({
         collection: {
             type: "string",
             required: true,
-            enum: _.keys(server.jsnbt.collections)
+            enum: _.keys(server.app.config.collections)
         }
     }
 });

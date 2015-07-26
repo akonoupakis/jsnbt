@@ -8,9 +8,6 @@
         "locale": { 
 			"type": "string" 
 		},
-        "restricted": { 
-			"type": "boolean" 
-		},
 		"jsModule": {
 			"type": "string"
 		},
@@ -25,10 +22,52 @@
         "scripts": { 
 			"type": "array", 
 			"items": { 
-				"type": "string", 
-				"required": true 
-			}, 
-			"uniqueItems": true 
+				"type": "object", 
+				"required": true,
+				"properties": {
+					"name": { 
+						"type": "string", 
+						"required": true 
+					},
+					"items": { 
+						"type": "array", 
+						"required": true,
+						"items": {
+							"type": "string",
+							"required": true
+						},
+						"uniqueItems": true 
+					},
+					"process": { 
+						"type": "boolean"
+					}
+				} 
+			} 
+		},
+		"styles": { 
+			"type": "array", 
+			"items": { 
+				"type": "object", 
+				"required": true,
+				"properties": {
+					"name": { 
+						"type": "string", 
+						"required": true 
+					},
+					"items": { 
+						"type": "array", 
+						"required": true,
+						"items": {
+							"type": "string",
+							"required": true
+						},
+						"uniqueItems": true 
+					},
+					"process": { 
+						"type": "boolean"
+					}
+				} 
+			} 
 		},
         "entities": { 
 			"type": "array", 

@@ -89,7 +89,7 @@
                     $scope.mailProviders = providers;
 
                     deferred.resolve(providers);
-                    console.log(providers);
+
                     return deferred.promise;
                 },
 
@@ -97,8 +97,6 @@
                     var deferred = $q.defer();
 
                     var providers = [];
-
-                 //   providers.push({ value: 'null', name: 'Please select', tmpl: null });
 
                     for (var providerDomain in $jsnbt.messaging.sms) {
                         var provider = $jsnbt.messaging.sms[providerDomain];

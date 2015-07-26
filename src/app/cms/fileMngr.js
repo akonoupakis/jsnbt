@@ -70,11 +70,11 @@ var FileManager = function (server) {
 
             var root = 'files';
 
-            var rootPath = path.join(server.getPath(server.app.directory), 'public', root);
+            var rootPath = path.join(server.getPath('www'), 'public', root);
 
             if (opts.path) {
 
-                var fullPath = path.join(server.getPath(server.app.directory), 'public', root, normalize(opts.path));
+                var fullPath = path.join(server.getPath('www'), 'public', root, normalize(opts.path));
                 if (fs.existsSync(fullPath)) {
                     var cstats = fs.statSync(fullPath);
                     if (cstats.isFile()) {
@@ -92,7 +92,7 @@ var FileManager = function (server) {
                 var results = [];
 
                 _.each(opts.paths, function (loopPath) {
-                    var loopFullPath = path.join(server.getPath(server.app.directory), 'public', root, normalize(loopPath));
+                    var loopFullPath = path.join(server.getPath('www'), 'public', root, normalize(loopPath));
 
                     if (fs.existsSync(loopFullPath)) {
                         var fstats = fs.statSync(loopFullPath);
@@ -127,7 +127,7 @@ var FileManager = function (server) {
 
             var root = 'files';
 
-            var fullPath = path.join(server.getPath(server.app.directory), 'public', root, normalize(opts.path));
+            var fullPath = path.join(server.getPath('www'), 'public', root, normalize(opts.path));
             if (fs.existsSync(fullPath)) {
                 fs.delete(fullPath);
                 return true;
@@ -155,7 +155,7 @@ var FileManager = function (server) {
 
             var root = 'files';
 
-            var fullPath = path.join(server.getPath(server.app.directory), 'public', root, normalize(opts.path));
+            var fullPath = path.join(server.getPath('www'), 'public', root, normalize(opts.path));
             if (fs.existsSync(fullPath)) {
                 fs.create(path.join(fullPath, opts.name));
                 return true;
@@ -183,8 +183,8 @@ var FileManager = function (server) {
 
             var root = 'files';
 
-            var fullPath = path.join(server.getPath(server.app.directory), 'public', root, normalize(opts.from));
-            var fullNewPath = path.join(server.getPath(server.app.directory), 'public', root, normalize(opts.to));
+            var fullPath = path.join(server.getPath('www'), 'public', root, normalize(opts.from));
+            var fullNewPath = path.join(server.getPath('www'), 'public', root, normalize(opts.to));
             if (fs.existsSync(fullPath) && !fs.existsSync(fullNewPath)) {
                 fs.renameSync(fullPath, fullNewPath);
                 return true;

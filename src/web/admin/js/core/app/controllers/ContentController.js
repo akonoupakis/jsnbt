@@ -6,7 +6,10 @@
     angular.module("jsnbt")
         .controller('ContentController', ['$scope', '$jsnbt', '$location', function ($scope, $jsnbt, $location) {
 
-            $scope.goto = function (name) {
+            $scope.goto = function (name, disabled) {
+                if (disabled)
+                    return;
+
                 $location.next('/content/' + name);
             };
             

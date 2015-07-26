@@ -7,7 +7,9 @@ module.exports = {
 
     images: require('./images.js'),
 
-    scripts: [],
+    scripts: require('./scripts.js'),
+
+    styles: require('./styles.js'),
     
     entities: require('./entities.js'),
 
@@ -20,5 +22,7 @@ module.exports = {
     lists: [],
 
     messaging: require('./messaging.js'),
+
+    templates: require('./templates.js')
 
 }
