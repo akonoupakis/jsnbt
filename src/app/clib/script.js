@@ -52,7 +52,8 @@ var Script = function (app) {
 
             if (module.domain !== 'core') {
                 result.modules[module.domain] = {
-                    name: typeof(module.getName) === 'function' ? module.getName() : undefined,
+                    name: typeof (module.getName) === 'function' ? module.getName() : undefined,
+                    
                     domain: module.domain,
                     version: typeof (module.getVersion) === 'function' ? module.getVersion() : undefined,
                     pointed: module.pointed,

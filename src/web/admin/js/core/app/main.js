@@ -14,6 +14,11 @@
     modules.push('infinite-scroll');
     modules.push('flow');
     modules.push('ui.tinymce');
+
+    for (var moduleDomain in jsnbt.modules) {
+        if (jsnbt.modules[moduleDomain].domain !== 'public' && jsnbt.modules[moduleDomain].name)
+            modules.push(jsnbt.modules[moduleDomain].name);
+    }
     
     angular.module('jsnbt', modules)
     .config(['$routeProvider', '$jsnbtProvider', 'flowFactoryProvider', function ($routeProvider, $jsnbtProvider, flowFactoryProvider) {

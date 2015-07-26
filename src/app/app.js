@@ -139,11 +139,11 @@ exports.register = function (module) {
         if (_.isArray(moduleConfig[configName])) {
             _.each(moduleConfig[configName], function (moduleItem) {
 
-                if (self.config[configName][matchName]) {
-                    extend(true, self.config[configName][moduleItem.name], moduleItem);
+                if (self.config[configName][moduleItem[matchName]]) {
+                    extend(true, self.config[configName][moduleItem[matchName]], moduleItem);
                 }
                 else {
-                    self.config[configName][moduleItem.name] = clone(moduleItem, defaults);
+                    self.config[configName][moduleItem[matchName]] = clone(moduleItem, defaults);
                 }
             });
         }
@@ -167,10 +167,31 @@ exports.register = function (module) {
         }
     };
     
-    applyArrayInObject('scripts', 'name');
 
-    applyArrayInObject('styles', 'name');
-        
+    if (_.isArray(moduleConfig.scripts)) {
+        _.each(moduleConfig.scripts, function (moduleItem) {
+
+            if (self.config.scripts[moduleItem.name]) {
+                self.config.scripts[moduleItem.name].items = _.unique(_.union(self.config.scripts[moduleItem.name].items, moduleItem.items))
+            }
+            else {
+                self.config.scripts[moduleItem.name] = clone(moduleItem, {});
+            }
+        });
+    }
+
+    if (_.isArray(moduleConfig.styles)) {
+        _.each(moduleConfig.styles, function (moduleItem) {
+
+            if (self.config.styles[moduleItem.name]) {
+                self.config.styles[moduleItem.name].items = _.unique(_.union(self.config.styles[moduleItem.name].items, moduleItem.items))
+            }
+            else {
+                self.config.styles[moduleItem.name] = clone(moduleItem, {});
+            }
+        });
+    }
+
     var entityDefaults = {
         name: '',
         allowed: [],
@@ -194,7 +215,7 @@ exports.register = function (module) {
         _.each(moduleConfig.entities, function (moduleEntity) {
             var matchedEntity = _.find(self.config.entities, function (x) { return x.name === moduleEntity.name; });
             if (matchedEntity) {
-                extend(true, matchedEntity, moduleEntity);
+                 extend(true, matchedEntity, moduleEntity);
             }
             else {
                 var newEntity = {};
