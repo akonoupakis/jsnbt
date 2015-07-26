@@ -17,11 +17,11 @@ var errors = {
 var ErrorRenderer = function (server, ctx, error, stack) {
     
     ctx.template = 'error';
-    var tmplPath = '../www/public/error/';
+    var tmplPath = '../www/public/err/';
 
     if (ctx.uri.first === 'admin') {
         ctx.template = 'admin-error';
-        tmplPath = '../www/public/admin/error/';
+        tmplPath = '../www/public/admin/err/';
     }
 
     var tmplFilePath = tmplPath + error + '.html';

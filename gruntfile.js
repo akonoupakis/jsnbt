@@ -126,7 +126,7 @@ module.exports = function (grunt) {
 
     var getFilesToCopy = function (folder) {
 
-        var publicCopyfiles = ['img/**', 'js/**', 'font/**', 'css/**', 'tmpl/**', 'error/**', 'tmp/', 'files/'];
+        var publicCopyfiles = ['img/**', 'js/**', 'font/**', 'css/**', 'tmpl/**', 'err/**', 'tmp/', 'files/'];
         _.each(self.app.config.fileGroups, function (fileGroup) {
             publicCopyfiles.push('files/' + fileGroup + '/');
         });
@@ -146,7 +146,7 @@ module.exports = function (grunt) {
 		{
 		    expand: true,
 		    cwd: 'src/web/admin/',
-		    src: ['img/**', 'js/**', 'font/**', 'css/**', 'tmpl/**', 'error/**'],
+		    src: ['img/**', 'js/**', 'font/**', 'css/**', 'tmpl/**', 'err/**'],
 		    dest: folder + '/public/admin/'
 		}];
 
@@ -174,12 +174,12 @@ module.exports = function (grunt) {
         };
 
         if (site === undefined || site === 'admin') {
-            addPath('src/web/admin/error');
+            addPath('src/web/admin/err');
             addFile('src/web/admin/index.html');
         }
 
         if (site === undefined || site === 'public') {
-            addPath('src/web/public/error');
+            addPath('src/web/public/err');
 
             _.each(self.app.config.templates, function (tmpl) {
                 addFile('src/web/public/' + _.str.ltrim(tmpl.html, '/'));
@@ -193,12 +193,12 @@ module.exports = function (grunt) {
 
                 if (fs.lstatSync(server.getPath('src/pck/' + packageItem)).isDirectory()) {
                     if (site === undefined || site === 'admin') {
-                        addPath('src/pck/' + packageItem + '/web/admin/error');
+                        addPath('src/pck/' + packageItem + '/web/admin/err');
                         addFile('src/pck/' + packageItem + '/web/admin/index.html');
                     }
 
                     if (site === undefined || site === 'public') {
-                        addPath('src/pck/' + packageItem + '/web/public/error');
+                        addPath('src/pck/' + packageItem + '/web/public/err');
                     }
                 }
             });
@@ -573,7 +573,7 @@ module.exports = function (grunt) {
     fs.mkdirpSync('./src/web');
     fs.mkdirpSync('./src/web/public');
     fs.mkdirpSync('./src/web/public/css');
-    fs.mkdirpSync('./src/web/public/error');
+    fs.mkdirpSync('./src/web/public/err');
     fs.mkdirpSync('./src/web/public/files');
     fs.mkdirpSync('./src/web/public/img');
     fs.mkdirpSync('./src/web/public/js');
@@ -870,7 +870,7 @@ module.exports = function (grunt) {
             tasks: ['copy:devAdminImg']
         },
         adminTmpl: {
-            files: ['src/web/admin/error/**', 'src/web/admin/tmpl/**'],
+            files: ['src/web/admin/err/**', 'src/web/admin/tmpl/**'],
             tasks: ['preprocess:devAdmin']
         },
         adminFiles: {
@@ -895,7 +895,7 @@ module.exports = function (grunt) {
             tasks: ['copy:devPublicImg']
         },
         publicTmpl: {
-            files: ['src/web/public/error/**', 'src/web/public/tmpl/**'],
+            files: ['src/web/public/err/**', 'src/web/public/tmpl/**'],
             tasks: ['preprocess:devPublic']
         },
         publicFiles: {

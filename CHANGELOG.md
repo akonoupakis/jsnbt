@@ -9,6 +9,7 @@
 	- removed login page infrastructure. restricted nodes end up to a 401 response, but the flow could be intercepted on a new module function (routeNode)
 	- changed the api response from (res, err) to (err, res) as in common nodejs
 	- added bundles mechanism
+	- changed error/ to err/ paths
 
 ## 1.0.104 (2015-06-01)
 

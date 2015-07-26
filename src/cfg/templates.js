@@ -13,7 +13,7 @@ module.exports = [{
 }, {
     id: 'admin-error',
     name: 'admin error page',
-    html: '/admin/error/error.html',
+    html: '/admin/err/error.html',
     restricted: [],
     scripts: [
         ['admin-lib', 'admin-app'],
