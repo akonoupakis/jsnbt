@@ -51,7 +51,6 @@ var Script = function (app) {
         _.each(app.modules.all, function (module) {
 
             if (module.domain !== 'core') {
-                console.log(module);
                 result.modules[module.domain] = {
                     name: typeof(module.getName) === 'function' ? module.getName() : undefined,
                     domain: module.domain,
