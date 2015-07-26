@@ -58,9 +58,15 @@ var ErrorRenderer = function (server, ctx, error, stack) {
         error: error,
         text: text,
         stack: stack || ''
-    }, function (response) {
-        ctx.write(response);
-        ctx.end();
+    }, function (err, response) {
+        if (err) {
+            ctx.write('template parse failed: ' + err.toString());
+            ctx.end();
+        }
+        else {
+            ctx.write(response);
+            ctx.end();
+        }
     });
 
 };

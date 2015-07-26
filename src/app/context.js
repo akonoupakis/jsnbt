@@ -194,14 +194,14 @@ var Context = function (server, req, res) {
 
                 completing = true;
                 req._routed = true;
-                
+
                 if (shouldRenderCrawled(this, req, res))
                     renderCrawled(ctx);
                 else {
                     if (_.str.startsWith(this.template, '/'))
                         view(server, this);
                     else {
-                        if (checkTemplate(this)) {                            
+                        if (checkTemplate(this)) {
                             view(server, this);
                         }
                         else {

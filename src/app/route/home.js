@@ -80,19 +80,16 @@ var HomeRouter = function (server) {
             if (ctx.uri.path === '/') {
                 
                 try {
-                    var node = require('../cms/nodeMngr.js')(server, ctx.db);
-                    
-                    ctx.timer.start('node retrieval');
-                    
-                    node.resolveUrl(ctx.uri.url, function (resolved) {
-                    
-                        ctx.timer.stop('node retrieval');
 
+                    var node = require('../cms/nodeMngr.js')(server, ctx.db);
+
+                    ctx.timer.start('node retrieval');
+
+                    node.resolveUrl(ctx.uri.url, function (resolved) {
+                        ctx.timer.stop('node retrieval');
                         if (resolved && resolved.page) {
                             ctx.debug('node resolved: ' + resolved.page.id);
-
                             if (resolved.isActive()) {
-
                                 var inherited = resolved.getInheritedProperties();
 
                                 if (!ctx.restricted) {
@@ -100,7 +97,6 @@ var HomeRouter = function (server) {
                                         ctx.restricted = true;
                                     }
                                 }
-
                                 if (server.app.modules.public && typeof (server.app.modules.public.routeNode) === 'function') {
                                     server.app.modules.public.routeNode(server, ctx, resolved, function () {
                                         process(ctx, resolved, inherited);

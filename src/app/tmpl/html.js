@@ -74,22 +74,30 @@ var Parser = function (server) {
             tmpl: tmpl
         };
 
-        callback(preparsingContext);
+        callback(null, preparsingContext);
     };
 
     var preparse = function (ctx, preparsingContext, callback) {
         if (!ctx.halt && ctx.uri.first !== 'admin') {
             var preparser = require('./parsing/preparser.js')(server, ctx);
-            preparser.process(preparsingContext, callback);
+            preparser.process(preparsingContext, function (preparsingContextResult) {
+                callback(null, preparsingContextResult);
+            });
         }
         else {
-            callback(preparsingContext);
+            callback(null, preparsingContext);
         }
     };
 
     var parse = function (ctx, preparsingContext, callback) {
-        var html = _.template(preparsingContext.tmpl)(preparsingContext.model);
-        callback(html);
+        var html = '';
+        try {
+            html = _.template(preparsingContext.tmpl)(preparsingContext.model);
+            callback(null, html);
+        }
+        catch (err) {
+            callback(err);
+        }
     };
 
     var postParse = function (ctx, html, callback) {
@@ -107,11 +115,11 @@ var Parser = function (server) {
         if (!ctx.halt && ctx.uri.first !== 'admin') {
             var postparser = require('./parsing/postparser.js')(server, ctx);
             postparser.process(postparsingContext, function (postParsedContext) {
-                callback(postParsedContext.html);
+                callback(null, postParsedContext.html);
             });
         }
         else {
-            callback(postparsingContext.html);
+            callback(null, postparsingContext.html);
         }
     };
 
@@ -119,14 +127,34 @@ var Parser = function (server) {
 
         parse: function (ctx, tmpl, model, callback) {
 
-            prepare(ctx, tmpl, model, function (preparsingContext) {
-                preparse(ctx, preparsingContext, function (preparsedContext) {
-                    parse(ctx, preparsedContext, function (parsedHtml) {
-                        postParse(ctx, parsedHtml, function (postParsedHtml) {
-                            callback(postParsedHtml);
-                        });
+            prepare(ctx, tmpl, model, function (preparsingContextErr, preparsingContext) {
+                if (preparsingContextErr) {
+                    callback(preparsingContextErr);
+                }
+                else {
+                    preparse(ctx, preparsingContext, function (preparsedContextErr, preparsedContext) {
+                        if (preparsedContextErr) {
+                            callback(preparsedContextErr);
+                        }
+                        else {
+                            parse(ctx, preparsedContext, function (parsedHtmlErr, parsedHtml) {
+                                if (parsedHtmlErr) {
+                                    callback(parsedHtmlErr);
+                                }
+                                else {
+                                    postParse(ctx, parsedHtml, function (postParsedHtmlErr, postParsedHtml) {
+                                        if (postParsedHtmlErr) {
+                                            callback(postParsedHtmlErr);
+                                        }
+                                        else {
+                                            callback(null, postParsedHtml);
+                                        }
+                                    });
+                                }
+                            });
+                        }
                     });
-                })
+                }
             });
 
         }

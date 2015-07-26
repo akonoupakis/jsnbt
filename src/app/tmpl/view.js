@@ -15,17 +15,21 @@ var ViewRenderer = function (server, ctx) {
         }
         else {
             var tmplFilePath = '../www/public' + installedTemplate.html;
-
-            // add scripts and styles to ctx
-
+            
             if (fs.existsSync(tmplFilePath)) {
                 var tmplContent = fs.readFileSync(tmplFilePath, 'utf-8');
 
                 ctx.writeHead(200, { "Content-Type": "text/html" });
 
-                require('./html.js')(server).parse(ctx, tmplContent, {}, function (response) {
-                    ctx.write(response);
-                    ctx.end();
+                require('./html.js')(server).parse(ctx, tmplContent, {}, function (err, response) {
+                    if (err) {
+                        ctx.write('template parse failed: ' + err.toString());
+                        ctx.end();
+                    }
+                    else {
+                        ctx.write(response);
+                        ctx.end();
+                    }
                 });
             }
             else {
