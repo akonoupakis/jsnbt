@@ -13,12 +13,15 @@
     <dcs-definition-title type="function">init(application)</dcs-definition-title>
     <dcs-definition-desc>runs on application start</dcs-definition-desc>
 
-    <dcs-definition-title type="function">getConfig()</dcs-definition-title>
-    <dcs-definition-desc>returns the module's cofiguration as a json object</dcs-definition-desc>
-
+    <dcs-definition-title type="function">getName()</dcs-definition-title>
+    <dcs-definition-desc>returns the module's name</dcs-definition-desc>
+    
     <dcs-definition-title type="function">getVersion()</dcs-definition-title>
     <dcs-definition-desc>returns the module's current version</dcs-definition-desc>
 
+    <dcs-definition-title type="function">getConfig()</dcs-definition-title>
+    <dcs-definition-desc>returns the module's cofiguration as a json object</dcs-definition-desc>
+    
     <dcs-definition-title type="function">getBower()</dcs-definition-title>
     <dcs-definition-desc>returns the module's bower cofiguration as a json object</dcs-definition-desc>
 
@@ -46,12 +49,16 @@ module.exports = {
         app = application;
     },
 
-    getConfig: function () {
-        return require('../cfg/config.js');
+    getName: function () {
+        return require('../../package.json').name;
     },
 
     getVersion: function () {
         return require('../../package.json').version;
+    },
+
+    getConfig: function () {
+        return require('../cfg/config.js');
     },
 
     getBower: function () {

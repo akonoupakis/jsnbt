@@ -351,9 +351,10 @@ exports.init = function (options) {
 
     var coreModule = {
         domain: 'core',
-        version: self.getVersion(),
         browsable: false,
         messager: true,
+        getName: self.getName,
+        getVersion: self.getVersion,
         getConfig: self.getConfig,
         getBower: self.getBower
     };
@@ -433,14 +434,18 @@ exports.createServer = function (options) {
     return server;
 };
 
-exports.getBower = function () {
-    return require('../web/bower.json');
+exports.getName = function () {
+    return require('../../package').name;
+};
+
+exports.getVersion = function () {
+    return require('../../package').version;
 };
 
 exports.getConfig = function () {
     return require('../cfg/config.js');
 };
 
-exports.getVersion = function () {
-    return require('../../package').version;
+exports.getBower = function () {
+    return require('../web/bower.json');
 };

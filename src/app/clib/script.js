@@ -51,11 +51,11 @@ var Script = function (app) {
         _.each(app.modules.all, function (module) {
 
             if (module.domain !== 'core') {
+                console.log(module);
                 result.modules[module.domain] = {
-                    name: module.name,
+                    name: typeof(module.getName) === 'function' ? module.getName() : undefined,
                     domain: module.domain,
-                    type: module.type,
-                    version: module.version,
+                    version: typeof (module.getVersion) === 'function' ? module.getVersion() : undefined,
                     pointed: module.pointed,
                     section: module.section,
                     browsable: module.browsable === undefined || module.browsable === true
