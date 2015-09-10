@@ -44,7 +44,7 @@ validate({
     properties: {
         domain: {
             type: 'string',
-            enum: _.pluck(server.app.modules, 'domain')
+            enum: _.pluck(server.app.modules.all, 'domain')
         },
         entity: {
             type: 'string',
@@ -59,7 +59,7 @@ validate({
             properties: {
                 domain: {
                     type: 'string',
-                    enum: _.union(_.pluck(_.filter(server.app.modules, function (x) { return x.pointed; }), 'domain'), [''])
+                    enum: _.union(_.pluck(_.filter(server.app.modules.all, function (x) { return x.pointed; }), 'domain'), [''])
                 }
             }
         },

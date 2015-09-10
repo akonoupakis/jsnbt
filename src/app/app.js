@@ -215,11 +215,13 @@ exports.register = function (module) {
         _.each(moduleConfig.entities, function (moduleEntity) {
             var matchedEntity = _.find(self.config.entities, function (x) { return x.name === moduleEntity.name; });
             if (matchedEntity) {
-                 extend(true, matchedEntity, moduleEntity);
+                extend(true, matchedEntity, moduleEntity);
+                matchedEntity.domain = module.domain;
             }
             else {
                 var newEntity = {};
                 extend(true, newEntity, entityDefaults, moduleEntity);
+                newEntity.domain = module.domain;
                 self.config.entities.push(newEntity);
             }
         });

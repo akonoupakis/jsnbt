@@ -4,12 +4,12 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('FormBaseController', ['$scope', '$routeParams', 'LocationService', 'ScrollSpyService', 'CONTROL_EVENTS', function ($scope, $routeParams, LocationService, ScrollSpyService, CONTROL_EVENTS) {
+        .controller('FormControllerBase', ['$scope', '$controller', '$route', '$rootScope', '$routeParams', '$location', '$data', '$q', '$timeout', '$jsnbt', '$fn', 'AuthService', 'TreeNodeService', 'LocationService', 'ScrollSpyService', 'ModalService', 'DATA_EVENTS', 'CONTROL_EVENTS',
+            function ($scope, $controller, $route, $rootScope, $routeParams, $location, $data, $q, $timeout, $jsnbt, $fn, AuthService, TreeNodeService, LocationService, ScrollSpyService, ModalService, DATA_EVENTS, CONTROL_EVENTS) {
            
             $scope.id = $routeParams.id;
-            $scope.new = $scope.id === 'new';
+            $scope.new = $scope.id === 'new' || _.str.startsWith($scope.id, 'new-');
             $scope.name = undefined;
-            $scope.item = undefined;
                       
             $scope.valid = true;
 
@@ -21,11 +21,11 @@
             };
 
             $scope.set = function (data) {
-                $scope.item = data;
+                throw new Error('not implemented: set()');
             };
 
             $scope.get = function () {
-                return $scope.item;
+                throw new Error('not implemented: get()');
             };
 
             $scope.setName = function (name) {
@@ -93,7 +93,7 @@
 
             $scope.$on(CONTROL_EVENTS.valueChanged, function (sender) {
                 sender.stopPropagation();
-
+                
                 $scope.published = false;
             });
 
@@ -103,5 +103,14 @@
                 if (!value)
                     $scope.valid = false;
             });
+
+            $scope.init = function () {
+                var deferred = $q.defer();
+                
+                deferred.resolve();
+
+                return deferred.promise;
+            };
+
         }]);
 })();

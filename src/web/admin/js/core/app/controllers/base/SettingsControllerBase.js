@@ -4,7 +4,8 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('SettingsBaseController', ['$scope', '$route', '$routeParams', '$q', '$timeout', '$data', 'LocationService', 'ScrollSpyService', 'CONTROL_EVENTS', function ($scope, $route, $routeParams, $q, $timeout, $data, LocationService, ScrollSpyService, CONTROL_EVENTS) {
+        .controller('SettingsControllerBase', ['$scope', '$controller', '$route', '$rootScope', '$routeParams', '$location', '$data', '$q', '$timeout', '$jsnbt', '$fn', 'AuthService', 'TreeNodeService', 'LocationService', 'ScrollSpyService', 'ModalService', 'DATA_EVENTS', 'CONTROL_EVENTS',
+            function ($scope, $controller, $route, $rootScope, $routeParams, $location, $data, $q, $timeout, $jsnbt, $fn, AuthService, TreeNodeService, LocationService, ScrollSpyService, ModalService, DATA_EVENTS, CONTROL_EVENTS) {
            
             $scope.domain = $route.current.$$route.domain;
 

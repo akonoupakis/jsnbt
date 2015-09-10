@@ -2,7 +2,7 @@ module.exports = [{
     id: 'error',
     name: 'error page',
     html: '/err/error.html',
-    restricted: [''],
+    restricted: [],
     scripts: [
         ['lib', 'app']
     ],
@@ -29,34 +29,41 @@ module.exports = [{
     id: 'text',
     name: 'text page',
     html: '/tmpl/text.html',
-    form: 'tmpl/public/forms/page/text.html'
+    form: 'tmpl/public/forms/page/text.html',
+    restricted: ['page']
 }, {
     id: 'nodes',
     name: 'nodes page',
     html: '/tmpl/nodes.html',
-    form: 'tmpl/public/forms/page/nodes.html'
+    form: 'tmpl/public/forms/page/nodes.html',
+    restricted: ['page']
 }, {
     id: 'data',
     name: 'data page',
     html: '/tmpl/data.html',
-    form: 'tmpl/public/forms/page/data.html'
+    form: 'tmpl/public/forms/page/data.html',
+    restricted: ['articleList']
 }, {
     id: 'files',
     name: 'files page',
     html: '/tmpl/files.html',
-    form: 'tmpl/public/forms/page/files.html'
+    form: 'tmpl/public/forms/page/files.html',
+    restricted: ['article']
 }, {
     id: 'images',
     name: 'images page',
     html: '/tmpl/images.html',
-    form: 'tmpl/public/forms/page/images.html'
+    form: 'tmpl/public/forms/page/images.html',
+    restricted: ['page']
 }, {
     id: 'search',
     name: 'search',
-    html: '/tmpl/search.html'
+    html: '/tmpl/search.html',
+    restricted: ['page']
 }, {
     id: 'facilities',
     name: 'facilities',
     html: '/tmpl/facilities.html',
-    form: 'tmpl/public/forms/page/facilities.html'
+    form: 'tmpl/public/forms/page/facilities.html',
+    restricted: ['page']
 }];

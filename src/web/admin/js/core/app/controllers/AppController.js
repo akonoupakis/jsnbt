@@ -4,11 +4,11 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('AppController', ['$scope', '$rootScope', '$route', '$routeParams', '$location', '$logger', '$q', '$timeout', '$data', '$jsnbt', 'LocationService', 'ScrollSpyService', 'AuthService', 'CONTROL_EVENTS', 'AUTH_EVENTS', 'DATA_EVENTS', 'ROUTE_EVENTS', function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
+        .controller('AppController', ['$scope', '$controller', '$rootScope', '$route', '$routeParams', '$location', '$logger', '$q', '$timeout', '$data', '$jsnbt', '$fn', 'LocationService', 'ScrollSpyService', 'AuthService', 'TreeNodeService', 'ModalService', 'CONTROL_EVENTS', 'AUTH_EVENTS', 'DATA_EVENTS', 'ROUTE_EVENTS',
+            function ($scope, $controller, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, $fn, LocationService, ScrollSpyService, AuthService, TreeNodeService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
 
             var logger = $logger.create('AppController');
 
-            $scope.base = {};
             $scope.application = {};
             $scope.current = {};
             $scope.defaults = {};
@@ -42,29 +42,50 @@
 
             $scope.application.navigationSpec = navigationInjects;
 
-            $scope.base.list = {
-                $scope: $scope
-            };
-
-            $scope.base.form = {
+            $scope.base = {
                 $scope: $scope,
-                $routeParams: $routeParams,
-                LocationService: LocationService,
-                ScrollSpyService: ScrollSpyService,
-                CONTROL_EVENTS: CONTROL_EVENTS
-            };
-
-            $scope.base.settings = {
-                $scope: $scope,
+                $controller: $controller,
                 $route: $route,
+                $rootScope: $rootScope,
                 $routeParams: $routeParams,
+                $location: $location,
+                $data: $data,
                 $q: $q,
                 $timeout: $timeout,
-                $data: $data,
+                $jsnbt: $jsnbt,
+                $fn: $fn,
+                AuthService: AuthService,
+                TreeNodeService: TreeNodeService,
                 LocationService: LocationService,
                 ScrollSpyService: ScrollSpyService,
+                ModalService: ModalService,
+                DATA_EVENTS: DATA_EVENTS,
                 CONTROL_EVENTS: CONTROL_EVENTS
             };
+
+            //$scope.base.list = {
+            //    $scope: $scope
+            //};
+
+            //$scope.base.form = {
+            //    $scope: $scope,
+            //    $routeParams: $routeParams,
+            //    LocationService: LocationService,
+            //    ScrollSpyService: ScrollSpyService,
+            //    CONTROL_EVENTS: CONTROL_EVENTS
+            //};
+
+            //$scope.base.settings = {
+            //    $scope: $scope,
+            //    $route: $route,
+            //    $routeParams: $routeParams,
+            //    $q: $q,
+            //    $timeout: $timeout,
+            //    $data: $data,
+            //    LocationService: LocationService,
+            //    ScrollSpyService: ScrollSpyService,
+            //    CONTROL_EVENTS: CONTROL_EVENTS
+            //};
 
             var apply = function (fn) {
                 var phase = $scope.$root.$$phase;
