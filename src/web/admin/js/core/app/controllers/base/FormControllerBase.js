@@ -4,113 +4,115 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('FormControllerBase', ['$scope', '$controller', '$route', '$rootScope', '$routeParams', '$location', '$data', '$q', '$timeout', '$jsnbt', '$fn', 'AuthService', 'TreeNodeService', 'LocationService', 'ScrollSpyService', 'ModalService', 'DATA_EVENTS', 'CONTROL_EVENTS',
-            function ($scope, $controller, $route, $rootScope, $routeParams, $location, $data, $q, $timeout, $jsnbt, $fn, AuthService, TreeNodeService, LocationService, ScrollSpyService, ModalService, DATA_EVENTS, CONTROL_EVENTS) {
-           
-            $scope.id = $routeParams.id;
-            $scope.new = $scope.id === 'new' || _.str.startsWith($scope.id, 'new-');
-            $scope.name = undefined;
-                      
-            $scope.valid = true;
+        .controller('FormControllerBase', ['$scope', '$controller', '$route', '$rootScope', '$routeParams', '$location', '$data', '$logger', '$q', '$timeout', '$jsnbt', '$fn', 'AuthService', 'TreeNodeService', 'LocationService', 'ScrollSpyService', 'ModalService', 'DATA_EVENTS', 'CONTROL_EVENTS',
+            function ($scope, $controller, $route, $rootScope, $routeParams, $location, $data, $logger, $q, $timeout, $jsnbt, $fn, AuthService, TreeNodeService, LocationService, ScrollSpyService, ModalService, DATA_EVENTS, CONTROL_EVENTS) {
 
-            $scope.published = true;
-            $scope.draft = false;
+                var logger = $logger.create('FormControllerBase');
 
-            $scope.isNew = function () {
-                return $scope.new;
-            };
+                $scope.id = $routeParams.id;
+                $scope.new = $scope.id === 'new' || _.str.startsWith($scope.id, 'new-');
+                $scope.name = undefined;
 
-            $scope.set = function (data) {
-                throw new Error('not implemented: set()');
-            };
+                $scope.valid = true;
 
-            $scope.get = function () {
-                throw new Error('not implemented: get()');
-            };
+                $scope.published = true;
+                $scope.draft = false;
 
-            $scope.setName = function (name) {
-                $scope.name = name;
-            };
+                $scope.isNew = function () {
+                    return $scope.new;
+                };
 
-            $scope.setLocation = function () {
-                var breadcrumb = LocationService.getBreadcrumb();
-                breadcrumb = breadcrumb.slice(0, breadcrumb.length - 1);
-                if ($scope.new) {
-                    breadcrumb.push({
-                        name: 'new',
-                        active: true
+                $scope.set = function (data) {
+                    throw new Error('not implemented: set()');
+                };
+
+                $scope.get = function () {
+                    throw new Error('not implemented: get()');
+                };
+
+                $scope.setName = function (name) {
+                    $scope.name = name;
+                };
+
+                $scope.setLocation = function () {
+                    var breadcrumb = LocationService.getBreadcrumb();
+                    breadcrumb = breadcrumb.slice(0, breadcrumb.length - 1);
+                    if ($scope.new) {
+                        breadcrumb.push({
+                            name: 'new',
+                            active: true
+                        });
+                    }
+                    else {
+                        breadcrumb.push({
+                            name: $scope.name,
+                            active: true
+                        });
+                    }
+
+                    $scope.current.setBreadcrumb(breadcrumb);
+                };
+
+                $scope.setSpy = function (time) {
+                    ScrollSpyService.get(time || 0).then(function (response) {
+                        $scope.nav = response;
                     });
-                }
-                else {
-                    breadcrumb.push({
-                        name: $scope.name,
-                        active: true
-                    });
-                }
+                };
 
-                $scope.current.setBreadcrumb(breadcrumb);
-            };
+                $scope.setValid = function (value) {
+                    $scope.valid = value;
+                };
 
-            $scope.setSpy = function (time) {
-                ScrollSpyService.get(time || 0).then(function (response) {
-                    $scope.nav = response;
+                $scope.isValid = function () {
+                    return $scope.valid;
+                };
+
+                $scope.setPublished = function (value) {
+                    $scope.published = value;
+                    $scope.draft = !value;
+                };
+
+                $scope.validate = function () {
+                    $scope.setValid(true);
+                    $scope.$broadcast(CONTROL_EVENTS.initiateValidation);
+                };
+
+                $scope.back = function () {
+                    throw new Error('not implemented: back()');
+                };
+
+                $scope.discard = function () {
+                    throw new Error('not implemented: discard()');
+                };
+
+                $scope.publish = function () {
+                    throw new Error('not implemented: publish()');
+                };
+
+                $scope.$watch('name', function (newValue, prevValue) {
+                    $scope.setLocation();
                 });
-            };
 
-            $scope.setValid = function (value) {
-                $scope.valid = value;
-            };
+                $scope.$on(CONTROL_EVENTS.valueChanged, function (sender) {
+                    sender.stopPropagation();
 
-            $scope.isValid = function () {
-                return $scope.valid;
-            };
+                    $scope.published = false;
+                });
 
-            $scope.setPublished = function (value) {
-                $scope.published = value;
-                $scope.draft = !value;
-            };
-            
-            $scope.validate = function () {
-                $scope.setValid(true);
-                $scope.$broadcast(CONTROL_EVENTS.initiateValidation);
-            };
+                $scope.$on(CONTROL_EVENTS.valueIsValid, function (sender, value) {
+                    sender.stopPropagation();
 
-            $scope.back = function () {
-                throw new Error('not implemented: back()');
-            };
+                    if (!value)
+                        $scope.valid = false;
+                });
 
-            $scope.discard = function () {
-                throw new Error('not implemented: discard()');
-            };
+                $scope.init = function () {
+                    var deferred = $q.defer();
 
-            $scope.publish = function () {
-                throw new Error('not implemented: publish()');
-            };
-            
-            $scope.$watch('name', function (newValue, prevValue) {
-                $scope.setLocation();
-            });
+                    deferred.resolve();
 
-            $scope.$on(CONTROL_EVENTS.valueChanged, function (sender) {
-                sender.stopPropagation();
-                
-                $scope.published = false;
-            });
+                    return deferred.promise;
+                };
 
-            $scope.$on(CONTROL_EVENTS.valueIsValid, function (sender, value) {
-                sender.stopPropagation();
-
-                if (!value)
-                    $scope.valid = false;
-            });
-
-            $scope.init = function () {
-                var deferred = $q.defer();
-                
-                deferred.resolve();
-
-                return deferred.promise;
-            };
-
-        }]);
+            }]);
 })();

@@ -50,6 +50,7 @@
                 $routeParams: $routeParams,
                 $location: $location,
                 $data: $data,
+                $logger: $logger,
                 $q: $q,
                 $timeout: $timeout,
                 $jsnbt: $jsnbt,
@@ -62,30 +63,6 @@
                 DATA_EVENTS: DATA_EVENTS,
                 CONTROL_EVENTS: CONTROL_EVENTS
             };
-
-            //$scope.base.list = {
-            //    $scope: $scope
-            //};
-
-            //$scope.base.form = {
-            //    $scope: $scope,
-            //    $routeParams: $routeParams,
-            //    LocationService: LocationService,
-            //    ScrollSpyService: ScrollSpyService,
-            //    CONTROL_EVENTS: CONTROL_EVENTS
-            //};
-
-            //$scope.base.settings = {
-            //    $scope: $scope,
-            //    $route: $route,
-            //    $routeParams: $routeParams,
-            //    $q: $q,
-            //    $timeout: $timeout,
-            //    $data: $data,
-            //    LocationService: LocationService,
-            //    ScrollSpyService: ScrollSpyService,
-            //    CONTROL_EVENTS: CONTROL_EVENTS
-            //};
 
             var apply = function (fn) {
                 var phase = $scope.$root.$$phase;
