@@ -3,13 +3,17 @@
 (function () {
     "use strict";
 
+    var NodeController = function ($scope) {
+        jsnbt.NodeFormControllerBase.apply(this, $scope.getBaseArguments($scope));
+
+        $scope.back = function () {
+            $location.previous('/content/nodes');
+        };
+
+        $scope.init();
+    };
+    NodeController.prototype = Object.create(jsnbt.NodeFormControllerBase.prototype);
+
     angular.module("jsnbt")
-        .controller('NodeController', ['$scope', '$controller', '$rootScope', '$routeParams', '$location', '$timeout', '$logger', '$q', '$data', '$route', '$jsnbt', 'ScrollSpyService', '$fn', 'LocationService', 'AuthService', 'DATA_EVENTS', 'CONTROL_EVENTS',
-            function ($scope, $controller, $rootScope, $routeParams, $location, $timeout, $logger, $q, $data, $route, $jsnbt, ScrollSpyService, $fn, LocationService, AuthService, DATA_EVENTS, CONTROL_EVENTS) {
-
-                $controller('NodeFormControllerBase', $scope.base);
-
-                $scope.init();
-
-        }]);
+        .controller('NodeController', ['$scope', NodeController]);
 })();

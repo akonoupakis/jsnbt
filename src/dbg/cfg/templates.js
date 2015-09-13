@@ -42,13 +42,13 @@ module.exports = [{
     name: 'data page',
     html: '/tmpl/data.html',
     form: 'tmpl/public/forms/page/data.html',
-    restricted: ['articleList']
+    restricted: ['page']
 }, {
     id: 'files',
     name: 'files page',
     html: '/tmpl/files.html',
     form: 'tmpl/public/forms/page/files.html',
-    restricted: ['article']
+    restricted: ['page']
 }, {
     id: 'images',
     name: 'images page',
@@ -66,4 +66,26 @@ module.exports = [{
     html: '/tmpl/facilities.html',
     form: 'tmpl/public/forms/page/facilities.html',
     restricted: ['page']
+}, {
+    id: 'articles',
+    name: 'articles page',
+    html: '/tmpl/articleList.html',
+    restricted: ['articleList'],
+    scripts: [
+        ['lib', 'app']
+    ],
+    styles: [
+        ['lib', 'app']
+    ]
+}, {
+    id: 'article',
+    name: 'article page',
+    html: '/tmpl/article.html',
+    restricted: ['article'],
+    scripts: [
+        ['lib', 'app']
+    ],
+    styles: [
+        ['lib', 'app']
+    ]
 }];

@@ -20,12 +20,64 @@
             modules.push(jsnbt.modules[moduleDomain].name);
     }
     
+    angular.getRouter = function ($routeProvider) {
+
+        var processRouterOptions = function (options) {
+            var opts = {};
+
+            $.extend(true, opts, options);
+
+            if (opts.templateUrl && opts.baseTemplateUrl) {
+                opts.tmpl = opts.templateUrl;
+                opts.templateUrl = opts.baseTemplateUrl;
+            }
+
+            return opts;
+        };
+
+        return {
+
+            when: function (path, options) {
+                $routeProvider.when(path, processRouterOptions(options));
+                return this;
+            },
+
+            otherwise: function (options) {
+                $routeProvider.otherwise(processRouterOptions(options));
+                return this;
+            }
+
+        };
+
+    };
+
+    for (var entityName in jsnbt.entities) {
+        var entity = jsnbt.entities[entityName];
+
+        entity.editable = true;
+        entity.viewable = false;
+        entity.deletable = true;
+        entity.parentable = true;
+
+        entity.getCreateUrl = function (node) {
+            return '/content/nodes/new' + (node ? '-' + node.id : '');
+        };
+        entity.getEditUrl = function (node) {
+            return '/content/nodes/' + node.id
+        };
+        entity.getViewUrl = function (node) {
+            throw new Error('na');
+        };
+    }
+
     angular.module('jsnbt', modules)
     .config(['$routeProvider', '$jsnbtProvider', 'flowFactoryProvider', function ($routeProvider, $jsnbtProvider, flowFactoryProvider) {
         
         $jsnbtProvider.setSettings(jsnbt);
 
-        $routeProvider.
+        var router = angular.getRouter($routeProvider);
+
+        router.
             when('/', {
                 templateUrl: 'tmpl/core/pages/dashboard.html',
                 controller: 'DashboardController'
@@ -36,8 +88,9 @@
             });
 
         if (jsnbt.localization.enabled) {
-            $routeProvider.
+            router.
                 when('/content/languages', {
+                    baseTemplateUrl: 'tmpl/core/base/list.html',
                     templateUrl: 'tmpl/core/pages/content/languages.html',
                     controller: 'LanguagesController',
                     section: 'languages'
@@ -49,7 +102,7 @@
                 });
         }
 
-        $routeProvider.
+        router.
             when('/content/layouts', {
                 templateUrl: 'tmpl/core/pages/content/layouts.html',
                 controller: 'LayoutsController',
@@ -61,12 +114,13 @@
                 section: 'layouts'
             }).
             when('/content/nodes', {
+                baseTemplateUrl: 'tmpl/core/base/list.html',
                 templateUrl: 'tmpl/core/pages/content/nodes.html',
                 controller: 'NodesController',
                 section: 'nodes'
             }).
             when('/content/nodes/:id', {
-                templateUrl: 'tmpl/core/pages/content/node.html',
+                templateUrl: 'tmpl/core/base/node.html',
                 controller: 'NodeController',
                 section: 'nodes'
             }).
@@ -131,19 +185,6 @@
                 controller: 'SettingsController',
                 section: 'settings'
             }).
-            //when('/settings', {
-            //    templateUrl: 'tmpl/core/pages/settingsCopy.html',
-            //    controller: 'SettingsControllerCopy',
-            //    domain: 'gApi'
-            //}).
-             //when('/content/test', {
-             //    templateUrl: 'tmpl/core/pages/content/texts.html',
-             //    controller: 'TestListController'
-             //}).
-             // when('/content/test/:id', {
-             //     templateUrl: 'tmpl/core/pages/content/test.html',
-             //     controller: 'TestItemController'
-             // }).
             otherwise({
                 redirectTo: '/'
             });

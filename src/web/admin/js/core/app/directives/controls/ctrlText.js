@@ -16,6 +16,7 @@
                     ngRequired: '=',
                     ngLabel: '@',
                     ngTip: '@',
+                    ngValidating: '=',
                     ngValidate: '=',
                     ngValid: '=',
                     ngCharacters: '@',
@@ -44,10 +45,19 @@
                                 scope.valid = isValid();
                     });
                     
+                    scope.$watch('ngValidating', function (newValue) {
+                        if (initiated)
+                            if (newValue === false)
+                                scope.valid = true;
+                            else
+                                scope.valid = isValid();
+                    });
+
                     var isValid = function () {
                         var valid = true;
 
-                        if (!scope.ngDisabled) {
+                        var validating = scope.ngValidating !== false;
+                        if (validating && !scope.ngDisabled) {
                             if (scope.ngRequired) {
                                 valid = !!scope.ngModel && scope.ngModel !== '';
                             }

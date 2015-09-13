@@ -4,9 +4,9 @@
     "use strict";
 
     angular.module("jsnbt")
-        .provider("$jsnbt", [function () {
+        .provider("$jsnbt", ['$routeProvider', function ($routeProvider) {
             var settings = {};
-
+            
             return {
 
                 setSettings: function (value) {

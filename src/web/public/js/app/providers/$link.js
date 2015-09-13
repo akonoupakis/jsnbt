@@ -13,7 +13,6 @@
                     return {
 
                         build: function (language, page, pointer) {
-
                             if (page.entity === 'pointer') {
                                 return page.active[language] ? page.url[language] : undefined;
                             }
@@ -29,11 +28,23 @@
                                             if (pointerNodeIndex !== -1) {
                                                 var cropUrlIndex = pointerNodeIndex + 1;
                                                 var pageUrlParts = (page.url[language] || '').split('/');
+                                                
                                                 if (pageUrlParts.length >= cropUrlIndex) {
-                                                    var remainingUrl = _.str.ltrim(page.url[language], '/').split('/').slice(cropUrlIndex).join('/');
+
+                                                    var pageQueryParts = (page.url[language] || '').split('?');
+                                                    var pageUrl = _.first(pageQueryParts);
+                                                    var pageQuery = pageQueryParts.length > 1 ? _.last(pageQueryParts) : '';
+
+                                                    var remainingUrl = _.str.ltrim(pageUrl, '/').split('/').slice(cropUrlIndex).join('/');
+                                                    
                                                     var resultUrl = pointer.url[language];
+
                                                     if (remainingUrl !== '')
                                                         resultUrl += '/' + remainingUrl;
+
+                                                    if (pageQuery !== '')
+                                                        resultUrl += '?' + pageQuery;
+
                                                     return resultUrl;
                                                 }
                                             }

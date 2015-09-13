@@ -47,9 +47,8 @@ Context.prototype.done = function (err, res) {
     if (err) {
         if (status < 400) this.res.statusCode = 400;
         if (err.statusCode) this.res.statusCode = err.statusCode;
-        this.res.write(new Buffer(JSON.stringify(err, null, this.server.app.dbg ? '\t' : '')));
         this.req._routed = true;
-        this.res.end();
+        this.res.end(new Buffer(JSON.stringify(err, null, this.server.app.dbg ? '\t' : '')));
     } else {
         if (typeof body == 'object') {
             body = JSON.stringify(body);

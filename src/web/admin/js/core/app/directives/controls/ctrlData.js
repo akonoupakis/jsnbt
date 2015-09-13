@@ -17,7 +17,8 @@
                     ngDisabled: '=',
                     ngRequired: '=',
                     ngLabel: '@',
-                    ngTip: '@'
+                    ngTip: '@',
+                    ngValidating: '='
                 },
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl');
@@ -32,9 +33,16 @@
                     var initiated = false;
 
                     scope.$watch('ngDisabled', function (newValue) {
-
                         if (initiated)
                             scope.valid = isValid();
+                    });
+
+                    scope.$watch('ngValidating', function (newValue) {
+                        if (initiated)
+                            if (newValue === false)
+                                scope.valid = true;
+                            else
+                                scope.valid = isValid();
                     });
 
                     scope.changed = function () {
@@ -46,7 +54,8 @@
                     var isValid = function () {
                         var valid = true;
 
-                        if (!scope.ngDisabled) {
+                        var validating = scope.ngValidating !== false;
+                        if (validating && !scope.ngDisabled) {
 
                             if (valid) {
                                 if (scope.ngRequired) {

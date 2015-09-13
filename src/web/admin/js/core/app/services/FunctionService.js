@@ -9,25 +9,6 @@
             
             FunctionService = {
 
-                getCreateUrl: function (node) {
-                    if (node)
-                        return '/content/nodes/new-' + node.id;
-                    else
-                        return '/content/nodes/new';
-                },
-
-                getEditUrl: function (node) {
-                    return '/content/nodes/' + node.id;
-                },
-
-                getViewUrl: function (node) {
-                    return '';
-                },
-
-                getBackUrl: function (node) {
-                    return '/content/nodes';
-                },
-
                 selectNode: function (domain, selected, options) {
                     var deferred = $q.defer();
 

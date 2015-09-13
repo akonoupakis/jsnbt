@@ -42,7 +42,8 @@ var PublicRouter = function (server) {
             }
 
             if (resolved.pointer) {
-                var pointerRouter = require('./processors/router.js')(server, resolved.pointer.pointer.domain);
+                
+                var pointerRouter = require('./processors/pointer.js')(server, resolved.pointer.pointer.domain);
                 if (pointerRouter) {
                     ctx.debug('node ' + resolved.page.id + ' is pointing to ' + resolved.pointer.pointer.nodeId);
                     pointerRouter.route(ctx);
@@ -127,10 +128,8 @@ var PublicRouter = function (server) {
                             var node = require('../cms/nodeMngr.js')(server, ctx.db);
 
                             node.resolveUrl(ctx.uri.url, function (resolved) {
-
-                                if (resolved && resolved.page) {
+                                if (resolved) {
                                     ctx.debug('node resolved: ' + resolved.page.id);
-
                                     if (resolved.isActive()) {
 
                                         var inherited = resolved.getInheritedProperties();

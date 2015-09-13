@@ -2,33 +2,50 @@
 
 (function () {
     "use strict";
+    
+    var LanguagesController = function ($scope, $location, $q, $logger, $data, PagedDataService, ModalService) {
+        jsnbt.ListControllerBase.apply(this, $scope.getBaseArguments($scope));
+        
+        $scope.available = false;
 
-    angular.module("jsnbt")
-        .controller('LanguagesController', ['$scope', '$location', '$q', '$logger', '$data', 'PagedDataService', 'ModalService', function ($scope, $location, $q, $logger, $data, PagedDataService, ModalService) {
-           
-            var logger = $logger.create('LanguagesController');
-
-            $scope.data = {};
+        $scope.load = function () {
+            var deferred = $q.defer();
             
-            var fn = {
+            PagedDataService.get(jsnbt.db.languages.get, {
+                $sort: {
+                    name: 1
+                }
+            }).then(function (response) {
+                $scope.available = response.items.length < _.keys($scope.defaults.languages).length;
+                deferred.resolve(response);
+            }, function (error) {
+                deferred.reject(error);
+            });
 
-                load: function () {
-                    var deferred = $q.defer();
+            return deferred.promise;
+        };
 
-                    PagedDataService.get(jsnbt.db.languages.get, {
-                        $sort: {
-                            name: 1
-                        }
-                    }).then(function (response) {
-                        deferred.resolve(response);
-                    }, function (error) {
-                        deferred.reject(error);
-                    });
+        $scope.back = function () {
+            $location.previous('/content');
+        };
 
-                    return deferred.promise;
-                },
-                
-                setDefault: function (data) {
+        $scope.canCreate = function () {
+            return $scope.available;
+        };
+
+        $scope.create = function () {
+            $location.next('/content/languages/new');
+        };
+
+        $scope.gridFn = {
+
+            edit: function (language) {
+                $location.next('/content/languages/' + language.id);
+            },
+
+            setDefault: function (language) {
+
+                var setDefaultPromise = function (data) {
                     var deferred = $q.defer();
 
                     $data.languages.get({ active: true }).then(function (results) {
@@ -80,9 +97,26 @@
                     });
 
                     return deferred.promise;
-                },
+                };
 
-                delete: function (data) {
+                setDefaultPromise(language).then(function () {
+                    $($scope.data.items).each(function (i, item) {
+                        if (item.code === language.code) {
+                            item.default = true;
+                        }
+                        else {
+                            item.default = false;
+                        }
+                    });
+                }, function (error) {
+                    logger.error(error);
+                });
+
+            },
+
+            delete: function (language) {
+
+                var deletePromise = function (data) {
                     var deferred = $q.defer();
 
                     ModalService.open({
@@ -107,58 +141,24 @@
                             });
                         }
                     });
-                    
+
                     return deferred.promise;
                 }
 
-            };
+                deletePromise(language).then(function () {
+                    $scope.remove(language);
+                }, function (error) {
+                    logger.error(error);
+                });
+            }
 
+        };
 
-            $scope.back = function () {
-                $location.previous('/content');
-            };
+        $scope.init();
 
-            $scope.create = function () {
-                $location.next('/content/languages/new');
-            };
+    };
+    LanguagesController.prototype = Object.create(jsnbt.ListControllerBase.prototype);
 
-            $scope.gridFn = {
-
-                edit: function (language) {
-                    $location.next('/content/languages/' + language.id);
-                },
-
-                setDefault: function (language) {
-                    fn.setDefault(language).then(function () {
-                        $($scope.data.items).each(function (i, item) {
-                            if (item.code === language.code) {
-                                item.default = true;
-                            }
-                            else {
-                                item.default = false;
-                            }
-                        });
-                    }, function (error) {
-                        logger.error(error);
-                    });
-
-                },
-
-                delete: function (language) {
-                    fn.delete(language).then(function () {
-                        $scope.data.items = _.filter($scope.data.items, function (x) { return x.id !== language.id; });
-                    }, function (error) {
-                        logger.error(error);
-                    });
-                }
-
-            };
-
-            fn.load().then(function (data) {
-                $scope.data = data;
-            }, function (ex) {
-                logger.error(ex);
-            });
-
-        }]);
+    angular.module("jsnbt")
+        .controller('LanguagesController', ['$scope', '$location', '$q', '$logger', '$data', 'PagedDataService', 'ModalService', LanguagesController]);
 })();

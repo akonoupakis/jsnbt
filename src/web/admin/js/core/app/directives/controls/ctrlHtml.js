@@ -14,6 +14,7 @@
                     ngModel: '=',
                     ngDisabled: '=',
                     ngRequired: '=',
+                    ngValidating: '=',
                     ngOptions: '=',
                     ngLabel: '@',
                     ngTip: '@'
@@ -43,6 +44,14 @@
 
                         return jsonResult;
                     };
+
+                    scope.$watch('ngValidating', function (newValue) {
+                        if (initiated)
+                            if (newValue === false)
+                                scope.valid = true;
+                            else
+                                scope.valid = isValid();
+                    });
 
                     $.extend(true, options, defaults);
                     if (attributes.ngOptions) {
@@ -74,7 +83,8 @@
                         var isValid = function () {
                             var valid = true;
 
-                            if (scope.enabled) {
+                            var validating = scope.ngValidating !== false;
+                            if (validating && scope.enabled) {
 
                                 if (valid) {
                                     if (scope.ngRequired) {

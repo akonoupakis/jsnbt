@@ -79,7 +79,7 @@ var Context = function (server, req, res) {
     uri.parts = _.str.trim(uri.path, '/').split('/');
     uri.first = uri.parts.length > 0 ? _.first(uri.parts).toLowerCase() : '';
     uri.last = uri.parts.length > 0 ? _.last(uri.parts).toLowerCase() : '';
-
+    
     req.cookies = new cookies(req, res);
 
     var completing = false;

@@ -2,20 +2,83 @@
 
 (function () {
     "use strict";
+    
+    jsnbt.ListControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, $fn, LocationService, ScrollSpyService, AuthService, TreeNodeService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
+
+        var logger = $logger.create('ListControllerBase');
+
+        $scope.data = {};
+
+        $scope.tmpl = $route.current.$$route.tmpl;
+
+        $scope.load = function () {
+            throw new Error('not implemented');
+        };
+
+        $scope.set = function (data) {
+            $scope.data = data;
+        };
+
+        $scope.back = function () {
+            throw new Error('not implemented');
+        };
+
+        $scope.canCreate = function () {
+            return false;
+        };
+
+        $scope.create = function () {
+            throw new Error('not implemented');
+        };
+
+        $scope.remove = function (item) {
+            $scope.data.items = _.filter($scope.data.items, function (x) { return x.id !== item.id; });
+        };
+
+        $scope.gridFn = {
+
+            canEdit: function (item) {
+                throw new Error('not implemented');
+            },
+
+            edit: function (item) {
+                throw new Error('not implemented');
+            },
+
+            canDelete: function (item) {
+                throw new Error('not implemented');
+            },
+
+            delete: function (item) {
+                throw new Error('not implemented');
+            },
+
+            canOpen: function (item) {
+                throw new Error('not implemented');
+            },
+
+            open: function (item) {
+                throw new Error('not implemented');
+            }
+
+        };
+
+        $scope.init = function () {
+            var deferred = $q.defer();
+
+            $scope.load().then(function (response) {
+                $scope.set(response);
+                deferred.resolve(response);
+            }, function (ex) {
+                logger.error(ex);
+                deferred.reject(ex);
+            });
+
+            return deferred.promise;
+        };
+
+    };
 
     angular.module("jsnbt")
-        .controller('ListControllerBase', ['$scope', '$controller', '$route', '$rootScope', '$routeParams', '$location', '$data', '$logger', '$q', '$timeout', '$jsnbt', '$fn', 'AuthService', 'TreeNodeService', 'LocationService', 'ScrollSpyService', 'ModalService', 'DATA_EVENTS', 'CONTROL_EVENTS',
-            function ($scope, $controller, $route, $rootScope, $routeParams, $location, $data, $logger, $q, $timeout, $jsnbt, $fn, AuthService, TreeNodeService, LocationService, ScrollSpyService, ModalService, DATA_EVENTS, CONTROL_EVENTS) {
-           
-            $scope.data = {};
-          
-            $scope.set = function (data) {
-                $scope.data = data;
-            };
-
-            $scope.remove = function (itemId) {
-                $scope.data.items = _.filter($scope.data.items, function (x) { return x.id !== itemId; });
-            };
-
-        }]);
+        .controller('ListControllerBase', ['$scope', '$rootScope', '$route', '$routeParams', '$location', '$logger', '$q', '$timeout', '$data', '$jsnbt', '$fn', 'LocationService', 'ScrollSpyService', 'AuthService', 'TreeNodeService', 'ModalService', 'CONTROL_EVENTS', 'AUTH_EVENTS', 'DATA_EVENTS', 'ROUTE_EVENTS', jsnbt.ListControllerBase]);
 })();

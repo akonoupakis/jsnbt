@@ -12,6 +12,7 @@ module.exports = [{
         '/jsnbt.js',
         '/js/app/main.js',
         '/js/app/controllers/AppController.js',
+        '/js/app/controllers/ArticlesController.js',
         '/js/app/controllers/StoreController.js',
         '/js/app/controllers/StoresController.js',
         '/js/app/directives/ctrlMap.js',

@@ -42,9 +42,6 @@
                 if (textKeys.length > 0) {
                     $text.get($context.language, textKeys).then(function (response) {
                         $.extend(true, $scope.text, response);
-
-                        console.log('text', $scope.text);
-
                     }, function (error) {
                         throw error;
                     });
@@ -64,6 +61,9 @@
                 if (node.content)
                     $.extend(true, newObj, node.content);
 
+                if (node.url)
+                    newObj.url = node.url[$scope.language];
+                
                 return newObj;
             }
             
@@ -121,18 +121,13 @@
                     }
                 }).then(function (results) {
                     var pageResult = _.find(results, function (x) { return x.id === $scope.pageId; });
-                    console.log(1, pageResult);
-                
                     var pointerResult = _.find(results, function (x) { return x.id === $scope.pointerId; });
-
-                    console.log(pointerResult);
                     
                     if (pageResult) {
                         // assign local page variable
                         page = pageResult;
                         // assign $scope page variable
                         $scope.page = $scope.flat(pageResult);
-                        console.log('page', $scope.page);
                         // assign $scope pageUrl variable
                         $scope.pageUrl = $link.build($scope.language, pageResult, pointerResult);
 
@@ -187,36 +182,6 @@
             }, function (languageError) {
                 throw languageError;
             });
-
-
-            jsnbt.db.layouts.get({
-                layout: 'eshop'
-            }, function (err, res) {
-                
-                var eshopLayout = res[0];
-                jsnbt.db.layouts.put(eshopLayout, {
-                    layout: 'eshop',
-                    content: {
-                        testData: 'td2',
-                        alpha: '1',
-                        vita: '1'
-                    }
-                }, function (err, res) {
-                    console.log(err, res);
-                });
-            });
-
-           
-            //jsnbt.db.layouts.post({
-            //    layout: 'eshop',
-            //    content: {
-            //        testData: 'aAaAaA-bBB'
-            //    }
-            //}, function (err, res) {
-            //    console.log(err, res);
-            //});
-
-
 
         });
 
