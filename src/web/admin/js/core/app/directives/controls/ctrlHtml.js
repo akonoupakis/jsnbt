@@ -15,61 +15,63 @@
                     ngDisabled: '=',
                     ngRequired: '=',
                     ngValidating: '=',
-                    ngOptions: '=',
                     ngLabel: '@',
-                    ngTip: '@'
+                    ngTip: '@',
+                    ngButtons: '=',
+                    ngHeight: '=',
+                    ngMaxHeight: '='
                 },
-                compile: function (elem, attributes, transclude) {
+                link: function (scope, element, attrs) {
+                    element.addClass('ctrl');
+                    element.addClass('ctrl-html');
 
-                    var defaults = {
-                        resize: false,
-                        height: '250px',
-                        menubar: false,
-                        statusbar: false
-                    };
+                    scope.id = Math.random().toString().replace('.', '');
+                    scope.valid = true;
+                    scope.enabled = true;
 
-                    var options = {};
-                    
-                    var getJson = function ($string) {
-                        var jsonResult = jsonlite.parse($string);
+                    var editorId = 'editor_' + scope.id;
+             
+                    $timeout(function () {
+                        var $editor = $('#' + editorId);
 
-                        for (var item in jsonResult) {
-                            if (_.str.startsWith(jsonResult[item], "'") && _.str.endsWith(jsonResult[item], "'"))
-                            {
-                                var loopValue = jsonResult[item];
-                                var resultvalue = _.str.rtrim(_.str.ltrim(loopValue, "'"), "'");
-                                jsonResult[item] = resultvalue;
+                        var updating = false;
+
+                        var opts = {
+                            buttons: ['formatting', 'bold', 'italic', 'deleted',
+                                'unorderedlist', 'orderedlist', 'outdent', 'indent',
+                                'image', 'file', 'link', 'alignment', 'horizontalrule']
+                        };
+
+                        var options = {
+                            minHeight: scope.ngHeight,
+                            maxHeight: scope.ngMaxHeight || scope.ngHeight,
+                            buttons: scope.ngButtons
+                        };
+
+                        $.extend(opts, options, {
+                            changeCallback: function () {
+                                if (!updating) {
+                                    scope.ngModel = this.code.get();
+                                    scope.changed();
+                                }
                             }
-                        }
+                        })
 
-                        return jsonResult;
-                    };
+                        $editor.redactor(opts);
 
-                    scope.$watch('ngValidating', function (newValue) {
-                        if (initiated)
-                            if (newValue === false)
-                                scope.valid = true;
-                            else
-                                scope.valid = isValid();
-                    });
-
-                    $.extend(true, options, defaults);
-                    if (attributes.ngOptions) {
-                        $.extend(true, options, getJson(attributes.ngOptions));
-                    }
-
-                    elem.find('textarea[ui-tinymce]').attr('ui-tinymce', JSON.stringify(options));
-
-                    return function (scope, element, attrs) {
-                        element.addClass('ctrl');
-                        element.addClass('ctrl-html');
-
-                        scope.id = Math.random().toString().replace('.', '');
-                        scope.valid = true;
-                        scope.enabled = true;
+                        scope.$watch('ngValidating', function (newValue) {
+                            if (initiated)
+                                if (newValue === false)
+                                    scope.valid = true;
+                                else
+                                    scope.valid = isValid();
+                        });
 
                         scope.$watch('ngDisabled', function (newValue) {
-                            scope.enabled = true; // newValue !== undefined ? newValue : true;
+                            scope.enabled = newValue !== undefined ? newValue : true;
+
+                            var editableContainer = $('.redactor-editor', element);
+                            editableContainer.prop('contenteditable', scope.enabled);
                         });
 
                         var initiated = false;
@@ -97,7 +99,16 @@
                             return valid;
                         };
 
-                        scope.$watch('ngModel', function () {
+                        scope.$watch('ngModel', function (value) {
+
+                            if (value !== $editor.redactor('code.get')) {
+                                updating = true;
+                                $editor.redactor('code.set', (value || ''));
+                                $timeout(function () {
+                                    updating = false;
+                                }, 100);
+                            }
+
                             if (initiated)
                                 scope.valid = isValid();
                         });
@@ -107,8 +118,10 @@
                             scope.valid = isValid();
                             scope.$emit(CONTROL_EVENTS.valueIsValid, scope.valid);
                         });
-                        
-                    }
+
+                        $editor.redactor('code.set', (scope.ngModel || ''));
+
+                    });
                 },
                 templateUrl: 'tmpl/core/controls/ctrlHtml.html'
             };

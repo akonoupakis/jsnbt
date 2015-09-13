@@ -18,9 +18,8 @@ module.exports = [{
         '/admin/js/core/lib/jquery/jquery.scrollTo.js',
         '/admin/js/core/lib/ng-flow/ng-flow.js',
         '/admin/js/core/lib/ngInfiniteScroll/ngInfiniteScroll.js',
-        '/admin/js/core/lib/tinymce/a-tinymce.js',
-        '/admin/js/core/lib/tinymce/b-angular-ui-tinymce.js',
-        '/admin/js/core/lib/tinymce/themes/theme.js',
+        '/admin/js/core/lib/redactor/a-redactor.js',
+        '/admin/js/core/lib/redactor/b-angular-redactor.js',
         '/admin/js/core/lib/underscore/underscore.js',
         '/admin/js/core/lib/underscore/underscore.string.js'
     ]

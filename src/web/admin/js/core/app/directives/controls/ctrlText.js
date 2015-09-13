@@ -32,8 +32,8 @@
                     var initiated = false;
 
                     scope.changed = function () {
-                        $timeout(function () { 
-                            scope.$emit(CONTROL_EVENTS.valueChanged, scope.ngModel);
+                        $timeout(function () {
+                           scope.$emit(CONTROL_EVENTS.valueChanged, scope.ngModel);
                         }, 50);
                     };
 

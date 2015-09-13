@@ -17,9 +17,9 @@
     "angular-ui-sortable": "0.13.3",
     "ngInfiniteScroll": "1.1.2",
     "ng-flow": "2.5.1",
-    "tinymce": "4.0.0",
-    "angular-ui-tinymce": "0.0.9",
-    "cropper": "0.7.9"
+    "cropper": "0.7.9",
+	"imperavi-redactor": "10.0.9",
+	"angular-redactor": "1.1.5"
   },
   "deploy": {
     "jquery": {
@@ -226,88 +226,28 @@
         }
       ]
     },
-    "tinymce": {
+	"imperavi-redactor": {
       "files": [
         {
-          "src": "tinymce-4.0.0/tinymce.min.js",
+          "src": "imperavi-redactor/redactor/redactor.js",
           "dest": [
-            "admin/js/core/lib/tinymce/a-tinymce.js"
+            "admin/js/core/lib/redactor/a-redactor.js"
           ]
-        },
-        {
-          "src": "tinymce-4.0.0/themes/modern/theme.min.js",
+        }, 
+		{
+          "src": "imperavi-redactor/redactor/redactor.css",
           "dest": [
-            "admin/js/core/lib/tinymce/themes/theme.js"
-          ]
-        },
-        {
-          "src": "tinymce-4.0.0/skins/lightgray/skin.min.css",
-          "dest": [
-            "admin/css/core/lib/tinymce/skins/lightgray/skin.min.css"
-          ]
-        },
-        {
-          "src": "tinymce-4.0.0/skins/lightgray/content.min.css",
-          "dest": [
-            "admin/css/core/lib/tinymce/skins/lightgray/content.min.css"
-          ]
-        },
-        {
-          "src": "tinymce-4.0.0/skins/lightgray/fonts/icomoon.eot",
-          "dest": [
-            "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon.eot"
-          ]
-        },
-        {
-          "src": "tinymce-4.0.0/skins/lightgray/fonts/icomoon.svg",
-          "dest": [
-            "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon.svg"
-          ]
-        },
-        {
-          "src": "tinymce-4.0.0/skins/lightgray/fonts/icomoon.ttf",
-          "dest": [
-            "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon.ttf"
-          ]
-        },
-        {
-          "src": "tinymce-4.0.0/skins/lightgray/fonts/icomoon.woff",
-          "dest": [
-            "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon.woff"
-          ]
-        },
-        {
-          "src": "tinymce-4.0.0/skins/lightgray/fonts/icomoon-small.eot",
-          "dest": [
-            "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon-small.eot"
-          ]
-        },
-        {
-          "src": "tinymce-4.0.0/skins/lightgray/fonts/icomoon-small.svg",
-          "dest": [
-            "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon-small.svg"
-          ]
-        },
-        {
-          "src": "tinymce-4.0.0/skins/lightgray/fonts/icomoon-small.ttf",
-          "dest": [
-            "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon-small.ttf"
-          ]
-        },
-        {
-          "src": "tinymce-4.0.0/skins/lightgray/fonts/icomoon-small.woff",
-          "dest": [
-            "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon-small.woff"
+            "admin/css/core/lib/redactor/redactor.css"
           ]
         }
       ]
     },
-    "angular-ui-tinymce": {
+	"angular-redactor": {
       "files": [
         {
-          "src": "angular-ui-tinymce-0.0.9/src/tinymce.js",
+          "src": "angular-redactor-1.1.5/angular-redactor.js",
           "dest": [
-            "admin/js/core/lib/tinymce/b-angular-ui-tinymce.js"
+            "admin/js/core/lib/redactor/b-angular-redactor.js"
           ]
         }
       ]

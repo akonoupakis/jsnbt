@@ -887,7 +887,7 @@
 
             var publish = function () {
                 var deferred = $q.defer();
-
+                
                 $scope.validate().then(function (validationResults) {
                     if (!validationResults) {
                         deferred.resolve(false);

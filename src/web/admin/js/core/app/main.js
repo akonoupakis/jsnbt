@@ -13,7 +13,7 @@
     modules.push('ui.sortable');
     modules.push('infinite-scroll');
     modules.push('flow');
-    modules.push('ui.tinymce');
+    modules.push('angular-redactor');
 
     for (var moduleDomain in jsnbt.modules) {
         if (jsnbt.modules[moduleDomain].domain !== 'public' && jsnbt.modules[moduleDomain].name)
@@ -196,8 +196,6 @@
             chunkRetryInterval: 5000,
             simultaneousUploads: 1
         };
-
-        tinymce.baseURL = '/admin/css/core/lib/tinymce';
     }])
     .run(['$rootScope', '$location', '$route', '$timeout', '$fn', 'FunctionService', 'AuthService', 'AUTH_EVENTS', 'ROUTE_EVENTS', function ($rootScope, $location, $route, $timeout, $fn, FunctionService, AuthService, AUTH_EVENTS, ROUTE_EVENTS) {
         $fn.register('core', FunctionService);

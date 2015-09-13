@@ -11,7 +11,7 @@
 
                 selectNode: function (domain, selected, options) {
                     var deferred = $q.defer();
-
+                    
                     ModalService.open({
                         title: 'select a content node',
                         controller: 'NodeSelectorController',
