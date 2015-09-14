@@ -37,9 +37,10 @@
             $scope.$on(CONTROL_EVENTS.valueSelected, function (sender, selected) {
                 sender.stopPropagation();
 
+                $scope.ngModel.gen = [];
+                $scope.ngModel.src = selected;
+
                 if ($scope.step === 1 && $scope.height && $scope.width) {
-                    $scope.ngModel.gen = [];
-                    $scope.ngModel.src = selected;
                     $scope.step++;
                 }
                 else {

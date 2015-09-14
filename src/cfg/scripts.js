@@ -68,6 +68,7 @@ module.exports = [{
         '/admin/js/core/app/controllers/modal/NodeSelectorController.js',
         '/admin/js/core/app/directives/modal.js',
         '/admin/js/core/app/directives/scrollspy.js',
+        '/admin/js/core/app/directives/errSrc.js',
         '/admin/js/core/app/directives/controls/ctrlBreadcrumb.js',
         '/admin/js/core/app/directives/controls/ctrlCheck.js',
         '/admin/js/core/app/directives/controls/ctrlCheckList.js',

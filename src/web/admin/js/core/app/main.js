@@ -188,14 +188,6 @@
             otherwise({
                 redirectTo: '/'
             });
-
-        flowFactoryProvider.defaults = {
-            target: '/jsnbt-upload',
-            permanentErrors: [500, 501],
-            maxChunkRetries: 1,
-            chunkRetryInterval: 5000,
-            simultaneousUploads: 1
-        };
     }])
     .run(['$rootScope', '$location', '$route', '$timeout', '$fn', 'FunctionService', 'AuthService', 'AUTH_EVENTS', 'ROUTE_EVENTS', function ($rootScope, $location, $route, $timeout, $fn, FunctionService, AuthService, AUTH_EVENTS, ROUTE_EVENTS) {
         $fn.register('core', FunctionService);

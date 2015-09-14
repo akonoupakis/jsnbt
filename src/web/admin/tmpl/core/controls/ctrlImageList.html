@@ -9,7 +9,7 @@
                         <button class="btn btn-default glyphicon glyphicon-move" type="button" ng-disabled="ngDisabled"></button>
                     </span>
                     <div class="form-control">
-                        <img ng-src="../{{ wrong[$index] ? 'admin/img/core/noimage.jpg' : (item.src != '' ? item.src : 'admin/img/core/noimage.jpg') }}?type=admin-image-thumb" />
+                        <img err-src="../admin/img/core/noimage.jpg" ng-src="../{{ wrong[$index] ? 'admin/img/core/noimage.jpg' : (item.src != '' ? item.src : 'admin/img/core/noimage.jpg') }}?type=admin-image-thumb" />
                         <span>{{ wrong[$index] ? '-- invalid value --' : item.src }}</span>
                     </div>
                     <span ng-show="!ngDisabled && !valid && invalid[$index]" class="glyphicon glyphicon-remove form-control-feedback"></span>

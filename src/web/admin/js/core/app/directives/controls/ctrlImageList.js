@@ -190,7 +190,7 @@
                         var item = scope.ngModel[index];
 
                         ModalService.open({
-                            title: 'crop ' + scope.ngModel.src,
+                            title: 'crop ' + item.src,
                             controller: 'ImageSelectorController',
                             selected: item,
                             template: 'tmpl/core/modals/ImageSelector.html',
@@ -266,6 +266,10 @@
                         }
                     };
 
+
+                    $(document).on('error', 'img', function (e) {
+                        console.log(12, e);
+                    });
                 },
                 templateUrl: 'tmpl/core/controls/ctrlImageList.html'
             };

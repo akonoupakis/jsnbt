@@ -1,4 +1,4 @@
-var fs = require('fs');
+var fs = require('fs-extra');
 var path = require('path');
 var util = require('util');
 var Stream = require('stream').Stream;
@@ -184,7 +184,7 @@ var flow = function (temporaryFolder) {
 
                 // Save the chunk (TODO: OVERWRITE)
                 
-                fs.copy(files[$.fileParameterName].path, chunkFilename);
+                fs.copySync(files[$.fileParameterName].path, chunkFilename);
                 // Do we have all the chunks?
                 var currentTestChunk = 1;
                 var numberOfChunks = Math.max(Math.floor(totalSize / (chunkSize * 1.0)), 1);

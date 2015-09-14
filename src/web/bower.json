@@ -16,7 +16,7 @@
     "jquery-ui": "1.11.4",
     "angular-ui-sortable": "0.13.3",
     "ngInfiniteScroll": "1.1.2",
-    "ng-flow": "2.5.1",
+    "ng-flow": "2.6.1",
     "cropper": "0.7.9",
 	"imperavi-redactor": "10.0.9",
 	"angular-redactor": "1.1.5"
@@ -213,13 +213,7 @@
     "ng-flow": {
       "files": [
         {
-          "src": "flow.js-2.5.1/dist/flow.js",
-          "dest": [
-            "admin/js/core/lib/flow/flow.js"
-          ]
-        },
-        {
-          "src": "ng-flow-2.5.1/dist/ng-flow.js",
+          "src": "ng-flow-2.6.1/dist/ng-flow-standalone.js",
           "dest": [
             "admin/js/core/lib/ng-flow/ng-flow.js"
           ]
