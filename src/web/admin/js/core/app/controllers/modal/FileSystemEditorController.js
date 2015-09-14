@@ -33,30 +33,31 @@
             if ($scope.data.type === 'folder')
                 restricted.push($scope.data.path);
 
-            console.log($scope.data.dir);
-
             TreeNodeService.getFolders({
                 path: $scope.data.dir,
                 restricted: restricted
             }).then(function (response) {
-                $scope.nodes = response;
-                
+
+                $scope.nodes = response;                
                 var groupNode = _.find(response[0].children, function (x) { return x.name == $scope.group; });
-
                 $scope.nodes = groupNode.children;
-
                 TreeNodeService.setSelected($scope.nodes, [$scope.data.dir]);
+
             }, function (error) {
                 throw error;
             });
+
+            $scope.root = function () {
+                TreeNodeService.setSelected($scope.nodes, []);
+            };
 
             $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
                 $scope.valid = true;
                 $scope.$broadcast(CONTROL_EVENTS.initiateValidation);
                 if ($scope.valid) {
                     var selectedFolder = _.first(TreeNodeService.getSelected($scope.nodes));
-                    var selectedPath = selectedFolder + (selectedFolder !== '/' ? '/' : '') + $scope.ngModel + $scope.data.ext;
-                    
+                    var targetPath = (selectedFolder ? selectedFolder : '/' + $scope.group);
+                    var selectedPath = targetPath + '/' + $scope.ngModel + $scope.data.ext;
                     $scope.$emit(MODAL_EVENTS.valueSubmitted, $scope.ngModel !== '' ? selectedPath : '');
                 }
             });

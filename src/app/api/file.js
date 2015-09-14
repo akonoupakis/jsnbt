@@ -50,6 +50,7 @@ var FileApi = function (server) {
 
             try {
                 var result = fileMngr.move(fields);
+                ctx.json(result);
             }
             catch (ex) {
                 ctx.error(500, ex, false);

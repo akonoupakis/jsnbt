@@ -391,6 +391,14 @@
                 });
             };
 
+            var setNodeUnselected = function (node) {
+                node.selected = false;
+                
+                $(node.children).each(function (n, child) {
+                    setNodeUnselected(child);
+                });
+            };
+
             var parentFolders = function (parent, nodes) {
                 $(nodes).each(function (n, node) {
                     node.parent = parent;
@@ -595,6 +603,11 @@
             };
 
             TreeNodeService.setSelected = function (nodes, ids) {
+
+                $(nodes).each(function (n, node) {
+                    setNodeUnselected(node);
+                });
+
                 $(nodes).each(function (n, node) {
                     setNodeSelected(node, ids);
                 });

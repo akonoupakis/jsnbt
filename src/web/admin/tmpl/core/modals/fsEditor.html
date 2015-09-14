@@ -2,7 +2,7 @@
     <ctrl-text class="file-editor-name" ng-model="ngModel" ng-required="true" ng-label="name" ng-auto-focus="true"></ctrl-text>
 
     <div class="file-editor-path">
-        <label>path</label>
+        <label ng-click="root()">path</label>
         <ctrl-tree ng-model="nodes" ng-selectable="true" ng-select-mode="'single'">
             <ctrl-tree-node>
                 <ctrl-tree-node-content>{{ node.name }}</ctrl-tree-node-content>

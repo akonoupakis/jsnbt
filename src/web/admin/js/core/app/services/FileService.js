@@ -16,7 +16,7 @@
                     paths: typeof (paths) !== 'string' ? paths : undefined
                 }).then(function (data) {
                     if (!!data && !!data.data) {                        
-                        deferred.resolve(data.data.d);
+                        deferred.resolve(data.data);
                     } else {
                         deferred.reject();
                     }
@@ -34,7 +34,7 @@
                     name: name
                 }).then(function (data) {
                     if (!!data && !!data.data) {
-                        deferred.resolve(data.data.d);
+                        deferred.resolve(data.data);
                     } else {
                         deferred.reject();
                     }
@@ -52,7 +52,7 @@
                     to: newPath
                 }).then(function (data) {
                     if (!!data && !!data.data) {
-                        deferred.resolve(data.data.d);
+                        deferred.resolve(data.data);
                     } else {
                         deferred.reject();
                     }
@@ -69,7 +69,7 @@
                     path: path
                 }).then(function (data) {
                     if (!!data && !!data.data) {
-                        deferred.resolve(data.data.d);
+                        deferred.resolve(data.data);
                     } else {
                         deferred.reject();
                     }
