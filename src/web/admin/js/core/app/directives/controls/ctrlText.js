@@ -20,12 +20,13 @@
                     ngValidate: '=',
                     ngValid: '=',
                     ngCharacters: '@',
-                    ngAutoFocus: '='
+                    ngAutoFocus: '=',
+                    ngMaxLength: '='
                 },
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl');
                     element.addClass('ctrl-text');
-                    
+                    console.log(scope.ngMaxlength);
                     scope.id = Math.random().toString().replace('.', '');
                     scope.valid = true;
                     

@@ -20,7 +20,8 @@
                     ngValidating: '=',
                     ngValidate: '=',
                     ngValid: '=',
-                    ngAutoFocus: '='
+                    ngAutoFocus: '=',
+                    ngMaxLength: '='
                 },
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl');
