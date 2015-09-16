@@ -1,4 +1,12 @@
-## 1.0.113
+## 1.0.114
+
+	- ngValidating property on most controls. if true, the field is validated upon validation request. 
+	  this used to depend on the !ngDisabled property, but one might want to validate a field on specific cases with the control enabled.
+	- ctrlHtml control works with redactor RTE
+	- ctrlText and ctrlTextArea ngMaxLength
+	- ctrlDatePicker control
+
+## 1.0.113 (2015-07-26)
 
 	- no further need of server-dev or server-prod start up file. it now gets the environment status from grunting, so one start up file (server-app.js) is enough
 	- deployment target changed from "dev/dist" to "www"

@@ -17,7 +17,7 @@
                     ngValidating: '=',
                     ngLabel: '@',
                     ngTip: '@',
-                    ngButtons: '=',
+                    ngToolbar: '=',
                     ngHeight: '=',
                     ngMaxHeight: '='
                 },
@@ -45,7 +45,7 @@
                         var options = {
                             minHeight: scope.ngHeight,
                             maxHeight: scope.ngMaxHeight || scope.ngHeight,
-                            buttons: scope.ngButtons
+                            buttons: scope.ngToolbar
                         };
 
                         $.extend(opts, options, {
