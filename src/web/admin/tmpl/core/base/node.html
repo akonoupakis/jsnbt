@@ -94,7 +94,7 @@
 
         <div id="page-content" data-scrollspy="content" ng-show="node.entity !== 'pointer'">
             <div class="row" id="page-layout" data-scrollspy="layout" ng-show="entity.properties.layout">
-                <ctrl-select class="col-md-10" ng-model="nodeLayout" ng-disabled="!entity.properties.layout || node.layout.inherits" ng-required="true" ng-options="layouts" ng-default="true" ng-value-field="id" ng-name-field="name" ng-label="layout"></ctrl-select>
+                <ctrl-select class="col-md-10" ng-model="values.layout" ng-disabled="!entity.properties.layout || node.layout.inherits" ng-required="true" ng-options="layouts" ng-default="true" ng-value-field="id" ng-name-field="name" ng-label="layout"></ctrl-select>
                 <ctrl-check class="col-md-2" ng-model="node.layout.inherits" ng-disabled="!entity.properties.layout" ng-label="inheritance"></ctrl-check>
             </div>
 
@@ -131,7 +131,7 @@
 
         <div id="page-robots" data-scrollspy="robots" ng-show="entity.properties.robots">
             <div class="row">
-                <ctrl-check-list class="col-md-10" ng-model="nodeRobots" ng-options="robots" ng-required="true" ng-disabled="!entity.properties.robots || node.robots.inherits" ng-label="robots"></ctrl-check-list>
+                <ctrl-check-list class="col-md-10" ng-model="values.robots" ng-options="robots" ng-required="true" ng-disabled="!entity.properties.robots || node.robots.inherits" ng-label="robots"></ctrl-check-list>
                 <ctrl-check class="col-md-2" ng-model="node.robots.inherits" ng-disabled="!entity.properties.robots" ng-label="inheritance"></ctrl-check>
             </div>
 
@@ -140,7 +140,7 @@
 
         <div id="page-permissions" data-scrollspy="permissions" ng-show="entity.properties.permissions">
             <div class="row">
-                <ctrl-check-list class="col-md-10" ng-model="nodeRoles" ng-options="roles" ng-required="true" ng-disabled="!entity.properties.permissions || node.roles.inherits" ng-label="permissions"></ctrl-check-list>
+                <ctrl-check-list class="col-md-10" ng-model="values.roles" ng-options="roles" ng-required="true" ng-disabled="!entity.properties.permissions || node.roles.inherits" ng-label="permissions"></ctrl-check-list>
                 <ctrl-check class="col-md-2" ng-model="node.roles.inherits" ng-disabled="!entity.properties.permissions" ng-label="inheritance"></ctrl-check>
             </div>
 
@@ -149,7 +149,7 @@
 
         <div id="page-ssl" data-scrollspy="ssl" ng-show="application.ssl && entity.properties.ssl">
             <div class="row">
-                <ctrl-check class="col-md-10" ng-model="nodeSSL" ng-disabled="!application.ssl || !entity.properties.ssl || node.secure.inherits" ng-label="ssl"></ctrl-check>
+                <ctrl-check class="col-md-10" ng-model="values.secure" ng-disabled="!application.ssl || !entity.properties.ssl || node.secure.inherits" ng-label="ssl"></ctrl-check>
                 <ctrl-check class="col-md-2" ng-model="node.secure.inherits" ng-disabled="!application.ssl || !entity.properties.ssl" ng-label="inheritance"></ctrl-check>
             </div>
 
