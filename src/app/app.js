@@ -71,6 +71,8 @@ exports.config = {
 
     templates: [],
 
+    content: [],
+
     routes: [],
 
     messaging: {
@@ -191,7 +193,7 @@ exports.register = function (module) {
             }
         });
     }
-
+    
     var entityDefaults = {
         name: '',
         allowed: [],
@@ -237,6 +239,8 @@ exports.register = function (module) {
     applyArray('images', 'name');
 
     applyTextArray('fileGroups');
+
+    applyArray('content', 'id');
 
     if (moduleConfig.lists) {
         _.each(moduleConfig.lists, function (moduleList) {

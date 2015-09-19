@@ -6,19 +6,7 @@
     angular.module("jsnbt")
         .controller('ContentController', ['$scope', '$jsnbt', '$location', function ($scope, $jsnbt, $location) {
 
-            $scope.goto = function (name, disabled) {
-                if (disabled)
-                    return;
-
-                $location.next('/content/' + name);
-            };
-            
-            var injects = [];
-            _.each($jsnbt.injects, function (inject) {
-                if (inject.content)
-                    injects.push(inject.content);
-            });
-            $scope.injects = injects;
-
+            $scope.items = $jsnbt.content;
+                        
         }]);
 })();

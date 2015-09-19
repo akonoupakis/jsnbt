@@ -10,48 +10,18 @@
             </div>
         </div>
 
-        <div class="row">
-            <ul class="content-thumbs">
-                <li ng-show="isAuthorized('languages') && application.localization.enabled">
-                    <a href="javascript:;" ng-click="goto('languages')">
-                        <img src="img/core/content/languages.png" style="height: 128px" />
-                    </a>
-                    <label>languages</label>
-                </li>
-                <li ng-show="isAuthorized('layouts')">
-                    <a href="javascript:;" ng-click="goto('layouts', application.localization.enabled && application.languages.length === 0)" class="{{application.localization.enabled && application.languages.length === 0 ? 'disabled' : ''}}">
-                        <img src="img/core/content/layouts.png" style="height: 128px" />
-                    </a>
-                    <label>layouts</label>
-                </li>
-                <li ng-show="isAuthorized('nodes')">
-                    <a href="javascript:;" ng-click="goto('nodes', application.localization.enabled && application.languages.length === 0)" class="{{application.localization.enabled && application.languages.length === 0 ? 'disabled' : ''}}">
-                        <img src="img/core/content/nodes.png" style="height: 128px" />
-                    </a>
-                    <label>nodes</label>
-                </li>
-                <li ng-show="isAuthorized('data')">
-                    <a href="javascript:;" ng-click="goto('data', application.localization.enabled && application.languages.length === 0)" class="{{application.localization.enabled && application.languages.length === 0 ? 'disabled' : ''}}">
-                        <img src="img/core/content/data.png" style="height: 128px" />
-                    </a>
-                    <label>data</label>
-                </li>
-                <li ng-show="isAuthorized('texts')">
-                    <a href="javascript:;" ng-click="goto('texts', application.localization.enabled && application.languages.length === 0)" class="{{application.localization.enabled && application.languages.length === 0 ? 'disabled' : ''}}">
-                        <img src="img/core/content/texts.png" style="height: 128px" />
-                    </a>
-                    <label>texts</label>
-                </li>
-                <li ng-show="isAuthorized('files')">
-                    <a href="javascript:;" ng-click="goto('files')">
-                        <img src="img/core/content/files.png" style="height: 128px" />
-                    </a>
-                    <label>files</label>
-                </li>
-            </ul>
+        <div class="row content-container" ng-repeat="item in items">
+            <div class="image-container">
+                <a href="javascript:;" ng-click="goto(item.url)">
+                    <img ng-src="{{item.image}}?type=1" />
+                </a>
+            </div> 
+            <div class="text-container">
+                <h3 class="title"><a href="javascript:;" ng-click="goto(item.url)">{{ item.title }}</a></h3>
+                <span class="subtitle"></span>
+                <p class="body">{{ item.body }}</p>
+            </div>
         </div>
-
-        <div ng-repeat="tmpl in injects" ng-include="tmpl"></div>
 
     </section>
 

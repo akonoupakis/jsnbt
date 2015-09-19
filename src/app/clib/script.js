@@ -95,6 +95,8 @@ var Script = function (app) {
 
         applyArrayInObject('countries', 'countries', 'code');
 
+        result.content = app.config.content;
+
         result.messaging = {
             mail: {},
             sms: {}

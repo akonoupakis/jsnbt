@@ -23,6 +23,8 @@ module.exports = {
 
     messaging: require('./messaging.js'),
 
-    templates: require('./templates.js')
+    templates: require('./templates.js'),
+
+    content: require('./content.js')
 
 }

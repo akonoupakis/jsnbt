@@ -34,6 +34,15 @@ module.exports = {
 
     messaging: require('./messaging.js'),
 
+    content: [{
+        id: 'files2',
+        title: 'files',
+        subtitle: 'Lorem ipsum dolor sit amet',
+        body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam fringilla nunc vel cursus consequat. Pellentesque sit amet libero vel risus tristique euismod sed quis eros.',
+        image: 'img/core/content/files.png',
+        url: '/content/files'
+    }],
+
     register: function () {
 
         return {
