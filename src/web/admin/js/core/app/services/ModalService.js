@@ -13,6 +13,20 @@
                 var modalCtrl = function ($scope, $modalInstance) {
                     angular.extend($scope, scope);
                     
+                    if ($scope.btn) {
+                        if ($scope.btn.cancel === undefined)
+                            $scope.btn.cancel = 'cancel';
+
+                        if ($scope.btn.ok === undefined)
+                            $scope.btn.ok = 'done';
+                    }
+                    else {
+                        $scope.btn = {
+                            cancel: 'cancel',
+                            ok: 'done'
+                        };
+                    }
+
                     $scope.valid = false;
                     
                     $scope.$on(MODAL_EVENTS.valueSubmitted, function (sender, value) {
@@ -48,7 +62,7 @@
 
                 return deferred.promise;
             };
-
+            
             return ModalService;
         }]);
 })();

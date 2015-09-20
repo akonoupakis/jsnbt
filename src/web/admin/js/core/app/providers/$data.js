@@ -87,6 +87,10 @@
                         Data[collectionName].del = function () {
                             return getPromise.apply(getPromise, [collectionName, 'del', arguments]);
                         };
+
+                        Data[collectionName].count = function () {
+                            return getPromise.apply(getPromise, [collectionName, 'count', arguments]);
+                        };
                     });
 
                     Data.create = function (name, obj) {

@@ -6,6 +6,7 @@
     <div class="bootbox-body" ng-include="template"></div>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="cancel()">cancel</button>
-    <button type="button" class="btn btn-primary" ng-click="ok()">done</button>
+    {{size}}
+    <button type="button" class="btn btn-default" ng-show="btn.cancel" ng-click="cancel()">{{ btn.cancel }}</button>
+    <button type="button" class="btn btn-primary" ng-show="btn.ok" ng-click="ok()">{{ btn.ok }}</button>
 </div>
