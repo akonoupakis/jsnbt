@@ -109,7 +109,7 @@
                                 }
 
                                 $scope.defaults.language = defaultLangCode;
-
+                                
                                 deferred.resolve(defaultLangCode);
 
                             }, function (error) {

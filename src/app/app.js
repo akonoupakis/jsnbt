@@ -201,7 +201,7 @@ exports.register = function (module) {
         localized: true,
 
         properties: {
-            name: true,
+            title: true,
             parent: true,
             template: true,
             active: true,

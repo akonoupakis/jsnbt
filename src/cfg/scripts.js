@@ -97,6 +97,7 @@ module.exports = [{
         '/admin/js/core/app/directives/controls/ctrlSelect.js',
         '/admin/js/core/app/directives/controls/ctrlText.js',
         '/admin/js/core/app/directives/controls/ctrlTextArea.js',
+        '/admin/js/core/app/directives/controls/ctrlNumeric.js',
         '/admin/js/core/app/directives/controls/ctrlDatePicker.js',
         '/admin/js/core/app/directives/controls/ctrlTree.js',
         '/admin/js/core/app/providers/$data.js',

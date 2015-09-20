@@ -16,19 +16,8 @@
         $scope.entity = undefined;
 
         $scope.roles = [];
-        //$scope.values.roles = [];
-        //$scope.draftValues.roles = [];
-
         $scope.robots = [];
-        //$scope.values.robots = [];
-        //$scope.draftValues.robots = [];
-
         $scope.layouts = [];
-        //$scope.values.layout = '';
-        //$scope.draftValues.layout = '';
-
-        //$scope.values.secure = '';
-        //$scope.draftValues.secure = '';
 
         $scope.seoNames = [];
 
@@ -56,6 +45,13 @@
             ssl: false
         };
         
+        $scope.queue = {
+            preload: [],
+            load: [],
+            set: [],
+            patch: []
+        };
+
         $scope.validation = {
             seo: true
         };
@@ -82,12 +78,6 @@
             entities: []
         };
 
-        $scope.queue = {
-            load: [],
-            set: [],
-            patch: []
-        };
-
         $scope.enqueue = function (key, fn) {
             if (!$scope.queue[key])
                 throw new Error('queue key not found: ' + key);
@@ -96,32 +86,68 @@
         }
 
         $scope.enqueue('load', function () {
+            var deferred = $q.defer();
+
             if (!$scope.isNew()) {
                 $scope.values.layout = $scope.node.layout.value || '';
                 $scope.draftValues.layout = $scope.node.layout.value || '';
             }
+
+            deferred.resolve();
+
+            return deferred.promise;
         });
 
         $scope.enqueue('load', function () {
+            var deferred = $q.defer();
+
             if (!$scope.isNew()) {
                 $scope.values.roles = $scope.node.roles.value || [];
                 $scope.draftValues.roles = $scope.node.roles.value || [];
             }
+
+            deferred.resolve();
+
+            return deferred.promise;
         });
 
         $scope.enqueue('load', function () {
+            var deferred = $q.defer();
+
             if (!$scope.isNew()) {
                 $scope.values.robots = $scope.node.robots.value || [];
                 $scope.draftValues.robots = $scope.node.robots.value || [];
             }
+
+            deferred.resolve();
+
+            return deferred.promise;
         });
 
         $scope.enqueue('load', function () {
+            var deferred = $q.defer();
+
             if (!$scope.isNew()) {
                 $scope.values.secure = $scope.node.secure.value || false;
                 $scope.draftValues.secure = $scope.node.secure.value || false;
             }
+
+            deferred.resolve();
+
+            return deferred.promise;
         });
+
+        $scope.preload = function () {
+            var deferred = $q.defer();
+
+            $q.all(_.map($scope.queue.preload, function (x) { return x(); })).then(function () {
+                deferred.resolve();
+            }, function (error) {
+                deferred.reject(error);
+            });
+
+            return deferred.promise;
+        };
 
         $scope.load = function () {
             var deferred = $q.defer();
@@ -157,13 +183,14 @@
                         $scope.setValid(true);
                         $scope.setPublished(false);
 
-                        _.each($scope.queue.load, function (x) {
-                            x();
-                        })
+                        $q.all(_.map($scope.queue.load, function (x) { return x(); })).then(function () {
+                            setActiveProperties($scope.node);
 
-                        setActiveProperties($scope.node);
+                            deferred.resolve($scope.node);
+                        }, function (loadFnError) {
+                            deferred.reject(loadFnError);
+                        });
 
-                        deferred.resolve($scope.node);
                     }, function (error) {
                         deferred.reject(error);
                     });
@@ -185,26 +212,21 @@
                     $scope.setValid(true);
                     $scope.setPublished(false);
 
-                    _.each($scope.queue.load, function (x) {
-                        x();
-                    })
+                    $q.all(_.map($scope.queue.load, function (x) { return x(); })).then(function () {
+                        setActiveProperties($scope.node);
 
-                    setActiveProperties($scope.node);
-
-                    deferred.resolve($scope.node);
+                        deferred.resolve($scope.node);
+                    }, function (loadFnError) {
+                        deferred.reject(loadFnError);
+                    });
                 }
             }
             else {
                 $data.nodes.get($scope.id).then(function (result) {
                     $scope.set(result);
 
-                    if ($route.current.$$route.name && result.content.localized['en'] && result.content.localized['en'][$route.current.$$route.name]) {
-                        $scope.setName(result.content.localized['en'][$route.current.$$route.name]);
-                    }
-                    else {
-                        $scope.setName(result.name);
-                    }
-
+                    $scope.setName(result.title[$scope.defaults.language]);
+                    
                     var matchedEntity = $jsnbt.entities[result.entity] || {};
                     $scope.localized = $scope.application.localization.enabled && (matchedEntity.localized === undefined || matchedEntity.localized === true);
 
@@ -213,13 +235,13 @@
                     $scope.setValid(true);
                     $scope.setPublished(true);
 
-                    _.each($scope.queue.load, function (x) {
-                        x();
-                    })
+                    $q.all(_.map($scope.queue.load, function (x) { return x(); })).then(function () {
+                        setActiveProperties($scope.node);
 
-                    setActiveProperties($scope.node);
-
-                    deferred.resolve($scope.node);
+                        deferred.resolve($scope.node);
+                    }, function (loadFnError) {
+                        deferred.reject(loadFnError);
+                    });
 
                 }, function (error) {
                     deferred.reject(error);
@@ -731,15 +753,9 @@
                         $(hierarchy).each(function (i, item) {
                             var resultNode = _.first(_.filter(results, function (x) { return x.id === item; }));
                             if (resultNode) {
-
-                                var nameValue = resultNode.name;
-
-                                if ($route.current.$$route.name && resultNode.content.localized['en'] && resultNode.content.localized['en'][$route.current.$$route.name]) {
-                                    nameValue = resultNode.content.localized['en'][$route.current.$$route.name];
-                                }
-
+                                
                                 breadcrumb.push({
-                                    name: nameValue,
+                                    name: resultNode.title[$scope.defaults.language],
                                     url: currentUrl + '/' + item,
                                     active: i === (hierarchy.length - 1)
                                 });
@@ -940,19 +956,55 @@
         };
         
         $scope.enqueue('patch', function (node) {
+            var deferred = $q.defer();
+
+            if (!node.roles)
+                node.roles = {};
+
             node.roles.value = !node.roles.inherits ? $scope.values.roles : [];
+
+            deferred.resolve();
+
+            return deferred.promise;
         });
 
         $scope.enqueue('patch', function (node) {
+            var deferred = $q.defer();
+
+            if (!node.robots)
+                node.robots = {};
+
             node.robots.value = !node.robots.inherits ? $scope.values.robots : [];
+
+            deferred.resolve();
+
+            return deferred.promise;
         });
 
         $scope.enqueue('patch', function (node) {
+            var deferred = $q.defer();
+
+            if (!node.layout)
+                node.layout = {};
+
             node.layout.value = !node.layout.inherits ? $scope.values.layout : '';
+
+            deferred.resolve();
+
+            return deferred.promise;
         });
 
         $scope.enqueue('patch', function (node) {
+            var deferred = $q.defer();
+
+            if (!node.secure)
+                node.secure = {};
+
             node.secure.value = !node.secure.inherits ? $scope.values.secure : false;
+
+            deferred.resolve();
+
+            return deferred.promise;
         });
 
         $scope.publish = function () {
@@ -968,26 +1020,28 @@
                         var publishNode = {};
                         $.extend(true, publishNode, $scope.node);
 
-                        _.each($scope.queue.patch, function (patchFn) {
-                            patchFn(publishNode);
-                        });
+                        $q.all(_.map($scope.queue.patch, function (x) { return x(publishNode); })).then(function () {
+                         
+                            if ($scope.isNew()) {
+                                $data.nodes.post(publishNode).then(function (result) {
+                                    $scope.node = result;
+                                    deferred.resolve(true);
+                                }, function (error) {
+                                    deferred.reject(error);
+                                });
+                            }
+                            else {
+                                $data.nodes.put($scope.id, publishNode).then(function (result) {
+                                    $scope.name = result.title[$scope.defaults.language];
+                                    deferred.resolve(true);
+                                }, function (error) {
+                                    deferred.reject(error);
+                                });
+                            }
 
-                        if ($scope.isNew()) {
-                            $data.nodes.post(publishNode).then(function (result) {
-                                $scope.node = result;
-                                deferred.resolve(true);
-                            }, function (error) {
-                                deferred.reject(error);
-                            });
-                        }
-                        else {
-                            $data.nodes.put($scope.id, publishNode).then(function (result) {
-                                $scope.name = result.name;
-                                deferred.resolve(true);
-                            }, function (error) {
-                                deferred.reject(error);
-                            });
-                        }
+                        }, function (loadFnError) {
+                            deferred.reject(loadFnError);
+                        });
                     }
                 });
 
@@ -1167,30 +1221,32 @@
             // throw 404 if is current not found
         });
         
-        $scope.enqueue('set', function () { return $scope.setSelectedSSL(); });
-        $scope.enqueue('set', function () { return $scope.setSelectedLayout(); });
-        $scope.enqueue('set', function () { return $scope.setSelectedRoles(); });
-        $scope.enqueue('set', function () { return $scope.setSelectedRobots(); });
+        $scope.enqueue('set', $scope.setSelectedSSL);
+        $scope.enqueue('set', $scope.setSelectedLayout);
+        $scope.enqueue('set', $scope.setSelectedRoles);
+        $scope.enqueue('set', $scope.setSelectedRobots);
 
         $scope.init = function () {
             var deferred = $q.defer();
 
             $timeout(function () {
                 $q.all($scope.setLayouts(), $scope.setRoles(), $scope.setRobots(), $scope.setModules(), $scope.setLanguages(), $scope.setLanguage(), $scope.setEntities(), $scope.setRoutes(), $scope.setViews()).then(function () {
-                    $scope.load().then(function (setResponse) {
-                        $scope.setHierarchyNodes().then(function () {
-
-                            var setPromises = _.map($scope.queue.set, function (x) { return x(); });
-
-                            $q.all(setPromises).then(function () {
-                                deferred.resolve();
-                            }, function (set2Error) {
-                                logger.error(set2Error);
-                                deferred.reject(set2Error);
+                    $scope.preload().then(function () {
+                        $scope.load().then(function (setResponse) {
+                            $scope.setHierarchyNodes().then(function () {
+                                $q.all(_.map($scope.queue.set, function (x) { return x(); })).then(function () {
+                                    deferred.resolve();
+                                }, function (set2Error) {
+                                    logger.error(set2Error);
+                                    deferred.reject(set2Error);
+                                });
+                            }, function (getError) {
+                                logger.error(getError);
+                                deferred.reject(getError);
                             });
-                        }, function (getError) {
-                            logger.error(getError);
-                            deferred.reject(getError);
+                        }, function (setError) {
+                            logger.error(setError);
+                            deferred.reject(setError);
                         });
                     }, function (setError) {
                         logger.error(setError);

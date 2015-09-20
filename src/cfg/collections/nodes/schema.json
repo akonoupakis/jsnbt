@@ -1,9 +1,10 @@
 {
     "type": "object",
     "properties": {
-        "name": {
-            "type": "string",
-            "required": false
+       	"title": {
+            "type": "object",
+            "required": true,
+			"properties": { }
         },
 		"domain": {
             "type": "string",

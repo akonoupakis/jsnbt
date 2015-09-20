@@ -17,9 +17,9 @@
 
         <hr />
 
-        <div id="page-name" data-scrollspy="name" ng-show="entity.properties.name">
+        <div id="page-title" data-scrollspy="title" ng-show="entity.properties.title">
             <div class="row">
-                <ctrl-text class="col-md-12" ng-model="node.name" ng-disabled="!entity.properties.name" ng-required="true" ng-auto-focus="true" ng-label="name"></ctrl-text>
+                <ctrl-text class="col-md-12" ng-model="node.title[language]" ng-validating="node.active[language]" ng-disabled="!entity.properties.title" ng-required="true" ng-auto-focus="true" ng-label="title"></ctrl-text>
             </div>
 
             <hr />

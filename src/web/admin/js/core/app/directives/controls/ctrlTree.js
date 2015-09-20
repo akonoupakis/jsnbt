@@ -42,6 +42,7 @@
                              childScope.ngSelectMode = scope.ngSelectMode;
                              childScope.ngTranscludeFn = scope.transcludeFn;
                              childScope.ngFn = scope.ngFn;
+                             childScope.language = scope.language;
                              childScope.ngRoot = false;
 
                              scope.transcludeFn(childScope, function (clone, innerScope) {
@@ -125,6 +126,12 @@
                      });
                  };
 
+                 var parentScope = scope.$parent;
+                 while (parentScope.$parent && parentScope.id !== 1)
+                     parentScope = parentScope.$parent;
+
+                 scope.language = parentScope.$$childTail.defaults.language;
+                 
                  scope.select = function (node, double) {
                      if (node) {
                          if (scope.ngSelectable) {

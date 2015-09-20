@@ -42,6 +42,11 @@ else {
 validate({
     type: 'object',
     properties: {
+        title: {
+            type: "object",
+            required: true,
+            properties: languageStringProperties
+        },
         domain: {
             type: 'string',
             enum: _.pluck(server.app.modules.all, 'domain')

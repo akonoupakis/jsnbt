@@ -104,9 +104,10 @@
         };
 
         $scope.discard = function () {
-            fn.set().then(function () {
-            }, function (ex) {
-                throw ex;
+            $scope.load().then(function (response) {
+
+            }, function (error) {
+                logger.error(ex);
             });
         };
 

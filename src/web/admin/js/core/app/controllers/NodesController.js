@@ -59,7 +59,7 @@
 
             canDelete: function (node) {
                 if (node.domain === 'core') {
-                    return $jsnbt.entities[node.entity].deletable;
+                    return $jsnbt.entities[node.entity].deletable && node.childCount === 0;
                 }
                 else {
                     return false;
@@ -68,7 +68,7 @@
 
             delete: function (node) {
                 ModalService.open({
-                    title: 'are you sure you want to permanently delete the node ' + node.name + '?',
+                    title: 'are you sure you want to permanently delete the node ' + node.title[$scope.defaults.language] + '?',
                     controller: 'DeletePromptController',
                     template: 'tmpl/core/modals/deletePrompt.html'
                 }).then(function (result) {

@@ -104,6 +104,8 @@
                     scope.selectable = ctrlGrid.selectable;
                     scope.selectMode = ctrlGrid.selectMode;
 
+                    scope.language = scope.defaults.language;
+
                     scope.select = function (item, double) {
                         if (ctrlGrid.selectable) {
                             if (ctrlGrid.selectMode === 'multiple') {

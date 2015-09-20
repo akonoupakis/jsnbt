@@ -3,7 +3,7 @@
 (function () {
     "use strict";
 
-    var NodeController = function ($scope) {
+    var NodeController = function ($scope, $location) {
         jsnbt.NodeFormControllerBase.apply(this, $scope.getBaseArguments($scope));
 
         $scope.back = function () {
@@ -15,5 +15,5 @@
     NodeController.prototype = Object.create(jsnbt.NodeFormControllerBase.prototype);
 
     angular.module("jsnbt")
-        .controller('NodeController', ['$scope', NodeController]);
+        .controller('NodeController', ['$scope', '$location', NodeController]);
 })();

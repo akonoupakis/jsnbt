@@ -75,7 +75,7 @@
                         Data[collectionName].get = function () {
                             return getPromise.apply(getPromise, [collectionName, 'get', arguments]);
                         };
-
+                        
                         Data[collectionName].post = function () {
                             return getPromise.apply(getPromise, [collectionName, 'post', arguments]);
                         };
