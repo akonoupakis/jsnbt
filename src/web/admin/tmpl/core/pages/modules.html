@@ -12,7 +12,7 @@
 
         <div class="row">
             <div class="col-md-12">
-                <ctrl-grid class="table-striped" ng-model="data" ng-fn="gridFn">
+                <ctrl-grid class="table-striped" ng-model="data" ng-fn="gridFn" language="defaults.language">
                     <ctrl-grid-header>
                         <ctrl-grid-header-column>name</ctrl-grid-header-column>
                         <ctrl-grid-header-column>version</ctrl-grid-header-column>
@@ -31,7 +31,7 @@
                         <ctrl-grid-buttons-column>
                             <button class="btn btn-default glyphicon glyphicon-circle-arrow-right" ng-disabled="!fn.canOpen(row)" ng-click="fn.open(row)" />
                         </ctrl-grid-buttons-column>
-                    </ctrl-grid-body>              
+                    </ctrl-grid-body>
                 </ctrl-grid>
             </div>
         </div>

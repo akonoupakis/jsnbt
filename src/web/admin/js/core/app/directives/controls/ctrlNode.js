@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlNode', ['$timeout', '$data', '$fn', 'CONTROL_EVENTS', function ($timeout, $data, $fn, CONTROL_EVENTS) {
+        .directive('ctrlNode', ['$rootScope', '$timeout', '$data', '$fn', 'CONTROL_EVENTS', function ($rootScope, $timeout, $data, $fn, CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -89,6 +89,7 @@
                                         id: newValue,
                                         domain: scope.ngDomain
                                     }).then(function (response) {
+                                        console.log($rootScope);
                                         scope.value = response.name;
                                         scope.wrong = false;
                                         scope.missing = false;

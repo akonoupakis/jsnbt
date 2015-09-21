@@ -12,7 +12,7 @@
                 $scope.getBaseArguments = function (scope) {
                     return [scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, $fn, LocationService, ScrollSpyService, AuthService, TreeNodeService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS];
                 }
-
+                
                 $scope.application = {};
                 $scope.current = {};
                 $scope.defaults = {};
@@ -122,43 +122,60 @@
 
                 };
 
-                $scope.getNodeBreadcrumb = function (node) {
+                $scope.getNodeBreadcrumb = function (node, prefix) {
 
                     var deferred = $q.defer();
 
-                        var currentUrl = '';
+                    var setLocInternal = function (hierarchy) {
+                        $data.nodes.get({ id: { $in: hierarchy } }).then(function (results) {
 
-                        var setLocInternal = function (hierarchy) {
-                            $data.nodes.get({ id: { $in: hierarchy } }).then(function (results) {
+                            var breadcrumb = [];
 
-                                var breadcrumb = [];
-
-                                $(hierarchy).each(function (i, item) {
+                            $(hierarchy).each(function (i, item) {
+                                if (item === 'new') {
+                                    breadcrumb.push({
+                                        name: 'new',
+                                        url: '',
+                                        active: true
+                                    });
+                                }
+                                else {
                                     var resultNode = _.first(_.filter(results, function (x) { return x.id === item; }));
                                     if (resultNode) {
 
-                                        var nameValue = resultNode.name;
+                                        var nameValue = resultNode.title[$scope.defaults.language];
+
+                                        var url = '';
+                                        if ($jsnbt.entities[resultNode.entity].viewable)
+                                            url = $jsnbt.entities[resultNode.entity].getViewUrl(resultNode, prefix);
+                                        else if ($jsnbt.entities[resultNode.entity].editable)
+                                            url = $jsnbt.entities[resultNode.entity].getEditUrl(resultNode, prefix);
 
                                         breadcrumb.push({
+                                            id: item,
                                             name: nameValue,
-                                            url: currentUrl + '/' + item,
+                                            url: url,
                                             active: i === (hierarchy.length - 1)
                                         });
                                     }
-                                });
-
-                                deferred.resolve(breadcrumb);
-
-                            }, function (error) {
-                                deferred.reject(error);
+                                }
                             });
-                        };
 
-                        var hierarchy = [];
+                            deferred.resolve(breadcrumb);
+
+                        }, function (error) {
+                            deferred.reject(error);
+                        });
+                    };
+
+                    var hierarchy = [];
+                    if (node) {
                         if (node.parent && node.parent !== '') {
-                            $data.nodes.get(node.parent).then(function (parentResult) {
-                                hierarchy = parentResult.hierarchy.slice(0);
-                                hierarchy.push(node.id);
+                            $data.nodes.get(node.parent).then(function (nodeResult) {
+                                hierarchy = nodeResult.hierarchy.slice(0);
+                                if (node.id)
+                                    hierarchy.push(node.id);
+
                                 setLocInternal(hierarchy);
                             }, function (parentError) {
                                 deferred.reject(parentError);
@@ -171,6 +188,10 @@
 
                             setLocInternal(hierarchy);
                         }
+                    }
+                    else {
+                        setLocInternal([]);
+                    }
 
                     return deferred.promise;
                 };

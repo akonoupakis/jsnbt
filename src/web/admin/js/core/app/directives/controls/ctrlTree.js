@@ -12,6 +12,7 @@
              replace: true,
              transclude: true,
              scope: {
+                 language: '=',
                  ngModel: '=',
                  ngDomain: '=',
                  ngSelectable: '=',
@@ -91,7 +92,7 @@
                              childScope.ngRoot = false;
                              childScope.ngFn = scope.$parent.ngFn;
 
-                             var collectionElement = angular.element('<ctrl-tree ng-model="ngModel" ng-domain="ngDomain" ng-root="ngRoot" ng-selectable="ngSelectable" ng-select-mode="ngSelectMode" ng-transclude-fn="ngTranscludeFn" ng-fn="ngFn"></ctrl-tree>');
+                             var collectionElement = angular.element('<ctrl-tree ng-model="ngModel" ng-domain="ngDomain" ng-root="ngRoot" ng-selectable="ngSelectable" ng-select-mode="ngSelectMode" ng-transclude-fn="ngTranscludeFn" ng-fn="ngFn" language="language"></ctrl-tree>');
                              var compiled = $compile(collectionElement)(childScope);
                              lElem.append(compiled);
                          });
@@ -125,13 +126,7 @@
                          unselect(item);
                      });
                  };
-
-                 var parentScope = scope.$parent;
-                 while (parentScope.$parent && parentScope.id !== 1)
-                     parentScope = parentScope.$parent;
-
-                 scope.language = parentScope.$$childTail.defaults.language;
-                 
+                                  
                  scope.select = function (node, double) {
                      if (node) {
                          if (scope.ngSelectable) {

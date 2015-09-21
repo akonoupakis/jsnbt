@@ -27,6 +27,8 @@
                         };
                     }
 
+                    $scope.defaults = $scope.$$prevSibling.defaults;
+
                     $scope.valid = false;
                     
                     $scope.$on(MODAL_EVENTS.valueSubmitted, function (sender, value) {

@@ -4,12 +4,6 @@
 
         <ctrl-breadcrumb ng-model="current.breadcrumb" ng-title="you are here:"></ctrl-breadcrumb>    
 
-        <div class="row title-container">
-            <div class="col-md-12">
-                <h1 class="title">content</h1>
-            </div>
-        </div>
-
         <div class="row content-container" ng-repeat="item in items">
             <div class="image-container">
                 <a href="javascript:;" ng-click="goto(item.url)">

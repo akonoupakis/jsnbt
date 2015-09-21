@@ -59,13 +59,13 @@ module.exports = [{
     id: 'search',
     name: 'search',
     html: '/tmpl/search.html',
-    restricted: ['page']
+    restricted: ['course']
 }, {
     id: 'facilities',
     name: 'facilities',
     html: '/tmpl/facilities.html',
     form: 'tmpl/public/forms/page/facilities.html',
-    restricted: ['page']
+    restricted: ['courseSet']
 }, {
     id: 'articles',
     name: 'articles page',

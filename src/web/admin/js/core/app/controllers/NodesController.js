@@ -8,9 +8,16 @@
 
         $scope.domain = 'core';
         $scope.cacheKey = 'content:nodes';
+        $scope.prefix = '/content/nodes';
+        $scope.offset = 2;
         
         $scope.back = function () {
-            $location.previous('/content');
+            if ($rootScope.location.previous) {
+                $location.previous($rootScope.location.previous);
+            }
+            else {
+                $location.previous($location.previous($scope.current.breadcrumb[$scope.current.breadcrumb.length - 2].url));
+            }
         };
 
         $scope.canCreate = function () {
@@ -27,8 +34,18 @@
                 if (node.domain === 'core' && node.entity === 'router')
                     return false;
 
-                if (node.domain === 'core' && node.entity !== 'pointer') {
-                    return $jsnbt.entities[node.entity].parentable;
+                if (node.domain === 'core') {
+                    if (node.entity === 'pointer') {
+                        return $jsnbt.entities[node.pointer.entity].parentable;
+                    }
+                    else {
+                        return $jsnbt.entities[node.entity].parentable;
+                    }
+                }
+                else {
+                    if ($jsnbt.entities[node.entity].parentable) {
+                        return true;
+                    }
                 }
 
                 return false;
@@ -37,14 +54,12 @@
             create: function (node) {
                 var targetEntity = $jsnbt.entities[node.domain === 'core' && node.entity === 'pointer' ? node.pointer.entity : node.entity];
                 if (node.domain === 'core' && node.entity === 'pointer') {
-                    $data.nodes.get(node.pointer.nodeId).then(function (response) {
-                        $location.next(targetEntity.getCreateUrl(response));
-                    }, function (ex) {
-                        throw ex;
-                    });
+                    $location.next($jsnbt.entities[node.pointer.entity].getCreateUrl({
+                        id: node.pointer.nodeId
+                    }, $scope.prefix));
                 }
                 else {
-                    $location.next(targetEntity.getCreateUrl(node));
+                    $location.next(targetEntity.getCreateUrl(node, $scope.prefix));
                 }
             },
 
@@ -53,7 +68,7 @@
             },
 
             edit: function (node) {
-                var editUrl = $jsnbt.entities[node.entity].getEditUrl(node);
+                var editUrl = $jsnbt.entities[node.entity].getEditUrl(node, $scope.prefix);
                 $location.next(editUrl);
             },
 
@@ -96,13 +111,13 @@
                 var targetEntity = $jsnbt.entities[node.domain === 'core' && node.entity === 'pointer' ? node.pointer.entity : node.entity];
                 if (node.domain === 'core' && node.entity === 'pointer') {
                     $data.nodes.get(node.pointer.nodeId).then(function (response) {
-                        $location.next(targetEntity.getViewUrl(response));
+                        $location.next(targetEntity.getViewUrl(response, $scope.prefix));
                     }, function (ex) {
                         throw ex;
                     });
                 }
                 else {
-                    $location.next(targetEntity.getViewUrl(node));
+                    $location.next(targetEntity.getViewUrl(node, $scope.prefix));
                 }
             }
 

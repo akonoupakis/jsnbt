@@ -38,7 +38,15 @@
         return {
 
             when: function (path, options) {
-                $routeProvider.when(path, processRouterOptions(options));
+                if (_.isString(path)) {
+                    $routeProvider.when(path, processRouterOptions(options));
+                }
+                else if (_.isArray(path)) {
+                    _.each(path, function (p) {
+                        $routeProvider.when(p, processRouterOptions(options));
+                    });
+                }
+
                 return this;
             },
 
@@ -186,7 +194,7 @@
                 section: 'settings'
             }).
             otherwise({
-                redirectTo: '/'
+               // redirectTo: '/'
             });
     }])
     .run(['$rootScope', '$location', '$route', '$timeout', '$fn', 'FunctionService', 'AuthService', 'AUTH_EVENTS', 'ROUTE_EVENTS', function ($rootScope, $location, $route, $timeout, $fn, FunctionService, AuthService, AUTH_EVENTS, ROUTE_EVENTS) {

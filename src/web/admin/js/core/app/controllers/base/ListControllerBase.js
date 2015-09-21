@@ -35,6 +35,18 @@
             $scope.data.items = _.filter($scope.data.items, function (x) { return x.id !== item.id; });
         };
 
+        $scope.setLocation = function () {
+            var deferred = $q.defer();
+
+            var breadcrumb = LocationService.getBreadcrumb();
+
+            $scope.current.setBreadcrumb(breadcrumb);
+
+            deferred.resolve(breadcrumb);
+
+            return deferred.promise;
+        };
+
         $scope.gridFn = {
 
             canEdit: function (item) {
