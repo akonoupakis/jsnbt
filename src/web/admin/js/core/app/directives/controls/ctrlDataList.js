@@ -11,6 +11,7 @@
                 restrict: 'E',
                 replace: true,
                 scope: {
+                    language: '=',
                     ngModel: '=',
                     ngDomain: '=',
                     ngListId: '=',
@@ -139,7 +140,7 @@
                                         if (result) {
                                             scopeValues.push({
                                                 id: result.id,
-                                                name: result.name
+                                                name: result.title[scope.language]
                                             });
 
                                             scope.wrong[nv] = false;
