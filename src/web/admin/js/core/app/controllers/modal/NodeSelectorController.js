@@ -34,7 +34,7 @@
                         parentId: '',
                         parentIds: parentIds
                     });
-
+                    
                     TreeNodeService.getNodes(opts).then(function (response) {
                         $scope.nodes = response[0].children;
 

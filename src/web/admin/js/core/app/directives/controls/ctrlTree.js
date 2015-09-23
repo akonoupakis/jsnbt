@@ -17,6 +17,7 @@
                  ngDomain: '=',
                  ngSelectable: '=',
                  ngSelectMode: '=',
+                 ngSelectPointee: '=',
                  ngTranscludeFn: '=',
                  ngFn: '=',
                  ngRoot: '='
@@ -41,6 +42,7 @@
                              childScope.ngDomain = scope.ngDomain;
                              childScope.ngSelectable = scope.ngSelectable;
                              childScope.ngSelectMode = scope.ngSelectMode;
+                             childScope.ngSelectPointee = scope.ngSelectPointee;
                              childScope.ngTranscludeFn = scope.transcludeFn;
                              childScope.ngFn = scope.ngFn;
                              childScope.language = scope.language;
@@ -88,11 +90,12 @@
                              childScope.ngDomain = scope.$parent.ngDomain;
                              childScope.ngSelectable = scope.$parent.ngSelectable;
                              childScope.ngSelectMode = scope.$parent.ngSelectMode;
+                             childScope.ngSelectPointee = scope.$parent.ngSelectPointee;
                              childScope.ngTranscludeFn = transcludeFn;
                              childScope.ngRoot = false;
                              childScope.ngFn = scope.$parent.ngFn;
 
-                             var collectionElement = angular.element('<ctrl-tree ng-model="ngModel" ng-domain="ngDomain" ng-root="ngRoot" ng-selectable="ngSelectable" ng-select-mode="ngSelectMode" ng-transclude-fn="ngTranscludeFn" ng-fn="ngFn" language="language"></ctrl-tree>');
+                             var collectionElement = angular.element('<ctrl-tree ng-model="ngModel" ng-domain="ngDomain" ng-root="ngRoot" ng-selectable="ngSelectable" ng-select-mode="ngSelectMode" ng-select-pointee="ngSelectPointee" ng-transclude-fn="ngTranscludeFn" ng-fn="ngFn" language="language"></ctrl-tree>');
                              var compiled = $compile(collectionElement)(childScope);
                              lElem.append(compiled);
                          });
@@ -103,7 +106,7 @@
          };
 
      }])
-     .directive('ctrlTreeNodeContent', ['CONTROL_EVENTS', function (CONTROL_EVENTS) {
+     .directive('ctrlTreeNodeContent', ['$jsnbt', 'CONTROL_EVENTS', function ($jsnbt, CONTROL_EVENTS) {
 
          return {
              restrict: 'E',
@@ -114,7 +117,7 @@
 
                  var selectMode = scope.ngSelectMode || 'single';
                  if (scope.ngSelectable) {
-                     if (['single', 'multiple'].indexOf(selectMode) == -1)
+                     if (['single', 'multiple'].indexOf(selectMode) === -1)
                          selectMode = 'single';
                  }
 
@@ -130,9 +133,16 @@
                  scope.select = function (node, double) {
                      if (node) {
                          if (scope.ngSelectable) {
+                             
+                             if (scope.ngSelectPointee) {
+                                 if ($jsnbt.entities[node.entity].pointed !== true) {
+                                     return;
+                                 }
+                             }
+
                              if (selectMode === 'single') {
+                                 var totalParent = node.root ? node : node.parent;
                                  if (double) {
-                                        var totalParent = node.root ? node : node.parent;
                                         while (!totalParent.root)
                                             totalParent = totalParent.parent;
 
@@ -143,7 +153,6 @@
                                  }
                                  else {
                                      if (!node.selected) {
-                                         var totalParent = node.root ? node : node.parent;
                                          while (!totalParent.root)
                                              totalParent = totalParent.parent;
 

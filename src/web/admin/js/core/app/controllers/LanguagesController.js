@@ -25,10 +25,6 @@
             return deferred.promise;
         };
 
-        $scope.back = function () {
-            $location.previous('/content');
-        };
-
         $scope.canCreate = function () {
             return $scope.available;
         };

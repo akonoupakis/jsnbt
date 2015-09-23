@@ -38,6 +38,7 @@ module.exports = [{
         '/admin/js/core/app/constants/DATA_EVENTS.js',
         '/admin/js/core/app/constants/MODAL_EVENTS.js',
         '/admin/js/core/app/constants/ROUTE_EVENTS.js',
+        '/admin/js/core/app/controllers/base/ControllerBase.js',
         '/admin/js/core/app/controllers/base/ListControllerBase.js',
         '/admin/js/core/app/controllers/base/TreeControllerBase.js',
         '/admin/js/core/app/controllers/base/FormControllerBase.js',

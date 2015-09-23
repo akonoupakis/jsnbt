@@ -4,16 +4,20 @@
 
         <ctrl-breadcrumb ng-model="current.breadcrumb" ng-title="you are here:"></ctrl-breadcrumb>    
 
-        <div class="row content-container" ng-repeat="item in items">
-            <div class="image-container">
-                <a href="javascript:;" ng-click="goto(item.url)">
-                    <img ng-src="{{item.image}}?type=1" />
-                </a>
-            </div> 
-            <div class="text-container">
-                <h3 class="title"><a href="javascript:;" ng-click="goto(item.url)">{{ item.title }}</a></h3>
-                <span class="subtitle"></span>
-                <p class="body">{{ item.body }}</p>
+        <div class="row content-container">
+            <div class="col-md-4" ng-repeat="item in items">
+                <div class="content-box">
+                    <div class="image-container">
+                        <a href="javascript:;" ng-click="next(item.url)">
+                            <img ng-src="{{item.image}}" />
+                        </a>
+                    </div>
+                    <div class="text-container">
+                        <h3 class="title"><a href="javascript:;" ng-click="next(item.url)">{{ item.title }}</a></h3>
+                        <span class="subtitle"></span>
+                        <p class="body">{{ item.body }}</p>
+                    </div>
+                </div>
             </div>
         </div>
 

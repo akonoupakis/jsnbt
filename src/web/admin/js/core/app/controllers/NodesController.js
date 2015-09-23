@@ -10,16 +10,7 @@
         $scope.cacheKey = 'content:nodes';
         $scope.prefix = '/content/nodes';
         $scope.offset = 2;
-        
-        $scope.back = function () {
-            if ($rootScope.location.previous) {
-                $location.previous($rootScope.location.previous);
-            }
-            else {
-                $location.previous($location.previous($scope.current.breadcrumb[$scope.current.breadcrumb.length - 2].url));
-            }
-        };
-
+    
         $scope.canCreate = function () {
             return true;
         };
@@ -82,18 +73,49 @@
             },
 
             delete: function (node) {
-                ModalService.open({
-                    title: 'are you sure you want to permanently delete the node ' + node.title[$scope.defaults.language] + '?',
-                    controller: 'DeletePromptController',
-                    template: 'tmpl/core/modals/deletePrompt.html'
-                }).then(function (result) {
-                    if (result) {
-                        $data.nodes.del(node.id).then(function (nodeDeleteResults) {
-                            $scope.remove(node);
-                        }, function (nodeDeleteError) {
-                            deferred.reject(nodeDeleteError);
+                $data.nodes.get({
+                    hierarchy: node.id,
+                    id: {
+                        $ne: [node.id]
+                    },
+                    $limit: 1
+                }).then(function (nodes) {
+
+                    if (nodes.length > 0) {
+
+                        ModalService.open({
+                            title: 'oops',
+                            message: 'this node is not empty and cannot be deleted',
+                            controller: 'ErrorPromptController',
+                            template: 'tmpl/core/modals/errorPrompt.html',
+                            btn: {
+                                ok: 'ok',
+                                cancel: false
+                            }
+                        }).then(function (result) {
+
+                        });
+
+                    }
+                    else {
+
+                        ModalService.open({
+                            title: 'are you sure you want to permanently delete the node ' + node.title[$scope.defaults.language] + '?',
+                            controller: 'DeletePromptController',
+                            template: 'tmpl/core/modals/deletePrompt.html'
+                        }).then(function (result) {
+                            if (result) {
+                                $data.nodes.del(node.id).then(function (nodeDeleteResults) {
+                                    $scope.remove(node);
+                                }, function (nodeDeleteError) {
+                                    deferred.reject(nodeDeleteError);
+                                });
+                            }
                         });
                     }
+
+                }).catch(function (ex) {
+                    deferred.reject(ex);
                 });
             },
 

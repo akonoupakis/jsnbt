@@ -19,7 +19,7 @@
 
         <div id="page-title" data-scrollspy="title" ng-show="entity.properties.title">
             <div class="row">
-                <ctrl-text class="col-md-12" ng-model="node.title[language]" ng-validating="node.active[language]" ng-disabled="!entity.properties.title" ng-required="true" ng-auto-focus="true" ng-label="title"></ctrl-text>
+                <ctrl-text class="col-md-12" ng-model="node.title[language]" ng-validating="node.active[language] || language === defaults.language" ng-disabled="!entity.properties.title" ng-required="true" ng-auto-focus="true" ng-label="title"></ctrl-text>
             </div>
 
             <hr />
@@ -76,7 +76,7 @@
         <div id="page-addon" data-scrollspy="addon" ng-show="node.entity === 'pointer'">
             <div class="row">
                 <ctrl-select class="col-md-6" ng-model="node.pointer.domain" ng-required="true" ng-disabled="node.entity !== 'pointer'" ng-label="addon" ng-default="true" ng-options="modules" ng-name-field="name" ng-value-field="domain"></ctrl-select>
-                <ctrl-node class="col-md-5" language="defaults.language" ng-model="node.pointer.nodeId" ng-domain="node.pointer.domain" ng-required="node.pointer.domain && node.entity === 'pointer'" ng-disabled="node.entity !== 'pointer'" ng-label="pointee"></ctrl-node>
+                <ctrl-node class="col-md-5" language="defaults.language" ng-model="node.pointer.nodeId" ng-domain="node.pointer.domain" ng-required="node.pointer.domain && node.entity === 'pointer'" ng-disabled="node.entity !== 'pointer'" ng-pointee="true" ng-options="{ pointee: true }" ng-label="pointee"></ctrl-node>
                 <div class="col-md-1">
                     <button type="button" ng-disabled="!node.pointer.domain || !node.pointer.nodeId" class="btn" ng-click="editPointee()" style="position: relative; top: 25px">edit</button>
                 </div>

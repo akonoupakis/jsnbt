@@ -100,7 +100,7 @@
         };
 
         $scope.back = function () {
-            throw new Error('not implemented: back()');
+            $location.previous($scope.current.breadcrumb[$scope.current.breadcrumb.length - 2].url);
         };
 
         $scope.discard = function () {

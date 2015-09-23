@@ -820,14 +820,21 @@
 
         $scope.editPointee = function () {
             $data.nodes.get($scope.node.pointer.nodeId).then(function (targetNode) {
-                $location.next($jsnbt.entities[targetNode.entity].getEditUrl(targetNode));
+                $location.next($jsnbt.entities[targetNode.entity].getEditUrl(targetNode, '/content/nodes'));
             }, function (ex) {
                 throw ex;
             });
         };
 
         $scope.back = function () {
-            throw new Error('not implemented');
+            $scope.current.breadcrumb.pop();
+            var lastItem = _.last($scope.current.breadcrumb);
+            if (lastItem) {
+                $location.previous(lastItem.url);
+            }
+            else {
+                throw new Error('not implemented');
+            }
         };
 
         $scope.discard = function () {

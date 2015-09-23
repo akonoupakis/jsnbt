@@ -54,7 +54,7 @@ module.exports = [{
     name: 'images page',
     html: '/tmpl/images.html',
     form: 'tmpl/public/forms/page/images.html',
-    restricted: ['page']
+    restricted: ['courseLevel']
 }, {
     id: 'search',
     name: 'search',

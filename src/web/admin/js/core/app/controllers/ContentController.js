@@ -3,10 +3,13 @@
 (function () {
     "use strict";
 
-    angular.module("jsnbt")
-        .controller('ContentController', ['$scope', '$jsnbt', '$location', function ($scope, $jsnbt, $location) {
+    var ContentController = function ($scope, $jsnbt, $location) {
+        jsnbt.ControllerBase.apply(this, $scope.getBaseArguments($scope));
 
-            $scope.items = $jsnbt.content;
-                        
-        }]);
+        $scope.items = $jsnbt.content;
+    };
+    ContentController.prototype = Object.create(jsnbt.ControllerBase.prototype);
+
+    angular.module("jsnbt")
+        .controller('ContentController', ['$scope', '$jsnbt', '$location', ContentController]);
 })();

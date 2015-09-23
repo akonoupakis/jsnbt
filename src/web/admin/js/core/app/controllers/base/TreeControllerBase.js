@@ -38,7 +38,14 @@
         };
 
         $scope.back = function () {
-            throw new Error('not implemented');
+            $scope.current.breadcrumb.pop();
+            var lastItem = _.last($scope.current.breadcrumb);
+            if (lastItem) {
+                $location.previous(lastItem.url);
+            }
+            else {
+                throw new Error('not implemented');
+            }
         };
 
         $scope.canCreate = function () {

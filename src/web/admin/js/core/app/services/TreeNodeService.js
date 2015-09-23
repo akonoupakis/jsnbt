@@ -275,6 +275,9 @@
                     for (var entityName in $jsnbt.entities) {
                         if ($jsnbt.entities[entityName].treeNode !== false)
                             opts.entities.push(entityName);
+
+                        if ($jsnbt.entities[entityName].pointed)
+                            opts.entities.push(entityName);
                     }
                 }
                 
