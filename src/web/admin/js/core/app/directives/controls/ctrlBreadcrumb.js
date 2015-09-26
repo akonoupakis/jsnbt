@@ -21,6 +21,10 @@
                     scope.previousTo = function (path) {
                         $location.previous(path);
                     };
+
+                    scope.visible = function (item) {
+                        return item.visible !== false;
+                    };
                 },
                 templateUrl: 'tmpl/core/controls/ctrlBreadcrumb.html'
             };

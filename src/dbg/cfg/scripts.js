@@ -13,6 +13,8 @@ module.exports = [{
         '/js/app/main.js',
         '/js/app/controllers/AppController.js',
         '/js/app/controllers/ArticlesController.js',
+        '/js/app/controllers/CourseSetController.js',
+        '/js/app/controllers/CourseController.js',
         '/js/app/controllers/StoreController.js',
         '/js/app/controllers/StoresController.js',
         '/js/app/directives/ctrlMap.js',

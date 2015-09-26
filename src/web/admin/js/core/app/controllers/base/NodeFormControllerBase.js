@@ -3,12 +3,11 @@
 (function () {
     "use strict";
 
-    jsnbt.NodeFormControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, $fn, LocationService, ScrollSpyService, AuthService, TreeNodeService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
+    jsnbt.NodeFormControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, $fn, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
         jsnbt.FormControllerBase.apply(this, $scope.getBaseArguments($scope));
 
         var logger = $logger.create('NodeFormControllerBase');
 
-        $scope.domain = $route.current.$$route.domain || 'core';
         $scope.entityName = $route.current.$$route.entity || 'page';
 
         $scope.node = undefined;
@@ -1077,9 +1076,7 @@
         };
 
         $scope.$watch('tmplInject', function (newValue, prevValue) {
-            $scope.setSpy(200).catch(function (ex) {
-                logger.error(ex);
-            });
+            $scope.setSpy(200)
         });
 
         $scope.$watch('node.entity', function (newValue) {
@@ -1269,5 +1266,5 @@
     jsnbt.NodeFormControllerBase.prototype = Object.create(jsnbt.FormControllerBase.prototype);
 
     angular.module("jsnbt")
-        .controller('NodeFormControllerBase', ['$scope', '$rootScope', '$route', '$routeParams', '$location', '$logger', '$q', '$timeout', '$data', '$jsnbt', '$fn', 'LocationService', 'ScrollSpyService', 'AuthService', 'TreeNodeService', 'ModalService', 'CONTROL_EVENTS', 'AUTH_EVENTS', 'DATA_EVENTS', 'ROUTE_EVENTS', jsnbt.NodeFormControllerBase]);
+        .controller('NodeFormControllerBase', ['$scope', '$rootScope', '$route', '$routeParams', '$location', '$logger', '$q', '$timeout', '$data', '$jsnbt', '$fn', 'LocationService', 'ScrollSpyService', 'AuthService', 'TreeNodeService', 'PagedDataService', 'ModalService', 'CONTROL_EVENTS', 'AUTH_EVENTS', 'DATA_EVENTS', 'ROUTE_EVENTS', jsnbt.NodeFormControllerBase]);
 })();

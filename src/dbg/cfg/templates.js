@@ -54,18 +54,18 @@ module.exports = [{
     name: 'images page',
     html: '/tmpl/images.html',
     form: 'tmpl/public/forms/page/images.html',
-    restricted: ['courseLevel']
+    restricted: ['page']
 }, {
     id: 'search',
     name: 'search',
     html: '/tmpl/search.html',
-    restricted: ['course']
+    restricted: ['page']
 }, {
     id: 'facilities',
     name: 'facilities',
     html: '/tmpl/facilities.html',
     form: 'tmpl/public/forms/page/facilities.html',
-    restricted: ['courseSet']
+    restricted: ['page']
 }, {
     id: 'articles',
     name: 'articles page',
@@ -82,6 +82,28 @@ module.exports = [{
     name: 'article page',
     html: '/tmpl/article.html',
     restricted: ['article'],
+    scripts: [
+        ['lib', 'app']
+    ],
+    styles: [
+        ['lib', 'app']
+    ]
+}, {
+    id: 'courses',
+    name: 'courses page',
+    html: '/tmpl/courseSet.html',
+    restricted: ['courseSet'],
+    scripts: [
+        ['lib', 'app']
+    ],
+    styles: [
+        ['lib', 'app']
+    ]
+}, {
+    id: 'course',
+    name: 'course page',
+    html: '/tmpl/course.html',
+    restricted: ['course'],
     scripts: [
         ['lib', 'app']
     ],

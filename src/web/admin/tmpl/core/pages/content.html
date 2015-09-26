@@ -7,16 +7,17 @@
         <div class="row content-container">
             <div class="col-md-4" ng-repeat="item in items">
                 <div class="content-box">
-                    <div class="image-container">
-                        <a href="javascript:;" ng-click="next(item.url)">
+                    <a href="javascript:;" ng-click="next(item.url)">
+                        <div class="image-container">
+
                             <img ng-src="{{item.image}}" />
-                        </a>
-                    </div>
-                    <div class="text-container">
-                        <h3 class="title"><a href="javascript:;" ng-click="next(item.url)">{{ item.title }}</a></h3>
-                        <span class="subtitle"></span>
-                        <p class="body">{{ item.body }}</p>
-                    </div>
+                        </div>
+                        <div class="text-container">
+                            <h3 class="title">{{ item.title }}</h3>
+                            <span class="subtitle"></span>
+                            <p class="body">{{ item.body }}</p>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>

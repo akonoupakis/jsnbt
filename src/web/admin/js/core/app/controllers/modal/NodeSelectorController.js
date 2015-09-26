@@ -29,14 +29,19 @@
                     });
                     
                     var opts = {};
-                    $.extend(true, opts, $scope.options, {
+                    $.extend(true, opts, {
                         domain: $scope.domain,
                         parentId: '',
                         parentIds: parentIds
-                    });
+                    }, $scope.options);
                     
                     TreeNodeService.getNodes(opts).then(function (response) {
-                        $scope.nodes = response[0].children;
+                        if (response.length === 0) {
+                            $scope.nodes = [];
+                        }
+                        else {
+                            $scope.nodes = response[0].children;
+                        }
 
                         if ($scope.selected)
                             TreeNodeService.setSelected($scope.nodes, $scope.mode === 'multiple' ? $scope.selected : [$scope.selected]);
@@ -50,14 +55,19 @@
             }
             else {
                 var opts2 = {};
-                $.extend(true, opts2, $scope.options, {
+                $.extend(true, opts2, {
                     domain: $scope.domain,
                     parentId: '',
                     parentIds: []
-                });
+                }, $scope.options);
 
                 TreeNodeService.getNodes(opts2).then(function (response) {
-                    $scope.nodes = response[0].children;
+                    if (response.length === 0) {
+                        $scope.nodes = [];
+                    }
+                    else {
+                        $scope.nodes = response[0].children;
+                    }
                 }, function (error) {
                     throw error;
                 });

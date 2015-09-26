@@ -6,6 +6,8 @@
     var NodeController = function ($scope, $location) {
         jsnbt.NodeFormControllerBase.apply(this, $scope.getBaseArguments($scope));
 
+        $scope.domain = 'core';
+
         $scope.init();
     };
     NodeController.prototype = Object.create(jsnbt.NodeFormControllerBase.prototype);

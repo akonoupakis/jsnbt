@@ -3,10 +3,11 @@
 (function () {
     "use strict";
 
-    jsnbt.FormControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, $fn, LocationService, ScrollSpyService, AuthService, TreeNodeService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
+    jsnbt.FormControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, $fn, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
+        jsnbt.ControllerBase.apply(this, $scope.getBaseArguments($scope));
 
         var logger = $logger.create('FormControllerBase');
-
+        
         $scope.id = $routeParams.id;
         $scope.new = $scope.id === 'new' || _.str.startsWith($scope.id, 'new-');
         $scope.name = undefined;
@@ -120,7 +121,8 @@
         };
 
     };
+    jsnbt.FormControllerBase.prototype = Object.create(jsnbt.ControllerBase.prototype);
 
     angular.module("jsnbt")
-        .controller('FormControllerBase', ['$scope', '$rootScope', '$route', '$routeParams', '$location', '$logger', '$q', '$timeout', '$data', '$jsnbt', '$fn', 'LocationService', 'ScrollSpyService', 'AuthService', 'TreeNodeService', 'ModalService', 'CONTROL_EVENTS', 'AUTH_EVENTS', 'DATA_EVENTS', 'ROUTE_EVENTS', jsnbt.FormControllerBase]);
+        .controller('FormControllerBase', ['$scope', '$rootScope', '$route', '$routeParams', '$location', '$logger', '$q', '$timeout', '$data', '$jsnbt', '$fn', 'LocationService', 'ScrollSpyService', 'AuthService', 'TreeNodeService', 'PagedDataService', 'ModalService', 'CONTROL_EVENTS', 'AUTH_EVENTS', 'DATA_EVENTS', 'ROUTE_EVENTS', jsnbt.FormControllerBase]);
 })();

@@ -3,6 +3,7 @@ var _ = require('underscore');
 var self = this;
 
 var languageProperties = {};
+var languageStringProperties = {};
 var contentProperties = {};
 
 if (server.app.localization.enabled) {
@@ -11,6 +12,11 @@ if (server.app.localization.enabled) {
         languageProperties[lang] = {
             type: "object"
         }
+
+        languageStringProperties[lang] = {
+            type: "string",
+            required: false
+        };
     });
 
     contentProperties = {
@@ -19,6 +25,9 @@ if (server.app.localization.enabled) {
             properties: languageProperties
         }
     };
+}
+else {
+    languageStringProperties = { en: { type: "string", required: false } };
 }
 
 validate({
@@ -33,6 +42,11 @@ validate({
             type: "string",
             required: true,
             enum: _.pluck(_.filter(server.app.config.lists, function (x) { return x.domain === self.domain; }), 'id')
+        },
+        title: {
+            type: "object",
+            required: true,
+            properties: languageStringProperties
         },
         content: {
             type: "object",

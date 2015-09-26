@@ -167,17 +167,17 @@
                 controller: 'ModulesController',
                 section: 'modules'
             }).
-            when('/modules/:domain/list/:list', {
-                templateUrl: 'tmpl/core/pages/content/list.html',
-                controller: 'ListController'
-            }).
-            when('/modules/:domain/list', {
-                redirectTo: '/modules/:domain'
-            }).
-            when('/modules/:domain/list/:list/:id', {
-                templateUrl: 'tmpl/core/pages/content/list-entry.html',
-                controller: 'ListEntryController'
-            }).
+            //when('/modules/:domain/list/:list', {
+            //    templateUrl: 'tmpl/core/pages/content/list.html',
+            //    controller: 'ListController'
+            //}).
+            //when('/modules/:domain/list', {
+            //    redirectTo: '/modules/:domain'
+            //}).
+            //when('/modules/:domain/list/:list/:id', {
+            //    templateUrl: 'tmpl/core/pages/content/list-entry.html',
+            //    controller: 'ListEntryController'
+            //}).
             when('/users', {
                 templateUrl: 'tmpl/core/pages/users.html',
                  controller: 'UsersController',
@@ -194,7 +194,7 @@
                 section: 'settings'
             }).
             otherwise({
-               // redirectTo: '/'
+                redirectTo: '/'
             });
     }])
     .run(['$rootScope', '$location', '$route', '$timeout', '$fn', 'FunctionService', 'AuthService', 'AUTH_EVENTS', 'ROUTE_EVENTS', function ($rootScope, $location, $route, $timeout, $fn, FunctionService, AuthService, AUTH_EVENTS, ROUTE_EVENTS) {
