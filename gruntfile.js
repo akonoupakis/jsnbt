@@ -323,7 +323,9 @@ module.exports = function (grunt) {
             if (fs.existsSync(server.getPath(mod))) {
                 var found = fs.readdirSync(server.getPath(mod));
                 _.each(found, function (f) {
-                    modMngr[mod].install(f, true);
+                    if (fs.lstatSync(server.getPath(path.join(mod, f))).isDirectory()) {
+                        modMngr[mod].install(f, true);
+                    }
                 });
             }
         };
