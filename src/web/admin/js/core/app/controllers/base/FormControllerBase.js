@@ -23,6 +23,27 @@
             return $scope.new;
         };
 
+        var getBreadcrumbFn = $scope.getBreadcrumb;
+        $scope.getBreadcrumb = function () {
+            var deferred = $q.defer();
+
+            getBreadcrumbFn().then(function (breadcrumb) {
+
+                if ($scope.isNew()) {
+                    breadcrumb[breadcrumb.length - 1].name = 'new';
+                } else {
+                    breadcrumb[breadcrumb.length - 1].name = $scope.title;
+                }
+
+                deferred.resolve(breadcrumb);
+
+            }).catch(function (error) {
+                deferred.reject(error);
+            });
+
+            return deferred.promise;
+        };
+
         $scope.enqueue('preloaded', function () {
             var deferred = $q.defer();
 
