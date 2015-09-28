@@ -23,7 +23,7 @@
                     {{ row.version }}
                 </ctrl-grid-column>
                 <ctrl-grid-buttons-column>
-                    <button class="btn btn-default glyphicon glyphicon-circle-arrow-right" ng-disabled="!fn.canOpen(row)" ng-click="fn.open(row)" />
+                    <button title="open" class="btn btn-default btn-sm glyphicon glyphicon-th" ng-disabled="!fn.canOpen(row)" ng-click="fn.open(row)" />
                 </ctrl-grid-buttons-column>
             </ctrl-grid-body>
         </ctrl-grid>

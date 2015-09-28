@@ -34,7 +34,6 @@ module.exports = [{
         '/jsnbt.js',
         '/admin/js/core/app/router.js',
         '/admin/js/core/app/main.js',
-        '/admin/js/core/app/constants/TEMPLATE_BASE.js',
         '/admin/js/core/app/constants/AUTH_EVENTS.js',
         '/admin/js/core/app/constants/CONTROL_EVENTS.js',
         '/admin/js/core/app/constants/DATA_EVENTS.js',

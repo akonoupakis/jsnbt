@@ -22,7 +22,7 @@
 
         $scope.gridFn = {
 
-            edit: function (item) {
+            open: function (item) {
                 $location.next('/content/data/' + item.id);
             }
 

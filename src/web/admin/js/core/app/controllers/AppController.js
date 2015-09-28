@@ -13,30 +13,45 @@
                     return [scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, $fn, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS];
                 }
                 
-                $scope.application = {};
-                $scope.current = {};
-                $scope.defaults = {};
+                $scope.application = {
 
-                $scope.current.user = undefined;
-                $scope.current.users = true;
-                $scope.current.denied = false;
-                $scope.current.initiated = false;
-                $scope.current.restoreFn = undefined;
-                $scope.current.breadcrumb = {
-                    title: 'you are here: ',
-                    items: []
+                    version: $jsnbt.version,
+                    languages: [],
+                    localization: $jsnbt.localization,
+                    ssl: $jsnbt.ssl,
+                    navigationSpec: []
+
                 };
-                $scope.current.modules = $jsnbt.modules;
 
-                $scope.application.version = $jsnbt.version;
-                $scope.application.languages = [];
-                $scope.application.localization = $jsnbt.localization;
-                $scope.application.ssl = $jsnbt.ssl;
+                $scope.current = {
 
-                $scope.defaults.countries = $jsnbt.countries;
+                    user: undefined,
+                    users: true,
+                    denied: false,
+                    initiated: false,
+                    restoreFn: undefined,
+                    breadcrumb: {
+                        title: 'you are here: ',
+                        items: []
+                    },
+                    modules: $jsnbt.modules
 
-                $scope.defaults.languages = [];
-                $scope.defaults.language = null;
+                };
+
+                $scope.defaults = {
+
+                    countries: $jsnbt.countries,
+
+                    languages: [],
+                    language: null
+
+                };
+
+                
+
+             
+
+                
 
                 var navigationInjects = [];
                 _.each($jsnbt.injects, function (inject) {
@@ -48,6 +63,7 @@
                 });
 
                 $scope.application.navigationSpec = navigationInjects;
+                
 
                 var apply = function (fn) {
                     var phase = $scope.$root.$$phase;

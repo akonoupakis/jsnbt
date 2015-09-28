@@ -1,45 +1,6 @@
 ﻿(function () {
     "use strict";
-
-    angular.getRouter = function ($routeProvider) {
-
-        var processRouterOptions = function (options) {
-            var opts = {};
-
-            $.extend(true, opts, options);
-
-            if (opts.templateUrl && opts.baseTemplateUrl) {
-                opts.tmpl = opts.templateUrl;
-                opts.templateUrl = opts.baseTemplateUrl;
-            }
-
-            return opts;
-        };
-
-        return {
-
-            when: function (path, options) {
-                if (_.isString(path)) {
-                    $routeProvider.when(path, processRouterOptions(options));
-                }
-                else if (_.isArray(path)) {
-                    _.each(path, function (p) {
-                        $routeProvider.when(p, processRouterOptions(options));
-                    });
-                }
-
-                return this;
-            },
-
-            otherwise: function (options) {
-                $routeProvider.otherwise(processRouterOptions(options));
-                return this;
-            }
-
-        };
-
-    };
-
+    
     jsnbt = (function (jsnbt) {
 
         jsnbt.TEMPLATE_BASE = {
