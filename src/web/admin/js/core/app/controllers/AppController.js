@@ -141,6 +141,11 @@
 
                 };
 
+                $scope.goto = function (path) {
+                    $location.goto(path);
+                };
+
+
                 $scope.getNodeBreadcrumb = function (node, prefix) {
 
                     var deferred = $q.defer();
@@ -237,11 +242,7 @@
                         $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
                     });
                 };
-
-                $scope.goto = function (path) {
-                    $location.goto(path);
-                };
-
+                
                 $scope.isAuthorized = function (section) {
                     return AuthService.authorize($scope.current.user, section);
                 };
@@ -277,16 +278,7 @@
                 jsnbt.db.on(DATA_EVENTS.languageDeleted, function (language) {
                     fn.setApplicationLanguages();
                 });
-
-                $rootScope.$on('$routeChangeSuccess', function () {
-                    $scope.current.setBreadcrumb([]);
-                    setTimeout(function () {
-                        if ($scope.current.breadcrumb.items.length === 0) {
-                            $scope.current.setBreadcrumb(LocationService.getBreadcrumb());
-                        }
-                    }, 10);
-                });
-
+                
                 $scope.$on(ROUTE_EVENTS.routeStarted, function (sender) {
                     apply(function () {
                         $scope.current.initiated = false;

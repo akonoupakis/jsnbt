@@ -82,6 +82,11 @@
         $scope.next = function (path) {
             $location.next(path);
         };
+
+
+        $scope.getBreadcrumb().then(function (breadcrumb) {
+            $scope.setBreadcrumb(breadcrumb);
+        });
     };
 
 })();
