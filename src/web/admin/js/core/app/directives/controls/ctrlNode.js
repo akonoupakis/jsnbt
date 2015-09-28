@@ -96,7 +96,7 @@
 
                                         if (initiated)
                                             scope.valid = isValid();
-                                    }, function (error) {
+                                    }).catch(function (error) {
                                         scope.value = newValue;
                                         scope.wrong = true;
                                         scope.missing = true;
@@ -140,7 +140,7 @@
                             invoked.then(function (selectedNodeId) {
                                 scope.ngModel = selectedNodeId || '';
                                 scope.changed();
-                            }, function (error) {
+                            }).catch(function (error) {
                                 throw error;
                             });
                         }

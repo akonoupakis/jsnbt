@@ -164,7 +164,7 @@
                                     if (initiated)
                                         scope.valid = isValid();
 
-                                }, function (error) {
+                                }).catch(function (error) {
                                     throw error;
                                 });
                             }

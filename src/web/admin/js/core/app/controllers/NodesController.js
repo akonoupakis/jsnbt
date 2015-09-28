@@ -3,10 +3,11 @@
 (function () {
     "use strict";
     
-    var NodesController = function ($scope, $location, $jsnbt, $fn, $data, ModalService) {
+    var NodesController = function ($scope, $location, $jsnbt, $logger, $fn, $data, ModalService) {
         jsnbt.TreeControllerBase.apply(this, $scope.getBaseArguments($scope));
+        
+        var logger = $logger.create('NodesController');
 
-        $scope.domain = 'core';
         $scope.cacheKey = 'content:nodes';
         $scope.prefix = '/content/nodes';
         $scope.offset = 2;
@@ -145,11 +146,13 @@
 
         };
 
-        $scope.init();
+        $scope.init().catch(function (ex) {
+            logger.error(ex);
+        });
 
     };
     NodesController.prototype = Object.create(jsnbt.TreeControllerBase.prototype);
 
     angular.module("jsnbt")
-        .controller('NodesController', ['$scope', '$location', '$jsnbt', '$fn', '$data', 'ModalService', NodesController]);
+        .controller('NodesController', ['$scope', '$location', '$jsnbt', '$logger', '$fn', '$data', 'ModalService', NodesController]);
 })();

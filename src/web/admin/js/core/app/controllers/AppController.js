@@ -22,7 +22,10 @@
                 $scope.current.denied = false;
                 $scope.current.initiated = false;
                 $scope.current.restoreFn = undefined;
-                $scope.current.breadcrumb = [];
+                $scope.current.breadcrumb = {
+                    title: 'you are here: ',
+                    items: []
+                };
                 $scope.current.modules = $jsnbt.modules;
 
                 $scope.application.version = $jsnbt.version;
@@ -75,15 +78,15 @@
                     setApplicationLanguages: function () {
                         var deferred = $q.defer();
 
-                        $data.languages.get({ active: true }).then(function (results) {
+                        $data.languages.get().then(function (results) {
 
-                            var languages = _.sortBy(_.filter(results, function (x) { return x.active === true; }), 'name');
+                            var languages = _.sortBy(results, 'name');
 
                             $scope.application.languages = languages;
 
                             deferred.resolve(languages);
 
-                        }, function (error) {
+                        }).catch(function (error) {
                             deferred.reject(error);
                         });
 
@@ -112,7 +115,7 @@
                                 
                                 deferred.resolve(defaultLangCode);
 
-                            }, function (error) {
+                            }).catch(function (error) {
                                 deferred.reject(error);
                             });
                         }
@@ -163,7 +166,7 @@
 
                             deferred.resolve(breadcrumb);
 
-                        }, function (error) {
+                        }).catch(function (error) {
                             deferred.reject(error);
                         });
                     };
@@ -198,7 +201,7 @@
 
 
                 $scope.current.setBreadcrumb = function (value) {
-                    $scope.current.breadcrumb = value;
+                    $scope.current.breadcrumb.items = value;
                 };
 
                 $scope.current.setUser = function (value) {
@@ -208,7 +211,7 @@
                 $scope.current.login = function (username, password) {
                     AuthService.login(username, password).then(function (user) {
                         $rootScope.$broadcast(AUTH_EVENTS.loginSuccess, user);
-                    }, function (error) {
+                    }).catch(function (error) {
                         $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
                     });
                 };
@@ -226,16 +229,7 @@
                 $scope.isAuthorized = function (section) {
                     return AuthService.authorize($scope.current.user, section);
                 };
-
-                $scope.scroll2error = function () {
-                    setTimeout(function () {
-                        var firstInvalidControl = $('.ctrl.invalid:visible:first');
-                        if (firstInvalidControl.length > 0)
-                            if (!firstInvalidControl.inViewport())
-                                $('body').scrollTo(firstInvalidControl, { offset: -150, duration: 400 });
-                    }, 100);
-                };
-
+                
                 jsnbt.db.on(DATA_EVENTS.userUpdated, function (user) {
                     if ($scope.current.user)
                         if (user.id === $scope.current.user.id)
@@ -249,12 +243,32 @@
                     });
                 });
 
+                jsnbt.db.on(DATA_EVENTS.languageUpdated, function (language) {
+                    var matched = _.find($scope.application.languages, function (x) { return x.id === language.id; });
+                    matched.code = language.code;
+                    matched.name = language.name;
+                    matched.active = language.active;
+                    if (language.default) {
+                        _.each($scope.application.languages, function (lang) {
+                            if (lang.id !== language.id)
+                                lang.default = false;
+                        });
+
+                        matched.default = true;
+                    }
+                });
+
                 jsnbt.db.on(DATA_EVENTS.languageDeleted, function (language) {
                     fn.setApplicationLanguages();
                 });
 
                 $rootScope.$on('$routeChangeSuccess', function () {
-                    $scope.current.setBreadcrumb(LocationService.getBreadcrumb());
+                    $scope.current.setBreadcrumb([]);
+                    setTimeout(function () {
+                        if ($scope.current.breadcrumb.items.length === 0) {
+                            $scope.current.setBreadcrumb(LocationService.getBreadcrumb());
+                        }
+                    }, 10);
                 });
 
                 $scope.$on(ROUTE_EVENTS.routeStarted, function (sender) {

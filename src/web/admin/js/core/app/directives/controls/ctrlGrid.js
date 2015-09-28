@@ -199,7 +199,7 @@
                                    scope.ended = true;
                                }
                                scope.$parent.$parent.loading = false;
-                           }, function (error) {
+                           }).catch(function (error) {
                                 scope.$parent.$parent.loading = false;
                                throw error;
                            });

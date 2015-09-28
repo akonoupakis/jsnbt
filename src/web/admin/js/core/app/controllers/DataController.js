@@ -3,31 +3,38 @@
 (function () {
     "use strict";
 
-    angular.module("jsnbt")
-        .controller('DataController', ['$scope', '$rootScope', '$location', '$jsnbt', function ($scope, $rootScope, $location, $jsnbt) {
-           
-            $scope.data = {};
-            
-            $scope.back = function () {
-                if ($rootScope.location.previous) {
-                    $location.previous($rootScope.location.previous);
-                }
-                else {
-                    $location.previous('/content');
-                }
-            };
+    var DataController = function ($scope, $logger, $location, $jsnbt, $q) {
+        jsnbt.ListControllerBase.apply(this, $scope.getBaseArguments($scope));
 
-            $scope.data = {
+        var logger = $logger.create('DataController');
+
+        $scope.load = function () {
+            var deferred = $q.defer();
+
+            var data = data = {
                 items: _.sortBy(_.filter($jsnbt.lists, function (x) { return x.domain === 'public'; }), 'name')
             };
+
+            deferred.resolve(data);
             
-            $scope.gridFn = {
+            return deferred.promise;
+        };
 
-                edit: function (item) {
-                    $location.next('/content/data/' + item.domain + '/' + item.id);
-                }
+        $scope.gridFn = {
 
-            };
+            edit: function (item) {
+                $location.next('/content/data/' + item.id);
+            }
 
-        }]);
+        };
+
+        $scope.init().catch(function (ex) {
+            logger.error(ex);
+        });
+
+    };
+    DataController.prototype = Object.create(jsnbt.ListControllerBase.prototype);
+
+    angular.module("jsnbt")
+        .controller('DataController', ['$scope', '$logger', '$location', '$jsnbt', '$q', DataController]);
 })();

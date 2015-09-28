@@ -4,16 +4,17 @@
     "use strict";
     
     jsnbt.TreeControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, $fn, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
-
-        var logger = $logger.create('TreeControllerBase');
-
-        $scope.domain = $route.current.$$route.domain;
-        $scope.entities = $route.current.$$route.entities;
-        $scope.cacheKey = $route.current.$$route.cacheKey;
+        jsnbt.ControllerBase.apply(this, $scope.getBaseArguments($scope));
 
         $scope.nodes = [];
 
-        $scope.tmpl = $route.current.$$route.tmpl;
+        $scope.preload = function () {
+            var deferred = $q.defer();
+
+            deferred.resolve();
+            
+            return deferred.promise;
+        };
 
         $scope.load = function () {
             var deferred = $q.defer();
@@ -26,7 +27,7 @@
                 parentIds: []
             }).then(function (response) {
                 deferred.resolve(response);
-            }, function (error) {
+            }).catch(function (error) {
                 deferred.reject(error);
             });
 
@@ -34,28 +35,15 @@
         };
 
         $scope.set = function (data) {
+            var deferred = $q.defer();
+
             $scope.nodes = data;
-        };
 
-        $scope.back = function () {
-            $scope.current.breadcrumb.pop();
-            var lastItem = _.last($scope.current.breadcrumb);
-            if (lastItem) {
-                $location.previous(lastItem.url);
-            }
-            else {
-                throw new Error('not implemented');
-            }
-        };
+            deferred.resolve($scope.nodes);
 
-        $scope.canCreate = function () {
-            return false;
+            return deferred.promise;
         };
-
-        $scope.create = function () {
-            throw new Error('not implemented');
-        };
-
+        
         $scope.remove = function (node) {
             if (node.parent.id === '') {
                 $scope.nodes[0].children = _.filter($scope.nodes[0].children, function (x) { return x.id !== node.id; });
@@ -70,59 +58,56 @@
             }
         };
 
-        $scope.treeFn = {
-
-            canCreate: function (node) {
-                throw new Error('not implemented');
-            },
-
-            create: function (node) {
-                throw new Error('not implemented');
-            },
-
-            canEdit: function (node) {
-                throw new Error('not implemented');
-            },
-
-            edit: function (node) {
-                throw new Error('not implemented');
-            },
-
-            canDelete: function (node) {
-                throw new Error('not implemented');
-            },
-
-            delete: function (node) {
-                throw new Error('not implemented');
-            },
-
-            canOpen: function (node) {
-                throw new Error('not implemented');
-            },
-
-            open: function (node) {
-                throw new Error('not implemented');
-            }
-
-        };
-
         $scope.init = function () {
             var deferred = $q.defer();
 
-            $scope.load().then(function (response) {
-                $scope.set(response);
-                deferred.resolve(response);
-            }, function (ex) {
-                logger.error(ex);
-                deferred.reject(ex);
+            $scope.run('preloading').then(function () {
+                $scope.preload().then(function () {
+                    $scope.run('preloaded').then(function () {
+                        $scope.run('loading').then(function () {
+                            $scope.load().then(function (response) {
+                                $scope.run('loaded', [response]).then(function () {
+                                    $scope.run('setting', [response]).then(function () {
+                                        $scope.set(response).then(function (setted) {
+                                            $scope.run('set', [setted]).then(function () {
+                                                $scope.run('watch').then(function () {
+                                                    deferred.resolve(setted);
+                                                }).catch(function (watchError) {
+                                                    deferred.reject(watchError);
+                                                });
+                                            }).catch(function (setError) {
+                                                deferred.reject(setError);
+                                            });
+                                        }).catch(function (settedError) {
+                                            deferred.reject(settedError);
+                                        });
+                                    }).catch(function (settingError) {
+                                        deferred.reject(settingError);
+                                    });
+                                }).catch(function (loadedError) {
+                                    deferred.reject(loadedError);
+                                });
+                            }).catch(function (loadError) {
+                                deferred.reject(loadError);
+                            });
+                        }).catch(function (loadingError) {
+                            deferred.reject(loadingError);
+                        });
+                    }, function (preloadedError) {
+                        deferred.reject(preloadedError);
+                    });
+                }).catch(function (preloadError) {
+                    deferred.reject(preloadError);
+                });
+            }).catch(function (preloadingError) {
+                deferred.reject(preloadingError);
             });
-
+            
             return deferred.promise;
         };
 
 
     };
+    jsnbt.TreeControllerBase.prototype = Object.create(jsnbt.ControllerBase.prototype);
 
-    angular.module("jsnbt")
-        .controller('TreeControllerBase', ['$scope', '$rootScope', '$route', '$routeParams', '$location', '$logger', '$q', '$timeout', '$data', '$jsnbt', '$fn', 'LocationService', 'ScrollSpyService', 'AuthService', 'TreeNodeService', 'PagedDataService', 'ModalService', 'CONTROL_EVENTS', 'AUTH_EVENTS', 'DATA_EVENTS', 'ROUTE_EVENTS', jsnbt.TreeControllerBase]);
 })();

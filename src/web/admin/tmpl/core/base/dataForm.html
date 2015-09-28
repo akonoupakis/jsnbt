@@ -2,12 +2,12 @@
 
     <section class="col-md-10 scrollspy-container" data-scrollspy>
 
-        <ctrl-breadcrumb ng-model="current.breadcrumb" ng-title="you are here:"></ctrl-breadcrumb>
+        <ctrl-breadcrumb ng-model="current.breadcrumb.items" ng-title="current.breadcrumb.title"></ctrl-breadcrumb>
 
         <div class="row title-container">
             <div class="col-md-12">
                 <span ng-click="back()" class="glyphicon glyphicon-arrow-left back-button"></span>
-                <h1 class="title">{{ name }}</h1>
+                <h1 class="title">{{ title }}</h1>
                 <div class="buttons">
                     <button type="button" ng-show="!published && !draft" class="btn btn-danger" ng-click="discard()">discard</button>
                     <button type="button" ng-disabled="published && !draft" class="btn btn-success" ng-click="publish()">publish</button>
@@ -18,7 +18,7 @@
         <hr />
 
         <div class="row" id="page-title" data-scrollspy="title">
-            <ctrl-text class="col-md-12" ng-model="item.title[language]" ng-required="true" ng-label="title"></ctrl-text>
+            <ctrl-text class="col-md-12" ng-model="item.title[language]" ng-validating="active[language]" ng-required="true" ng-label="title"></ctrl-text>
         </div>
 
         <hr />

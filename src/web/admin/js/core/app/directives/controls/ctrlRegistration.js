@@ -64,10 +64,10 @@
 
                                     AuthService.login(scope.username, scope.password).then(function (user) {
                                         $rootScope.$broadcast(AUTH_EVENTS.loginSuccess, user);
-                                    }, function (error) {
+                                    }).catch(function (error) {
                                         $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
                                     });
-                                }, function (error) {
+                                }).catch(function (error) {
                                     throw error;
                                 });
                             }

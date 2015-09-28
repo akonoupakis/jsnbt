@@ -217,7 +217,7 @@
                                     resultItem.collapsed = false;
 
                                     cacheExpandedNodeIds(options.identifier, getExpandedNodeIds(resultItem));
-                                }, function (error) {
+                                }).catch(function (error) {
                                     resultItem.loading = false;
                                     resultItem.collapsed = false;
 
@@ -576,7 +576,7 @@
                 
                 getCombinedNodes(options).then(function (results) {
                     deferred.resolve(results);
-                }, function (error) {
+                }).catch(function (error) {
                     deferred.reject(error);
                 });
 
@@ -588,7 +588,7 @@
 
                 getCombinedFolders(options).then(function (response) {
                     deferred.resolve(response);
-                }, function (error) {
+                }).catch(function (error) {
                     deferred.reject(error);
                 });
 

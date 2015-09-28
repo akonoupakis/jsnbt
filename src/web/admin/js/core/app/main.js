@@ -20,44 +20,44 @@
             modules.push(jsnbt.modules[moduleDomain].name);
     }
     
-    angular.getRouter = function ($routeProvider) {
+    //angular.getRouter = function ($routeProvider) {
 
-        var processRouterOptions = function (options) {
-            var opts = {};
+    //    var processRouterOptions = function (options) {
+    //        var opts = {};
 
-            $.extend(true, opts, options);
+    //        $.extend(true, opts, options);
 
-            if (opts.templateUrl && opts.baseTemplateUrl) {
-                opts.tmpl = opts.templateUrl;
-                opts.templateUrl = opts.baseTemplateUrl;
-            }
+    //        if (opts.templateUrl && opts.baseTemplateUrl) {
+    //            opts.tmpl = opts.templateUrl;
+    //            opts.templateUrl = opts.baseTemplateUrl;
+    //        }
 
-            return opts;
-        };
+    //        return opts;
+    //    };
 
-        return {
+    //    return {
 
-            when: function (path, options) {
-                if (_.isString(path)) {
-                    $routeProvider.when(path, processRouterOptions(options));
-                }
-                else if (_.isArray(path)) {
-                    _.each(path, function (p) {
-                        $routeProvider.when(p, processRouterOptions(options));
-                    });
-                }
+    //        when: function (path, options) {
+    //            if (_.isString(path)) {
+    //                $routeProvider.when(path, processRouterOptions(options));
+    //            }
+    //            else if (_.isArray(path)) {
+    //                _.each(path, function (p) {
+    //                    $routeProvider.when(p, processRouterOptions(options));
+    //                });
+    //            }
 
-                return this;
-            },
+    //            return this;
+    //        },
 
-            otherwise: function (options) {
-                $routeProvider.otherwise(processRouterOptions(options));
-                return this;
-            }
+    //        otherwise: function (options) {
+    //            $routeProvider.otherwise(processRouterOptions(options));
+    //            return this;
+    //        }
 
-        };
+    //    };
 
-    };
+    //};
 
     for (var entityName in jsnbt.entities) {
         var entity = jsnbt.entities[entityName];
@@ -78,124 +78,151 @@
         };
     }
 
+
+
     angular.module('jsnbt', modules)
     .config(['$routeProvider', '$jsnbtProvider', 'flowFactoryProvider', function ($routeProvider, $jsnbtProvider, flowFactoryProvider) {
-        
+    
         $jsnbtProvider.setSettings(jsnbt);
+        
+        var router = new jsnbt.router('core', $routeProvider);
+        
+        var TEMPLATE_BASE = jsnbt.TEMPLATE_BASE;
 
-        var router = angular.getRouter($routeProvider);
+        router.when('/', function (x) {
+            x.baseTemplate(TEMPLATE_BASE.base);
+            x.template('tmpl/core/pages/dashboard.html');
+            x.controller('DashboardController');
+        });
 
-        router.
-            when('/', {
-                templateUrl: 'tmpl/core/pages/dashboard.html',
-                controller: 'DashboardController'
-            }).
-            when('/content', {
-                templateUrl: 'tmpl/core/pages/content.html',
-                controller: 'ContentController'
-            });
+        router.when('/dashboard', function (x) {
+            x.baseTemplate(TEMPLATE_BASE.base);
+            x.template('tmpl/core/pages/dashboard.html');
+            x.controller('DashboardController');
+        });
+
+        router.when('/content', function (x) {
+            x.baseTemplate(TEMPLATE_BASE.base);
+            x.template('tmpl/core/pages/content.html');
+            x.controller('ContentController');
+        });
 
         if (jsnbt.localization.enabled) {
-            router.
-                when('/content/languages', {
-                    baseTemplateUrl: 'tmpl/core/base/list.html',
-                    templateUrl: 'tmpl/core/pages/content/languages.html',
-                    controller: 'LanguagesController',
-                    section: 'languages'
-                }).
-                when('/content/languages/:id', {
-                    templateUrl: 'tmpl/core/pages/content/language.html',
-                    controller: 'LanguageController',
-                    section: 'languages'
-                });
+            router.when('/content/languages', function(x) {
+                x.section('languages');
+                x.baseTemplate(TEMPLATE_BASE.list);
+                x.template('tmpl/core/pages/content/languages.html');
+                x.controller('LanguagesController');
+            });
+            router.when('/content/languages/:id', function (x) {
+                x.section('languages');
+                x.baseTemplate(TEMPLATE_BASE.form);
+                x.template('tmpl/core/pages/content/language.html');
+                x.controller('LanguageController');
+            });
         }
 
-        router.
-            when('/content/layouts', {
-                templateUrl: 'tmpl/core/pages/content/layouts.html',
-                controller: 'LayoutsController',
-                section: 'layouts'
-            }).
-            when('/content/layouts/:id', {
-                templateUrl: 'tmpl/core/pages/content/layout.html',
-                controller: 'LayoutController',
-                section: 'layouts'
-            }).
-            when('/content/nodes', {
-                baseTemplateUrl: 'tmpl/core/base/list.html',
-                templateUrl: 'tmpl/core/pages/content/nodes.html',
-                controller: 'NodesController',
-                section: 'nodes'
-            }).
-            when('/content/nodes/:id', {
-                templateUrl: 'tmpl/core/base/node.html',
-                controller: 'NodeController',
-                section: 'nodes'
-            }).
-            when('/content/data', {
-                templateUrl: 'tmpl/core/pages/content/data.html',
-                controller: 'DataController',
-                section: 'data'
-            }).
-            when('/content/data/:domain/:list', {
-                templateUrl: 'tmpl/core/pages/content/list.html',
-                controller: 'ListController',
-                section: 'data'
-            }).
-            when('/content/data/:domain/:list/:id', {
-                templateUrl: 'tmpl/core/pages/content/list-entry.html',
-                controller: 'ListEntryController',
-                section: 'data'
-            }).
-            when('/content/texts', {
-                templateUrl: 'tmpl/core/pages/content/texts.html',
-                controller: 'TextsController',
-                section: 'texts'
-            }).
-            when('/content/texts/:id', {
-                templateUrl: 'tmpl/core/pages/content/text.html',
-                controller: 'TextController',
-                section: 'texts'
-            }).
-            when('/content/files', {
-                templateUrl: 'tmpl/core/pages/content/files.html',
-                controller: 'FilesController',
-                section: 'files'
-            }).
-            when('/modules', {
-                templateUrl: 'tmpl/core/pages/modules.html',
-                controller: 'ModulesController',
-                section: 'modules'
-            }).
-            //when('/modules/:domain/list/:list', {
-            //    templateUrl: 'tmpl/core/pages/content/list.html',
-            //    controller: 'ListController'
-            //}).
-            //when('/modules/:domain/list', {
-            //    redirectTo: '/modules/:domain'
-            //}).
-            //when('/modules/:domain/list/:list/:id', {
-            //    templateUrl: 'tmpl/core/pages/content/list-entry.html',
-            //    controller: 'ListEntryController'
-            //}).
-            when('/users', {
-                templateUrl: 'tmpl/core/pages/users.html',
-                 controller: 'UsersController',
-                 section: 'users'
-            }).
-            when('/users/:id', {
-                templateUrl: 'tmpl/core/pages/user.html',
-                controller: 'UserController',
-                section: 'users'
-            }).
-            when('/settings', {
-                templateUrl: 'tmpl/core/pages/settings.html',
-                controller: 'SettingsController',
-                section: 'settings'
-            }).
-            otherwise({
-                redirectTo: '/'
+        router.when('/content/layouts', function(x) {
+            x.section('layouts');
+            x.baseTemplate(TEMPLATE_BASE.list);
+            x.template('tmpl/core/pages/content/layouts.html');
+            x.controller('LayoutsController');            
+        });
+        router.when('/content/layouts/:id', function(x) {
+            x.section('layouts');
+            x.baseTemplate(TEMPLATE_BASE.form);
+            x.template('tmpl/core/pages/content/layout.html');
+            x.controller('LayoutController');            
+        });
+
+        router.when('/content/nodes', function(x) {
+            x.section('nodes');
+            x.baseTemplate(TEMPLATE_BASE.tree);
+            x.template('tmpl/core/pages/content/nodes.html');
+            x.scope({
+                prefix: '/content/nodes'
             });
+            x.controller('NodesController');
+        });
+        router.when('/content/nodes/:id', function (x) {
+            x.section('nodes');
+            x.baseTemplate(TEMPLATE_BASE.nodeForm);
+            x.scope({
+                prefix: '/content/nodes'
+            });
+            x.controller('NodeController');
+        });
+
+        router.when('/content/data', function(x) {
+            x.section('data');
+            x.baseTemplate(TEMPLATE_BASE.list);
+            x.template('tmpl/core/pages/content/data.html');
+            x.controller('DataController');            
+        });
+        router.when('/content/data/:list', function(x) {
+            x.section('data');
+            x.baseTemplate(TEMPLATE_BASE.list);
+            x.template('tmpl/core/pages/content/dataList.html');
+            x.controller('DataListController');            
+        });
+        router.when('/content/data/:list/:id', function (x) {
+            x.section('data');
+            x.baseTemplate(TEMPLATE_BASE.dataForm);
+            x.template('tmpl/core/pages/content/list-entry.html');
+            x.controller('DataListItemController');
+        });
+           
+        router.when('/modules', function (x) {
+            x.section('modules');
+            x.baseTemplate(TEMPLATE_BASE.list);
+            x.template('tmpl/core/pages/modules.html');
+            x.controller('ModulesController');
+        });
+
+        router.when('/content/texts', function (x) {
+            x.section('texts');
+            x.baseTemplate(TEMPLATE_BASE.list);
+            x.template('tmpl/core/pages/content/texts.html');
+            x.controller('TextsController');            
+        });
+        router.when('/content/texts/:id', function (x) {
+            x.section('texts');
+            x.baseTemplate(TEMPLATE_BASE.form);
+            x.template('tmpl/core/pages/content/text.html');
+            x.controller('TextController');
+        });
+
+        router.when('/content/files', function (x) {
+            x.section('files');
+            x.baseTemplate(TEMPLATE_BASE.base);
+            x.template('tmpl/core/pages/content/files.html');
+            x.controller('FilesController');
+        });
+                   
+        router.when('/users', function (x) {
+            x.section('users');
+            x.baseTemplate(TEMPLATE_BASE.list);
+            x.template('tmpl/core/pages/users.html');
+            x.controller('UsersController');
+        });
+        router.when('/users/:id', function (x) {
+            x.section('users');
+            x.baseTemplate(TEMPLATE_BASE.form);
+            x.template('tmpl/core/pages/user.html');
+            x.controller('UserController');
+        });
+
+        router.when('/settings', function (x) {
+            x.section('settings');
+            x.baseTemplate(TEMPLATE_BASE.settings);
+            x.template('tmpl/core/pages/settings.html');
+            x.controller('SettingsController');
+        });
+
+        router.otherwise(function (x) {
+            x.redirect('/');
+        });
+
     }])
     .run(['$rootScope', '$location', '$route', '$timeout', '$fn', 'FunctionService', 'AuthService', 'AUTH_EVENTS', 'ROUTE_EVENTS', function ($rootScope, $location, $route, $timeout, $fn, FunctionService, AuthService, AUTH_EVENTS, ROUTE_EVENTS) {
         $fn.register('core', FunctionService);
@@ -248,7 +275,7 @@
                             });
                         }
                         $rootScope.initiated = true;
-                    }, function (error) {
+                    }).catch(function (error) {
                         throw error;
                     });
                 }

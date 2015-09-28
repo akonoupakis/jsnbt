@@ -95,7 +95,7 @@
 
                                         if (initiated)
                                             scope.valid = isValid();
-                                    }, function (error) {
+                                    }).catch(function (error) {
                                         scope.value = newValue;
                                         scope.wrong = true;
                                         scope.missing = true;

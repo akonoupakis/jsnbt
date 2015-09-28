@@ -6,92 +6,110 @@
     jsnbt.ListControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, $fn, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
         jsnbt.ControllerBase.apply(this, $scope.getBaseArguments($scope));
 
-        var logger = $logger.create('ListControllerBase');
-
+        $scope.title = undefined;
         $scope.data = {};
 
-        $scope.tmpl = $route.current.$$route.tmpl;
+        $scope.preload = function () {
+            var deferred = $q.defer();
+
+            deferred.resolve();
+
+            return deferred.promise;
+        };
 
         $scope.load = function () {
             throw new Error('not implemented');
         };
 
         $scope.set = function (data) {
+            var deferred = $q.defer();
+
             $scope.data = data;
+
+            deferred.resolve($scope.data);
+
+            return deferred.promise;
         };
 
-        $scope.back = function () {
-            $scope.current.breadcrumb.pop();
-            var lastItem = _.last($scope.current.breadcrumb);
-            if (lastItem) {
-                $location.previous(lastItem.url);
-            }
-            else {
-                throw new Error('not implemented');
-            }
-        };
-
-        $scope.canCreate = function () {
-            return false;
-        };
-
-        $scope.create = function () {
-            throw new Error('not implemented');
+        $scope.setTitle = function (title) {
+            $scope.title = title;
         };
 
         $scope.remove = function (item) {
             $scope.data.items = _.filter($scope.data.items, function (x) { return x.id !== item.id; });
         };
-
-        $scope.setLocation = function () {
+      
+        $scope.enqueue('watch', function () {
             var deferred = $q.defer();
 
-            var breadcrumb = LocationService.getBreadcrumb();
+            $scope.$watch('title', function (newValue, prevValue) {
+                if (newValue !== prevValue && newValue !== undefined) {
+                    $scope.getBreadcrumb().then(function (breadcrumb) {
+                        $scope.setBreadcrumb(breadcrumb).catch(function (setBreadcrumbError) {
+                            throw setBreadcrumbError;
+                        });
+                    }).catch(function (getBreadcrumbError) {
+                        throw getBreadcrumbError;
+                    });
+                }
+            });
 
-            $scope.current.setBreadcrumb(breadcrumb);
-
-            deferred.resolve(breadcrumb);
-
+            deferred.resolve();
+            
             return deferred.promise;
-        };
-
-        $scope.gridFn = {
-
-            canEdit: function (item) {
-                throw new Error('not implemented');
-            },
-
-            edit: function (item) {
-                throw new Error('not implemented');
-            },
-
-            canDelete: function (item) {
-                throw new Error('not implemented');
-            },
-
-            delete: function (item) {
-                throw new Error('not implemented');
-            },
-
-            canOpen: function (item) {
-                throw new Error('not implemented');
-            },
-
-            open: function (item) {
-                throw new Error('not implemented');
-            }
-
-        };
+        });
 
         $scope.init = function () {
             var deferred = $q.defer();
-
-            $scope.load().then(function (response) {
-                $scope.set(response);
-                deferred.resolve(response);
-            }, function (ex) {
-                logger.error(ex);
-                deferred.reject(ex);
+            
+            $scope.run('preloading').then(function () {
+                $scope.preload().then(function () {
+                    $scope.run('preloaded').then(function () {
+                        $scope.run('loading').then(function () {
+                            $scope.load().then(function (response) {
+                                $scope.run('loaded', [response]).then(function () {
+                                    $scope.run('setting', [response]).then(function () {
+                                        $scope.set(response).then(function (setted) {
+                                            $scope.run('set', [response]).then(function () {
+                                                $scope.run('watch').then(function () {
+                                                    $scope.getBreadcrumb().then(function (breadcrumb) {
+                                                        $scope.setBreadcrumb(breadcrumb).then(function () {
+                                                            deferred.resolve(setted);
+                                                        }).catch(function (setBreadcrumbError) {
+                                                            deferred.reject(setBreadcrumbError);
+                                                        });
+                                                    }).catch(function (getBreadcrumbError) {
+                                                        deferred.reject(getBreadcrumbError);
+                                                    });
+                                                }).catch(function (watchError) {
+                                                    deferred.reject(watchError);
+                                                });
+                                            }).catch(function (setError) {
+                                                deferred.reject(setError);
+                                            });
+                                        }).catch(function (settedError) {
+                                            deferred.reject(settedError);
+                                        });
+                                    }).catch(function (settingError) {
+                                        deferred.reject(settingError);
+                                    });
+                                }).catch(function (loadedError) {
+                                    deferred.reject(loadedError);
+                                });
+                            }).catch(function (loadError) {
+                                deferred.reject(loadError);
+                            });
+                        }).catch(function (loadingError) {
+                            deferred.reject(loadingError);
+                        });
+                    }, function (preloadedError) {
+                        deferred.reject(preloadedError);
+                    });
+                }).catch(function (preloadError) {
+                    deferred.reject(preloadError);
+                });
+            }).catch(function (preloadingError) {
+                deferred.reject(preloadingError);
             });
 
             return deferred.promise;
@@ -100,6 +118,4 @@
     };
     jsnbt.ListControllerBase.prototype = Object.create(jsnbt.ControllerBase.prototype);
 
-    angular.module("jsnbt")
-        .controller('ListControllerBase', ['$scope', '$rootScope', '$route', '$routeParams', '$location', '$logger', '$q', '$timeout', '$data', '$jsnbt', '$fn', 'LocationService', 'ScrollSpyService', 'AuthService', 'TreeNodeService', 'PagedDataService', 'ModalService', 'CONTROL_EVENTS', 'AUTH_EVENTS', 'DATA_EVENTS', 'ROUTE_EVENTS', jsnbt.ListControllerBase]);
 })();

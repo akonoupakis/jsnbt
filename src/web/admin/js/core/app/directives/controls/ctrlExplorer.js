@@ -135,7 +135,7 @@
                     var load = function (path) {
                         FileService.get(path).then(function (response) {
                             scope.contents = apply(response);
-                        }, function (error) {
+                        }).catch(function (error) {
                             throw error;
                         });
                     };
@@ -191,7 +191,7 @@
                                 else {
                                     load(scope.current);
                                 }
-                            }, function (error) {
+                            }).catch(function (error) {
                                 throw error;
                             });
                         }
@@ -225,7 +225,7 @@
                                     load(scope.current);
                                     if (response)
                                         scrollToTop();
-                                }, function (error) {
+                                }).catch(function (error) {
                                     throw error;
                                 });
                             }
@@ -241,7 +241,7 @@
                             if (confirmed) {
                                 FileService.delete(item.path).then(function (response) {
                                     load(scope.current);
-                                }, function (error) {
+                                }).catch(function (error) {
                                     throw error;
                                 });
                             }

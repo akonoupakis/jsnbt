@@ -42,7 +42,7 @@
                 if (textKeys.length > 0) {
                     $text.get($context.language, textKeys).then(function (response) {
                         $.extend(true, $scope.text, response);
-                    }, function (error) {
+                    }).catch(function (error) {
                         throw error;
                     });
                 }

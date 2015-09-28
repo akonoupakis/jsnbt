@@ -45,7 +45,7 @@
 
                         if ($scope.selected)
                             TreeNodeService.setSelected($scope.nodes, $scope.mode === 'multiple' ? $scope.selected : [$scope.selected]);
-                    }, function (error) {
+                    }).catch(function (error) {
                         throw error;
                     });
 
@@ -68,7 +68,7 @@
                     else {
                         $scope.nodes = response[0].children;
                     }
-                }, function (error) {
+                }).catch(function (error) {
                     throw error;
                 });
             }

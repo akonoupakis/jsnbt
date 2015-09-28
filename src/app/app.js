@@ -244,10 +244,13 @@ exports.register = function (module) {
 
     if (moduleConfig.lists) {
         _.each(moduleConfig.lists, function (moduleList) {
-            var fileName = moduleList.form.substring(0, moduleList.form.lastIndexOf('.'));
-            fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
+            var matchedList = _.find(self.config.lists, function (x) { return x.id === moduleConfig.id && x.domain == module.domain; });
+            if (!matchedList) {
+                matchedList = _.find(self.config.lists, function (x) { return x.id === moduleConfig.id; });
+                if (matchedList)
+                    throw new Error('list ' + matchedList.id + ' already registered for domain ' + module.domain);
+            }
 
-            var matchedList = _.find(self.config.lists, function (x) { return x.id === fileName && x.domain == module.domain; });
             if (matchedList) {
                 extend(true, matchedList, moduleList);
             }
@@ -258,10 +261,7 @@ exports.register = function (module) {
                 };
 
                 extend(true, newListSpec, moduleList);
-
-                if (!newListSpec.id)
-                    newListSpec.id = fileName;
-                
+                                
                 self.config.lists.push(newListSpec);
             }
         });

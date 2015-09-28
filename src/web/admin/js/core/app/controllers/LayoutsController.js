@@ -3,12 +3,13 @@
 (function () {
     "use strict";
 
-    angular.module("jsnbt")
-        .controller('LayoutsController', ['$scope', '$logger', '$location', '$jsnbt', function ($scope, $logger, $location, $jsnbt) {
-            
-            var logger = $logger.create('LayoutsController');
-            
-            $scope.data = {};
+    var LayoutsController = function ($scope, $location, $jsnbt, $logger, $q) {
+        jsnbt.ListControllerBase.apply(this, $scope.getBaseArguments($scope));
+
+        var logger = $logger.create('LayoutsController');
+
+        $scope.load = function () {
+            var deferred = $q.defer();
 
             var layouts = [];
             for (var layoutName in $jsnbt.layouts) {
@@ -20,17 +21,30 @@
                 });
             };
 
-            $scope.data = {
+            var data = {
                 items: _.sortBy(layouts, 'name')
             };
 
-            $scope.gridFn = {
+            deferred.resolve(data);
 
-                edit: function (item) {
-                    $location.next('/content/layouts/' + item.id);
-                }
+            return deferred.promise;
+        };
+        
+        $scope.gridFn = {
 
-            };
+            edit: function (item) {
+                $location.next('/content/layouts/' + item.id);
+            }
 
-        }]);
+        };
+
+        $scope.init().catch(function (ex) {
+            logger.error(ex);
+        });
+
+    };
+    LayoutsController.prototype = Object.create(jsnbt.ListControllerBase.prototype);
+
+    angular.module("jsnbt")
+        .controller('LayoutsController', ['$scope', '$location', '$jsnbt', '$logger', '$q', LayoutsController]);
 })();

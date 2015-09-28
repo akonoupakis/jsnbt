@@ -3,236 +3,128 @@
 (function () {
     "use strict";
 
-    angular.module("jsnbt")
-        .controller('LanguageController', ['$scope', '$routeParams', '$location', '$timeout', '$q', '$logger', '$data', 'ScrollSpyService', 'LocationService', 'CONTROL_EVENTS', function ($scope, $routeParams, $location, $timeout, $q, $logger, $data, ScrollSpyService, LocationService, CONTROL_EVENTS) {
-           
-            var logger = $logger.create('LanguageController');
+    var LanguageController = function ($scope, $routeParams, $location, $timeout, $q, $logger, $data, ScrollSpyService, LocationService, CONTROL_EVENTS) {
+        jsnbt.FormControllerBase.apply(this, $scope.getBaseArguments($scope));
 
-            $scope.id = $routeParams.id;
-            $scope.new = $scope.id === 'new';
-            $scope.name = undefined;
-            $scope.language = undefined;
-            $scope.languages = [];
+        var logger = $logger.create('LanguageController');
 
-            $scope.valid = false;
-            $scope.published = true;
-            $scope.draft = false;
-            
-            var fn = {
+        $scope.language = undefined;
+        $scope.languages = [];
 
-                set: function () {
-                    var deferred = $q.defer();
+        $scope.load = function () {            
+            var deferred = $q.defer();
 
-                    if ($scope.new) {
-                        $scope.name = '';
+            if ($scope.isNew()) {
+                deferred.resolve();
+            }
+            else {
+                $data.languages.get($scope.id).then(function (result) {
+                    deferred.resolve(result);
+                }).catch(function (error) {
+                    deferred.reject(error);
+                });
+            }
 
-                        $scope.language = $data.create('languages', {
-                            code: '',
-                            active: false,
-                            default: false,
-                        });
-                        
-                        var activeLanguageCodes = _.pluck($scope.application.languages, 'code');
-                        $scope.languages = _.filter($scope.defaults.languages, function (x) { return activeLanguageCodes.indexOf(x.code) === -1; });
+            return deferred.promise;
 
-                        $scope.valid = true;
+        };
 
-                        $scope.published = false;
-                        $scope.draft = true;
+        $scope.set = function (data) {
+            var deferred = $q.defer();
 
-                        deferred.resolve();
-                    }
-                    else {
-                        $data.languages.get($scope.id).then(function (result) {
+            var activeLanguageCodes = _.pluck($scope.application.languages, 'code');
 
-                            $scope.name = result.name;
-                            $scope.language = result;
+            if ($scope.isNew()) {
+                $scope.setTitle('');
 
-                            $scope.languages = $scope.defaults.languages;
+                $scope.language = $data.create('languages', {
+                    code: '',
+                    active: false,
+                    default: false,
+                });
 
-                            $scope.valid = true;
+                $scope.languages = _.filter($scope.defaults.languages, function (x) { return activeLanguageCodes.indexOf(x.code) === -1; });
 
-                            $scope.published = true;
-                            $scope.draft = false;
+                $scope.setValid(true);
+                $scope.setPublished(false);
 
-                            deferred.resolve();
+                deferred.resolve($scope.language);
+            }
+            else {
+                if (data) {
+                    $scope.setTitle(data.name);
+                    $scope.language = data;
 
-                        }, function (error) {
-                            deferred.reject(error);
-                        });
-                    }
-
-                    return deferred.promise;
-                },
-
-                setLocation: function () {
-                    var deferred = $q.defer();
-
-                    var breadcrumb = LocationService.getBreadcrumb();
-                    breadcrumb = breadcrumb.slice(0, breadcrumb.length - 1);
-                    if ($scope.new) {
-                        breadcrumb.push({
-                            name: 'new',
-                            active: true
-                        });
-                    }
-                    else {
-                        breadcrumb.push({
-                            name: $scope.name,
-                            active: true
-                        });
-                    }
-                    $scope.current.setBreadcrumb(breadcrumb);
-
-                    deferred.resolve(breadcrumb);
-
-                    return deferred.promise;
-                },
-
-                setSpy: function (time) {
-                    var deferred = $q.defer();
-
-                    ScrollSpyService.get(time || 0).then(function (response) {
-                        $scope.nav = response;
-                        deferred.resolve(response);
+                    activeLanguageCodes = _.filter(activeLanguageCodes, function (x) {
+                        return x !== data.code;
                     });
 
-                    return deferred.promise;
-                },
-                
-                save: function () {
-                    var deferred = $q.defer();
+                    $scope.languages = _.filter($scope.defaults.languages, function (x) { return activeLanguageCodes.indexOf(x.code) === -1; });
 
-                    $scope.published = false;
-                    
-                    deferred.resolve();
+                    $scope.setValid(true);
+                    $scope.setPublished(true);
 
-                    return deferred.promise;
-                },
-
-                discard: function () {
-                    var deferred = $q.defer();
-
-                    this.set().then(function (response) {
-                        deferred.resolve();
-                    }, function (error) {
-                        deferred.reject(error);
-                    });
-
-                    return deferred.promise;
-                },
-
-                validate: function () {
-                    var deferred = $q.defer();
-
-                    $scope.valid = true;
-                    $scope.$broadcast(CONTROL_EVENTS.initiateValidation);
-
-                    deferred.resolve($scope.valid);
-
-                    return deferred.promise;
-                },
-
-                publish: function () {
-                    var deferred = $q.defer();
-
-                    this.validate().then(function (validationResults) {
-                        if (!validationResults) {
-                            deferred.resolve(false);
-                        }
-                        else {
-                            if ($scope.new) {
-                                $data.languages.post($scope.language).then(function (result) {
-                                    $scope.id = result.id;
-                                    deferred.resolve(true);
-                                }, function (error) {
-                                    deferred.reject(error);
-                                });
-                            }
-                            else {
-                                $data.languages.put($scope.id, {
-                                    active: $scope.language.active
-                                }).then(function (result) {
-                                    $scope.name = result.name;
-                                    deferred.resolve(true);
-                                }, function (error) {
-                                    deferred.reject(error);
-                                });
-                            }
-                        }
-                    });
-
-                    return deferred.promise;
+                    deferred.resolve($scope.language);
                 }
+                else {
+                    deferred.reject(new Error('data is not defined for setting into scope'));
+                }
+            }
 
-            };
+            return deferred.promise;
+        };
 
-
-            $scope.back = function () {
-                $location.previous('/content/languages');
-            };
-
-            $scope.discard = function () {
-                fn.discard().catch(function (ex) {
-                    logger.error(ex);
-                });
-            };
-
-            $scope.publish = function () {
-                fn.publish().then(function (success) {
-                    $scope.published = success;
-
-                    if (!success) {
-                        $scope.scroll2error();
-                    }
-                    else {
-                        if ($scope.new) {
-                            $location.goto('/content/languages/' + $scope.id);
-                        }
-                    }
-                }, function (ex) {
-                    logger.error(ex);
-                });
-            };
-
-            $scope.$watch('name', function (newValue, prevValue) {
-                fn.setLocation().then(function () { }, function (ex) {
-                    logger.error(ex);
-                });
-            });
+        $scope.enqueue('watch', function () {
+            var deferred = $q.defer();
 
             $scope.$watch('language.code', function (newValue, prevValue) {
-                var language = _.find($scope.defaults.languages, function (x) { return x.code === newValue });
-                if (language)
-                    $scope.language.name = language.name;
+                if (newValue !== prevValue && newValue !== undefined) {
+                    var language = _.find($scope.defaults.languages, function (x) { return x.code === newValue });
+                    if (language)
+                        $scope.language.name = language.name;
+                }
             });
 
-            $scope.$on(CONTROL_EVENTS.valueChanged, function (sender) {
-                sender.stopPropagation();
+            deferred.resolve();
 
-                fn.save().then(function () {
-                    $scope.published = false;
-                }, function (ex) {
-                    logger.error(ex);
-                });
-            });
+            return deferred.promise;
+        });
 
-            $scope.$on(CONTROL_EVENTS.valueIsValid, function (sender, value) {
-                sender.stopPropagation();
-
-                if (!value)
-                    $scope.valid = false;
-            });
+        $scope.get = function () {
+            return $scope.language;
+        };
+        
+        $scope.push = function (data) {
+            var deferred = $q.defer();
             
-
-            $timeout(function () {
-                fn.set().then(function () {
-                    fn.setSpy(200).catch(function (spyEx) {
-                        logger.error(spyEx);
-                    });
-                }, function (ex) {
-                    logger.error(ex);
+            if ($scope.isNew()) {
+                $data.languages.post(data).then(function (result) {
+                    deferred.resolve(result);
+                }).catch(function (error) {
+                    deferred.reject(error);
                 });
-            }, 200);
-        }]);
+            }
+            else {
+                $data.languages.put($scope.id, {
+                    code: $scope.language.code,
+                    name: $scope.language.name,
+                    active: $scope.language.active
+                }).then(function (result) {
+                    deferred.resolve(result);
+                }).catch(function (error) {
+                    deferred.reject(error);
+                });
+            }
+
+            return deferred.promise;
+        };
+       
+        $scope.init().catch(function (ex) {
+            logger.error(ex);
+        });
+    };
+    LanguageController.prototype = Object.create(jsnbt.FormControllerBase.prototype);
+
+    angular.module("jsnbt")
+        .controller('LanguageController', ['$scope', '$routeParams', '$location', '$timeout', '$q', '$logger', '$data', 'ScrollSpyService', 'LocationService', 'CONTROL_EVENTS', LanguageController]);
 })();

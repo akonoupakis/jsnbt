@@ -60,7 +60,7 @@
 
                 getData(fn, query, start, limit, selected).then(function (results) {
                     deferred.resolve(results);
-                }, function (error) {
+                }).catch(function (error) {
                     deferred.reject(error);
                 });
 

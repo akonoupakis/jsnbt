@@ -3,17 +3,19 @@
 (function () {
     "use strict";
 
+    var DashboardController = function ($scope, $jsnbt) {
+        jsnbt.ControllerBase.apply(this, $scope.getBaseArguments($scope));
+
+        var injects = [];
+        _.each($jsnbt.injects, function (inject) {
+            if (inject.dashboard)
+                injects.push(inject.dashboard);
+        });
+        $scope.injects = injects;
+
+    };
+    DashboardController.prototype = Object.create(jsnbt.ControllerBase.prototype);
+
     angular.module("jsnbt")
-        .controller('DashboardController', ['$scope', '$jsnbt', function ($scope, $jsnbt) {
-        
-            $scope.publicTmpl = null;
-
-            var injects = [];
-            _.each($jsnbt.injects, function (inject) {
-                if (inject.dashboard)
-                    injects.push(inject.dashboard);
-            });
-            $scope.injects = injects;
-
-        }]);
+        .controller('DashboardController', ['$scope', '$jsnbt', DashboardController]);
 })();

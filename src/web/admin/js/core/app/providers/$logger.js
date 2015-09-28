@@ -21,6 +21,9 @@
                             info: function () {
                                 console.log(name, arguments);
                             },
+                            warn: function (warning) {
+                                console.warn(warning);
+                            },
                             error: function (ex) {
                                 throw ex;
                             }

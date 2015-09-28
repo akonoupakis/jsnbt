@@ -12,7 +12,7 @@
                 replace: true,
                 scope: {
                     ngModel: '=',
-                    ngTitle: '@'
+                    ngTitle: '='
                 },
                 link: function (scope, element, attrs) {
                     element.addClass('breadcrumb');

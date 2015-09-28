@@ -43,7 +43,7 @@
                 $scope.nodes = groupNode.children;
                 TreeNodeService.setSelected($scope.nodes, [$scope.data.dir]);
 
-            }, function (error) {
+            }).catch(function (error) {
                 throw error;
             });
 

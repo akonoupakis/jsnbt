@@ -6,6 +6,8 @@
     var LanguagesController = function ($scope, $location, $q, $logger, $data, PagedDataService, ModalService) {
         jsnbt.ListControllerBase.apply(this, $scope.getBaseArguments($scope));
         
+        var logger = $logger.create('LanguagesController');
+
         $scope.available = false;
 
         $scope.load = function () {
@@ -16,14 +18,23 @@
                     name: 1
                 }
             }).then(function (response) {
-                $scope.available = response.items.length < _.keys($scope.defaults.languages).length;
                 deferred.resolve(response);
-            }, function (error) {
+            }).catch(function (error) {
                 deferred.reject(error);
             });
 
             return deferred.promise;
         };
+
+        $scope.enqueue('loaded', function (data) {
+            var deferred = $q.defer();
+
+            $scope.available = data.items.length < _.keys($scope.defaults.languages).length;
+
+            deferred.resolve();
+            
+            return deferred.promise;
+        });
 
         $scope.canCreate = function () {
             return $scope.available;
@@ -88,7 +99,7 @@
                         else {
                             deferred.reject();
                         }
-                    }, function (error) {
+                    }).catch(function (error) {
                         deferred.reject(error);
                     });
 
@@ -104,7 +115,7 @@
                             item.default = false;
                         }
                     });
-                }, function (error) {
+                }).catch(function (error) {
                     logger.error(error);
                 });
 
@@ -132,7 +143,7 @@
                                 else {
                                     deferred.reject(new Error('cannot delete the default language'));
                                 }
-                            }, function (error) {
+                            }).catch(function (error) {
                                 deferred.reject(error);
                             });
                         }
@@ -143,15 +154,16 @@
 
                 deletePromise(language).then(function () {
                     $scope.remove(language);
-                }, function (error) {
+                }).catch(function (error) {
                     logger.error(error);
                 });
             }
 
         };
 
-        $scope.init();
-
+        $scope.init().catch(function (ex) {
+            logger.error(ex);
+        });
     };
     LanguagesController.prototype = Object.create(jsnbt.ListControllerBase.prototype);
 

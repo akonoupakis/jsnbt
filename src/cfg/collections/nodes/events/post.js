@@ -12,9 +12,11 @@ if (entity.hasProperty('seo')) {
             throw siblingNodesError;
         else {
             for (var lang in self.seo) {
-                var siblingSeoNames = _.pluck(_.pluck(_.filter(siblingNodes, function (x) { return x.seo[lang]; }), 'seo'), lang);
-                if (siblingSeoNames.indexOf(self.seo[lang]) !== -1) {
-                    cancel('seo name already exists', 400);
+                if (self.active[lang]) {
+                    var siblingSeoNames = _.pluck(_.pluck(_.filter(siblingNodes, function (x) { return x.seo[lang]; }), 'seo'), lang);
+                    if (siblingSeoNames.indexOf(self.seo[lang]) !== -1) {
+                        cancel('seo name already exists', 400);
+                    }
                 }
             }
         }

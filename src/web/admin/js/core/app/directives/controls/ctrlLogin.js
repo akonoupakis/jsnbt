@@ -38,7 +38,7 @@
                                      $rootScope.$broadcast(AUTH_EVENTS.loginSuccess, user);
                                  else
                                      scope.failed = true;
-                             }, function (error) {
+                             }).catch(function (error) {
                                  $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
                                  scope.failed = true;
                              });

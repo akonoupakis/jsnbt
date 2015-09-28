@@ -3,7 +3,7 @@ var _ = require('underscore');
 
 var self = this;
 
-if (me && me.id == self.id) {
+if (me && me.id === self.id) {
     if (changed('roles') && !_.isEmpty(_.difference(previous.roles, self.roles))) {
         error('roles', 'cannot assign own roles');
     }

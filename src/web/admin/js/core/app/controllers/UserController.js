@@ -3,210 +3,141 @@
 (function () {
     "use strict";
 
-    angular.module("jsnbt")
-        .controller('UserController', ['$scope', '$routeParams', '$location', '$timeout', '$q', '$logger', '$data', '$jsnbt', 'ScrollSpyService', 'LocationService', 'AuthService', 'CONTROL_EVENTS',
-            function ($scope, $routeParams, $location, $timeout, $q, $logger, $data, $jsnbt, ScrollSpyService, LocationService, AuthService, CONTROL_EVENTS) {
-           
-            var logger = $logger.create('UserController');
+    var UserController = function ($scope, $routeParams, $location, $timeout, $q, $logger, $data, $jsnbt, ScrollSpyService, LocationService, AuthService, CONTROL_EVENTS) {
+        jsnbt.FormControllerBase.apply(this, $scope.getBaseArguments($scope));
 
-            $scope.id = $routeParams.id;
-            $scope.name = undefined;
-            $scope.user = undefined;
-            $scope.roles = [];
+        var logger = $logger.create('UserController');
+
+        $scope.user = undefined;
+        $scope.roles = [];
+
+        $scope.editRoles = false;
+        
+        $scope.enqueue('preloading', function () {
+            var deferred = $q.defer();
+
+            var allRoles = [];
+            
+            for (var roleName in $jsnbt.roles) {
+                var role = $jsnbt.roles[roleName];
+
+                var newRole = {};
+                $.extend(true, newRole, role);
+                newRole.value = newRole.name;
+                newRole.disabled = !AuthService.isInRole($scope.current.user, role.name);
+                newRole.description = role.inherits.length > 0 ? 'inherits from ' + role.inherits.join(', ') : '';
+                
+                allRoles.push(newRole);
+            };
+
+            $scope.roles = allRoles;
+
+            deferred.resolve(allRoles);
+
+            return deferred.promise;
+        });
+
+        $scope.load = function () {
+            var deferred = $q.defer();
+
+            if ($scope.isNew()) {
+                deferred.resolve();
+            }
+            else {
+                $data.users.get($scope.id).then(function (result) {
+                    deferred.resolve(result);
+                }).catch(function (error) {
+                    deferred.reject(error);
+                });
+            }
+
+            return deferred.promise;
+
+        };
+
+        $scope.set = function (data) {
+            var deferred = $q.defer();
+
+            if ($scope.isNew()) {
+                $scope.setTitle('');
+
+                $scope.user = $data.create('users', {});
+
+                $scope.setValid(true);
+                $scope.setPublished(false);
+
+                deferred.resolve($scope.user);
+            }
+            else {
+                if (data) {
+                    $scope.setTitle(data.username);
+                    $scope.user = data;
+
+                    $scope.setValid(true);
+                    $scope.setPublished(true);
+
+                    deferred.resolve($scope.user);
+                }
+                else {
+                    deferred.reject(new Error('data is not defined for setting into scope'));
+                }
+            }
+
+            return deferred.promise;
+        };
+
+        $scope.enqueue('set', function () {
+            var deferred = $q.defer();
+
+            var allowEdit = true;
+
+            if (_.any($scope.roles, function (x) {
+
+                if (!x.disabled && $scope.user.roles.indexOf(x.value) !== -1)
+                    if (!AuthService.isInRole($scope.current.user, x.value))
+                        return true;
+
+                return false;
+            })) {
+                allowEdit = false;
+            }
 
             $scope.editRoles = false;
+            if ($scope.current.user.id !== $scope.user.id)
+                $scope.editRoles = allowEdit;
 
-            $scope.valid = false;
-            $scope.published = false;
-            
-            var fn = {
+            deferred.resolve($scope.editRoles);
 
-                set: function () {
-                    var deferred = $q.defer();
-                    
-                    $data.users.get($scope.id).then(function (result) {
+            return deferred.promise;
+        });
 
-                        $scope.name = result.firstName + ' ' + result.lastName;
-                        $scope.user = result;
-    
-                        $scope.valid = true;
+        $scope.get = function () {
+            return $scope.user;
+        };
 
-                        $scope.published = true;
+        $scope.push = function (data) {
+            var deferred = $q.defer();
 
-                        deferred.resolve(result);
-
-                    }, function (error) {
-                        deferred.reject(error);
-                    });
-
-                    return deferred.promise;
-                },
-
-                setRoles: function () {
-                    var deferred = $q.defer();
-
-                    var allRoles = [];
-
-                    $scope.roles = allRoles;
-
-                    var allowEdit = true;
-
-                    for (var roleName in $jsnbt.roles) {
-                        var role = $jsnbt.roles[roleName];
-
-                        var newRole = {};
-                        $.extend(true, newRole, role);
-                        newRole.value = newRole.name;
-                        newRole.disabled = !AuthService.isInRole($scope.current.user, role.name);
-                        newRole.description = role.inherits.length > 0 ? 'inherits from ' + role.inherits.join(', ') : '';
-
-                        if (!newRole.disabled && $scope.user.roles.indexOf(newRole.value) !== -1) {
-                            if (!AuthService.isInRole($scope.current.user, newRole.value))
-                                allowEdit = false;
-                        }
-
-                        allRoles.push(newRole);
-                    };
-
-                    $scope.editRoles = false;
-                    if ($scope.current.user.id !== $scope.user.id)
-                        $scope.editRoles = allowEdit;
-                    
-                    deferred.resolve(allRoles);
-                    
-                    return deferred.promise;
-                },
-
-                setLocation: function () {
-                    var deferred = $q.defer();
-
-                    var breadcrumb = LocationService.getBreadcrumb();
-                    if ($scope.user) {
-                        breadcrumb = breadcrumb.slice(0, breadcrumb.length - 1);
-                        breadcrumb.push({
-                            name: $scope.user.username,
-                            active: true
-                        });
-                    }
-                    $scope.current.setBreadcrumb(breadcrumb);
-
-                    deferred.resolve(breadcrumb);
-
-                    return deferred.promise;
-                },
-
-                setSpy: function (time) {
-                    var deferred = $q.defer();
-
-                    ScrollSpyService.get(time || 0).then(function (response) {
-                        $scope.nav = response;
-                        deferred.resolve(response);
-                    });
-
-                    return deferred.promise;
-                },
-                
-                save: function () {
-                    var deferred = $q.defer();
-
-                    $scope.published = false;
-                    
-                    deferred.resolve();
-
-                    return deferred.promise;
-                },
-
-                validate: function () {
-                    var deferred = $q.defer();
-
-                    $scope.valid = true;
-                    $scope.$broadcast(CONTROL_EVENTS.initiateValidation);
-
-                    deferred.resolve($scope.valid);
-
-                    return deferred.promise;
-                },
-
-                publish: function () {
-                    var deferred = $q.defer();
-
-                    this.validate().then(function (validationResults) {
-                        if (!validationResults) {
-                            deferred.resolve(false);
-                        }
-                        else {
-                            $data.users.put($scope.id, $scope.user).then(function (result) {
-                                $scope.name = result.firstName + ' ' + result.lastName;
-                                deferred.resolve(true);
-                            }, function (error) {
-                                deferred.reject(error);
-                            });
-                        }
-                    });
-
-                    return deferred.promise;
-                }
-
-            };
-
-
-            $scope.back = function () {
-                $location.previous('/users');
-            };
-
-            $scope.discard = function () {
-                fn.set().catch(function (ex) {
-                    logger.error(ex);
+            if ($scope.isNew()) {
+                throw new Error('not implemented');
+            }
+            else {
+                $data.users.put($scope.id, data).then(function (result) {
+                    deferred.resolve(result);
+                }).catch(function (error) {
+                    deferred.reject(error);
                 });
-            };
+            }
 
-            $scope.publish = function () {
-                fn.publish().then(function (success) {
-                    $scope.published = success;
+            return deferred.promise;
+        };
 
-                    if (!success)
-                        $scope.scroll2error();
-                }, function (ex) {
-                    logger.error(ex);
-                });
-            };
+        $scope.init().catch(function (ex) {
+            logger.error(ex);
+        });
+    };
+    UserController.prototype = Object.create(jsnbt.FormControllerBase.prototype);
 
-            $scope.$watch('name', function (newValue, prevValue) {
-                fn.setLocation().catch(function (ex) {
-                    logger.error(ex);
-                });
-            });
-
-            $scope.$on(CONTROL_EVENTS.valueChanged, function (sender) {
-                sender.stopPropagation();
-
-                fn.save().then(function () {
-                    $scope.published = false;
-                }, function (ex) {
-                    logger.error(ex);
-                });
-            });
-
-            $scope.$on(CONTROL_EVENTS.valueIsValid, function (sender, value) {
-                sender.stopPropagation();
-
-                if (!value)
-                    $scope.valid = false;
-            });
-            
-
-            $timeout(function () {
-                fn.set().then(function () {
-                    fn.setRoles().then(function () {
-                        fn.setSpy(200).catch(function (spyEx) {
-                            logger.error(spyEx);
-                        });
-                    }, function (rolesEx) {
-                        logger.error(rolesEx);
-                    });
-                }, function (ex) {
-                    logger.error(ex);
-                });
-            }, 200);
-        }]);
+    angular.module("jsnbt")
+        .controller('UserController', ['$scope', '$routeParams', '$location', '$timeout', '$q', '$logger', '$data', '$jsnbt', 'ScrollSpyService', 'LocationService', 'AuthService', 'CONTROL_EVENTS', UserController]);
 })();

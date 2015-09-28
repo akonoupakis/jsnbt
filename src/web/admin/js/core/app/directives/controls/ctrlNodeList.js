@@ -163,7 +163,7 @@
                                     if (initiated)
                                         scope.valid = isValid();
 
-                                }, function (error) {
+                                }).catch(function (error) {
                                     throw error;
                                 });
                             }
@@ -203,7 +203,7 @@
                                     scope.valid = isValid();
 
                                 scope.changed();
-                            }, function (error) {
+                            }).catch(function (error) {
                                 throw error;
                             });
                         }
@@ -230,7 +230,7 @@
                                     scope.valid = isValid();
 
                                 scope.changed();
-                            }, function (error) {
+                            }).catch(function (error) {
                                 throw error;
                             });
                         }

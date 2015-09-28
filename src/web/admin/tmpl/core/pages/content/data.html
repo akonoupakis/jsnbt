@@ -1,38 +1,28 @@
-﻿<div class="container">
+﻿<div class="row title-container">
+    <div class="col-md-12">
+        <span ng-click="back()" class="glyphicon glyphicon-arrow-left back-button"></span>
+        <h1 class="title">data</h1>
+    </div>
+</div>
 
-    <section class="col-md-12">
-
-        <ctrl-breadcrumb ng-model="current.breadcrumb" ng-title="you are here:"></ctrl-breadcrumb>    
-
-        <div class="row title-container">
-            <div class="col-md-12">
-                <span ng-click="back()" class="glyphicon glyphicon-arrow-left back-button"></span>
-                <h1 class="title">data</h1>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
-                <ctrl-grid class="table-striped" ng-model="data" ng-fn="gridFn">
-                    <ctrl-grid-header>
-                        <ctrl-grid-header-column>name</ctrl-grid-header-column>
-                        <ctrl-grid-header-column></ctrl-grid-header-column>
-                    </ctrl-grid-header>
-                    <ctrl-grid-footer>
-                        <ctrl-grid-empty>no lists</ctrl-grid-empty>
-                    </ctrl-grid-footer>
-                    <ctrl-grid-body>
-                        <ctrl-grid-column>
-                            {{ row.name }}
-                        </ctrl-grid-column>
-                        <ctrl-grid-buttons-column>
-                            <button class="btn btn-default glyphicon glyphicon-circle-arrow-right" ng-click="fn.edit(row)" />
-                        </ctrl-grid-buttons-column>
-                    </ctrl-grid-body>
-                </ctrl-grid>
-            </div>
-        </div>
-
-    </section>
-
+<div class="row">
+    <div class="col-md-12">
+        <ctrl-grid class="table-striped" ng-model="data" ng-fn="gridFn">
+            <ctrl-grid-header>
+                <ctrl-grid-header-column>name</ctrl-grid-header-column>
+                <ctrl-grid-header-column></ctrl-grid-header-column>
+            </ctrl-grid-header>
+            <ctrl-grid-footer>
+                <ctrl-grid-empty>no lists</ctrl-grid-empty>
+            </ctrl-grid-footer>
+            <ctrl-grid-body>
+                <ctrl-grid-column>
+                    {{ row.name }}
+                </ctrl-grid-column>
+                <ctrl-grid-buttons-column>
+                    <button class="btn btn-default glyphicon glyphicon-circle-arrow-right" ng-click="fn.edit(row)" />
+                </ctrl-grid-buttons-column>
+            </ctrl-grid-body>
+        </ctrl-grid>
+    </div>
 </div>

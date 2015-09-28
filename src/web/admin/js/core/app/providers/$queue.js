@@ -31,7 +31,7 @@
                                     else {
                                         current[name].processing = false;
                                     }
-                                }, function (error) {
+                                }).catch(function (error) {
                                     current[name].processing = false;
                                     throw error;
                                 });

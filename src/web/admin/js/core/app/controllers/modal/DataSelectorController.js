@@ -20,7 +20,7 @@
                 list: $scope.list
             }, undefined, undefined, ($scope.mode === 'single' ? [$scope.selected] : $scope.selected)).then(function (response) {
                 $scope.data = response;
-            }, function (error) {
+            }).catch(function (error) {
                 throw error;
             });
 

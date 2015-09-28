@@ -4,202 +4,112 @@
     "use strict";
 
     jsnbt.SettingsControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, $fn, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
+        jsnbt.FormControllerBase.apply(this, $scope.getBaseArguments($scope));
 
         var logger = $logger.create('SettingsControllerBase');
-        
-        $scope.domain = $route.current.$$route.domain;
-        $scope.tmpl = $route.current.$$route.tmpl;
 
         $scope.settingsId = undefined;
         $scope.settings = {};
+        $scope.allSettings = {};
+        $scope.savedSettings = {};
 
-        $scope.valid = true;
-
-        $scope.published = true;
-        $scope.draft = false;
+        $scope.domains = [$scope.domain];
+        
+        $scope.setTitle('settings');
 
         $scope.load = function () {
             var deferred = $q.defer();
 
-            $data.settings.get({ domain: $scope.domain }).then(function (results) {
-                var domainSettings = _.first(_.filter(results, function (x) { return x.domain === $scope.domain; }));
-                
-                if (domainSettings) {
-                    $scope.set(domainSettings.id, domainSettings.data);
-                }
-                else {
-                    $scope.set(undefined, {});
-                }
+            $data.settings.get({ domain: { $in: $scope.domains } }).then(function (results) {
+                var response = {};
+                _.each($scope.domains, function (domain) {
+                    var domainSettings = _.find(results, function (x) { return x.domain === domain; });
+                    if (domainSettings) {
+                        response[domain] = domainSettings;
+                        $scope.savedSettings[domain] = true;
+                    }
+                    else {
+                        response[domain] = $data.create('settings', {
+                            domain: domain
+                        });
+                        $scope.savedSettings[domain] = false;
+                    }
+                });
+                deferred.resolve(response);
 
-                $scope.setValid(true);
-
-                $scope.setPublished(true);
-
-                deferred.resolve();
-
-            }, function (error) {
+            }).catch(function (error) {
                 deferred.reject(error);
             });
 
             return deferred.promise;
         }
 
-        $scope.set = function (id, data) {
-            $scope.settingsId = id;
-            $scope.settings = data;
+        $scope.set = function (settings) {
+            var deferred = $q.defer();
+
+            if (settings && settings[$scope.domain]) {
+                $scope.settingsId = settings[$scope.domain].id;
+                $scope.settings = settings[$scope.domain].data;
+            }
+
+            $scope.allSettings = settings;
+
+            $scope.setValid(true);
+            $scope.setPublished(true);
+
+            deferred.resolve($scope.allSettings);
+
+            return deferred.promise;
         };
 
         $scope.get = function () {
-            return $scope.settings;
-        };
+            var result = {};
 
-        $scope.setLocation = function () {
-            var breadcrumb = LocationService.getBreadcrumb();
-            $scope.current.setBreadcrumb(breadcrumb);
-        };
-
-        $scope.setSpy = function (time) {
-            ScrollSpyService.get(time || 0).then(function (response) {
-                $scope.nav = response;
+            _.each($scope.domains, function (domain) {
+                if ($scope.allSettings[domain])
+                    result[domain] = $scope.allSettings[domain];
             });
+
+            return result;
         };
 
-        $scope.setValid = function (value) {
-            $scope.valid = value;
-        };
-
-        $scope.isValid = function () {
-            return $scope.valid;
-        };
-
-        $scope.setPublished = function (value) {
-            $scope.published = value;
-            $scope.draft = !value;
-        };
-
-        $scope.setSpy = function (time) {
+        $scope.push = function (data) {
             var deferred = $q.defer();
 
-            ScrollSpyService.get(time || 0).then(function (response) {
-                $scope.nav = response;
-                deferred.resolve(response);
+            var settingKeys = _.keys($scope.allSettings);
+            var promises = _.map(settingKeys, function (domain) {
+                var setting = $scope.allSettings[domain];
+                if ($scope.savedSettings[domain]) {
+                    return $data.settings.put(setting.id, {
+                        data: setting.data
+                    });
+                }
+                else {
+                    return $data.settings.post({
+                        domain: setting.domain,
+                        data: setting.data
+                    });
+                }
             });
 
-            return deferred.promise;
-        };
-
-        $scope.validate = function () {
-            var deferred = $q.defer();
-
-            $scope.setValid(true);
-            $scope.$broadcast(CONTROL_EVENTS.initiateValidation);
-
-            deferred.resolve($scope.isValid());
-
-            return deferred.promise;
-        };
-
-        $scope.back = function () {
-            $location.previous($scope.current.breadcrumb[$scope.current.breadcrumb.length - 2].url);
-        };
-
-        $scope.discard = function () {
-            $scope.load().then(function (response) {
-
-            }, function (error) {
-                logger.error(ex);
-            });
-        };
-
-        $scope.publish = function () {
-
-            var publishFn = function () {
-                var deferred = $q.defer();
-
-                var saveSettings = function () {
-                    var deferredInternal = $q.defer();
-
-                    if ($scope.settingsId) {
-                        $data.settings.put($scope.settingsId, {
-                            data: $scope.settings
-                        }).then(function (result) {
-                            deferredInternal.resolve(true);
-                        }, function (error) {
-                            deferredInternal.reject(error);
-                        });
-                    }
-                    else {
-                        $data.settings.post({
-                            domain: $scope.domain,
-                            data: $scope.settings
-                        }).then(function (result) {
-                            $scope.set(result.id, result.data);
-                            deferredInternal.resolve(true);
-                        }, function (error) {
-                            deferredInternal.reject(error);
-                        });
-                    }
-
-                    return deferredInternal.promise;
+            $q.all(promises).then(function (results) {
+                
+                for (var domain in $scope.allSettings) {
+                    var setting = _.find(results, function (x) {
+                        return x.domain === domain;
+                    });
+                    $scope.allSettings[domain] = setting;
+                    $scope.savedSettings[domain] = true;
                 }
 
-                $scope.validate().then(function (validationResults) {
-                    if (!validationResults) {
-                        deferred.resolve(false);
-                    }
-                    else {
-                        saveSettings().then(function () {
-                            deferred.resolve(true);
-                        }, function (ex) {
-                            deferred.reject(ex);
-                        });
-                    }
-                });
-
-                return deferred.promise;
-            }
-
-            publishFn().then(function (success) {
-                $scope.published = success;
-
-                if (!success)
-                    $scope.scroll2error();
-            }, function (ex) {
-                throw ex;
-            });
-        };
-
-        $scope.$on(CONTROL_EVENTS.valueChanged, function (sender) {
-            sender.stopPropagation();
-
-            $scope.published = false;
-        });
-
-        $scope.$on(CONTROL_EVENTS.valueIsValid, function (sender, value) {
-            sender.stopPropagation();
-
-            if (!value)
-                $scope.valid = false;
-        });
-
-        $scope.init = function () {
-            var deferred = $q.defer();
-
-            $scope.load().then(function () {
-                $scope.setSpy().then(function () {
-                    deferred.resolve();
-                }, function (ex) {
-                    deferred.reject(ex);
-                });
-            }, function (ex) {
-                logger.error(ex);
-                deferred.reject(ex);
+                deferred.resolve($scope.allSettings);
+            }).catch(function (error) {
+                deferred.reject(error);
             });
 
             return deferred.promise;
         };
     };
+    jsnbt.SettingsControllerBase.prototype = Object.create(jsnbt.FormControllerBase.prototype);
 
-    angular.module("jsnbt")
-        .controller('SettingsControllerBase', ['$scope', '$rootScope', '$route', '$routeParams', '$location', '$logger', '$q', '$timeout', '$data', '$jsnbt', '$fn', 'LocationService', 'ScrollSpyService', 'AuthService', 'TreeNodeService', 'PagedDataService', 'ModalService', 'CONTROL_EVENTS', 'AUTH_EVENTS', 'DATA_EVENTS', 'ROUTE_EVENTS', jsnbt.SettingsControllerBase]);
 })();

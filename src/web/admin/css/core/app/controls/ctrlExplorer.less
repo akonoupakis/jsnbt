@@ -33,3 +33,25 @@
 .ctrl-explorer .explorer-controls {
     padding-bottom: 20px;
 }
+.ctrl-explorer .breadcrumb {
+    padding: 8px 15px 0px 15px;
+}
+
+.ctrl-explorer .breadcrumb .guide {
+    display: inline-block;
+}
+
+.ctrl-explorer .breadcrumb ol,
+.ctrl-explorer .breadcrumb ul {
+    display: inline-block;
+    padding: 0;
+}
+.ctrl-explorer .breadcrumb li {
+    display: inline-block;
+}
+
+.breadcrumb li + li:before {
+    padding: 0 5px;
+    color: #ccc;
+    content: "/\00a0";
+}

@@ -3,82 +3,75 @@
 (function () {
     "use strict";
 
-    angular.module("jsnbt")
-        .controller('TextsController', ['$scope', '$location', '$logger', '$q', '$data', 'PagedDataService', 'ModalService',
-            function ($scope, $location, $logger, $q, $data, PagedDataService, ModalService) {
-           
-            var logger = $logger.create('TextsController');
+    var TextsController = function ($scope, $location, $logger, $q, $data, PagedDataService, ModalService) {
+        jsnbt.ListControllerBase.apply(this, $scope.getBaseArguments($scope));
 
-            $scope.data = {};
-            
+        var logger = $logger.create('TextsController');
+        
+        $scope.load = function () {
+            var deferred = $q.defer();
 
-            var fn = {
-
-                load: function () {
-                    var deferred = $q.defer();
-
-                    PagedDataService.get(jsnbt.db.texts.get, {}).then(function (response) {
-                        deferred.resolve(response);
-                    }, function (error) {
-                        deferred.reject(error);
-                    });
-
-                    return deferred.promise;
-                },
-
-                delete: function (data) {
-                    var deferred = $q.defer();
-
-                    ModalService.open({
-                        title: 'are you sure you want to delete the key ' + data.key + '?',
-                        controller: 'DeletePromptController',
-                        template: 'tmpl/core/modals/deletePrompt.html'
-                    }).then(function (confirmed) {
-                        if (confirmed) {
-                            $data.texts.del(data.id).then(function (result) {
-                                deferred.resolve();
-                            }, function (ex) {
-                                deferred.reject(ex);
-                            });
-                        }
-                    });
-
-                    return deferred.promise;
+            PagedDataService.get(jsnbt.db.texts.get, {
+                $sort: {
+                    group: 1,
+                    key: 1
                 }
-
-            };
-
-
-            $scope.back = function () {
-                $location.previous('/content');
-            };
-            
-            $scope.create = function () {
-                $location.next('/content/texts/new');
-            };
-
-            $scope.gridFn = {
-
-                edit: function (text) {
-                    $location.next('/content/texts/' + text.id);
-                },
-
-                delete: function (text) {
-                    fn.delete(text).then(function () {
-                        $scope.data.items = _.filter($scope.data.items, function (x) { return x.id !== text.id; });
-                    }, function (ex) {
-                        logger.error(ex);
-                    });
-                }
-
-            };
-
-
-            fn.load().then(function (response) {
-                $scope.data = response;
-            }, function (ex) {
-                logger.error(ex);
+            }).then(function (response) {
+                deferred.resolve(response);
+            }).catch(function (error) {
+                deferred.reject(error);
             });
 
-        }]);
+            return deferred.promise;
+        };
+
+        $scope.canCreate = function () {
+            return true;
+        };
+
+        $scope.create = function () {
+            $location.next('/content/texts/new');
+        };
+
+        $scope.gridFn = {
+
+            canEdit: function (row) {
+                return true;
+            },
+
+            edit: function (row) {
+                $location.next('/content/texts/' + row.id);
+            },
+
+            canDelete: function (row) {
+                return true;
+            },
+
+            delete: function (row) {
+
+                ModalService.open({
+                    title: 'are you sure you want to delete the key ' + row.key + '?',
+                    controller: 'DeletePromptController',
+                    template: 'tmpl/core/modals/deletePrompt.html'
+                }).then(function (confirmed) {
+                    if (confirmed) {
+                        $data.texts.del(row.id).then(function () {
+                            $scope.remove(row);
+                        }, function (ex) {
+                            deferred.reject(ex);
+                        });
+                    }
+                });
+            }
+
+        };
+
+        $scope.init().catch(function (ex) {
+            logger.error(ex);
+        });
+    };
+    TextsController.prototype = Object.create(jsnbt.ListControllerBase.prototype);
+
+    angular.module("jsnbt")
+        .controller('TextsController', ['$scope', '$location', '$logger', '$q', '$data', 'PagedDataService', 'ModalService', TextsController]);
 })();
