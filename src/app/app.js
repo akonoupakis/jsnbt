@@ -97,6 +97,8 @@ exports.version = versionInfo.version;
 exports.languages = require('./data/store/languages.js');
 exports.countries = require('./data/store/countries.js');
 
+exports.root = root;
+
 exports.register = function (module) {
 
     var self = this;

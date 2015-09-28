@@ -1,4 +1,6 @@
 var md5 = require('MD5');
+var path = require('path');
+var fs = require('fs');
 var _ = require('underscore');
 _.str = require('underscore.string');
 
@@ -62,10 +64,22 @@ var Bundle = function (app) {
     var getScriptBundle = function (data) {
         var scripts = [];
 
+        appendScript = function (file) {
+            var filePath = app.root.getPath(path.join('www/public', file));
+
+            if (fs.existsSync(filePath)) {
+                var stats = fs.statSync(filePath);
+                scripts.push(file + '?r=' + stats.mtime.getTime());
+            }
+            else {
+                scripts.push(file);
+            }
+        }
+
         var addGroupScripts = function (group) {
             if (app.config.scripts[group] && _.isArray(app.config.scripts[group].items)) {
                 _.each(app.config.scripts[group].items, function (groupItem) {
-                    scripts.push(groupItem);
+                    appendScript(groupItem);
                 });
             }
         }
@@ -102,11 +116,12 @@ var Bundle = function (app) {
                         var hashKey = groupsScripts.join(';');
                         var hashedKey = md5(hashKey);
                         var hashedScript = '/tmp/scripts/' + hashedKey + '.js';
-                        scripts.push(hashedScript);
+
+                        appendScript(hashedScript);
                     }
                     else {
                         _.each(groupsScripts, function (gi) {
-                            scripts.push(gi);
+                            appendScript(gi);
                         });
                     }
                 }
@@ -198,10 +213,22 @@ var Bundle = function (app) {
     var getStyleBundle = function (data) {
         var styles = [];
 
+        appendStyle = function (file) {
+            var filePath = app.root.getPath(path.join('www/public', file));
+
+            if (fs.existsSync(filePath)) {
+                var stats = fs.statSync(filePath);
+                styles.push(file + '?r=' + stats.mtime.getTime());
+            }
+            else {
+                styles.push(file);
+            }
+        }
+
         var addGroupStyles = function (group) {
             if (app.config.styles[group] && _.isArray(app.config.styles[group].items)) {
                 _.each(app.config.styles[group].items, function (groupItem) {
-                    styles.push(groupItem);
+                    appendStyle(groupItem);
                 });
             }
         }
@@ -238,11 +265,11 @@ var Bundle = function (app) {
                         var hashKey = groupsStyles.join(';');
                         var hashedKey = md5(hashKey);
                         var hashedStyle = '/tmp/styles/' + hashedKey + '.css';
-                        styles.push(hashedStyle);
+                        appendStyle(hashedStyle);
                     }
                     else {
                         _.each(groupsStyles, function (gi) {
-                            styles.push(gi);
+                            appendStyle(gi);
                         });
                     }
                 }
