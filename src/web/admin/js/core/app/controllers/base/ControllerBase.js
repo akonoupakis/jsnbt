@@ -15,6 +15,7 @@
         $scope.languages = $scope.application.languages;
         $scope.language = $scope.application.localization.enabled ? ($scope.defaults.language ? $scope.defaults.language : _.first($scope.application.languages).code) : $scope.defaults.language;
         
+        $scope.breadcrumb = true;
         $scope.queue = {};
 
         $scope.enqueue = function (key, fn) {

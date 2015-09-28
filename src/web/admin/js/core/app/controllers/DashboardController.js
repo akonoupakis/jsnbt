@@ -6,6 +6,8 @@
     var DashboardController = function ($scope, $jsnbt) {
         jsnbt.ControllerBase.apply(this, $scope.getBaseArguments($scope));
 
+        $scope.breadcrumb = false;
+
         var injects = [];
         _.each($jsnbt.injects, function (inject) {
             if (inject.dashboard)
