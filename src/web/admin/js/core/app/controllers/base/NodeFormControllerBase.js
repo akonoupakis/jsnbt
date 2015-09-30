@@ -1066,9 +1066,8 @@
             var deferred = $q.defer();
 
             $scope.$watch('node.pointer.domain', function (newValue, prevValue) {
-                if (newValue !== undefined && prevValue !== undefined) {
+                if (newValue !== undefined && prevValue !== undefined && newValue !== prevValue) {
                     $scope.node.pointer.nodeId = '';
-                    $scope.setPublished(false);
                 }
             });
 

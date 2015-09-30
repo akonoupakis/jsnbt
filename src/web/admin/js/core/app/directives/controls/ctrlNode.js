@@ -60,12 +60,15 @@
 
                             if (valid) {
                                 if (scope.ngRequired) {
-                                    if (!scope.ngModel)
+                                    if (!scope.ngModel) {
                                         valid = false;
-                                    else if (!_.isString(scope.ngModel))
+                                    }
+                                    else if (!_.isString(scope.ngModel)) {
                                         valid = false;
-                                    else if (scope.ngModel === '')
+                                    }
+                                    else if (scope.ngModel === '') {
                                         valid = false;
+                                    }
                                 }
 
                                 if (scope.ngModel) {
@@ -73,7 +76,6 @@
                                         valid = false;
                                     else if (scope.wrong && scope.missing)
                                         valid = false;
-
                                 }
                             }
 
@@ -104,6 +106,14 @@
                                         if (initiated)
                                             scope.valid = isValid();
                                     });
+                                }
+                                else {
+                                    scope.value = '';
+                                    scope.wrong = false;
+                                    scope.missing = false;
+
+                                    if (initiated)
+                                        scope.valid = isValid();
                                 }
                             }
                             else {
