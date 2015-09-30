@@ -92,13 +92,13 @@
             <hr />
         </div>
 
-        <div id="page-content" data-scrollspy="content" ng-show="node.entity !== 'pointer'">
-            <div class="row" id="page-layout" data-scrollspy="layout" ng-show="entity.properties.layout">
-                <ctrl-select class="col-md-10" ng-model="values.layout" ng-disabled="!entity.properties.layout || node.layout.inherits" ng-required="true" ng-options="layouts" ng-default="true" ng-value-field="id" ng-name-field="name" ng-label="layout"></ctrl-select>
-                <ctrl-check class="col-md-2" ng-model="node.layout.inherits" ng-disabled="!entity.properties.layout" ng-label="inheritance"></ctrl-check>
-            </div>
+        <div class="row" id="page-layout" data-scrollspy="layout" ng-show="entity.properties.layout && domain == 'core'">
+            <ctrl-select class="col-md-10" ng-model="values.layout" ng-disabled="!entity.properties.layout || node.layout.inherits" ng-required="true" ng-options="layouts" ng-default="true" ng-value-field="id" ng-name-field="name" ng-label="layout"></ctrl-select>
+            <ctrl-check class="col-md-2" ng-model="node.layout.inherits" ng-disabled="!entity.properties.layout" ng-label="inheritance"></ctrl-check>
+        </div>
+        <hr ng-show="entity.properties.layout && domain == 'core'" />
 
-            <hr ng-show="entity.properties.layout" />
+        <div id="page-content" data-scrollspy="content" ng-show="node.entity !== 'pointer'">
 
             <div class="row" id="page-template" data-scrollspy="template" ng-show="entity.properties.template">
                 <ctrl-select class="col-md-12" ng-model="node.template" ng-disabled="!entity.properties.template" ng-required="true" ng-options="templates[node.entity]" ng-default="true" ng-value-field="id" ng-name-field="name" ng-label="template"></ctrl-select>

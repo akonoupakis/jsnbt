@@ -286,20 +286,20 @@
                     var nodeIds = parentResult.hierarchy;
 
                     if (nodeIds.length > 0) {
+
+                        var languageCodes = $scope.application.localization.enabled ? _.pluck($scope.application.languages, 'code') : [$scope.defaults.language];
+
                         $data.nodes.get({ id: { $in: nodeIds } }).then(function (results) {
                             var newSeoNodes = [];
-
-                            $(nodeIds).each(function (n, nodeId) {
+                            _.each(nodeIds, function (nodeId) {
                                 var result = _.find(results, function (x) { return x.id === nodeId; });
                                 if (result) {
                                     var newSeoNode = {};
-
-                                    $($scope.application.localization.enabled ? $scope.application.languages : ['en']).each(function (l, lang) {
-
-                                        if (result.seo[lang.code])
-                                            newSeoNode[lang.code] = result.seo[lang.code] || 'undefined';
+                                    _.each(languageCodes, function (lang) {
+                                        if (result.seo[lang])
+                                            newSeoNode[lang] = result.seo[lang] || 'undefined';
                                         else
-                                            newSeoNode[lang.code] = 'undefined'
+                                            newSeoNode[lang] = 'undefined'
                                     });
 
                                     newSeoNodes.push(newSeoNode);
