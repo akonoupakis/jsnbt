@@ -42,12 +42,20 @@
             "type": "string",
             "required": false
         },
-		"layout": {
+		"layouts": {
             "type": "object",
             "required": false,
 			"properties": {
 				"inherits": { "type": "boolean", "required": true },
-				"value": { "type": "string", "required": true }
+				"value": { 
+					"type": "array", 
+					"required": true,
+					"items:": {
+						"type": "string",
+						"required": true
+					},
+					"uniqueItems":  true				
+				 }
 			},
 			"inheritable": true
         },

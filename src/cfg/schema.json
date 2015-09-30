@@ -99,7 +99,7 @@
 							"name": { "type": "boolean" },
 							"parent": { "type": "boolean" },
 							"template": { "type": "boolean" },
-							"layout": { "type": "boolean" },
+							"layouts": { "type": "boolean" },
 							"seo": { "type": "boolean" },
 							"permissions": { "type": "boolean" },
 							"robots": { "type": "boolean" },

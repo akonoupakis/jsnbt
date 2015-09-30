@@ -102,7 +102,7 @@ var Context = function (server, req, res) {
 
         node: undefined,
         pointer: undefined,
-        layout: '',
+        layouts: [],
 
         meta: {
             title: '',

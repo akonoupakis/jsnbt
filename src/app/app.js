@@ -207,7 +207,7 @@ exports.register = function (module) {
             parent: true,
             template: true,
             active: true,
-            layout: true,
+            layouts: true,
             seo: true,
             meta: true,
             permissions: true,

@@ -72,7 +72,7 @@ validate({
             type: 'string',
             enum: _.pluck(server.app.config.routes, 'id')
         },
-        layout: {
+        layouts: {
             type: 'object',
             properties: {
                 value: {

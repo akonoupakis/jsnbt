@@ -101,6 +101,7 @@ module.exports = [{
         '/admin/js/core/app/directives/controls/ctrlPassword.js',
         '/admin/js/core/app/directives/controls/ctrlRegistration.js',
         '/admin/js/core/app/directives/controls/ctrlSelect.js',
+        '/admin/js/core/app/directives/controls/ctrlSelectList.js',
         '/admin/js/core/app/directives/controls/ctrlText.js',
         '/admin/js/core/app/directives/controls/ctrlTextArea.js',
         '/admin/js/core/app/directives/controls/ctrlNumeric.js',

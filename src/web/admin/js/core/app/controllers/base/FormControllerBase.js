@@ -215,6 +215,8 @@
             $scope.run('validating').then(function () {
                 $scope.validate().then(function (validationResults) {
                     $scope.run('validated', [validationResults]).then(function () {
+                        //console.log('valid', validationResults);
+                        //validationResults = false;
                         if (validationResults) {
                             var item = $scope.get();
                             $scope.run('publishing', [item]).then(function () {

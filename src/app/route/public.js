@@ -19,7 +19,7 @@ var PublicRouter = function (server) {
             ctx.node = resolved.page || {};
             ctx.pointer = resolved.pointer || {};
             ctx.inherited = inherited;
-            ctx.layout = ctx.inherited.layout || '';
+            ctx.layouts = ctx.inherited.layouts || [];
             ctx.language = server.app.localization.enabled ? resolved.language || server.app.localization.locale : server.app.localization.locale;
             ctx.template = resolved.template || '';
 

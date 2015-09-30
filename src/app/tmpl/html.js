@@ -29,8 +29,8 @@ var Parser = function (server) {
             name: 'generator',
             content: 'jsnbt content management'
         }, {
-            name: 'layout',
-            content: ctx.layout
+            name: 'layouts',
+            content: ctx.layouts
         }, {
             name: 'page',
             content: (ctx.node || {}).id

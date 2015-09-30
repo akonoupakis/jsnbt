@@ -37,13 +37,13 @@
         $scope.values = {
             roles: [],
             robots: [],
-            layout: '',
+            layouts: [],
             ssl: false
         };
         $scope.draftValues = {
             roles: [],
             robots: [],
-            layout: '',
+            layouts: [],
             ssl: false
         };
 
@@ -113,16 +113,16 @@
         $scope.setSelectedLayout = function () {
             var deferred = $q.defer();
 
-            if ($scope.node.layout.inherits) {
-                $scope.draftValues.layout = $scope.values.layout;
+            if ($scope.node.layouts.inherits) {
+                $scope.draftValues.layouts = $scope.values.layouts;
 
-                var layout = '';
+                var layouts = [];
 
                 $($scope.node.hierarchy).each(function (i, item) {
                     var matchedNode = _.first(_.filter($scope.nodes, function (x) { return x.id === item; }));
                     if (matchedNode) {
-                        if (!matchedNode.layout.inherits) {
-                            layout = matchedNode.layout.value;
+                        if (!matchedNode.layouts.inherits) {
+                            layouts = matchedNode.layouts.value;
                         }
                     }
                     else {
@@ -130,13 +130,13 @@
                     }
                 });
 
-                $scope.values.layout = layout;
-                deferred.resolve(layout);
+                $scope.values.layouts = layouts;
+                deferred.resolve(layouts);
             }
             else {
-                var layout = $scope.draftValues.layout;
-                $scope.values.layout = layout;
-                deferred.resolve($scope.values.layout);
+                var layouts = $scope.draftValues.layouts;
+                $scope.values.layouts = layouts;
+                deferred.resolve($scope.values.layouts);
             }
 
             return deferred.promise;
@@ -755,8 +755,8 @@
             var deferred = $q.defer();
 
             if (!$scope.isNew()) {
-                $scope.values.layout = node.layout.value || '';
-                $scope.draftValues.layout = node.layout.value || '';
+                $scope.values.layouts = node.layouts.value || [];
+                $scope.draftValues.layouts = node.layouts.value || [];
             }
 
             deferred.resolve();
@@ -926,10 +926,10 @@
         $scope.enqueue('publishing', function (node) {
             var deferred = $q.defer();
 
-            if (!node.layout)
-                node.layout = {};
+            if (!node.layouts)
+                node.layouts = {};
 
-            node.layout.value = !node.layout.inherits ? $scope.values.layout : '';
+            node.layouts.value = !node.layouts.inherits ? $scope.values.layouts : [];
 
             deferred.resolve();
 
@@ -1079,7 +1079,7 @@
         $scope.enqueue('watch', function () {
             var deferred = $q.defer();
 
-            $scope.$watch('node.layout.inherits', function (newValue, prevValue) {
+            $scope.$watch('node.layouts.inherits', function (newValue, prevValue) {
                 if (newValue !== undefined && prevValue !== undefined) {
                     if (newValue === true) {
                         $scope.setHierarchyNodes($scope.node).then(function () {

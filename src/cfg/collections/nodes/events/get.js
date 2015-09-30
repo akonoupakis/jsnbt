@@ -20,7 +20,7 @@ if (!internal) {
             hide('robots');
             hide('template');
             hide('meta');
-            hide('layout');
+            hide('layouts');
 
             hide('createdOn');
             hide('modifiedOn');
