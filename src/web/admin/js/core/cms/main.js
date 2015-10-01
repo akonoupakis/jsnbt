@@ -4,42 +4,7 @@
 
     "use strict";
 
-    var modules = [];
-    modules.push('ngRoute');
-    modules.push('ngAnimate');
-    modules.push('ngSanitize');
-    modules.push('mgcrea.ngStrap');
-    modules.push('ui.bootstrap');
-    modules.push('ui.sortable');
-    modules.push('infinite-scroll');
-    modules.push('flow');
-    modules.push('angular-redactor');
-
-    for (var moduleDomain in jsnbt.modules) {
-        if (jsnbt.modules[moduleDomain].domain !== 'public' && jsnbt.modules[moduleDomain].name)
-            modules.push(jsnbt.modules[moduleDomain].name);
-    }
-    
-    for (var entityName in jsnbt.entities) {
-        var entity = jsnbt.entities[entityName];
-
-        entity.editable = true;
-        entity.viewable = false;
-        entity.deletable = true;
-        entity.parentable = true;
-
-        entity.getCreateUrl = function (node) {
-            return '/content/nodes/new' + (node ? '-' + node.id : '');
-        };
-        entity.getEditUrl = function (node) {
-            return '/content/nodes/' + node.id
-        };
-        entity.getViewUrl = function (node) {
-            throw new Error('na');
-        };
-    }
-    
-    angular.module('jsnbt', modules)
+    angular.module('jsnbt')
     .config(['$routeProvider', '$jsnbtProvider', 'flowFactoryProvider', function ($routeProvider, $jsnbtProvider, flowFactoryProvider) {
     
         $jsnbtProvider.setSettings(jsnbt);
