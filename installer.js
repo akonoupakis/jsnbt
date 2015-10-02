@@ -1,8 +1,26 @@
 var fs = require('fs-extra');
+var path = require('path');
 var server = require('server-root');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
+
+var copyModule = function (sourcePath, targetPath) {
+    var packageInfoPath = path.join(sourcePath, 'package.json');
+    if (fs.existsSync(packageInfoPath)) {
+        var folderPath = path.dirname(packageInfoPath);
+        var packInfo = require(packageInfoPath);
+        var modulePaths = _.map(packInfo.files, function (x) {
+            return _.str.rtrim(x, '*');
+        });
+        
+        modulePaths.push('package.json');
+
+        _.each(modulePaths, function (modulePath) {
+            fs.copySync(path.join(folderPath, modulePath), path.join(targetPath, modulePath));
+        });
+    }
+}
 
 module.exports = {
     npm: {
@@ -14,12 +32,15 @@ module.exports = {
             if (!fs.lstatSync(server.getPath('npm/' + name)).isDirectory())
                 throw new Error('npm module not a directory: ' + name);
 
+            if (!fs.lstatSync(server.getPath('npm/' + name + '/package.json')).isFile())
+                throw new Error('npm module does not have a package.json file: ' + name);
+
             if (fs.existsSync(server.getPath('node_modules/' + name)))
                 if (force === true)
                     fs.deleteSync(server.getPath('node_modules/' + name));
 
-            if (!fs.existsSync(server.getPath('node_modules/' + name)))
-                fs.copySync(server.getPath('npm/' + name), server.getPath('node_modules/' + name));
+            if (!fs.existsSync(server.getPath('node_modules/' + name))) 
+                copyModule(server.getPath('npm/' + name), server.getPath('node_modules/' + name));
 
             this.pack(name, force);
         },
