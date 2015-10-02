@@ -82,7 +82,10 @@
                         scope.$watch('ngModel', function (newValue, prevValue) {
                             build();
 
-                            childScope.model = newValue;
+                            if (newValue === undefined)
+                                scope.ngModel = {};
+
+                            childScope.model = scope.ngModel;
                         });
 
                         scope.$watch('ngDisabled', function (newValue, prevValue) {
