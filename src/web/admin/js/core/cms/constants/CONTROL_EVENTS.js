@@ -7,6 +7,8 @@
         .constant('CONTROL_EVENTS', {
             valueChanged: 'control-value-changed',
             initiateValidation: 'control-initiate-validation',
+            validate: 'control-validate',
+            clearValidation: 'control-clear-validation',
             valueIsValid: 'control-value-valid',
             valueRequested: 'control-value-requested',
             valueSubmitted: 'control-value-submitted',

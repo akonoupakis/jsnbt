@@ -4,7 +4,33 @@
 
     "use strict";
 
-    angular.module('jsnbt')
+    var modules = [];
+    modules.push('ngRoute');
+    modules.push('ngAnimate');
+    modules.push('ngSanitize');
+    modules.push('mgcrea.ngStrap');
+    modules.push('ui.bootstrap');
+    modules.push('ui.sortable');
+    modules.push('infinite-scroll');
+    modules.push('flow');
+    modules.push('angular-redactor');
+
+    for (var moduleDomain in jsnbt.modules) {
+        if (jsnbt.modules[moduleDomain].domain !== 'public' && jsnbt.modules[moduleDomain].name)
+            modules.push(jsnbt.modules[moduleDomain].name);
+    }
+    
+    jsnbt.TEMPLATE_BASE = {
+        base: 'tmpl/core/base/base.html',
+        list: 'tmpl/core/base/list.html',
+        tree: 'tmpl/core/base/list.html',
+        form: 'tmpl/core/base/form.html',
+        dataForm: 'tmpl/core/base/dataForm.html',
+        nodeForm: 'tmpl/core/base/nodeForm.html',
+        settings: 'tmpl/core/base/settings.html'
+    };
+
+    angular.module('jsnbt', modules)
     .config(['$routeProvider', '$jsnbtProvider', 'flowFactoryProvider', function ($routeProvider, $jsnbtProvider, flowFactoryProvider) {
     
         $jsnbtProvider.setSettings(jsnbt);
@@ -92,7 +118,6 @@
         router.when('/content/data/:list/:id', function (x) {
             x.section('data');
             x.baseTemplate(TEMPLATE_BASE.dataForm);
-            x.template('tmpl/core/pages/content/list-entry.html');
             x.controller('DataListItemController');
         });
            

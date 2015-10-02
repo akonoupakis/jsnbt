@@ -1,5 +1,5 @@
 ﻿<div class="row title-container">
-    <div class="col-md-12">
+    <div class="col-sm-12">
         <span ng-click="back()" class="glyphicon glyphicon-arrow-left back-button"></span>
         <h1 class="title">{{ title }}</h1>
         <div class="buttons">
@@ -13,8 +13,8 @@
 
 <div id="page-text-key" data-scrollspy="key">
     <div class="row">
-        <ctrl-text class="col-md-6" ng-model="text.group" ng-validate="validateKey" ng-valid="validation.key" ng-characters="abcdefghijklmnopqrstuvwxyz_" ng-label="group"></ctrl-text>
-        <ctrl-text class="col-md-6" ng-model="text.key" ng-required="true" ng-validate="validateKey" ng-valid="validation.key" ng-characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_" ng-label="key"></ctrl-text>                
+        <ctrl-text class="col-sm-6" ng-model="text.group" ng-validate="validateKey" ng-valid="validation.key" ng-characters="abcdefghijklmnopqrstuvwxyz_" ng-label="group"></ctrl-text>
+        <ctrl-text class="col-sm-6" ng-model="text.key" ng-required="true" ng-validate="validateKey" ng-valid="validation.key" ng-characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_" ng-label="key"></ctrl-text>                
     </div>
     <span class="row-validator" ng-show="!validation.key">combination of group and key already exists</span>
 </div>
@@ -23,7 +23,7 @@
 
 <div id="page-text-value" data-scrollspy="value">
     <div ng-repeat="language in languages" class="row" id="page-text-value-{{language.code}}" data-scrollspy="{{language.name}}">
-        <ctrl-text-area class="col-md-12" ng-model="text.value[language.code]" ng-validating="active[language.code]" ng-required="true" ng-label="{{application.localization.enabled ? language.name : 'value'}}"></ctrl-text-area>
+        <ctrl-text-area class="col-sm-12" ng-model="text.value[language.code]" ng-validating="active[language.code]" ng-required="true" ng-label="{{application.localization.enabled ? language.name : 'value'}}"></ctrl-text-area>
     </div>
 </div>
 

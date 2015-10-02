@@ -119,11 +119,17 @@
             $scope.draft = !value;
         };
 
+        $scope.languageChanged = function (lang) {
+            $scope.language = lang;
+        }
+
         $scope.validate = function () {
             var deferred = $q.defer();
 
             $scope.setValid(true);
             $scope.$broadcast(CONTROL_EVENTS.initiateValidation);
+            
+            var initialLanguage = $scope.language;
 
             if ($scope.isValid()) {
                 if ($scope.localized) {
@@ -154,8 +160,7 @@
                                 checkLanguage(lang, next);
                             }
                             else {
-                                $scope.language = currentLanguage;
-
+                                $scope.language = initialLanguage;
                                 deferred.resolve(true);
                             }
                         };
@@ -164,6 +169,7 @@
                         checkLanguage(first, next);
                     }
                     else {
+                        $scope.language = initialLanguage;
                         deferred.resolve(true);
                     }
                 }
@@ -183,11 +189,17 @@
                 $scope.load().then(function (response) {
                     $scope.run('loaded', [response]).then(function () {
                         $scope.run('setting', [response]).then(function () {
-                            $scope.set(response);
-                            $scope.run('set', [response]).then(function () {
-                                $scope.setSpy(200);
-                            }).catch(function (setError) {
-                                logger.error(setError);
+                            $scope.set(response).then(function (setted) {
+                                $scope.run('set', [response]).then(function () {
+                                    $scope.setValid(true);
+                                    $scope.$broadcast(CONTROL_EVENTS.clearValidation);
+
+                                    $scope.setSpy(200);
+                                }).catch(function (setError) {
+                                    logger.error(setError);
+                                });
+                            }).catch(function (settedError) {
+                                logger.error(settedError);
                             });
                         }).catch(function (settingError) {
                             logger.error(settingError);
@@ -215,8 +227,6 @@
             $scope.run('validating').then(function () {
                 $scope.validate().then(function (validationResults) {
                     $scope.run('validated', [validationResults]).then(function () {
-                        //console.log('valid', validationResults);
-                        //validationResults = false;
                         if (validationResults) {
                             var item = $scope.get();
                             $scope.run('publishing', [item]).then(function () {

@@ -1,5 +1,5 @@
 ﻿<div class="row title-container">
-    <div class="col-md-12">
+    <div class="col-sm-12">
         <span ng-click="back()" class="glyphicon glyphicon-arrow-left back-button"></span>
         <h1 class="title">{{ title }}</h1>
         <div class="buttons">
@@ -12,12 +12,7 @@
 <hr />
 
 <div class="row" id="page-language" data-scrollspy="language" ng-show="localized">
-    <div class="col-md-12 form-group">
-        <label class="control-label" for="ddlLanguage">language</label>
-        <select class="form-control" id="ddlLanguage" ng-model="language">
-            <option ng-repeat="item in languages" value="{{item.code}}" ng-selected="item.code === language">{{item.name}}</option>
-        </select>
-    </div>
+    <ctrl-select class="col-sm-12" ng-model="language" ng-label="language" ng-options="languages" ng-value-field="code" ng-text-field="name" ng-change-fn="languageChanged"></ctrl-select>
 </div>
 
 <hr ng-show="localized" />

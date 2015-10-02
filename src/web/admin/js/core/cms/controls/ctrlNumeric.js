@@ -21,7 +21,8 @@
                     ngValid: '=',
                     ngAutoFocus: '=',
                     ngMax: '=',
-                    ngMin: '='
+                    ngMin: '=',
+                    ngChangeFn: '='
                 },
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl');
@@ -33,9 +34,16 @@
                     var initiated = false;
 
                     scope.changed = function () {
-                        $timeout(function () {
-                           scope.$emit(CONTROL_EVENTS.valueChanged, scope.ngModel);
-                        }, 50);
+                        if (scope.ngChangeFn) {
+                            if (typeof (scope.ngChangeFn) === 'function') {
+                                scope.ngChangeFn(scope.ngModel);
+                            }
+                        }
+                        else {
+                            $timeout(function () {
+                                scope.$emit(CONTROL_EVENTS.valueChanged, scope.ngModel);
+                            }, 50);
+                        }
                     };
 
                     scope.$watch('ngValid', function (newValue) {
@@ -58,7 +66,7 @@
                         var valid = true;
 
                         var validating = scope.ngValidating !== false;
-                        if (validating && !scope.ngDisabled) {
+                        if (validating && !scope.ngDisabled && element.is(':visible')) {
                             if (scope.ngRequired) {
                                 valid = !!scope.ngModel && scope.ngModel !== '';
                             }
@@ -85,6 +93,18 @@
                         initiated = true;
                         scope.valid = isValid();
                         scope.$emit(CONTROL_EVENTS.valueIsValid, scope.valid);
+                    });
+
+                    scope.$on(CONTROL_EVENTS.validate, function (sender) {
+                        if (initiated) {
+                            scope.valid = isValid();
+                        }
+                        scope.$emit(CONTROL_EVENTS.valueIsValid, scope.valid);
+                    });
+
+                    scope.$on(CONTROL_EVENTS.clearValidation, function (sender) {
+                        initiated = false;
+                        scope.valid = true;
                     });
 
                     if (scope.ngAutoFocus === true) {

@@ -21,7 +21,8 @@
                     ngNameField: '@',
                     ngValueField: '@',
                     ngDisabledField: '@',
-                    ngDescriptionField: '@'
+                    ngDescriptionField: '@',
+                    ngChangeFn: '='
                 },
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl');
@@ -63,7 +64,16 @@
                                             scope.valid = isValid();
 
                                             $timeout(function () {
-                                                scope.$emit(CONTROL_EVENTS.valueChanged, scope.ngModel);
+                                                if (scope.ngChangeFn) {
+                                                    if (typeof (scope.ngChangeFn) === 'function') {
+                                                        scope.ngChangeFn(scope.ngModel);
+                                                    }
+                                                }
+                                                else {
+                                                    $timeout(function () {
+                                                        scope.$emit(CONTROL_EVENTS.valueChanged, scope.ngModel);
+                                                    }, 50);
+                                                }
                                             }, 50);
                                         }
                                     });
@@ -131,7 +141,7 @@
                         var valid = true;
 
                         var validating = scope.ngValidating !== false;
-                        if (validating && scope.enabled) {
+                        if (validating && scope.enabled && element.is(':visible')) {
                             if (scope.ngRequired) {
                                 valid = (scope.ngModel || []).length > 0;
                             }
@@ -143,7 +153,21 @@
                     scope.$on(CONTROL_EVENTS.initiateValidation, function (sender) {
                         initiated = true;
                         scope.valid = isValid();
+
                         scope.$emit(CONTROL_EVENTS.valueIsValid, scope.valid);
+                    });
+
+                    scope.$on(CONTROL_EVENTS.validate, function (sender) {
+                        if (initiated) {
+                            scope.valid = isValid();
+                        }
+
+                        scope.$emit(CONTROL_EVENTS.valueIsValid, scope.valid);
+                    });
+
+                    scope.$on(CONTROL_EVENTS.clearValidation, function (sender) {
+                        initiated = false;
+                        scope.valid = true;
                     });
 
                     if (scope.ngModel)
