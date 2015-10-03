@@ -8,6 +8,10 @@
 
         var logger = $logger.create('FilesController');
 
+        $scope.init().catch(function (ex) {
+            logger.error(ex);
+        });
+
     };
     FilesController.prototype = Object.create(jsnbt.controllers.ControllerBase.prototype);
 

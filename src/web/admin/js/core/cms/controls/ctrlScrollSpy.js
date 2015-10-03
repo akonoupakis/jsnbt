@@ -4,7 +4,7 @@
     "use strict";
     angular.scrollspy = false;
     angular.module('jsnbt')
-        .directive('scrollspy', [function () {
+        .directive('ctrlScrollSpy', [function () {
 
             return {
                 restrict: 'E',
@@ -41,27 +41,25 @@
                                 if (!activeId)
                                     activeId = element.find('li:first').data('target');
 
-                                //setTimeout(function () {
-                                    if (activeId) {
-                                        var matched = element.find('li[data-target="' + activeId + '"]');
-                                        if (matched.length === 1)
-                                            matched.addClass('active');
-                                        else
-                                            element.find('li:first').addClass('active');
-                                    }
+                                if (activeId) {
+                                    var matched = element.find('li[data-target="' + activeId + '"]');
+                                    if (matched.length === 1)
+                                        matched.addClass('active');
+                                    else
+                                        element.find('li:first').addClass('active');
+                                }
 
-                                    element.find('li a').click(function (e) {
-                                        e.preventDefault();
+                                element.find('li a').click(function (e) {
+                                    e.preventDefault();
 
-                                        $('body').scrollTo($(this).attr('href'), { offset: -150, duration: 400 });
-                                    });
-                            //    }, 50);
+                                    $('body').scrollTo($(this).attr('href'), { offset: -150, duration: 400 });
+                                });
 
                             });
                         }
                     });
                 },
-                templateUrl: 'tmpl/core/common/scrollspy.html'
+                templateUrl: 'tmpl/core/controls/ctrlScrollSpy.html'
             };
 
         }]);

@@ -116,6 +116,7 @@ module.exports = [{
         '/admin/js/core/cms/controls/ctrlBreadcrumb.js',
         '/admin/js/core/cms/controls/ctrlExplorer.js',        
         '/admin/js/core/cms/controls/ctrlImageCropper.js',
+        '/admin/js/core/cms/controls/ctrlScrollSpy.js',
         
         '/admin/js/core/cms/panels/pnlLogin.js',
         '/admin/js/core/cms/panels/pnlRegistration.js',
@@ -139,7 +140,6 @@ module.exports = [{
         '/admin/js/core/cms/utils/errSrc.js',
         '/admin/js/core/cms/utils/lkRepeat.js',
         '/admin/js/core/cms/utils/modal.js',
-        '/admin/js/core/cms/utils/scrollspy.js',
 
         '/admin/js/init.js'
     ]

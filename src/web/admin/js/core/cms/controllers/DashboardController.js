@@ -3,8 +3,10 @@
 (function () {
     "use strict";
 
-    var DashboardController = function ($scope, $rootScope, $jsnbt) {
+    var DashboardController = function ($scope, $rootScope, $jsnbt, $logger) {
         jsnbt.controllers.ControllerBase.apply(this, $rootScope.getBaseArguments($scope));
+
+        var logger = $logger.create('DashboardController');
 
         $scope.breadcrumb = false;
 
@@ -15,9 +17,13 @@
         });
         $scope.injects = injects;
 
+        $scope.init().catch(function (ex) {
+            logger.error(ex);
+        });
+
     };
     DashboardController.prototype = Object.create(jsnbt.controllers.ControllerBase.prototype);
 
     angular.module("jsnbt")
-        .controller('DashboardController', ['$scope', '$rootScope', '$jsnbt', DashboardController]);
+        .controller('DashboardController', ['$scope', '$rootScope', '$jsnbt', '$logger', DashboardController]);
 })();

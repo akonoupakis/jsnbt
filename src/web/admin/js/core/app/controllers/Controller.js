@@ -62,68 +62,64 @@
                     $scope.current.breadcrumb.items = value;
                 };
 
-                var fn = {
+                $scope.setDefaultLanguages = function () {
+                    var deferred = $q.defer();
 
-                    setDefaultLanguages: function () {
-                        var deferred = $q.defer();
+                    var results = $jsnbt.languages;
 
-                        var results = $jsnbt.languages;
+                    $scope.defaults.languages = results;
 
-                        $scope.defaults.languages = results;
+                    deferred.resolve(results);
 
-                        deferred.resolve(results);
+                    return deferred.promise;
+                };
 
-                        return deferred.promise;
-                    },
+                $scope.setApplicationLanguages = function () {
+                    var deferred = $q.defer();
 
-                    setApplicationLanguages: function () {
-                        var deferred = $q.defer();
+                    $data.languages.get().then(function (results) {
 
-                        $data.languages.get().then(function (results) {
+                        var languages = _.sortBy(results, 'name');
 
-                            var languages = _.sortBy(results, 'name');
+                        $scope.application.languages = languages;
 
-                            $scope.application.languages = languages;
+                        deferred.resolve(languages);
 
-                            deferred.resolve(languages);
+                    }).catch(function (error) {
+                        deferred.reject(error);
+                    });
+
+                    return deferred.promise;
+                };
+
+                $scope.setDefaultLanguage = function () {
+                    var deferred = $q.defer();
+
+                    if (!$jsnbt.localization.enabled) {
+                        $scope.defaults.language = $jsnbt.localization.locale;
+                        deferred.resolve($scope.defaults.language);
+                    }
+                    else {
+                        $data.languages.get({ active: true, 'default': true, $limit: 1 }).then(function (results) {
+                            var defaultLanguage = _.first(results);
+                            var defaultLangCode = defaultLanguage ? defaultLanguage.code : '';
+                            if (_.filter($scope.application.languages, function (x) { return x.code === defaultLangCode; }).length === 0) {
+                                var firstLanguage = _.first($scope.application.languages);
+                                if (firstLanguage) {
+                                    defaultLangCode = firstLanguage.code;
+                                }
+                            }
+
+                            $scope.defaults.language = defaultLangCode;
+
+                            deferred.resolve(defaultLangCode);
 
                         }).catch(function (error) {
                             deferred.reject(error);
                         });
-
-                        return deferred.promise;
-                    },
-
-                    setDefaultLanguage: function () {
-                        var deferred = $q.defer();
-
-                        if (!$jsnbt.localization.enabled) {
-                            $scope.defaults.language = $jsnbt.localization.locale;
-                            deferred.resolve($scope.defaults.language);
-                        }
-                        else {
-                            $data.languages.get({ active: true, 'default': true, $limit: 1 }).then(function (results) {
-                                var defaultLanguage = _.first(results);
-                                var defaultLangCode = defaultLanguage ? defaultLanguage.code : '';
-                                if (_.filter($scope.application.languages, function (x) { return x.code === defaultLangCode; }).length === 0) {
-                                    var firstLanguage = _.first($scope.application.languages);
-                                    if (firstLanguage) {
-                                        defaultLangCode = firstLanguage.code;
-                                    }
-                                }
-
-                                $scope.defaults.language = defaultLangCode;
-
-                                deferred.resolve(defaultLangCode);
-
-                            }).catch(function (error) {
-                                deferred.reject(error);
-                            });
-                        }
-
-                        return deferred.promise;
                     }
 
+                    return deferred.promise;
                 };
 
 
@@ -138,7 +134,7 @@
                 });
 
                 jsnbt.db.on(DATA_EVENTS.languageCreated, function (language) {
-                    fn.setApplicationLanguages().then(function () {
+                    $scope.setApplicationLanguages().then(function () {
                         if (language.default)
                             $scope.defaults.language = language.code;
                     });
@@ -160,7 +156,7 @@
                 });
 
                 jsnbt.db.on(DATA_EVENTS.languageDeleted, function (language) {
-                    fn.setApplicationLanguages();
+                    $scope.setApplicationLanguages();
                 });
 
 
@@ -169,9 +165,9 @@
                     var deferred = $q.defer();
 
                     if (!initiated) {
-                        fn.setDefaultLanguages().then(function () {
-                            fn.setApplicationLanguages().then(function () {
-                                fn.setDefaultLanguage().then(function () {
+                        $scope.setDefaultLanguages().then(function () {
+                            $scope.setApplicationLanguages().then(function () {
+                                $scope.setDefaultLanguage().then(function () {
                                     initiated = true;
                                     deferred.resolve();
                                 }, function (dlError) {
