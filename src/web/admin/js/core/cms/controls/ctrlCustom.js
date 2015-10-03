@@ -29,77 +29,33 @@
                         scope.id = Math.random().toString().replace('.', '');
                         scope.valid = true;
 
-                        var initiated = false;
-
-                        var childScope = scope.$new();
-
-                        var built = false;
-                        var build = function () {
-                            var container = $('#cstm' + scope.id, lElem);
-
-                            if (container.length > 0 && !built) {
-
-                                console.log('build', container.length);
-
-                                container.empty();
-
-                                childScope.model = scope.ngModel;
-                                childScope.ngDisabled = scope.ngDisabled;
-                                childScope.ngValidating = scope.ngValidating;
-
-                                if (_.isObject(scope.ngScope)) {
-                                    for (var contextName in scope.ngScope) {
-                                        childScope[contextName] = scope.ngScope[contextName];
-                                    }
-                                }
-
-                                childScope.$watch('model', function () {
-                                    childScope.$broadcast(CONTROL_EVENTS.validate);
-                                });
-
-                                transclude(childScope, function (clone, innerScope) {
-                                    container.append(clone);
-                                });
-
-                                childScope.$on(CONTROL_EVENTS.valueIsValid, function (sender, value) {
-                                    sender.stopPropagation();
-
-                                    scope.$emit(CONTROL_EVENTS.valueIsValid, value);
-                                });
-
-                                childScope.$on(CONTROL_EVENTS.initiateValidation, function (sender) {
-                                    initiated = true;
-                                });
-
-                                childScope.$on(CONTROL_EVENTS.clearValidation, function (sender) {
-                                    initiated = false;
-                                });
-
-                                built = true;
+                        scope.value = [scope.ngModel || {}];
+                        
+                        if (_.isObject(scope.ngScope)) {
+                            for (var contextName in scope.ngScope) {
+                                scope[contextName] = scope.ngScope[contextName];
                             }
-                        };
+                        }
 
                         scope.$watch('ngModel', function (newValue, prevValue) {
-                            build();
-
                             if (newValue === undefined)
                                 scope.ngModel = {};
 
-                            childScope.model = scope.ngModel;
+                            if (!_.isEqual([scope.ngModel], scope.value)) {
+                                scope.value = [scope.ngModel];
+                            }
                         });
 
-                        scope.$watch('ngDisabled', function (newValue, prevValue) {
-                            childScope.ngDisabled = newValue;
+                        scope.$watch('value', function (newValue, prevValue) {
+                            if (!_.isEqual([scope.ngModel], newValue)) {
+                                scope.ngModel = _.first(newValue);
+                            }
                         });
-
-                        scope.$watch('ngValidating', function (newValue, prevValue) {
-                            childScope.ngValidating = newValue;
-                        });
-
+                        
                         scope.$watch('ngScope', function (newValue, prevValue) {
                             if (_.isObject(newValue)) {
                                 for (var contextName in newValue) {
-                                    childScope[contextName] = newValue[contextName];
+                                    scope[contextName] = newValue[contextName];
                                 }
                             }
                         }, true);

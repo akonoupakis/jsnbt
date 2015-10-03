@@ -5,39 +5,37 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlSelectList', ['$timeout', 'ModalService', 'CONTROL_EVENTS', function ($timeout, ModalService, CONTROL_EVENTS) {
+        .directive('ctrlCustomList', ['$timeout', 'ModalService', 'CONTROL_EVENTS', function ($timeout, ModalService, CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
                 replace: true,
+                transclude: true,
                 scope: {
                     ngModel: '=',
                     ngDisabled: '=',
                     ngRequired: '=',
                     ngLabel: '@',
                     ngTip: '@',
-                    ngOptions: '=',
-                    ngDefault: '=',
-                    ngValueField: '@',
-                    ngNameField: '@',
                     ngValidating: '=',
+                    ngScope: '=',
                     ngChangeFn: '='
                 },
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl');
-                    element.addClass('ctrl-select-list');
-
-                    scope.valueField = scope.ngValueField ? scope.ngValueField : 'value';
-                    scope.nameField = scope.ngNameField ? scope.ngNameField : 'name';
+                    element.addClass('ctrl-custom-list');
 
                     scope.id = Math.random().toString().replace('.', '');
                     scope.valid = true;
                     scope.empty = false;
-                    
-                    scope.invalid = {};
-                    scope.wrong = {};
 
                     var initiated = false;
+
+                    if (_.isObject(scope.ngScope)) {
+                        for (var contextName in scope.ngScope) {
+                            scope[contextName] = scope.ngScope[contextName];
+                        }
+                    }
 
                     scope.$watch('ngDisabled', function (newValue) {
                         if (initiated)
@@ -51,6 +49,14 @@
                             else
                                 scope.valid = isValid();
                     });
+
+                    scope.$watch('ngScope', function (newValue, prevValue) {
+                        if (_.isObject(newValue)) {
+                            for (var contextName in newValue) {
+                                scope[contextName] = newValue[contextName];
+                            }
+                        }
+                    }, true);
 
                     scope.changed = function () {
                         if (scope.ngChangeFn) {
@@ -85,67 +91,14 @@
                                     scope.empty = true;
                                 }
                             }
-
-                            if (scope.ngModel) {
-                                if (!_.isArray(scope.ngModel))
-                                    valid = false;
-                                else {
-
-                                    $(scope.ngModel).each(function (i, item) {
-                                        scope.invalid[i] = false;
-                                        if (!item) {
-                                            valid = false;
-                                            scope.invalid[i] = true;
-                                        }
-                                        else if (!_.isString(item)) {
-                                            valid = false;
-                                            scope.invalid[i] = true;
-                                        }
-                                        else if (!_.any(scope.ngOptions, function (x) {
-                                               return x[scope.valueField] === item;
-                                        })) {
-                                            valid = false;
-                                            scope.invalid[i] = true;
-                                        }
-                                    });
-
-                                }
-                            }
                         }
-
+                        
                         return valid;
                     };
 
                     scope.$watch('ngModel', function (newValue, prevValue) {
-                        if (newValue) {
-                            if (_.isArray(newValue)) {
-                                scope.wrong = {};
-                                scope.value = newValue;
-                                $(newValue).each(function (i, item) {
-                                    scope.wrong[i] = false;
-
-                                    if (!item) {
-                                        scope.wrong[i] = true;
-                                    }
-                                    else if (typeof (item) !== 'string') {
-                                        scope.wrong[i] = true;
-                                    }
-                                    else if (!_.any(scope.ngOptions, function(x){
-                                        return x[scope.valueField] === item;
-                                    })) {
-                                        scope.wrong[i] = true;
-                                    }
-                                });
-                            }
-                            else {
-                                scope.wrong = {};
-                                scope.value = [];
-                            }
-                        }
-                        else {
-                            scope.wrong = {};
-                            scope.value = [];
-                        }
+                        if (newValue === undefined)
+                            scope.ngModel = [];
 
                         if (initiated)
                             scope.valid = isValid();
@@ -170,7 +123,7 @@
                     });
 
                     scope.add = function () {
-                        scope.ngModel.push('');
+                        scope.ngModel.push({ });
 
                         if (initiated)
                             scope.valid = isValid();
@@ -185,7 +138,7 @@
 
                     scope.sortableOptions = {
                         axis: 'v',
-
+                            
                         handle: '.glyphicon-move',
                         cancel: '',
                         containment: "parent",
@@ -199,7 +152,7 @@
                     };
 
                 },
-                templateUrl: 'tmpl/core/controls/ctrlSelectList.html'
+                templateUrl: 'tmpl/core/controls/ctrlCustomList.html'
             };
 
         }]);

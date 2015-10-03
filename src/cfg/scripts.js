@@ -104,6 +104,7 @@ module.exports = [{
         '/admin/js/core/cms/controls/ctrlDatePicker.js',
         '/admin/js/core/cms/controls/ctrlTree.js',
         '/admin/js/core/cms/controls/ctrlCustom.js',
+        '/admin/js/core/cms/controls/ctrlCustomList.js',
         '/admin/js/core/cms/providers/$data.js',
         '/admin/js/core/cms/providers/$fn.js',
         '/admin/js/core/cms/providers/$jsnbt.js',
@@ -121,6 +122,7 @@ module.exports = [{
         '/admin/js/core/cms/utils/modal.js',
         '/admin/js/core/cms/utils/scrollspy.js',
         '/admin/js/core/cms/utils/errSrc.js',
+        '/admin/js/core/cms/utils/lkRepeat.js',
         '/admin/js/init.js'
     ]
 }, {
