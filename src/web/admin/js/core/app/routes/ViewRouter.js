@@ -1,9 +1,9 @@
 ﻿(function () {
     "use strict";
     
-    jsnbt = (function (jsnbt) {
+    (function (jsnbt) {
 
-        jsnbt.router = (function () {
+        jsnbt.ViewRouter = (function (ViewRouter) {
 
             var defaultOptions = {
                 controller: undefined,
@@ -67,12 +67,12 @@
 
             };
 
-            var router = function (domain, provider) {
+            ViewRouter = function (domain, provider) {
                 this.domain = domain;
                 this.provider = provider;
             }
 
-            router.prototype.when = function (path, fn) {
+            ViewRouter.prototype.when = function (path, fn) {
                 
                 var routingMethods = createRoutingMethods(this.domain);
                 if (typeof (fn) === 'function')
@@ -82,7 +82,7 @@
                 this.provider.when(path, options);
             };
 
-            router.prototype.otherwise = function (fn) {
+            ViewRouter.prototype.otherwise = function (fn) {
 
                 var routingMethods = createRoutingMethods(this.domain);
                 if (typeof (fn) === 'function')
@@ -92,9 +92,9 @@
                 this.provider.otherwise(options);
             };
 
-            return router;
+            return ViewRouter;
 
-        })(jsnbt.router || {});
+        })(jsnbt.ViewRouter || {});
         
         return jsnbt;
 

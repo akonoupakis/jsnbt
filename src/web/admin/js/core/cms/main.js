@@ -25,7 +25,7 @@
     
         $jsnbtProvider.setSettings(jsnbt);
         
-        var router = new jsnbt.router('core', $routeProvider);
+        var router = new jsnbt.ViewRouter('core', $routeProvider);
         
         var TEMPLATE_BASE = jsnbt.constants.TEMPLATE_BASE;
 
