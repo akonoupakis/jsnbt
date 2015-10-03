@@ -8,7 +8,7 @@
         jsnbt.controllers = (function (controllers) {
 
             controllers.FormControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, $fn, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
-                controllers.ControllerBase.apply(this, $scope.getBaseArguments($scope));
+                controllers.ControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
                 var logger = $logger.create('FormControllerBase');
 
@@ -296,58 +296,65 @@
                     }, 100);
                 };
 
+                var initFn = $scope.init;
                 $scope.init = function () {
                     var deferred = $q.defer();
 
-                    $scope.run('preloading').then(function () {
-                        $scope.preload().then(function () {
-                            $scope.run('preloaded').then(function () {
-                                $scope.run('loading').then(function () {
-                                    $scope.load().then(function (response) {
-                                        $scope.run('loaded', [response]).then(function () {
-                                            $scope.run('setting', [response]).then(function () {
-                                                $scope.set(response).then(function (setted) {
-                                                    $scope.run('set', [setted]).then(function () {
-                                                        $scope.run('watch').then(function () {
-                                                            $scope.getBreadcrumb().then(function (breadcrumb) {
-                                                                $scope.setBreadcrumb(breadcrumb).then(function () {
-                                                                    $scope.setSpy(200);
-                                                                    deferred.resolve(setted);
-                                                                }).catch(function (setBreadcrumbError) {
-                                                                    deferred.reject(setBreadcrumbError);
+                    initFn().then(function () {
+
+                        $scope.run('preloading').then(function () {
+                            $scope.preload().then(function () {
+                                $scope.run('preloaded').then(function () {
+                                    $scope.run('loading').then(function () {
+                                        $scope.load().then(function (response) {
+                                            $scope.run('loaded', [response]).then(function () {
+                                                $scope.run('setting', [response]).then(function () {
+                                                    $scope.set(response).then(function (setted) {
+                                                        $scope.run('set', [setted]).then(function () {
+                                                            $scope.run('watch').then(function () {
+                                                                $scope.getBreadcrumb().then(function (breadcrumb) {
+                                                                    $scope.setBreadcrumb(breadcrumb).then(function () {
+                                                                        $scope.setSpy(200);
+                                                                        deferred.resolve(setted);
+                                                                    }).catch(function (setBreadcrumbError) {
+                                                                        deferred.reject(setBreadcrumbError);
+                                                                    });
+                                                                }).catch(function (getBreadcrumbError) {
+                                                                    deferred.reject(getBreadcrumbError);
                                                                 });
-                                                            }).catch(function (getBreadcrumbError) {
-                                                                deferred.reject(getBreadcrumbError);
+                                                            }).catch(function (watchError) {
+                                                                deferred.reject(watchError);
                                                             });
-                                                        }).catch(function (watchError) {
-                                                            deferred.reject(watchError);
+                                                        }).catch(function (setError) {
+                                                            deferred.reject(setError);
                                                         });
-                                                    }).catch(function (setError) {
-                                                        deferred.reject(setError);
+                                                    }).catch(function (settedError) {
+                                                        deferred.reject(settedError);
                                                     });
-                                                }).catch(function (settedError) {
-                                                    deferred.reject(settedError);
+                                                }).catch(function (settingError) {
+                                                    deferred.reject(settingError);
                                                 });
-                                            }).catch(function (settingError) {
-                                                deferred.reject(settingError);
+                                            }).catch(function (loadedError) {
+                                                deferred.reject(loadedError);
                                             });
-                                        }).catch(function (loadedError) {
-                                            deferred.reject(loadedError);
+                                        }).catch(function (loadError) {
+                                            deferred.reject(loadError);
                                         });
-                                    }).catch(function (loadError) {
-                                        deferred.reject(loadError);
+                                    }).catch(function (loadingError) {
+                                        deferred.reject(loadingError);
                                     });
-                                }).catch(function (loadingError) {
-                                    deferred.reject(loadingError);
+                                }, function (preloadedError) {
+                                    deferred.reject(preloadedError);
                                 });
-                            }, function (preloadedError) {
-                                deferred.reject(preloadedError);
+                            }).catch(function (preloadError) {
+                                deferred.reject(preloadError);
                             });
-                        }).catch(function (preloadError) {
-                            deferred.reject(preloadError);
+                        }).catch(function (preloadingError) {
+                            deferred.reject(preloadingError);
                         });
-                    }).catch(function (preloadingError) {
-                        deferred.reject(preloadingError);
+
+                    }).catch(function (initError) {
+                        deferred.reject(initError);
                     });
 
                     return deferred.promise;

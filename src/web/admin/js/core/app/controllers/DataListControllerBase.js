@@ -8,7 +8,7 @@
         jsnbt.controllers = (function (controllers) {
 
             controllers.DataListControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, $fn, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
-                controllers.ListControllerBase.apply(this, $scope.getBaseArguments($scope));
+                controllers.ListControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
                 var logger = $logger.create('DataListControllerBase');
 

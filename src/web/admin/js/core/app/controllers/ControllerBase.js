@@ -15,9 +15,9 @@
 
                 var logger = $logger.create('ControllerBase');
 
-                $scope.localized = $scope.application.localization.enabled;
-                $scope.languages = $scope.application.languages;
-                $scope.language = $scope.application.localization.enabled ? ($scope.defaults.language ? $scope.defaults.language : _.first($scope.application.languages).code) : $scope.defaults.language;
+                $scope.localized = false; // $scope.application.localization.enabled;
+                $scope.languages = []; // $scope.application.languages;
+                $scope.language = ''; // $scope.application.localization.enabled ? ($scope.defaults.language ? $scope.defaults.language : _.first($scope.application.languages).code) : $scope.defaults.language;
 
                 $scope.breadcrumb = true;
                 $scope.queue = {};
@@ -87,11 +87,40 @@
                 $scope.next = function (path) {
                     $location.next(path);
                 };
+                
+                $scope.init = function () {
+                    var deferred = $q.defer();
+                    
+                    var proceed = function () {
 
+                        $scope.localized = $scope.application.localization.enabled;
+                        $scope.languages = $scope.application.languages;
+                        $scope.language = $scope.application.localization.enabled ? ($scope.defaults.language ? $scope.defaults.language : _.first($scope.application.languages).code) : $scope.defaults.language;
 
-                $scope.getBreadcrumb().then(function (breadcrumb) {
-                    $scope.setBreadcrumb(breadcrumb);
-                });
+                        $scope.getBreadcrumb().then(function (breadcrumb) {
+                            $scope.setBreadcrumb(breadcrumb).then(function () {
+                                deferred.resolve();
+                            }).catch(function (ex) {
+                                deferred.reject(ex);
+                            });
+                        });
+                    };
+
+                    if ($scope.$parent && $scope.root && typeof ($scope.$parent.init) === 'function') {
+                        $scope.$parent.init().then(function () {
+                            proceed();
+                        }).catch(function (ex) {
+                            deferred.reject(ex);
+                        });
+                    }
+                    else {
+                        deferred.reject(new Error('ControllerBase should have the AppController as base'));
+                        //proceed();
+                    }
+
+                    return deferred.promise;
+                };
+
             };
 
             return controllers;

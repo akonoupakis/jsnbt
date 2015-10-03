@@ -4,7 +4,7 @@
     "use strict";
 
     var DataListController = function ($scope, $rootScope, $routeParams, $location, $logger, $q, $data, $jsnbt, PagedDataService, ModalService, LocationService) {
-        jsnbt.controllers.DataListControllerBase.apply(this, $scope.getBaseArguments($scope));
+        jsnbt.controllers.DataListControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         $scope.domain = 'public';
 

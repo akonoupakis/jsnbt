@@ -8,7 +8,7 @@
         jsnbt.controllers = (function (controllers) {
 
             controllers.SettingsControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, $fn, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
-                controllers.FormControllerBase.apply(this, $scope.getBaseArguments($scope));
+                controllers.FormControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
                 var logger = $logger.create('SettingsControllerBase');
 

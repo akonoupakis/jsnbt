@@ -3,8 +3,8 @@
 (function () {
     "use strict";
 
-    var FilesController = function ($scope, $logger) {
-        jsnbt.controllers.ControllerBase.apply(this, $scope.getBaseArguments($scope));
+    var FilesController = function ($scope, $rootScope, $logger) {
+        jsnbt.controllers.ControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var logger = $logger.create('FilesController');
 
@@ -12,5 +12,5 @@
     FilesController.prototype = Object.create(jsnbt.controllers.ControllerBase.prototype);
 
     angular.module("jsnbt")
-        .controller('FilesController', ['$scope', '$logger', FilesController]);
+        .controller('FilesController', ['$scope', '$rootScope', '$logger', FilesController]);
 })();

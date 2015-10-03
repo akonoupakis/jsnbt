@@ -3,35 +3,29 @@
 (function () {
     "use strict";
 
-    (function (jsnbt) {
-        
-        jsnbt.entities = (function (entities) {
+    var modules = [];
+    modules.push('ngRoute');
+    modules.push('ngAnimate');
+    modules.push('ngSanitize');
+    modules.push('mgcrea.ngStrap');
+    modules.push('ui.bootstrap');
+    modules.push('ui.sortable');
+    modules.push('infinite-scroll');
+    modules.push('flow');
+    modules.push('angular-redactor');
 
-            for (var entityName in jsnbt.entities) {
-                var entity = jsnbt.entities[entityName];
+    for (var moduleDomain in jsnbt.modules) {
+        if (jsnbt.modules[moduleDomain].domain !== 'public' && jsnbt.modules[moduleDomain].name)
+            modules.push(jsnbt.modules[moduleDomain].name);
+    }
 
-                entity.editable = true;
-                entity.viewable = false;
-                entity.deletable = true;
-                entity.parentable = true;
+    angular.module('jsnbt', modules)
+        .run(['$rootScope', '$route', '$routeParams', '$location', '$logger', '$q', '$timeout', '$data', '$jsnbt', '$fn', 'LocationService', 'ScrollSpyService', 'AuthService', 'TreeNodeService', 'PagedDataService', 'ModalService', 'CONTROL_EVENTS', 'AUTH_EVENTS', 'DATA_EVENTS', 'ROUTE_EVENTS',
+        function ($rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, $fn, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
 
-                entity.getCreateUrl = function (node) {
-                    return '/content/nodes/new' + (node ? '-' + node.id : '');
-                };
-                entity.getEditUrl = function (node) {
-                    return '/content/nodes/' + node.id
-                };
-                entity.getViewUrl = function (node) {
-                    throw new Error('na');
-                };
-            }
+            $rootScope.getBaseArguments = function (scope) {
+                return [scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, $fn, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS];
+            };
 
-            return entities;
-
-        })(jsnbt.entities || {});
-
-        return jsnbt;
-
-    })(jsnbt || {});
-    
+        }]);
 })();

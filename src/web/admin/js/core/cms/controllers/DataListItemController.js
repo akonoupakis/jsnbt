@@ -4,7 +4,7 @@
     "use strict";
 
     var DataListItemController = function ($scope, $rootScope, $routeParams, $location, $timeout, $q, $logger, $data, $jsnbt, ScrollSpyService, LocationService, CONTROL_EVENTS) {
-        jsnbt.controllers.DataFormControllerBase.apply(this, $scope.getBaseArguments($scope));
+        jsnbt.controllers.DataFormControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         $scope.domain = 'public';
 

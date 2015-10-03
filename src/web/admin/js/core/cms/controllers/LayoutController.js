@@ -3,8 +3,8 @@
 (function () {
     "use strict";
 
-    var LayoutController = function ($scope, $timeout, $q, $logger, $data, $jsnbt) {
-        jsnbt.controllers.FormControllerBase.apply(this, $scope.getBaseArguments($scope));
+    var LayoutController = function ($scope, $rootScope, $timeout, $q, $logger, $data, $jsnbt) {
+        jsnbt.controllers.FormControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var logger = $logger.create('LayoutController');
 
@@ -129,5 +129,5 @@
     LayoutController.prototype = Object.create(jsnbt.controllers.FormControllerBase.prototype);
 
     angular.module("jsnbt")
-        .controller('LayoutController', ['$scope', '$timeout', '$q', '$logger', '$data', '$jsnbt', LayoutController]);
+        .controller('LayoutController', ['$scope', '$rootScope', '$timeout', '$q', '$logger', '$data', '$jsnbt', LayoutController]);
 })();

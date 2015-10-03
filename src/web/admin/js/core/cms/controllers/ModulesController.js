@@ -3,8 +3,8 @@
 (function () {
     "use strict";
 
-    var ModulesController = function ($scope, $location, $q, $logger, $jsnbt, AuthService) {
-        jsnbt.controllers.ListControllerBase.apply(this, $scope.getBaseArguments($scope));
+    var ModulesController = function ($scope, $rootScope, $location, $q, $logger, $jsnbt, AuthService) {
+        jsnbt.controllers.ListControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var logger = $logger.create('ModulesController');
         
@@ -55,5 +55,5 @@
     ModulesController.prototype = Object.create(jsnbt.controllers.ListControllerBase.prototype);
 
     angular.module("jsnbt")
-        .controller('ModulesController', ['$scope', '$location', '$q', '$logger', '$jsnbt', 'AuthService', ModulesController]);
+        .controller('ModulesController', ['$scope', '$rootScope', '$location', '$q', '$logger', '$jsnbt', 'AuthService', ModulesController]);
 })(); 

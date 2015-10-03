@@ -3,8 +3,8 @@
 (function () {
     "use strict";
 
-    var TextsController = function ($scope, $location, $logger, $q, $data, PagedDataService, ModalService) {
-        jsnbt.controllers.ListControllerBase.apply(this, $scope.getBaseArguments($scope));
+    var TextsController = function ($scope, $rootScope, $location, $logger, $q, $data, PagedDataService, ModalService) {
+        jsnbt.controllers.ListControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var logger = $logger.create('TextsController');
         
@@ -73,5 +73,5 @@
     TextsController.prototype = Object.create(jsnbt.controllers.ListControllerBase.prototype);
 
     angular.module("jsnbt")
-        .controller('TextsController', ['$scope', '$location', '$logger', '$q', '$data', 'PagedDataService', 'ModalService', TextsController]);
+        .controller('TextsController', ['$scope', '$rootScope', '$location', '$logger', '$q', '$data', 'PagedDataService', 'ModalService', TextsController]);
 })();
