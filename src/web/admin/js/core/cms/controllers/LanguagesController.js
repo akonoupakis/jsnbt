@@ -4,7 +4,7 @@
     "use strict";
     
     var LanguagesController = function ($scope, $location, $q, $logger, $data, PagedDataService, ModalService) {
-        jsnbt.ListControllerBase.apply(this, $scope.getBaseArguments($scope));
+        jsnbt.controllers.ListControllerBase.apply(this, $scope.getBaseArguments($scope));
         
         var logger = $logger.create('LanguagesController');
 
@@ -165,7 +165,7 @@
             logger.error(ex);
         });
     };
-    LanguagesController.prototype = Object.create(jsnbt.ListControllerBase.prototype);
+    LanguagesController.prototype = Object.create(jsnbt.controllers.ListControllerBase.prototype);
 
     angular.module("jsnbt")
         .controller('LanguagesController', ['$scope', '$location', '$q', '$logger', '$data', 'PagedDataService', 'ModalService', LanguagesController]);

@@ -4,7 +4,7 @@
     "use strict";
 
     var TextController = function ($scope, $routeParams, $location, $timeout, $logger, $q, $data, ScrollSpyService, LocationService, CONTROL_EVENTS) {
-        jsnbt.FormControllerBase.apply(this, $scope.getBaseArguments($scope));
+        jsnbt.controllers.FormControllerBase.apply(this, $scope.getBaseArguments($scope));
 
         var logger = $logger.create('TextController');
 
@@ -153,7 +153,7 @@
             logger.error(ex);
         });
     };
-    TextController.prototype = Object.create(jsnbt.FormControllerBase.prototype);
+    TextController.prototype = Object.create(jsnbt.controllers.FormControllerBase.prototype);
     
     angular.module("jsnbt")
         .controller('TextController', ['$scope', '$routeParams', '$location', '$timeout', '$logger', '$q', '$data', 'ScrollSpyService', 'LocationService', 'CONTROL_EVENTS', TextController]);

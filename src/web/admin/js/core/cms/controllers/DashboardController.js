@@ -4,7 +4,7 @@
     "use strict";
 
     var DashboardController = function ($scope, $jsnbt) {
-        jsnbt.ControllerBase.apply(this, $scope.getBaseArguments($scope));
+        jsnbt.controllers.ControllerBase.apply(this, $scope.getBaseArguments($scope));
 
         $scope.breadcrumb = false;
 
@@ -16,7 +16,7 @@
         $scope.injects = injects;
 
     };
-    DashboardController.prototype = Object.create(jsnbt.ControllerBase.prototype);
+    DashboardController.prototype = Object.create(jsnbt.controllers.ControllerBase.prototype);
 
     angular.module("jsnbt")
         .controller('DashboardController', ['$scope', '$jsnbt', DashboardController]);

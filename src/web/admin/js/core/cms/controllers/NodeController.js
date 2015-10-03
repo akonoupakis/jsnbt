@@ -4,7 +4,7 @@
     "use strict";
 
     var NodeController = function ($scope, $logger, $q) {
-        jsnbt.NodeFormControllerBase.apply(this, $scope.getBaseArguments($scope));
+        jsnbt.controllers.NodeFormControllerBase.apply(this, $scope.getBaseArguments($scope));
 
         var logger = $logger.create('NodeController');
         
@@ -39,7 +39,7 @@
             logger.error(ex);
         });
     };
-    NodeController.prototype = Object.create(jsnbt.NodeFormControllerBase.prototype);
+    NodeController.prototype = Object.create(jsnbt.controllers.NodeFormControllerBase.prototype);
 
     angular.module("jsnbt")
         .controller('NodeController', ['$scope', '$logger', '$q', NodeController]);

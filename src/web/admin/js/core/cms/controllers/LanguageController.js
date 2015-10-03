@@ -4,7 +4,7 @@
     "use strict";
 
     var LanguageController = function ($scope, $routeParams, $location, $timeout, $q, $logger, $data, ScrollSpyService, LocationService, CONTROL_EVENTS) {
-        jsnbt.FormControllerBase.apply(this, $scope.getBaseArguments($scope));
+        jsnbt.controllers.FormControllerBase.apply(this, $scope.getBaseArguments($scope));
 
         var logger = $logger.create('LanguageController');
 
@@ -123,7 +123,7 @@
             logger.error(ex);
         });
     };
-    LanguageController.prototype = Object.create(jsnbt.FormControllerBase.prototype);
+    LanguageController.prototype = Object.create(jsnbt.controllers.FormControllerBase.prototype);
 
     angular.module("jsnbt")
         .controller('LanguageController', ['$scope', '$routeParams', '$location', '$timeout', '$q', '$logger', '$data', 'ScrollSpyService', 'LocationService', 'CONTROL_EVENTS', LanguageController]);

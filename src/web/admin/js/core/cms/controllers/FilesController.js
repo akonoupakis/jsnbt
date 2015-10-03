@@ -4,12 +4,12 @@
     "use strict";
 
     var FilesController = function ($scope, $logger) {
-        jsnbt.ControllerBase.apply(this, $scope.getBaseArguments($scope));
+        jsnbt.controllers.ControllerBase.apply(this, $scope.getBaseArguments($scope));
 
         var logger = $logger.create('FilesController');
 
     };
-    FilesController.prototype = Object.create(jsnbt.ControllerBase.prototype);
+    FilesController.prototype = Object.create(jsnbt.controllers.ControllerBase.prototype);
 
     angular.module("jsnbt")
         .controller('FilesController', ['$scope', '$logger', FilesController]);

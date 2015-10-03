@@ -4,7 +4,7 @@
     "use strict";
 
     var DataController = function ($scope, $logger, $location, $jsnbt, $q) {
-        jsnbt.ListControllerBase.apply(this, $scope.getBaseArguments($scope));
+        jsnbt.controllers.ListControllerBase.apply(this, $scope.getBaseArguments($scope));
 
         var logger = $logger.create('DataController');
 
@@ -33,7 +33,7 @@
         });
 
     };
-    DataController.prototype = Object.create(jsnbt.ListControllerBase.prototype);
+    DataController.prototype = Object.create(jsnbt.controllers.ListControllerBase.prototype);
 
     angular.module("jsnbt")
         .controller('DataController', ['$scope', '$logger', '$location', '$jsnbt', '$q', DataController]);

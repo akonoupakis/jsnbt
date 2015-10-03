@@ -19,16 +19,6 @@
         if (jsnbt.modules[moduleDomain].domain !== 'public' && jsnbt.modules[moduleDomain].name)
             modules.push(jsnbt.modules[moduleDomain].name);
     }
-    
-    jsnbt.TEMPLATE_BASE = {
-        base: 'tmpl/core/base/base.html',
-        list: 'tmpl/core/base/list.html',
-        tree: 'tmpl/core/base/list.html',
-        form: 'tmpl/core/base/form.html',
-        dataForm: 'tmpl/core/base/dataForm.html',
-        nodeForm: 'tmpl/core/base/nodeForm.html',
-        settings: 'tmpl/core/base/settings.html'
-    };
 
     angular.module('jsnbt', modules)
     .config(['$routeProvider', '$jsnbtProvider', 'flowFactoryProvider', function ($routeProvider, $jsnbtProvider, flowFactoryProvider) {
@@ -37,7 +27,7 @@
         
         var router = new jsnbt.router('core', $routeProvider);
         
-        var TEMPLATE_BASE = jsnbt.TEMPLATE_BASE;
+        var TEMPLATE_BASE = jsnbt.constants.TEMPLATE_BASE;
 
         router.when('/', function (x) {
             x.baseTemplate(TEMPLATE_BASE.base);
