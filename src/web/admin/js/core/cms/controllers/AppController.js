@@ -57,11 +57,13 @@
         });
 
         $scope.$on(AUTH_EVENTS.authenticated, function (sender, user) {
+            $scope.current.users = true;
             $scope.current.denied = false;
             $scope.current.setUser(user);
         });
 
         $scope.$on(AUTH_EVENTS.notAuthenticated, function (sender, fn) {
+            $scope.current.users = true;
             $scope.current.denied = false;
             $scope.current.setUser(null);
             $scope.current.restoreFn = fn;

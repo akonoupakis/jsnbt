@@ -183,7 +183,9 @@
                     }
                 }, function () {
                     event.preventDefault();
+
                     if (!$rootScope.initiated) {
+
                         AuthService.count().then(function (count) {
                             $rootScope.$broadcast(ROUTE_EVENTS.routeCompleted);
 
@@ -197,6 +199,7 @@
                                     $route.reload();
                                 });
                             }
+
                             $rootScope.initiated = true;
                         }).catch(function (error) {
                             throw error;

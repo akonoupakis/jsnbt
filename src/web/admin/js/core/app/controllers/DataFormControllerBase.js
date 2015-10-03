@@ -91,7 +91,9 @@
                     var deferred = $q.defer();
 
                     getBreadcrumbFn().then(function (breadcrumb) {
-                        breadcrumb[breadcrumb.length - 2].name = $scope.list.name;
+                        if ($scope.list)
+                            breadcrumb[breadcrumb.length - 2].name = $scope.list.name;
+
                         deferred.resolve(breadcrumb);
                     }).catch(function (ex) {
                         deferred.reject(ex);

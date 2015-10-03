@@ -21,26 +21,6 @@ module.exports = function (grunt) {
         return undefined;
     }
 
-    var mainPackageInfoPath = server.getPath('package.json');
-    if (fs.existsSync(mainPackageInfoPath)) {
-        var mainPackInfo = require(mainPackageInfoPath);
-        if (mainPackInfo.main) {
-
-            var module = getModule(server.getPath(mainPackInfo.main));
-            if (module) {
-                self.modulePaths.push(mainPackInfo.main);
-                self.app.register(module);
-
-
-                var dbgModule = getModule(server.getPath('src/dbg/index.js'));
-                if (dbgModule) {
-                    self.modulePaths.push('src/dbg/index.js');
-                    self.app.register(dbgModule);
-                }
-            }
-        }
-    }
-
     this.moduleNames = [];
 
     if (fs.existsSync(server.getPath('src/pck'))) {
@@ -98,6 +78,26 @@ module.exports = function (grunt) {
                 }
             }
         });
+    }
+    
+
+    var mainPackageInfoPath = server.getPath('package.json');
+    if (fs.existsSync(mainPackageInfoPath)) {
+        var mainPackInfo = require(mainPackageInfoPath);
+        if (mainPackInfo.main) {
+
+            var module = getModule(server.getPath(mainPackInfo.main));
+            if (module) {
+                self.modulePaths.push(mainPackInfo.main);
+                self.app.register(module);
+
+                var dbgModule = getModule(server.getPath('src/dbg/index.js'));
+                if (dbgModule) {
+                    self.modulePaths.push('src/dbg/index.js');
+                    self.app.register(dbgModule);
+                }
+            }
+        }
     }
 
     var getFilesToClean = function (folder) {
@@ -321,12 +321,39 @@ module.exports = function (grunt) {
         var runFn = function (mod) {
             var modMngr = require('./installer.js');
             if (fs.existsSync(server.getPath(mod))) {
-                var found = fs.readdirSync(server.getPath(mod));
-                _.each(found, function (f) {
-                    if (fs.lstatSync(server.getPath(path.join(mod, f))).isDirectory()) {
-                        modMngr[mod].install(f, true);
+
+                var installOne = function (moduleName) {
+                    if (fs.lstatSync(server.getPath(path.join(mod, moduleName))).isDirectory()) {
+                        modMngr[mod].install(moduleName, true);
+                        grunt.log.ok('Module ' + moduleName + ' installed');
                     }
-                });
+                };
+
+                var installAll = function () {
+                    var found = fs.readdirSync(server.getPath(mod));
+                    _.each(found, function (f) {
+                        installOne(f);
+                    });
+                };
+
+                var modulesFilePath = path.join(server.getPath(mod), 'modules');
+                if (fs.existsSync(modulesFilePath)) {
+                    if (!fs.lstatSync(modulesFilePath).isDirectory()) {
+                        var fileModuleNames = _.map(fs.readFileSync(modulesFilePath, 'utf-8').split('\n'), function (x) {
+                            return _.str.trim(x);
+                        });
+
+                        _.each(fileModuleNames, function (fileModuleName) {
+                            installOne(fileModuleName);
+                        });
+                    }
+                    else {
+                        installAll();
+                    }
+                }
+                else {
+                    installAll();
+                }
             }
         };
 

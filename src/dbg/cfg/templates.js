@@ -103,6 +103,7 @@ module.exports = [{
     id: 'course',
     name: 'course page',
     html: '/tmpl/course.html',
+    form: 'tmpl/public/forms/page/text.html',
     restricted: ['course'],
     scripts: [
         ['lib', 'app']

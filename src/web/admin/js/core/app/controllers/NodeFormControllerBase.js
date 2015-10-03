@@ -35,6 +35,8 @@
                 $scope.templates = {};
                 $scope.modules = [];
 
+
+
                 $scope.localized = false;
                 $scope.language = undefined;
 
@@ -56,30 +58,12 @@
                 };
 
                 $scope.form = null;
-
-                var tmpls = [];
-
-                if ($route.current.$$route.tmpl) {
-                    if (typeof ($route.current.$$route.tmpl) === 'string') {
-                        tmpls.push($route.current.$$route.tmpl);
-                    }
-                    else {
-                        $($route.current.$$route.tmpl).each(function (i, item) {
-                            tmpls.push(item);
-                        });
-                    }
-                }
-
-                $scope.tmpls = tmpls;
-
+                
                 $scope.parentOptions = {
                     restricted: [],
                     entities: []
                 };
-
-
-
-
+                
                 $scope.setHierarchyNodes = function (node) {
                     var deferred = $q.defer();
 
@@ -947,20 +931,6 @@
                         node.secure = {};
 
                     node.secure.value = !node.secure.inherits ? $scope.values.secure : false;
-
-                    deferred.resolve();
-
-                    return deferred.promise;
-                });
-
-                $scope.enqueue('watch', function () {
-                    var deferred = $q.defer();
-
-                    $scope.$watch('tmpls', function (newValue, prevValue) {
-                        if (!_.isEqual(newValue && prevValue)) {
-                            $scope.setSpy(200);
-                        }
-                    });
 
                     deferred.resolve();
 

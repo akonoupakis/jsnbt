@@ -53,7 +53,9 @@
                     var deferred = $q.defer();
 
                     getBreadcrumbFn().then(function (breadcrumb) {
-                        _.last(breadcrumb).name = $scope.list.name;
+                        if ($scope.list)
+                            _.last(breadcrumb).name = $scope.list.name;
+
                         deferred.resolve(breadcrumb);
                     }).catch(function (ex) {
                         deferred.reject(ex);

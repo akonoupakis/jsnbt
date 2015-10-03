@@ -204,9 +204,9 @@ exports.register = function (module) {
 
         properties: {
             title: true,
+            active: true,
             parent: true,
             template: true,
-            active: true,
             layouts: true,
             seo: true,
             meta: true,
@@ -244,6 +244,14 @@ exports.register = function (module) {
 
     applyArray('content', 'id');
 
+    var dataDefaults = {
+        name: '',
+        localized: true,
+        properties: {
+            title: true
+        }
+    };
+
     if (moduleConfig.lists) {
         _.each(moduleConfig.lists, function (moduleList) {
             var matchedList = _.find(self.config.lists, function (x) { return x.id === moduleConfig.id && x.domain == module.domain; });
@@ -257,12 +265,13 @@ exports.register = function (module) {
                 extend(true, matchedList, moduleList);
             }
             else {
-                var newListSpec = {
+                var newListSpec = {};
+
+
+                extend(true, newListSpec, dataDefaults, {
                     domain: module.domain,
                     localized: true
-                };
-
-                extend(true, newListSpec, moduleList);
+                }, moduleList);
                                 
                 self.config.lists.push(newListSpec);
             }

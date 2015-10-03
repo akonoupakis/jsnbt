@@ -8,7 +8,7 @@ module.exports = {
 
     images: require('./images.js'),
     
-    entities: [],
+    entities: require('./entities.js'),
 
     roles: [],
 
