@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlLogin', ['$rootScope', 'AuthService', 'AUTH_EVENTS', 'CONTROL_EVENTS', function ($rootScope, AuthService, AUTH_EVENTS, CONTROL_EVENTS) {
+        .directive('pnlLogin', ['$rootScope', 'AuthService', 'AUTH_EVENTS', 'CONTROL_EVENTS', function ($rootScope, AuthService, AUTH_EVENTS, CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -13,7 +13,7 @@
                 scope: {
                 },
                 link: function (scope, element, attrs) {
-                    element.addClass('ctrl-login');
+                    element.addClass('pnl-login');
                     
                     scope.valid = false;
                     scope.failed = false;
@@ -45,7 +45,7 @@
                          }
                      };
                 },
-                templateUrl: 'tmpl/core/controls/ctrlLogin.html'
+                templateUrl: 'tmpl/core/panels/pnlLogin.html'
             };
 
         }]);

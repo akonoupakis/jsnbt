@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlRegistration', ['$rootScope', '$data', 'AuthService', 'AUTH_EVENTS', 'CONTROL_EVENTS', function ($rootScope, $data, AuthService, AUTH_EVENTS, CONTROL_EVENTS) {
+        .directive('pnlRegistration', ['$rootScope', '$data', 'AuthService', 'AUTH_EVENTS', 'CONTROL_EVENTS', function ($rootScope, $data, AuthService, AUTH_EVENTS, CONTROL_EVENTS) {
 
             return {
                 restrict: 'E',
@@ -14,7 +14,7 @@
                     ngRoles: '='
                 },
                 link: function (scope, element, attrs) {
-                    element.addClass('ctrl-registration');
+                    element.addClass('pnl-registration');
                                         
                     scope.valid = false;
                     scope.validEmail = false;
@@ -74,7 +74,7 @@
                         }
                     };
                 },
-                templateUrl: 'tmpl/core/controls/ctrlRegistration.html'
+                templateUrl: 'tmpl/core/panels/pnlRegistration.html'
             };
 
         }]);
