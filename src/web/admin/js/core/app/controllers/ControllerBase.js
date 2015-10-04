@@ -15,9 +15,9 @@
 
                 var logger = $logger.create('ControllerBase');
 
-                $scope.localized = false; // $scope.application.localization.enabled;
-                $scope.languages = []; // $scope.application.languages;
-                $scope.language = ''; // $scope.application.localization.enabled ? ($scope.defaults.language ? $scope.defaults.language : _.first($scope.application.languages).code) : $scope.defaults.language;
+                $scope.localized = false; 
+                $scope.languages = []; 
+                $scope.language = ''; 
 
                 $scope.breadcrumb = true;
                 $scope.queue = {};
@@ -94,7 +94,10 @@
                     var proceed = function () {
 
                         $scope.localized = $scope.application.localization.enabled;
-                        $scope.languages = $scope.application.languages;
+                        $scope.languages = _.map($scope.application.languages, function (x) {
+                            x.image = 'img/core/flags/' + x.code + '.png';
+                            return x;
+                        });
                         $scope.language = $scope.application.localization.enabled ? ($scope.defaults.language ? $scope.defaults.language : _.first($scope.application.languages).code) : $scope.defaults.language;
 
                         $scope.getBreadcrumb().then(function (breadcrumb) {
@@ -115,7 +118,6 @@
                     }
                     else {
                         deferred.reject(new Error('ControllerBase should have the AppController as base'));
-                        //proceed();
                     }
 
                     return deferred.promise;

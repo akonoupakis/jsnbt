@@ -1,4 +1,21 @@
-﻿<div class="container">
+﻿<div class="container-fluid affix-area form-buttons-container">
+    <div class="container">
+        <div class="row ">
+            <div class="col-md-10">
+                <div class="affix-container">
+                    <div class="buttons">
+                        <button type="button" ng-show="!published && !draft" class="btn btn-danger" ng-click="discard()">discard</button>
+                        <button type="button" ng-disabled="published && !draft" class="btn btn-success" ng-click="publish()">publish</button>
+                    </div>
+
+                    <ctrl-language-selector class="language-selector" ng-model="language" ng-options="languages" ng-show="localized"></ctrl-language-selector>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
 
     <section class="col-md-10 scrollspy-container" data-scrollspy>
 
@@ -8,23 +25,11 @@
             <div class="col-sm-12">
                 <span ng-click="back()" class="glyphicon glyphicon-arrow-left back-button"></span>
                 <h1 class="title">{{ title }}</h1>
-                <div class="buttons">
-                    <button type="button" ng-show="!published && !draft" class="btn btn-danger" ng-click="discard()">discard</button>
-                    <button type="button" ng-disabled="published && !draft" class="btn btn-success" ng-click="publish()">publish</button>
-                </div>
             </div>
         </div>
 
         <hr />
-
-        <div id="page-language" data-scrollspy="language" ng-show="localized">
-            <div class="row">
-                <ctrl-select class="col-sm-12" ng-model="language" ng-label="language" ng-options="languages" ng-value-field="code" ng-text-field="name" ng-change-fn="languageChanged"></ctrl-select>
-            </div>
-
-            <hr />
-        </div>
-
+        
         <div id="page-title" data-scrollspy="title" ng-show="entity.properties.title || entity.properties.active">
             <div class="row">
                 <ctrl-text class="col-sm-10" ng-model="node.title[language]" ng-validating="node.active[language] || language === defaults.language" ng-disabled="!entity.properties.title" ng-required="true" ng-auto-focus="true" ng-label="title"></ctrl-text>

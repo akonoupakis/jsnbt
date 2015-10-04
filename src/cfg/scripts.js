@@ -117,6 +117,7 @@ module.exports = [{
         '/admin/js/core/cms/controls/ctrlExplorer.js',        
         '/admin/js/core/cms/controls/ctrlImageCropper.js',
         '/admin/js/core/cms/controls/ctrlScrollSpy.js',
+        '/admin/js/core/cms/controls/ctrlLanguageSelector.js',
         
         '/admin/js/core/cms/panels/pnlLogin.js',
         '/admin/js/core/cms/panels/pnlRegistration.js',

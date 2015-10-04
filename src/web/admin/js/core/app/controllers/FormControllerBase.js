@@ -122,11 +122,7 @@
                     $scope.published = value;
                     $scope.draft = !value;
                 };
-
-                $scope.languageChanged = function (lang) {
-                    $scope.language = lang;
-                }
-
+                
                 $scope.validate = function () {
                     var deferred = $q.defer();
 
