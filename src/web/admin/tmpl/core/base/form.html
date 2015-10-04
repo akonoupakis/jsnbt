@@ -1,4 +1,22 @@
-﻿<div class="container">
+﻿<div class="container-fluid affix-area form-buttons-container">
+    <div class="container">
+        <div class="row ">
+            <div class="col-md-10">
+                <div class="affix-container">
+                    <div class="buttons">
+                        <div ng-show="buttons" ng-include="buttons"></div>
+                        <button type="button" ng-show="!published && !draft" class="btn btn-danger" ng-click="discard()">discard</button>
+                        <button type="button" ng-disabled="published && !draft" class="btn btn-success" ng-click="publish()">publish</button>
+                    </div>
+
+                    <ctrl-language-selector class="language-selector" ng-model="language" ng-options="languages" ng-show="localized"></ctrl-language-selector>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
 
     <section class="col-md-10 scrollspy-container" data-scrollspy>
 
