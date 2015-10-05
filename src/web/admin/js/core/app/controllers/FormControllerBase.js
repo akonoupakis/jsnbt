@@ -23,6 +23,9 @@
 
                 $scope.active = {};
 
+                $scope.localized = false;
+                $scope.language = '';
+
                 $scope.isNew = function () {
                     return $scope.new;
                 };
@@ -297,6 +300,9 @@
                     var deferred = $q.defer();
 
                     initFn().then(function () {
+
+                        $scope.localized = $scope.localization;
+                        $scope.language = $scope.application.localization.enabled ? ($scope.defaults.language ? $scope.defaults.language : _.first($scope.application.languages).code) : $scope.defaults.language;
 
                         $scope.run('preloading').then(function () {
                             $scope.preload().then(function () {

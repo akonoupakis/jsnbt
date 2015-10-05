@@ -16,6 +16,8 @@
         $scope.enqueue('preloading', function () {
             var deferred = $q.defer();
 
+            $scope.localized = false;
+
             var allRoles = [];
             
             for (var roleName in $jsnbt.roles) {

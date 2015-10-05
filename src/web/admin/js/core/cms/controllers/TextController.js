@@ -20,7 +20,8 @@
             var deferred = $q.defer();
 
             $scope.languages = $scope.application.localization.enabled ? $scope.application.languages : _.filter($scope.application.languages, function (x) { return x.code === $scope.defaults.language; });
-            
+            $scope.localized = false;
+
             deferred.resolve();
 
             return deferred.promise;

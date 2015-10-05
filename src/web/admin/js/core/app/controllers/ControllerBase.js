@@ -15,7 +15,7 @@
 
                 var logger = $logger.create('ControllerBase');
 
-                $scope.localized = false; 
+                $scope.localization = false; 
                 $scope.languages = []; 
                 $scope.language = ''; 
 
@@ -93,13 +93,12 @@
                     
                     var proceed = function () {
 
-                        $scope.localized = $scope.application.localization.enabled;
+                        $scope.localization = $scope.application.localization.enabled;
                         $scope.languages = _.map($scope.application.languages, function (x) {
                             x.image = 'img/core/flags/' + x.code + '.png';
                             return x;
                         });
-                        $scope.language = $scope.application.localization.enabled ? ($scope.defaults.language ? $scope.defaults.language : _.first($scope.application.languages).code) : $scope.defaults.language;
-
+                        
                         $scope.getBreadcrumb().then(function (breadcrumb) {
                             $scope.setBreadcrumb(breadcrumb).then(function () {
                                 deferred.resolve();
