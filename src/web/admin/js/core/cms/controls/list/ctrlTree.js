@@ -12,7 +12,7 @@
              replace: true,
              transclude: true,
              scope: {
-                 language: '=',
+                 ngLanguage: '=',
                  ngModel: '=',
                  ngDomain: '=',
                  ngSelectable: '=',
@@ -31,6 +31,12 @@
                      lElem.addClass('ctrl');
                      lElem.addClass('ctrl-tree');
 
+                     scope.language = scope.ngLanguage;
+
+                     scope.$watch('ngLanguage', function (value) {
+                         scope.language = value;
+                     });
+
                      var root = scope.ngRoot === undefined || scope.ngRoot === true;
                      scope.root = root;
 
@@ -45,7 +51,7 @@
                              childScope.ngSelectPointee = scope.ngSelectPointee;
                              childScope.ngTranscludeFn = scope.transcludeFn;
                              childScope.ngFn = scope.ngFn;
-                             childScope.language = scope.language;
+                             childScope.ngLanguage = scope.language;
                              childScope.ngRoot = false;
 
                              scope.transcludeFn(childScope, function (clone, innerScope) {
@@ -91,11 +97,12 @@
                              childScope.ngSelectable = scope.$parent.ngSelectable;
                              childScope.ngSelectMode = scope.$parent.ngSelectMode;
                              childScope.ngSelectPointee = scope.$parent.ngSelectPointee;
+                             childScope.ngLanguage = scope.$parent.language;
                              childScope.ngTranscludeFn = transcludeFn;
                              childScope.ngRoot = false;
                              childScope.ngFn = scope.$parent.ngFn;
 
-                             var collectionElement = angular.element('<ctrl-tree ng-model="ngModel" ng-domain="ngDomain" ng-root="ngRoot" ng-selectable="ngSelectable" ng-select-mode="ngSelectMode" ng-select-pointee="ngSelectPointee" ng-transclude-fn="ngTranscludeFn" ng-fn="ngFn" language="language"></ctrl-tree>');
+                             var collectionElement = angular.element('<ctrl-tree ng-model="ngModel" ng-domain="ngDomain" ng-root="ngRoot" ng-selectable="ngSelectable" ng-select-mode="ngSelectMode" ng-select-pointee="ngSelectPointee" ng-transclude-fn="ngTranscludeFn" ng-fn="ngFn" ng-language="ngLanguage"></ctrl-tree>');
                              var compiled = $compile(collectionElement)(childScope);
                              lElem.append(compiled);
                          });
@@ -114,6 +121,12 @@
              transclude: true,
              link: function (scope, element, attrs) {
                  element.addClass('ctrl-tree-node-content');
+
+                 scope.language = scope.ngLanguage;
+
+                 scope.$watch('ngLanguage', function (value) {
+                     scope.language = value;
+                 });
 
                  var selectMode = scope.ngSelectMode || 'single';
                  if (scope.ngSelectable) {

@@ -22,6 +22,21 @@ module.exports = function (grunt) {
     }
 
     this.moduleNames = [];
+    
+    var mainPackageInfoPath = server.getPath('package.json');
+    if (fs.existsSync(mainPackageInfoPath)) {
+        var mainPackInfo = require(mainPackageInfoPath);
+        if (mainPackInfo.main) {
+
+            var module = getModule(server.getPath(mainPackInfo.main));
+            if (module) {
+                if (module.domain === 'core') {
+                    self.modulePaths.push(mainPackInfo.main);
+                    self.app.register(module);
+                }
+            }
+        }
+    }
 
     if (fs.existsSync(server.getPath('src/pck'))) {
         var packages = fs.readdirSync(server.getPath('src/pck'));
@@ -88,18 +103,21 @@ module.exports = function (grunt) {
 
             var module = getModule(server.getPath(mainPackInfo.main));
             if (module) {
-                self.modulePaths.push(mainPackInfo.main);
-                self.app.register(module);
-
-                var dbgModule = getModule(server.getPath('src/dbg/index.js'));
-                if (dbgModule) {
-                    self.modulePaths.push('src/dbg/index.js');
-                    self.app.register(dbgModule);
+                if (module.domain === 'core') {
+                    var dbgModule = getModule(server.getPath('src/dbg/index.js'));
+                    if (dbgModule) {
+                        self.modulePaths.push('src/dbg/index.js');
+                        self.app.register(dbgModule);
+                    }
+                }
+                if (module.domain === 'public') {
+                    self.modulePaths.push(mainPackInfo.main);
+                    self.app.register(module);
                 }
             }
         }
     }
-
+    
     var getFilesToClean = function (folder) {
         var results = [];
 

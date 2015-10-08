@@ -243,7 +243,7 @@ exports.register = function (module) {
     applyTextArray('fileGroups');
 
     applyArray('content', 'id');
-
+    
     var dataDefaults = {
         name: '',
         localized: true,
@@ -403,9 +403,8 @@ exports.init = function (options) {
     var installedModulePaths = fs.readFileSync(root.getPath('www/modules'), 'utf8').split('\n');
     
     _.each(installedModulePaths, function (installedModulePath) {
-    
         var installedModule = require(root.getPath(installedModulePath));
-        if (installedModule.domain && installedModule.domain !== 'core') {            
+        if (installedModule.domain && installedModule.domain !== 'core') {
             self.register(installedModule);
         }
     });

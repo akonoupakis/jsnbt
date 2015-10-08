@@ -15,11 +15,19 @@
                     ngModel: '=',
                     ngSelectable: '=',
                     ngSelectMode: '=',
-                    ngFn: '='
+                    ngFn: '=',
+                    ngLanguage: '='
                 },
                 controller: function ($scope) {
+                    var self = this;
+
                     this.selectable = $scope.ngSelectable;
                     this.selectMode = $scope.ngSelectMode;
+                    this.language = $scope.ngLanguage;
+
+                    $scope.$watch('ngLanguage', function (value) {
+                        self.language = value;
+                    });
                 },
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl');
@@ -104,7 +112,7 @@
                     scope.selectable = ctrlGrid.selectable;
                     scope.selectMode = ctrlGrid.selectMode;
 
-                    scope.language = scope.defaults.language;
+                    scope.language = ctrlGrid.language;
 
                     scope.select = function (item, double) {
                         if (ctrlGrid.selectable) {

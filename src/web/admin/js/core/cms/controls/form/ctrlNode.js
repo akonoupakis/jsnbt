@@ -11,7 +11,7 @@
                 restrict: 'E',
                 replace: true,
                 scope: {
-                    language: '=',
+                    ngLanguage: '=',
                     ngModel: '=',
                     ngDomain: '=',
                     ngOptions: '=',
@@ -100,7 +100,7 @@
                                         id: newValue,
                                         domain: scope.ngDomain
                                     }).then(function (response) {
-                                        scope.value = response.title[scope.language];
+                                        scope.value = response.title[scope.ngLanguage];
                                         scope.wrong = false;
                                         scope.missing = false;
 

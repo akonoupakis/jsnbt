@@ -11,7 +11,7 @@
                 restrict: 'E',
                 replace: true,
                 scope: {
-                    language: '=',
+                    ngLanguage: '=',
                     ngModel: '=',
                     ngDomain: '=',
                     ngOptions: '=',
@@ -147,7 +147,7 @@
                                         if (result) {
                                             scopeValues.push({
                                                 id: result.id,
-                                                name: result.title[scope.language]
+                                                name: result.title[scope.ngLanguage]
                                             });
 
                                             scope.wrong[nv] = false;

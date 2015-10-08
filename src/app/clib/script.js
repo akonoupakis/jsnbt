@@ -49,7 +49,7 @@ var Script = function (app) {
 
         result.modules = {};
         _.each(app.modules.all, function (module) {
-
+            
             if (module.domain !== 'core') {
                 result.modules[module.domain] = {
                     name: typeof (module.getName) === 'function' ? module.getName() : undefined,
