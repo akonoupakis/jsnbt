@@ -25,7 +25,7 @@
         };
 
         $scope.canCreate = function () {
-            return false;
+            return true;
         };
 
         $scope.create = function () {

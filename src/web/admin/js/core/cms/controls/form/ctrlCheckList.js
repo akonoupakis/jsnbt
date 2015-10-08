@@ -39,6 +39,7 @@
 
                     var initiating = true;
                     var initiated = false;
+                    var validated = false;
                     
                     scope.$watch('ngOptions', function (newValue, prevValue) {
                         if (newValue) {
@@ -141,7 +142,7 @@
                         var valid = true;
 
                         var validating = scope.ngValidating !== false;
-                        if (validating && scope.enabled && element.is(':visible')) {
+                        if (validated && validating && scope.enabled && element.is(':visible')) {
                             if (scope.ngRequired) {
                                 valid = (scope.ngModel || []).length > 0;
                             }
@@ -152,13 +153,14 @@
 
                     scope.$on(CONTROL_EVENTS.initiateValidation, function (sender) {
                         initiated = true;
+                        validated = true;
                         scope.valid = isValid();
 
                         scope.$emit(CONTROL_EVENTS.valueIsValid, scope.valid);
                     });
 
                     scope.$on(CONTROL_EVENTS.validate, function (sender) {
-                        if (initiated) {
+                        if (initiated && validated) {
                             scope.valid = isValid();
                         }
 
@@ -167,6 +169,7 @@
 
                     scope.$on(CONTROL_EVENTS.clearValidation, function (sender) {
                         initiated = false;
+                        validated = false;
                         scope.valid = true;
                     });
 

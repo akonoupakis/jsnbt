@@ -8,12 +8,18 @@
 <hr />
         
 <div class="row" id="user-username" data-scrollspy="email">
-    <ctrl-text class="col-sm-12" ng-model="user.username" ng-required="true" ng-disabled="true" ng-label="email"></ctrl-text>
+    <ctrl-text class="col-sm-12" ng-model="user.username" ng-required="true" ng-disabled="!isNew()" ng-label="email"></ctrl-text>
 </div>
         
 <div class="row" id="user-name" data-scrollspy="name">
-    <ctrl-text class="col-sm-6" ng-model="user.firstName" ng-required="true" ng-disabled="true" ng-label="first name"></ctrl-text>
-    <ctrl-text class="col-sm-6" ng-model="user.lastName" ng-required="true" ng-disabled="true" ng-label="last name"></ctrl-text>
+    <ctrl-text class="col-sm-6" ng-model="user.firstName" ng-required="true" ng-disabled="!isNew()" ng-label="first name"></ctrl-text>
+    <ctrl-text class="col-sm-6" ng-model="user.lastName" ng-required="true" ng-disabled="!isNew()" ng-label="last name"></ctrl-text>
+</div>
+
+<div class="row" id="user-password" data-scrollspy="password" ng-show="isNew()">
+    <ctrl-password class="col-sm-6" ng-model="credentials.password" ng-required="true" ng-valid="!invalidPasswordComparison" ng-disabled="!isNew()" ng-label="password"></ctrl-password>
+    <ctrl-password class="col-sm-6" ng-model="credentials.passwordConfirmation" ng-required="true" ng-validate="validatePasswordConfirm" ng-disabled="!isNew()" ng-label="password confirmation"></ctrl-password>
+    <span class="validation-error whole centered" ng-show="invalidPasswordComparison">passwords do not match</span>
 </div>
 
 <hr />

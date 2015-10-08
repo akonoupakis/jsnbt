@@ -76,11 +76,11 @@
                                     valid = scope.ngValidate(scope.ngModel);
                                 }
                             }
-
+                            
                             if (valid && scope.ngValid === false)
                                 valid = false;
                         }
-
+                        
                         return valid;
                     };
 

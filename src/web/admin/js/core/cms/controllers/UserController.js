@@ -11,7 +11,14 @@
         $scope.user = undefined;
         $scope.roles = [];
 
+        $scope.credentials = {
+            password: undefined,
+            passwordConfirmation: undefined
+        };
+
         $scope.editRoles = false;
+
+        $scope.invalidPasswordComparison = false;
         
         $scope.enqueue('preloading', function () {
             var deferred = $q.defer();
@@ -121,7 +128,17 @@
             var deferred = $q.defer();
 
             if ($scope.isNew()) {
-                throw new Error('not implemented');
+
+                var newUser = {};
+                $.extend(true, newUser, data);
+
+                newUser.password = $scope.credentials.password;
+
+                $data.users.post(newUser).then(function (result) {
+                    deferred.resolve(result);
+                }).catch(function (error) {
+                    deferred.reject(error);
+                });
             }
             else {
                 $data.users.put($scope.id, data).then(function (result) {
@@ -132,6 +149,12 @@
             }
 
             return deferred.promise;
+        };
+
+        $scope.validatePasswordConfirm = function (value) {
+            var valid = value === $scope.credentials.password;
+            $scope.invalidPasswordComparison = !valid;   
+            return valid;
         };
 
         $scope.init().catch(function (ex) {

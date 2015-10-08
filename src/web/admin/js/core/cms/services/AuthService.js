@@ -61,12 +61,12 @@
             AuthService.count = function () {
                 var deferred = $q.defer();
 
-                jsnbt.db.users.get({}, function (userError, userResponse) {
+                jsnbt.db.users.count({}, function (userError, userResponse) {
                     if (userError) {
                         deferred.reject(userError);
                     }
                     else {
-                        deferred.resolve(userResponse.length);                        
+                        deferred.resolve(userResponse.count);                        
                     }
                 });
 
