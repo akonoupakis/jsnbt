@@ -22,7 +22,7 @@ module.exports = function (grunt) {
     }
 
     this.moduleNames = [];
-    
+
     var mainPackageInfoPath = server.getPath('package.json');
     if (fs.existsSync(mainPackageInfoPath)) {
         var mainPackInfo = require(mainPackageInfoPath);
@@ -94,7 +94,7 @@ module.exports = function (grunt) {
             }
         });
     }
-    
+
 
     var mainPackageInfoPath = server.getPath('package.json');
     if (fs.existsSync(mainPackageInfoPath)) {
@@ -117,7 +117,7 @@ module.exports = function (grunt) {
             }
         }
     }
-    
+
     var getFilesToClean = function (folder) {
         var results = [];
 
@@ -268,7 +268,7 @@ module.exports = function (grunt) {
                 });
             }
         });
-        
+
         return results;
     };
 
@@ -301,7 +301,7 @@ module.exports = function (grunt) {
                 });
             }
         });
-        
+
         return results;
     };
 
@@ -521,7 +521,7 @@ module.exports = function (grunt) {
                         name: dep,
                         version: bowerConfig.dependencies[dep]
                     };
-                    bowerPackages.push(packOptions);                    
+                    bowerPackages.push(packOptions);
                 }
             }
         });
@@ -960,14 +960,14 @@ module.exports = function (grunt) {
             ],
             tasks: [
                 //'jshint',
-                'copy:devAdminJs', 'copy:devAdminImg', 'copy:devAdminTmpl', 'copy:devAdminCss', 'less:devAdmin', 'preprocess:devAdmin', 'clean:devLess', 'cleanempty:dev',
-                'copy:devPublicJs', 'copy:devPublicImg', 'copy:devPublicTmpl', 'copy:devPublicCss', 'preprocess:devPublic', 'less:devPublic', 'clean:devLess', 'cleanempty:dev'
+                'copy:devAdminJs', 'copy:devAdminImg', 'copy:devAdminTmpl', 'copy:devAdminCss', 'less:devAdmin', 'preprocess:devAdmin',
+                'copy:devPublicJs', 'copy:devPublicImg', 'copy:devPublicTmpl', 'copy:devPublicCss', 'preprocess:devPublic', 'less:devPublic'
             ]
         }
     };
 
     grunt.initConfig(gruntConfig);
-    
+
     grunt.loadNpmTasks('grunt-env');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -983,8 +983,7 @@ module.exports = function (grunt) {
 
 
     // 'jshint'
-    grunt.registerTask('dev', ['mod:bower', 'mod:npm', 'bower:dev', 'env:dev', 'clean:dev', 'setenv:dev', 'setmod:dev', 'copy:dev', 'script:dev', 'patch:dev', 'deploybower:dev', 'less:dev', 'preprocess:dev', 'clean:devLess', 'cleanempty:dev']);
-    //grunt.registerTask('prod', ['mod:bower', 'mod:npm', 'bower:prod', 'env:prod', 'clean:prod', 'copy:prod', 'script:prod', 'patch:prod', 'deploybower:prod', 'less:prod', 'preprocess:prod', 'clean:prodLess', 'cssmin:prod', 'clean:prodMinified', 'uglify:prod', 'clean:prodUglified', 'cleanempty:prod', 'setenv:prod', 'setmod:prod']);
+    grunt.registerTask('dev', ['mod:bower', 'mod:npm', 'bower:dev', 'env:dev', 'clean:dev', 'setenv:dev', 'setmod:dev', 'copy:dev', 'script:dev', 'patch:dev', 'deploybower:dev', 'less:dev', 'preprocess:dev']);
     grunt.registerTask('prod', ['mod:bower', 'mod:npm', 'bower:prod', 'env:prod', 'clean:prod', 'setenv:prod', 'setmod:prod', 'copy:prod', 'script:prod', 'patch:prod', 'deploybower:prod', 'less:prod', 'preprocess:prod', 'clean:prodLess', 'cssmin:prod', 'clean:prodMinified', 'uglify:prod', 'cleanempty:prod']);
 
     grunt.registerTask('watch-public-css', ['watch:publicCss']);
