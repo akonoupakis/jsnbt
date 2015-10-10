@@ -145,20 +145,13 @@
             return {
                 restrict: 'E',
                 replace: true,
-                scope: {
-                    ngModel: '=',
-                    ngDisabled: '=',
-                    ngRequired: '=',
-                    ngValidating: '=',
-                    ngLabel: '@',
-                    ngTip: '@',
+                scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
                     ngOptions: '=',
                     ngNameField: '@',
                     ngValueField: '@',
                     ngDisabledField: '@',
-                    ngDescriptionField: '@',
-                    ngChangeFn: '='
-                },
+                    ngDescriptionField: '@'
+                }),
                 link: function (scope, element, attrs) {
                     return new CheckListControl(scope, element, attrs);
                 },

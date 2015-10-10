@@ -48,20 +48,11 @@
             return {
                 restrict: 'E',
                 replace: true,
-                scope: {
-                    ngModel: '=',
-                    ngDisabled: '=',
-                    ngRequired: '=',
-                    ngLabel: '@',
-                    ngTip: '@',
-                    ngValidating: '=',
-                    ngValidate: '=',
-                    ngValid: '=',
+                scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
                     ngAutoFocus: '=',
                     ngMax: '=',
-                    ngMin: '=',
-                    ngChangeFn: '='
-                },
+                    ngMin: '='
+                }),
                 link: function (scope, element, attrs) {
                     return new NumericControl(scope, element, attrs);
                 },

@@ -151,19 +151,12 @@
             return {
                 restrict: 'E',
                 replace: true,
-                scope: {
-                    ngModel: '=',
-                    ngDisabled: '=',
-                    ngRequired: '=',
-                    ngLabel: '@',
-                    ngTip: '@',
+                scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
                     ngOptions: '=',
                     ngDefault: '=',
                     ngValueField: '@',
-                    ngNameField: '@',
-                    ngValidating: '=',
-                    ngChangeFn: '='
-                },
+                    ngNameField: '@'
+                }),
                 link: function (scope, element, attrs) {
                     return new SelectListControl(scope, element, attrs);
                 },

@@ -134,19 +134,10 @@
             return {
                 restrict: 'E',
                 replace: true,
-                scope: {
-                    ngModel: '=',
-                    ngDisabled: '=',
-                    ngRequired: '=',
-                    ngLabel: '@',
-                    ngTip: '@',
-                    ngValidating: '=',
-                    ngValidate: '=',
-                    ngValid: '=',
+                scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
                     ngAutoFocus: '=',
-                    ngTime: '=',
-                    ngChangeFn: '='
-                },
+                    ngTime: '='
+                }),
                 link: function (scope, element, attrs) {
                     return new DatePickerControl(scope, element, attrs);
                 },

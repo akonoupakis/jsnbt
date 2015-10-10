@@ -112,15 +112,8 @@
             return {
                 restrict: 'E',
                 replace: true,
-                scope: {
-                    ngModel: '=',
-                    ngDisabled: '=',
-                    ngRequired: '=',
-                    ngLabel: '@',
-                    ngTip: '@',
-                    ngValidating: '=',
-                    ngChangeFn: '='
-                },
+                scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
+                }),
                 link: function (scope, element, attrs) {
                     return new ContainerControl(scope, element, attrs);
                 },

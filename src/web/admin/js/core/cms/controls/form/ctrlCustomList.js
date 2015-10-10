@@ -97,16 +97,9 @@
                 restrict: 'E',
                 replace: true,
                 transclude: true,
-                scope: {
-                    ngModel: '=',
-                    ngDisabled: '=',
-                    ngRequired: '=',
-                    ngLabel: '@',
-                    ngTip: '@',
-                    ngValidating: '=',
-                    ngScope: '=',
-                    ngChangeFn: '='
-                },
+                scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
+                    ngScope: '='
+                }),
                 link: function (scope, element, attrs) {
                     return new CustomListControl(scope, element, attrs);
                 },

@@ -282,14 +282,14 @@
             return {
                 restrict: 'E',
                 replace: true,
-                scope: {
+                scope: $.extend(true, jsnbt.controls.ControlBase.prototype.properties, {
                     ngPath: '=',
                     ngGroup: '=',
                     ngSelectable: '=',
                     ngSelectMode: '=',
                     ngSelected: '=',
                     ngExtensions: '='
-                },
+                }),
                 link: function (scope, element, attrs) {
                     return new ExplorerControl(scope, element, attrs);
                 },

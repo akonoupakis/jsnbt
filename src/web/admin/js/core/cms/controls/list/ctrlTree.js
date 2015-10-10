@@ -52,17 +52,13 @@
              restrict: 'E',
              replace: true,
              transclude: true,
-             scope: {
-                 ngLanguage: '=',
-                 ngModel: '=',
+             scope: $.extend(true, jsnbt.controls.ListControlBase.prototype.properties, {
                  ngDomain: '=',
-                 ngSelectable: '=',
-                 ngSelectMode: '=',
                  ngSelectPointee: '=',
                  ngTranscludeFn: '=',
                  ngFn: '=',
                  ngRoot: '='
-             },
+             }),
              template: '<ol class="dd-list" ng-class="{ \'dd-list-root\': root, \'dd-selectable\': root && ngSelectable }"></ol>',
              compile: function (elem, attrs, transclude) {
                  return function (scope, lElem, lAttrs) {

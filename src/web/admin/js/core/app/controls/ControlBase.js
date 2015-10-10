@@ -40,6 +40,8 @@
 
                 };
 
+                ControlBase.prototype.properties = {};
+
                 return ControlBase;
 
             })(controls.ControlBase || {});

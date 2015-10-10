@@ -51,20 +51,11 @@
             return {
                 restrict: 'E',
                 replace: true,
-                scope: {
-                    ngModel: '=',
-                    ngDisabled: '=',
-                    ngRequired: '=',
-                    ngLabel: '@',
-                    ngTip: '@',
+                scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
                     ngRows: '=',
-                    ngValidating: '=',
-                    ngValidate: '=',
-                    ngValid: '=',
                     ngAutoFocus: '=',
-                    ngMaxLength: '=',
-                    ngChangeFn: '='
-                },
+                    ngMaxLength: '='
+                }),
                 link: function (scope, element, attrs) {
                     return new TextAreaControl(scope, element, attrs);
                 },

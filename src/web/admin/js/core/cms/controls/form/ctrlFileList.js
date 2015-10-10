@@ -194,17 +194,10 @@
             return {
                 restrict: 'E',
                 replace: true,
-                scope: {
-                    ngModel: '=',
-                    ngFileGroup: '=',
-                    ngDisabled: '=',
-                    ngRequired: '=',
-                    ngLabel: '@',
-                    ngTip: '@',
-                    ngExtensions: '=',
-                    ngValidating: '=',
-                    ngChangeFn: '='
-                },
+                scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
+                    ngFileGroup: '@',
+                    ngExtensions: '='
+                }),
                 link: function (scope, element, attrs) {
                     return new FileListControl(scope, element, attrs);
                 },

@@ -102,17 +102,10 @@
             return {
                 restrict: 'E',
                 replace: true,
-                scope: {
-                    ngModel: '=',
+                scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
                     ngFileGroup: '@',
-                    ngDisabled: '=',
-                    ngRequired: '=',
-                    ngLabel: '@',
-                    ngTip: '@',
-                    ngExtensions: '=',
-                    ngValidating: '=',
-                    ngChangeFn: '='
-                },
+                    ngExtensions: '='
+                }),
                 link: function (scope, element, attrs) {
                     return new FileControl(scope, element, attrs);
                 },

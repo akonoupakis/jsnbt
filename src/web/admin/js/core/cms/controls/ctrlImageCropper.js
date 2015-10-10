@@ -66,11 +66,11 @@
             return {
                 restrict: 'E',
                 replace: true,
-                scope: {
+                scope: $.extend(true, jsnbt.controls.ControlBase.prototype.properties, {
                     ngModel: '=',
                     ngHeight: '=',
                     ngWidth: '='
-                },
+                }),
                 link: function (scope, element, attrs) {
                     return new ImageCropperControl(scope, element, attrs);
                 },

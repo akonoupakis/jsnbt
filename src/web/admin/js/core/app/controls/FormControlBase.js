@@ -88,6 +88,18 @@
                     });
                 };
                 FormControlBase.prototype = Object.create(controls.ControlBase.prototype);
+                
+                FormControlBase.prototype.properties = $.extend(true, controls.ControlBase.prototype.properties, {
+                    ngModel: '=',
+                    ngDisabled: '=',
+                    ngRequired: '=',
+                    ngValidating: '=',
+                    ngValidate: '=',
+                    ngValid: '=',
+                    ngLabel: '@',
+                    ngTip: '@',
+                    ngChangeFn: '='
+                });
 
                 FormControlBase.prototype.init = function (time) {
                     var deferred = this.ctor.$q.defer();

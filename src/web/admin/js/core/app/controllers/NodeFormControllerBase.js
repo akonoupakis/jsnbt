@@ -12,6 +12,8 @@
                 NodeFormControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, $fn, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
                     controllers.FormControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
+                    var self = this;
+
                     var logger = $logger.create('NodeFormControllerBase');
 
                     $scope.localization = true;
@@ -986,7 +988,7 @@
                         if (pointerModules)
                             types.push({ value: 'pointer', name: 'pointer' });
 
-                        if (_.keys($jsnbt.routes).length > 0)
+                        if (_.keys(this.ctor.$jsnbt.routes).length > 0)
                             types.push({ value: 'router', name: 'router' });
                     }
                     else {

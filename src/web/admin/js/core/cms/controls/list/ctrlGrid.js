@@ -32,13 +32,9 @@
                 restrict: 'E',
                 replace: true,
                 transclude: true,
-                scope: {
-                    ngModel: '=',
-                    ngSelectable: '=',
-                    ngSelectMode: '=',
-                    ngFn: '=',
-                    ngLanguage: '='
-                },
+                scope: $.extend(true, jsnbt.controls.ListControlBase.prototype.properties, {
+                    ngFn: '='
+                }),
                 controller: function ($scope) {
                     var self = this;
 

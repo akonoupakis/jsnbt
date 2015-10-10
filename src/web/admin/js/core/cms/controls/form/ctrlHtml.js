@@ -98,18 +98,11 @@
             return {
                 restrict: 'E',
                 replace: true,
-                scope: {
-                    ngModel: '=',
-                    ngDisabled: '=',
-                    ngRequired: '=',
-                    ngValidating: '=',
-                    ngLabel: '@',
-                    ngTip: '@',
+                scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
                     ngToolbar: '=',
                     ngHeight: '=',
-                    ngMaxHeight: '=',
-                    ngChangeFn: '='
-                },
+                    ngMaxHeight: '='
+                }),
                 link: function (scope, element, attrs) {
                     return new HtmlControl(scope, element, attrs);
                 },

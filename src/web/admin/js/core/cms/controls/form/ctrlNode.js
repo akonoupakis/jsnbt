@@ -130,18 +130,11 @@
             return {
                 restrict: 'E',
                 replace: true,
-                scope: {
+                scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
                     ngLanguage: '=',
-                    ngModel: '=',
                     ngDomain: '=',
-                    ngOptions: '=',
-                    ngDisabled: '=',
-                    ngRequired: '=',
-                    ngLabel: '@',
-                    ngTip: '@',
-                    ngValidating: '=',
-                    ngChangeFn: '='
-                },
+                    ngOptions: '='
+                }),
                 link: function (scope, element, attrs) {
                     return new NodeControl(scope, element, attrs);
                 },

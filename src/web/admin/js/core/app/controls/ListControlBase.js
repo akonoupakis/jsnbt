@@ -21,6 +21,13 @@
                 };
                 ListControlBase.prototype = Object.create(controls.ControlBase.prototype);
 
+                ListControlBase.prototype.properties = $.extend(true, controls.ControlBase.prototype.properties, {
+                    ngModel: '=',
+                    ngLanguage: '=',
+                    ngSelectable: '=',
+                    ngSelectMode: '='
+                });
+
                 ListControlBase.prototype.init = function (time) {
                     var deferred = this.ctor.$q.defer();
 

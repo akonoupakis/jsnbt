@@ -52,14 +52,9 @@
                 restrict: 'E',
                 replace: true,
                 transclude: true,
-                scope: {
-                    ngModel: '=',
-                    ngDisabled: '=',
-                    ngLabel: '@',
-                    ngTip: '@',
-                    ngValidating: '=',
+                scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
                     ngScope: '='
-                },
+                }),
                 link: function (scope, element, attrs) {
                     return new CustomControl(scope, element, attrs);
                 },

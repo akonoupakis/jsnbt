@@ -56,12 +56,8 @@
             return {
                 restrict: 'E',
                 replace: true,
-                scope: {
-                    ngModel: '=',
-                    ngDisabled: '=',
-                    ngLabel: '@',
-                    ngTip: '@'
-                },
+                scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
+                }),
                 link: function (scope, element, attrs) {
                     return new CheckControl(scope, element, attrs);
                 },

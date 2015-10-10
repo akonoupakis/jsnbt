@@ -75,13 +75,13 @@
                 return {
                     restrict: 'E',
                     replace: true,
-                    scope: {
+                    scope: $.extend(true, jsnbt.controls.ControlBase.prototype.properties, {
                         ngModel: '=',
                         ngOptions: '=',
                         ngValueField: '@',
                         ngTextField: '@',
                         ngImageField: '@'
-                    },
+                    }),
                     link: function (scope, element, attrs) {
                         return new LanguageSelectorControl(scope, element, attrs);
                     },

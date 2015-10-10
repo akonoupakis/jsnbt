@@ -140,19 +140,12 @@
             return {
                 restrict: 'E',
                 replace: true,
-                scope: {
-                    ngModel: '=',
+                scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
                     ngFileGroup: '@',
-                    ngDisabled: '=',
-                    ngRequired: '=',
-                    ngLabel: '@',
-                    ngTip: '@',
-                    ngValidating: '=',
                     ngExtensions: '=',
                     ngHeight: '=',
-                    ngWidth: '=',
-                    ngChangeFn: '='
-                },
+                    ngWidth: '='
+                }),
                 link: function (scope, element, attrs) {
                     return new ImageControl(scope, element, attrs);
                 },

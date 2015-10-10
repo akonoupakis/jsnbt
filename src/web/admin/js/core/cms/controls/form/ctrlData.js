@@ -119,18 +119,11 @@
             return {
                 restrict: 'E',
                 replace: true,
-                scope: {
+                scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
                     ngLanguage: '=',
-                    ngModel: '=',
                     ngDomain: '=',
-                    ngListId: '=',
-                    ngDisabled: '=',
-                    ngRequired: '=',
-                    ngLabel: '@',
-                    ngTip: '@',
-                    ngValidating: '=',
-                    ngChangeFn: '='
-                },
+                    ngListId: '='
+                }),
                 link: function (scope, element, attrs) {
                     return new DataControl(scope, element, attrs);
                 },

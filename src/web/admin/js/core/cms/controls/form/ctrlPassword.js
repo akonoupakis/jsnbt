@@ -48,18 +48,9 @@
             return {
                 restrict: 'E',
                 replace: true,
-                scope: {
-                    ngModel: '=',
-                    ngDisabled: '=',
-                    ngRequired: '=',
-                    ngLabel: '@',
-                    ngTip: '@',
-                    ngValidating: '=',
-                    ngValidate: '=',
-                    ngValid: '=',
-                    ngAutoFocus: '=',
-                    ngChangeFn: '='
-                },
+                scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
+                    ngAutoFocus: '='
+                }),
                 link: function (scope, element, attrs) {
                     return new PasswordControl(scope, element, attrs);
                 },

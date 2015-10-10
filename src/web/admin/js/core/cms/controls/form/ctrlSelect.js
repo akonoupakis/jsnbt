@@ -60,22 +60,13 @@
             return {
                 restrict: 'E',
                 replace: true,
-                scope: {
-                    ngModel: '=',
-                    ngDisabled: '=',
-                    ngRequired: '=',
-                    ngLabel: '@',
-                    ngTip: '@',
+                scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
                     ngOptions: '=',
                     ngDefault: '=',
                     ngValueField: '@',
                     ngNameField: '@',
-                    ngValidating: '=',
-                    ngValidate: '=',
-                    ngValid: '=',
-                    ngAutoFocus: '=',
-                    ngChangeFn: '='
-                },
+                    ngAutoFocus: '='
+                }),
                 link: function (scope, element, attrs) {
                     return new SelectControl(scope, element, attrs);
                 },
