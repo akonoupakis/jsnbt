@@ -5,28 +5,14 @@
     
     var LanguagesController = function ($scope, $rootScope, $location, $q, $logger, $data, PagedDataService, ModalService) {
         jsnbt.controllers.ListControllerBase.apply(this, $rootScope.getBaseArguments($scope));
+
+        var self = this;
         
         var logger = $logger.create('LanguagesController');
 
         $scope.available = false;
 
-        $scope.load = function () {
-            var deferred = $q.defer();
-            
-            PagedDataService.get(jsnbt.db.languages.get, {
-                $sort: {
-                    name: 1
-                }
-            }).then(function (response) {
-                deferred.resolve(response);
-            }).catch(function (error) {
-                deferred.reject(error);
-            });
-
-            return deferred.promise;
-        };
-
-        $scope.enqueue('loaded', function (data) {
+        this.enqueue('loaded', function (data) {
             var deferred = $q.defer();
 
             $scope.available = data.items.length < _.keys($scope.defaults.languages).length;
@@ -153,7 +139,7 @@
                 }
 
                 deletePromise(language).then(function () {
-                    $scope.remove(language);
+                    self.remove(language);
                 }).catch(function (error) {
                     logger.error(error);
                 });
@@ -161,11 +147,27 @@
 
         };
 
-        $scope.init().catch(function (ex) {
+        this.init().catch(function (ex) {
             logger.error(ex);
         });
     };
     LanguagesController.prototype = Object.create(jsnbt.controllers.ListControllerBase.prototype);
+
+    LanguagesController.prototype.load = function () {
+        var deferred = this.ctor.$q.defer();
+
+        this.ctor.PagedDataService.get(this.ctor.$jsnbt.db.languages.get, {
+            $sort: {
+                name: 1
+            }
+        }).then(function (response) {
+            deferred.resolve(response);
+        }).catch(function (error) {
+            deferred.reject(error);
+        });
+
+        return deferred.promise;
+    };
 
     angular.module("jsnbt")
         .controller('LanguagesController', ['$scope', '$rootScope', '$location', '$q', '$logger', '$data', 'PagedDataService', 'ModalService', LanguagesController]);

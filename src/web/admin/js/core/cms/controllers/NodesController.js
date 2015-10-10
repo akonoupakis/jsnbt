@@ -5,6 +5,8 @@
     
     var NodesController = function ($scope, $rootScope, $location, $jsnbt, $logger, $fn, $data, ModalService) {
         jsnbt.controllers.TreeControllerBase.apply(this, $rootScope.getBaseArguments($scope));
+
+        var self = this;
         
         var logger = $logger.create('NodesController');
 
@@ -107,7 +109,7 @@
                         }).then(function (result) {
                             if (result) {
                                 $data.nodes.del(node.id).then(function (nodeDeleteResults) {
-                                    $scope.remove(node);
+                                    self.remove(node);
                                 }, function (nodeDeleteError) {
                                     deferred.reject(nodeDeleteError);
                                 });
@@ -146,7 +148,7 @@
 
         };
 
-        $scope.init().catch(function (ex) {
+        this.init().catch(function (ex) {
             logger.error(ex);
         });
 

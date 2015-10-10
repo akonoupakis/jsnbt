@@ -10,7 +10,7 @@
 
         var logger = $logger.create('DataListController');
         
-        $scope.init().catch(function (ex) {
+        this.init().catch(function (ex) {
             logger.error(ex);
         });
     };

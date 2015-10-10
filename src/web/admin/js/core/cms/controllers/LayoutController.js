@@ -13,32 +13,7 @@
         
         $scope.tmpl = null;
         
-        $scope.setTemplate = function (name) {
-            var layout = $jsnbt.layouts[$scope.id];
-            if (layout)
-                $scope.tmpl = layout.form;
-            else
-                $scope.tmpl = null;
-        }
-        
-        $scope.load = function () {
-            var deferred = $q.defer();
-
-            $data.layouts.get({
-                layout: $scope.id
-            }).then(function (results) {
-
-                $scope.setTemplate($scope.id);
-
-                deferred.resolve(_.first(results));
-            }).catch(function (error) {
-                deferred.reject(error);
-            });
-
-            return deferred.promise;
-        };
-
-        $scope.enqueue('loaded', function () {
+        this.enqueue('loaded', function () {
             var deferred = $q.defer();
 
             var layout = $jsnbt.layouts[$scope.id];
@@ -51,65 +26,8 @@
 
             return deferred.promise;
         });
-
-        $scope.set = function (data) {
-            var deferred = $q.defer();
-
-            if ($jsnbt.layouts[$scope.id])
-                $scope.setTitle($jsnbt.layouts[$scope.id].name);
-            else
-                $scope.setTitle($scope.id);
-
-            if (data) {
-                $scope.layoutId = data.id;
-                $scope.layout = data;
-            }
-            else {
-                $scope.layoutId = undefined;
-                $scope.layout =  $data.create('layouts', {
-                    layout: $scope.id
-                });
-            }
-
-            $scope.language = $scope.application.localization.enabled ? ($scope.defaults.language ? $scope.defaults.language : _.first($scope.application.languages).code) : $scope.defaults.language;
-            
-            $scope.setValid(true);
-            $scope.setPublished(true);
-
-            deferred.resolve($scope.layout);
-
-            return deferred.promise;
-        };
-
-        $scope.get = function () {
-            return $scope.layout;
-        };
         
-        $scope.push = function (data) {
-            var deferred = $q.defer();
-            
-            if ($scope.layoutId) {
-                $data.layouts.put($scope.layoutId, {
-                    content: data.content || {}
-                }).then(function (result) {
-                    deferred.resolve(result);
-                }).catch(function (error) {
-                    deferred.reject(error);
-                });
-            }
-            else {
-                $data.layouts.post(data).then(function (result) {
-                
-                    deferred.resolve(result);
-                }).catch(function (error) {
-                    deferred.reject(error);
-                });
-            }
-
-            return deferred.promise;
-        };
-
-        $scope.enqueue('published', function (data) {
+        this.enqueue('published', function (data) {
             var deferred = $q.defer();
 
             if (!$scope.layoutId) {
@@ -122,11 +40,94 @@
             return deferred.promise;
         });
                 
-        $scope.init().catch(function (ex) {
+        this.init().catch(function (ex) {
             logger.error(ex);
         });
     };
     LayoutController.prototype = Object.create(jsnbt.controllers.FormControllerBase.prototype);
+
+    LayoutController.prototype.load = function () {
+        var deferred = this.ctor.$q.defer();
+
+        var self = this;
+
+        this.ctor.$data.layouts.get({
+            layout: this.scope.id
+        }).then(function (results) {
+
+            self.setTemplate(self.scope.id);
+
+            deferred.resolve(_.first(results));
+        }).catch(function (error) {
+            deferred.reject(error);
+        });
+
+        return deferred.promise;
+    };
+
+    LayoutController.prototype.set = function (data) {
+        var deferred = this.ctor.$q.defer();
+
+        if (this.ctor.$jsnbt.layouts[this.scope.id])
+            this.setTitle(this.ctor.$jsnbt.layouts[this.scope.id].name);
+        else
+            this.setTitle(this.scope.id);
+
+        if (data) {
+            this.scope.layoutId = data.id;
+            this.scope.layout = data;
+        }
+        else {
+            this.scope.layoutId = undefined;
+            this.scope.layout = this.ctor.$data.create('layouts', {
+                layout: this.scope.id
+            });
+        }
+
+        this.scope.language = this.scope.application.localization.enabled ? (this.scope.defaults.language ? this.scope.defaults.language : _.first(this.scope.application.languages).code) : this.scope.defaults.language;
+
+        this.setValid(true);
+        this.setPublished(true);
+
+        deferred.resolve(this.scope.layout);
+
+        return deferred.promise;
+    };
+
+    LayoutController.prototype.setTemplate = function (name) {
+        var layout = this.ctor.$jsnbt.layouts[this.scope.id];
+        if (layout)
+            this.scope.tmpl = layout.form;
+        else
+            this.scope.tmpl = null;
+    }
+
+    LayoutController.prototype.get = function () {
+        return this.scope.layout;
+    };
+
+    LayoutController.prototype.push = function (data) {
+        var deferred = this.ctor.$q.defer();
+
+        if (this.scope.layoutId) {
+            this.ctor.$data.layouts.put(this.scope.layoutId, {
+                content: data.content || {}
+            }).then(function (result) {
+                deferred.resolve(result);
+            }).catch(function (error) {
+                deferred.reject(error);
+            });
+        }
+        else {
+            this.ctor.$data.layouts.post(data).then(function (result) {
+                deferred.resolve(result);
+            }).catch(function (error) {
+                deferred.reject(error);
+            });
+        }
+
+        return deferred.promise;
+    };
 
     angular.module("jsnbt")
         .controller('LayoutController', ['$scope', '$rootScope', '$timeout', '$q', '$logger', '$data', '$jsnbt', LayoutController]);

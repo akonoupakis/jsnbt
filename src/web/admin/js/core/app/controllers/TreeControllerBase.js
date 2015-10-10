@@ -7,26 +7,33 @@
 
         jsnbt.controllers = (function (controllers) {
 
-            controllers.TreeControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, $fn, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
-                controllers.ControllerBase.apply(this, $rootScope.getBaseArguments($scope));
+            controllers.TreeControllerBase = (function (TreeControllerBase) {
 
-                $scope.nodes = [];
+                TreeControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, $fn, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
+                    controllers.ControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
-                $scope.preload = function () {
-                    var deferred = $q.defer();
+                    $scope.localization = true;
+
+                    $scope.nodes = [];
+
+                };
+                TreeControllerBase.prototype = Object.create(controllers.ControllerBase.prototype);
+
+                TreeControllerBase.prototype.preload = function () {
+                    var deferred = this.ctor.$q.defer();
 
                     deferred.resolve();
 
                     return deferred.promise;
                 };
 
-                $scope.load = function () {
-                    var deferred = $q.defer();
+                TreeControllerBase.prototype.load = function () {
+                    var deferred = this.ctor.$q.defer();
 
-                    TreeNodeService.getNodes({
-                        identifier: $scope.cacheKey,
-                        domain: $scope.domain,
-                        entities: $scope.entities,
+                    this.ctor.TreeNodeService.getNodes({
+                        identifier: this.scope.cacheKey,
+                        domain: this.scope.domain,
+                        entities: this.scope.entities,
                         parentId: '',
                         parentIds: []
                     }).then(function (response) {
@@ -38,20 +45,20 @@
                     return deferred.promise;
                 };
 
-                $scope.set = function (data) {
-                    var deferred = $q.defer();
+                TreeControllerBase.prototype.set = function (data) {
+                    var deferred = this.ctor.$q.defer();
 
-                    $scope.nodes = data;
+                    this.scope.nodes = data;
 
-                    deferred.resolve($scope.nodes);
+                    deferred.resolve(this.scope.nodes);
 
                     return deferred.promise;
                 };
 
-                $scope.remove = function (node) {
+                TreeControllerBase.prototype.remove = function (node) {
                     if (node.parent.id === '') {
-                        $scope.nodes[0].children = _.filter($scope.nodes[0].children, function (x) { return x.id !== node.id; });
-                        $scope.nodes[0].childCount = $scope.nodes[0].children.length;
+                        this.scope.nodes[0].children = _.filter(this.scope.nodes[0].children, function (x) { return x.id !== node.id; });
+                        this.scope.nodes[0].childCount = this.scope.nodes[0].children.length;
                     }
                     else {
                         node.parent.children = _.filter(node.parent.children, function (x) { return x.id !== node.id; });
@@ -62,22 +69,23 @@
                     }
                 };
 
-                var initFn = $scope.init;
-                $scope.init = function () {
-                    var deferred = $q.defer();
+                TreeControllerBase.prototype.init = function () {
+                    var deferred = this.ctor.$q.defer();
 
-                    initFn().then(function () {
+                    var self = this;
 
-                        $scope.run('preloading').then(function () {
-                            $scope.preload().then(function () {
-                                $scope.run('preloaded').then(function () {
-                                    $scope.run('loading').then(function () {
-                                        $scope.load().then(function (response) {
-                                            $scope.run('loaded', [response]).then(function () {
-                                                $scope.run('setting', [response]).then(function () {
-                                                    $scope.set(response).then(function (setted) {
-                                                        $scope.run('set', [setted]).then(function () {
-                                                            $scope.run('watch').then(function () {
+                    controllers.ControllerBase.prototype.init.apply(this, arguments).then(function () {
+
+                        self.run('preloading').then(function () {
+                            self.preload().then(function () {
+                                self.run('preloaded').then(function () {
+                                    self.run('loading').then(function () {
+                                        self.load().then(function (response) {
+                                            self.run('loaded', [response]).then(function () {
+                                                self.run('setting', [response]).then(function () {
+                                                    self.set(response).then(function (setted) {
+                                                        self.run('set', [setted]).then(function () {
+                                                            self.run('watch').then(function () {
                                                                 deferred.resolve(setted);
                                                             }).catch(function (watchError) {
                                                                 deferred.reject(watchError);
@@ -116,9 +124,10 @@
 
                     return deferred.promise;
                 };
-                
-            };
-            controllers.TreeControllerBase.prototype = Object.create(controllers.ControllerBase.prototype);
+
+                return TreeControllerBase;
+
+            })(controllers.TreeControllerBase || {});
 
             return controllers;
 

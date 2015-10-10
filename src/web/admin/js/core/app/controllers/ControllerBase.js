@@ -7,33 +7,106 @@
 
         jsnbt.controllers = (function (controllers) {
 
-            controllers.ControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, $fn, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
+            controllers.ControllerBase = (function (ControllerBase) {
 
-                if (_.isObject($route.current.$$route.scope))
-                    for (var scopeProperty in $route.current.$$route.scope)
-                        $scope[scopeProperty] = $route.current.$$route.scope[scopeProperty];
+                ControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, $fn, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
 
-                var logger = $logger.create('ControllerBase');
+                    var logger = $logger.create('ControllerBase');
 
-                $scope.localization = false; 
-                $scope.languages = []; 
-                $scope.language = ''; 
+                    this.scope = $scope;
 
-                $scope.breadcrumb = true;
-                $scope.queue = {};
+                    this.ctor = {
+                        $rootScope: $rootScope,
+                        $route: $route,
+                        $routeParams: $routeParams,
+                        $location: $location,
+                        $logger: $logger,
+                        $q: $q,
+                        $timeout: $timeout,
+                        $data: $data,
+                        $jsnbt: $jsnbt,
+                        $fn: $fn,
+                        LocationService: LocationService,
+                        ScrollSpyService: ScrollSpyService,
+                        AuthService: AuthService,
+                        TreeNodeService: TreeNodeService,
+                        PagedDataService: PagedDataService,
+                        ModalService: ModalService,
+                        CONTROL_EVENTS: CONTROL_EVENTS,
+                        AUTH_EVENTS: AUTH_EVENTS,
+                        DATA_EVENTS: DATA_EVENTS,
+                        ROUTE_EVENTS: ROUTE_EVENTS
+                    };
 
-                $scope.enqueue = function (key, fn) {
-                    if (!$scope.queue[key])
-                        $scope.queue[key] = [];
+                    this.queue = {};
 
-                    $scope.queue[key].push(fn);
-                }
+                    if (_.isObject($route.current.$$route.scope))
+                        for (var scopeProperty in $route.current.$$route.scope)
+                            $scope[scopeProperty] = $route.current.$$route.scope[scopeProperty];
+                    
+                    $scope.localization = false;
+                    $scope.languages = [];
 
-                $scope.run = function (key, args) {
-                    var deferred = $q.defer();
+                    $scope.breadcrumb = true;
+               
+                    $scope.back = function () {
+                        $scope.current.breadcrumb.items.pop();
+                        var lastItem = _.last($scope.current.breadcrumb.items);
+                        if (lastItem) {
+                            $location.previous(lastItem.url);
+                        }
+                        else {
+                            logger.warn('previous breadcrumb item not found. implement the back() function to override');
+                        }
+                    };
 
-                    if ($scope.queue[key]) {
-                        $q.all(_.map($scope.queue[key], function (x) { return x.apply(x, args); })).then(function () {
+                    $scope.goto = function (path) {
+                        $location.goto(path);
+                    };
+
+                    $scope.previous = function (path) {
+                        $location.previous(path);
+                    };
+
+                    $scope.next = function (path) {
+                        $location.next(path);
+                    };
+                    
+                };
+
+                ControllerBase.prototype.enqueue = function (key, fn) {
+                    if (!this.queue[key])
+                        this.queue[key] = [];
+
+                    this.queue[key].push(fn);
+                };
+
+                ControllerBase.prototype.getBreadcrumb = function () {
+                    var deferred = this.ctor.$q.defer();
+
+                    var breadcrumb = this.ctor.LocationService.getBreadcrumb();
+
+                    deferred.resolve(breadcrumb);
+
+                    return deferred.promise;
+                };
+
+                ControllerBase.prototype.setBreadcrumb = function(breadcrumb) {
+
+                    var deferred = this.ctor.$q.defer();
+
+                    this.scope.current.setBreadcrumb(breadcrumb);
+                    deferred.resolve();
+
+                    return deferred.promise;
+
+                };
+
+                ControllerBase.prototype.run = function (key, args) {
+                    var deferred = this.ctor.$q.defer();
+
+                    if (this.queue[key]) {
+                        this.ctor.$q.all(_.map(this.queue[key], function (x) { return x.apply(x, args); })).then(function () {
                             deferred.resolve();
                         }).catch(function (error) {
                             deferred.reject(error);
@@ -46,61 +119,20 @@
                     return deferred.promise;
                 };
 
-                $scope.back = function () {
-                    $scope.current.breadcrumb.items.pop();
-                    var lastItem = _.last($scope.current.breadcrumb.items);
-                    if (lastItem) {
-                        $location.previous(lastItem.url);
-                    }
-                    else {
-                        logger.warn('previous breadcrumb item not found. implement the back() function to override');
-                    }
-                };
+                ControllerBase.prototype.init = function () {
+                    var deferred = this.ctor.$q.defer();
 
-                $scope.getBreadcrumb = function () {
-                    var deferred = $q.defer();
+                    var self = this;
 
-                    var breadcrumb = LocationService.getBreadcrumb();
-
-                    deferred.resolve(breadcrumb);
-
-                    return deferred.promise;
-                };
-
-                $scope.setBreadcrumb = function (breadcrumb) {
-                    var deferred = $q.defer();
-
-                    $scope.current.setBreadcrumb(breadcrumb);
-                    deferred.resolve();
-
-                    return deferred.promise;
-                };
-
-                $scope.goto = function (path) {
-                    $location.goto(path);
-                };
-
-                $scope.previous = function (path) {
-                    $location.previous(path);
-                };
-
-                $scope.next = function (path) {
-                    $location.next(path);
-                };
-                
-                $scope.init = function () {
-                    var deferred = $q.defer();
-                    
                     var proceed = function () {
 
-                        $scope.localization = $scope.application.localization.enabled;
-                        $scope.languages = _.map($scope.application.languages, function (x) {
+                        self.scope.languages = _.map(self.scope.application.languages, function (x) {
                             x.image = 'img/core/flags/' + x.code + '.png';
                             return x;
                         });
-                        
-                        $scope.getBreadcrumb().then(function (breadcrumb) {
-                            $scope.setBreadcrumb(breadcrumb).then(function () {
+
+                        self.getBreadcrumb().then(function (breadcrumb) {
+                            self.setBreadcrumb(breadcrumb).then(function () {
                                 deferred.resolve();
                             }).catch(function (ex) {
                                 deferred.reject(ex);
@@ -108,8 +140,8 @@
                         });
                     };
 
-                    if ($scope.$parent && $scope.root && typeof ($scope.$parent.init) === 'function') {
-                        $scope.$parent.init().then(function () {
+                    if (self.scope.$parent && self.scope.root && typeof (self.scope.$parent.init) === 'function') {
+                        self.scope.$parent.init().then(function () {
                             proceed();
                         }).catch(function (ex) {
                             deferred.reject(ex);
@@ -122,7 +154,9 @@
                     return deferred.promise;
                 };
 
-            };
+                return ControllerBase;
+
+            })(controllers.ControllerBase || {});
 
             return controllers;
 

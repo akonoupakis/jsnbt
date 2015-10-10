@@ -13,16 +13,9 @@
                     controls.ControlBase.apply(this, $rootScope.getBaseArguments(scope, element, attrs));
 
                     var self = this;
-                    
-                    this.scope = scope;
-                    this.element = element;
-                    this.attrs = attrs;
 
                     this.defaultValue = undefined;
-
-                    this.$q = $q;
-                    this.$timeout = $timeout;
-
+                    
                     scope.id = Math.random().toString().replace('.', '');                    
                     scope.valid = true;
 
@@ -97,12 +90,12 @@
                 FormControlBase.prototype = Object.create(controls.ControlBase.prototype);
 
                 FormControlBase.prototype.init = function (time) {
-                    var deferred = this.$q.defer();
+                    var deferred = this.ctor.$q.defer();
 
                     var self = this;
 
                     if (time) {
-                        this.$timeout(function () {
+                        this.ctor.$timeout(function () {
                             self.initiated = true;
                             deferred.resolve();
                         }, time);
@@ -128,7 +121,7 @@
                 };
 
                 FormControlBase.prototype.isValid = function () {
-                    var deferred = this.$q.defer();
+                    var deferred = this.ctor.$q.defer();
 
                     var valid = true;
 

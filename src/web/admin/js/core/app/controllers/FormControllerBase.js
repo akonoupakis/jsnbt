@@ -7,142 +7,214 @@
 
         jsnbt.controllers = (function (controllers) {
 
-            controllers.FormControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, $fn, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
-                controllers.ControllerBase.apply(this, $rootScope.getBaseArguments($scope));
+            controllers.FormControllerBase = (function (FormControllerBase) {
 
-                var logger = $logger.create('FormControllerBase');
+                FormControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, $fn, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
+                    controllers.ControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
-                $scope.id = $routeParams.id;
-                $scope.new = $scope.id === 'new' || _.str.startsWith($scope.id, 'new-');
-                $scope.title = undefined;
+                    var self = this;
 
-                $scope.valid = true;
+                    var logger = $logger.create('FormControllerBase');
 
-                $scope.published = true;
-                $scope.draft = false;
+                    $scope.localization = true;
 
-                $scope.active = {};
+                    this.id = $routeParams.id;
+                    $scope.id = $routeParams.id;
 
-                $scope.localized = false;
-                $scope.language = '';
+                    this.new = $scope.id === 'new' || _.str.startsWith($scope.id, 'new-');
 
-                $scope.isNew = function () {
-                    return $scope.new;
-                };
+                    $scope.title = undefined;
 
-                var getBreadcrumbFn = $scope.getBreadcrumb;
-                $scope.getBreadcrumb = function () {
-                    var deferred = $q.defer();
+                    $scope.valid = true;
 
-                    getBreadcrumbFn().then(function (breadcrumb) {
+                    $scope.validation = { };
 
-                        if ($scope.isNew()) {
-                            breadcrumb[breadcrumb.length - 1].name = 'new';
-                        } else {
-                            breadcrumb[breadcrumb.length - 1].name = $scope.title;
-                        }
+                    $scope.published = true;
+                    $scope.draft = false;
 
-                        deferred.resolve(breadcrumb);
+                    $scope.active = {};
 
-                    }).catch(function (error) {
-                        deferred.reject(error);
+                    $scope.localized = false;
+                    $scope.language = '';
+                                        
+                    this.enqueue('preloaded', function () {
+                        var deferred = $q.defer();
+
+                        $($scope.languages).each(function (i, item) {
+                            $scope.active[item.code] = item.active === true;
+                        });
+
+                        deferred.resolve();
+
+                        return deferred.promise;
                     });
 
-                    return deferred.promise;
-                };
+                    this.enqueue('watch', function () {
+                        var deferred = $q.defer();
 
-                $scope.enqueue('preloaded', function () {
-                    var deferred = $q.defer();
-
-                    $($scope.languages).each(function (i, item) {
-                        $scope.active[item.code] = item.active === true;
-                    });
-
-                    deferred.resolve();
-
-                    return deferred.promise;
-                });
-
-                $scope.preload = function () {
-                    var deferred = $q.defer();
-
-                    deferred.resolve();
-
-                    return deferred.promise;
-                };
-
-                $scope.load = function () {
-                    throw new Error('not implemented');
-                };
-
-                $scope.set = function (data) {
-                    throw new Error('not implemented');
-                };
-
-                $scope.enqueue('watch', function () {
-                    var deferred = $q.defer();
-
-                    $scope.$watch('title', function (newValue, prevValue) {
-                        if (newValue !== prevValue && newValue !== undefined) {
-                            $scope.getBreadcrumb().then(function (breadcrumb) {
-                                $scope.setBreadcrumb(breadcrumb).catch(function (setBreadcrumbError) {
-                                    throw setBreadcrumbError;
+                        $scope.$watch('title', function (newValue, prevValue) {
+                            if (newValue !== prevValue && newValue !== undefined) {
+                                self.getBreadcrumb().then(function (breadcrumb) {
+                                    self.setBreadcrumb(breadcrumb).catch(function (setBreadcrumbError) {
+                                        throw setBreadcrumbError;
+                                    });
+                                }).catch(function (getBreadcrumbError) {
+                                    throw getBreadcrumbError;
                                 });
-                            }).catch(function (getBreadcrumbError) {
-                                throw getBreadcrumbError;
-                            });
-                        }
+                            }
+                        });
+
+                        deferred.resolve();
+
+                        return deferred.promise;
                     });
+                    
+                    $scope.discard = function () {
+                        self.discard().catch(function (ex) {
+                            logger.error(ex);
+                        });
+                    };
+
+                    $scope.publish = function () {
+                        self.run('validating').then(function () {
+                            self.validate().then(function (validationResults) {
+                                self.run('validated', [validationResults]).then(function () {
+                                    if (validationResults) {
+                                        var item = self.get();
+                                        self.run('publishing', [item]).then(function () {
+                                            self.push(item).then(function (pushed) {
+                                                self.run('published', [pushed]).then(function () {
+                                                    if (pushed) {
+                                                        if (self.isNew()) {
+                                                            var targetUrl = $scope.current.breadcrumb.items[$scope.current.breadcrumb.items.length - 2].url + '/' + pushed.id;
+                                                            $location.goto(targetUrl);
+                                                        }
+                                                        else {
+                                                            self.set(pushed);
+                                                        }
+                                                    }
+                                                    else {
+                                                        throw new Error('save unsuccessful');
+                                                    }
+                                                }).catch(function (publishedError) {
+                                                    logger.error(publishedError);
+                                                });
+                                            }).catch(function (pushError) {
+                                                logger.error(pushError);
+                                            });
+                                        }).catch(function (publishingError) {
+                                            logger.error(publishingError);
+                                        });
+                                    }
+                                    else {
+                                        $scope.scroll2error();
+                                    }
+                                }).catch(function (validatedError) {
+                                    logger.error(validatedError);
+                                });
+                            }).catch(function (validateError) {
+                                logger.error(validateError);
+                            });
+
+                        }).catch(function (validatingError) {
+                            logger.error(validatingError);
+                        });
+
+                    };
+
+                    $scope.$on(CONTROL_EVENTS.valueChanged, function (sender) {
+                        sender.stopPropagation();
+
+                        $scope.published = false;
+                    });
+
+                    $scope.$on(CONTROL_EVENTS.valueIsValid, function (sender, value) {
+                        sender.stopPropagation();
+
+                        if (!value)
+                            $scope.valid = false;
+                    });
+
+                    $scope.scroll2error = function () {
+                        setTimeout(function () {
+                            var firstInvalidControl = $('.ctrl.invalid:visible:first');
+                            if (firstInvalidControl.length > 0)
+                                if (!firstInvalidControl.inViewport())
+                                    $('body').scrollTo(firstInvalidControl, { offset: -150, duration: 400 });
+                        }, 100);
+                    };
+                    
+                };
+                FormControllerBase.prototype = Object.create(controllers.ControllerBase.prototype);
+
+                FormControllerBase.prototype.isNew = function () {
+                    return this.new;
+                };
+
+                FormControllerBase.prototype.preload = function () {
+                    var deferred = this.ctor.$q.defer();
 
                     deferred.resolve();
 
                     return deferred.promise;
-                });
+                };
 
-                $scope.get = function () {
+                FormControllerBase.prototype.load = function () {
                     throw new Error('not implemented');
                 };
 
-                $scope.setTitle = function (title) {
-                    $scope.title = title;
+                FormControllerBase.prototype.set = function (data) {
+                    throw new Error('not implemented');
                 };
 
-                $scope.setSpy = function (time) {
-                    ScrollSpyService.get(time || 0).then(function (response) {
-                        $scope.nav = response;
+                FormControllerBase.prototype.get = function () {
+                    throw new Error('not implemented');
+                };
+
+                FormControllerBase.prototype.setTitle = function (title) {
+                    this.scope.title = title;
+                };
+
+                FormControllerBase.prototype.setSpy = function (time) {
+                    var self = this;
+
+                    this.ctor.ScrollSpyService.get(time || 0).then(function (response) {
+                        self.scope.nav = response;
                     });
                 };
 
-                $scope.setValid = function (value) {
-                    $scope.valid = value;
+                FormControllerBase.prototype.setValid = function (value) {
+                    this.scope.valid = value;
                 };
 
-                $scope.isValid = function () {
-                    return $scope.valid;
+                FormControllerBase.prototype.isValid = function () {
+                    return this.scope.valid;
                 };
 
-                $scope.setPublished = function (value) {
-                    $scope.published = value;
-                    $scope.draft = !value;
+                FormControllerBase.prototype.setPublished = function (value) {
+                    this.scope.published = value;
+                    this.scope.draft = !value;
                 };
-                
-                $scope.validate = function () {
-                    var deferred = $q.defer();
 
-                    $scope.setValid(true);
-                    $scope.$broadcast(CONTROL_EVENTS.initiateValidation);
+                FormControllerBase.prototype.validate = function () {
+                    var deferred = this.ctor.$q.defer();
 
-                    var initialLanguage = $scope.language;
+                    var self = this;
 
-                    if ($scope.isValid()) {
-                        if ($scope.localized) {
+                    self.setValid(true);
+                    self.scope.$broadcast(self.ctor.CONTROL_EVENTS.initiateValidation);
+
+                    var initialLanguage = self.scope.language;
+
+                    if (self.isValid()) {
+                        if (self.scope.localized) {
                             var checkLanguage = function (lang, next) {
-                                $scope.language = lang.code;
+                                self.scope.language = lang.code;
 
-                                $timeout(function () {
-                                    $scope.$broadcast(CONTROL_EVENTS.initiateValidation);
+                                self.ctor.$timeout(function () {
+                                    self.scope.$broadcast(self.ctor.CONTROL_EVENTS.initiateValidation);
 
-                                    if (!$scope.valid) {
+                                    if (!self.scope.valid) {
                                         deferred.resolve(false);
                                     }
                                     else {
@@ -151,8 +223,8 @@
                                 }, 50);
                             };
 
-                            var currentLanguage = $scope.language;
-                            var restLanguages = _.filter($scope.languages, function (x) { return x.code !== currentLanguage; });
+                            var currentLanguage = self.scope.language;
+                            var restLanguages = _.filter(self.scope.languages, function (x) { return x.code !== currentLanguage; });
                             if (restLanguages.length > 0) {
                                 var nextIndex = 0;
                                 var next = function () {
@@ -163,7 +235,7 @@
                                         checkLanguage(lang, next);
                                     }
                                     else {
-                                        $scope.language = initialLanguage;
+                                        self.scope.language = initialLanguage;
                                         deferred.resolve(true);
                                     }
                                 };
@@ -172,7 +244,7 @@
                                 checkLanguage(first, next);
                             }
                             else {
-                                $scope.language = initialLanguage;
+                                self.scope.language = initialLanguage;
                                 deferred.resolve(true);
                             }
                         }
@@ -187,136 +259,76 @@
                     return deferred.promise;
                 };
 
-                $scope.discard = function () {
-                    $scope.run('loading').then(function () {
-                        $scope.load().then(function (response) {
-                            $scope.run('loaded', [response]).then(function () {
-                                $scope.run('setting', [response]).then(function () {
-                                    $scope.set(response).then(function (setted) {
-                                        $scope.run('set', [response]).then(function () {
-                                            $scope.setValid(true);
-                                            $scope.$broadcast(CONTROL_EVENTS.clearValidation);
+                FormControllerBase.prototype.discard = function () {
+                    var deferred = this.ctor.$q.defer();
 
-                                            $scope.setSpy(200);
+                    var self = this;
+
+                    self.run('loading').then(function () {
+                        self.load().then(function (response) {
+                            self.run('loaded', [response]).then(function () {
+                                self.run('setting', [response]).then(function () {
+                                    self.set(response).then(function (setted) {
+                                        self.run('set', [response]).then(function () {
+                                            self.setValid(true);
+                                            self.scope.$broadcast(self.ctor.CONTROL_EVENTS.clearValidation);
+
+                                            self.setSpy(200);
+
+                                            deferred.resolve();
                                         }).catch(function (setError) {
-                                            logger.error(setError);
+                                            deferred.reject(setError);
                                         });
                                     }).catch(function (settedError) {
-                                        logger.error(settedError);
+                                        deferred.reject(settedError);
                                     });
                                 }).catch(function (settingError) {
-                                    logger.error(settingError);
+                                    deferred.reject(settingError);
                                 });
                             }).catch(function (loadedError) {
-                                logger.error(loadedError);
+                                deferred.reject(loadedError);
                             });
                         }).catch(function (loadError) {
-                            logger.error(loadError);
+                            deferred.reject(loadError);
                         });
                     }).catch(function (loadingError) {
-                        logger.error(loadingError);
+                        deferred.reject(loadingError);
                     });
+
+                    return deferred.promise;
                 };
 
-                $scope.push = function (data) {
-                    var deferred = $q.defer();
+                FormControllerBase.prototype.push = function (data) {
+                    var deferred = this.ctor.$q.defer();
 
                     throw new Error('not implemented');
 
                     return deferred.promise;
                 };
 
-                $scope.publish = function () {
-                    $scope.run('validating').then(function () {
-                        $scope.validate().then(function (validationResults) {
-                            $scope.run('validated', [validationResults]).then(function () {
-                                if (validationResults) {
-                                    var item = $scope.get();
-                                    $scope.run('publishing', [item]).then(function () {
-                                        $scope.push(item).then(function (pushed) {
-                                            $scope.run('published', [pushed]).then(function () {
-                                                if (pushed) {
-                                                    if ($scope.isNew()) {
-                                                        var targetUrl = $scope.current.breadcrumb.items[$scope.current.breadcrumb.items.length - 2].url + '/' + pushed.id;
-                                                        $location.goto(targetUrl);
-                                                    }
-                                                    else {
-                                                        $scope.set(pushed);
-                                                    }
-                                                }
-                                                else {
-                                                    throw new Error('save unsuccessful');
-                                                }
-                                            }).catch(function (publishedError) {
-                                                logger.error(publishedError);
-                                            });
-                                        }).catch(function (pushError) {
-                                            logger.error(pushError);
-                                        });
-                                    }).catch(function (publishingError) {
-                                        logger.error(publishingError);
-                                    });
-                                }
-                                else {
-                                    $scope.scroll2error();
-                                }
-                            }).catch(function (validatedError) {
-                                logger.error(validatedError);
-                            });
-                        }).catch(function (validateError) {
-                            logger.error(validateError);
-                        });
+                FormControllerBase.prototype.init = function () {
+                    var deferred = this.ctor.$q.defer();
 
-                    }).catch(function (validatingError) {
-                        logger.error(validatingError);
-                    });
+                    var self = this;
 
-                };
+                    controllers.ControllerBase.prototype.init.apply(this, arguments).then(function () {
 
-                $scope.$on(CONTROL_EVENTS.valueChanged, function (sender) {
-                    sender.stopPropagation();
+                        self.scope.localized = self.scope.application.localization.enabled;
+                        self.scope.language = self.scope.application.localization.enabled ? (self.scope.defaults.language ? self.scope.defaults.language : _.first(self.scope.application.languages).code) : self.scope.defaults.language;
 
-                    $scope.published = false;
-                });
-
-                $scope.$on(CONTROL_EVENTS.valueIsValid, function (sender, value) {
-                    sender.stopPropagation();
-
-                    if (!value)
-                        $scope.valid = false;
-                });
-
-                $scope.scroll2error = function () {
-                    setTimeout(function () {
-                        var firstInvalidControl = $('.ctrl.invalid:visible:first');
-                        if (firstInvalidControl.length > 0)
-                            if (!firstInvalidControl.inViewport())
-                                $('body').scrollTo(firstInvalidControl, { offset: -150, duration: 400 });
-                    }, 100);
-                };
-
-                var initFn = $scope.init;
-                $scope.init = function () {
-                    var deferred = $q.defer();
-
-                    initFn().then(function () {
-
-                        $scope.localized = $scope.localization;
-                        $scope.language = $scope.application.localization.enabled ? ($scope.defaults.language ? $scope.defaults.language : _.first($scope.application.languages).code) : $scope.defaults.language;
-
-                        $scope.run('preloading').then(function () {
-                            $scope.preload().then(function () {
-                                $scope.run('preloaded').then(function () {
-                                    $scope.run('loading').then(function () {
-                                        $scope.load().then(function (response) {
-                                            $scope.run('loaded', [response]).then(function () {
-                                                $scope.run('setting', [response]).then(function () {
-                                                    $scope.set(response).then(function (setted) {
-                                                        $scope.run('set', [setted]).then(function () {
-                                                            $scope.run('watch').then(function () {
-                                                                $scope.getBreadcrumb().then(function (breadcrumb) {
-                                                                    $scope.setBreadcrumb(breadcrumb).then(function () {
-                                                                        $scope.setSpy(200);
+                        self.run('preloading').then(function () {
+                            self.preload().then(function () {
+                                self.run('preloaded').then(function () {
+                                    self.run('loading').then(function () {
+                                        self.load().then(function (response) {
+                                            self.run('loaded', [response]).then(function () {
+                                                self.run('setting', [response]).then(function () {
+                                                    self.set(response).then(function (setted) {
+                                                        self.run('set', [setted]).then(function () {
+                                                            self.run('watch').then(function () {
+                                                                self.getBreadcrumb().then(function (breadcrumb) {
+                                                                    self.setBreadcrumb(breadcrumb).then(function () {
+                                                                        self.setSpy(200);
                                                                         deferred.resolve(setted);
                                                                     }).catch(function (setBreadcrumbError) {
                                                                         deferred.reject(setBreadcrumbError);
@@ -362,8 +374,31 @@
                     return deferred.promise;
                 };
 
-            };
-            controllers.FormControllerBase.prototype = Object.create(controllers.ControllerBase.prototype);
+                FormControllerBase.prototype.getBreadcrumb = function () {
+                    var deferred = this.ctor.$q.defer();
+
+                    var self = this;
+
+                    controllers.ControllerBase.prototype.getBreadcrumb.apply(this, arguments).then(function (breadcrumb) {
+
+                        if (self.isNew()) {
+                            breadcrumb[breadcrumb.length - 1].name = 'new';
+                        } else {
+                            breadcrumb[breadcrumb.length - 1].name = self.scope.title;
+                        }
+
+                        deferred.resolve(breadcrumb);
+
+                    }).catch(function (ex) {
+                        deferred.reject(ex);
+                    });
+
+                    return deferred.promise;
+                };
+
+                return FormControllerBase;
+
+            })(controllers.FormControllerBase || {});
 
             return controllers;
 

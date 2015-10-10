@@ -7,39 +7,42 @@
         jsnbt.controllers.NodeFormControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var logger = $logger.create('NodeController');
-        
-        var getBreadcrumbFn = $scope.getBreadcrumb;
-        $scope.getBreadcrumb = function () {
-            var deferred = $q.defer();
-
-            getBreadcrumbFn().then(function (breadcrumb) {
-
-                $scope.getNodeBreadcrumb($scope.isNew() ? { id: 'new', parent: $scope.parent ? $scope.parent.id : '' } : $scope.node, $scope.prefix).then(function (bc) {
-
-                    breadcrumb.splice($scope.offset);
-
-                    _.each(bc, function (c) {
-                        breadcrumb.push(c);
-                    });
-
-                    deferred.resolve(breadcrumb);
-
-                }, function (ex) {
-                    deferred.reject(ex);
-                });
-
-            }).catch(function (error) {
-                deferred.reject(error);
-            });
-
-            return deferred.promise;
-        };
-
-        $scope.init().catch(function (ex) {
+      
+        this.init().catch(function (ex) {
             logger.error(ex);
         });
     };
     NodeController.prototype = Object.create(jsnbt.controllers.NodeFormControllerBase.prototype);
+
+    NodeController.prototype.getBreadcrumb = function () {
+        var deferred = this.ctor.$q.defer();
+
+        var self = this;
+
+        jsnbt.controllers.NodeFormControllerBase.prototype.getBreadcrumb.apply(this, arguments).then(function (breadcrumb) {
+
+            self.scope.getNodeBreadcrumb(self.isNew() ? { id: 'new', parent: self.scope.parent ? self.scope.parent.id : '' } : self.scope.node, self.scope.prefix).then(function (bc) {
+
+                breadcrumb.splice(self.scope.offset);
+
+                _.each(bc, function (c) {
+                    breadcrumb.push(c);
+                });
+
+                deferred.resolve(breadcrumb);
+
+            }, function (ex) {
+                deferred.reject(ex);
+            }); 
+
+            deferred.resolve(breadcrumb);
+
+        }).catch(function (ex) {
+            deferred.reject(ex);
+        });
+
+        return deferred.promise;
+    };
 
     angular.module("jsnbt")
         .controller('NodeController', ['$scope', '$rootScope', '$logger', '$q', NodeController]);

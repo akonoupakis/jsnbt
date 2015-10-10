@@ -10,7 +10,7 @@
 
         $scope.items = $jsnbt.content;
 
-        $scope.init().catch(function (ex) {
+        this.init().catch(function (ex) {
             logger.error(ex);
         });
     };

@@ -17,7 +17,7 @@
         });
         $scope.injects = injects;
 
-        $scope.init().catch(function (ex) {
+        this.init().catch(function (ex) {
             logger.error(ex);
         });
 

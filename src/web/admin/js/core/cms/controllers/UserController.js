@@ -6,7 +6,11 @@
     var UserController = function ($scope, $rootScope, $routeParams, $location, $timeout, $q, $logger, $data, $jsnbt, ScrollSpyService, LocationService, AuthService, CONTROL_EVENTS) {
         jsnbt.controllers.FormControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
+        var self = this;
+
         var logger = $logger.create('UserController');
+
+        $scope.localization = false;
 
         $scope.user = undefined;
         $scope.roles = [];
@@ -20,11 +24,9 @@
 
         $scope.invalidPasswordComparison = false;
         
-        $scope.enqueue('preloading', function () {
+        this.enqueue('preloading', function () {
             var deferred = $q.defer();
-
-            $scope.localized = false;
-
+            
             var allRoles = [];
             
             for (var roleName in $jsnbt.roles) {
@@ -46,56 +48,7 @@
             return deferred.promise;
         });
 
-        $scope.load = function () {
-            var deferred = $q.defer();
-
-            if ($scope.isNew()) {
-                deferred.resolve();
-            }
-            else {
-                $data.users.get($scope.id).then(function (result) {
-                    deferred.resolve(result);
-                }).catch(function (error) {
-                    deferred.reject(error);
-                });
-            }
-
-            return deferred.promise;
-
-        };
-
-        $scope.set = function (data) {
-            var deferred = $q.defer();
-
-            if ($scope.isNew()) {
-                $scope.setTitle('');
-
-                $scope.user = $data.create('users', {});
-
-                $scope.setValid(true);
-                $scope.setPublished(false);
-
-                deferred.resolve($scope.user);
-            }
-            else {
-                if (data) {
-                    $scope.setTitle(data.username);
-                    $scope.user = data;
-
-                    $scope.setValid(true);
-                    $scope.setPublished(true);
-
-                    deferred.resolve($scope.user);
-                }
-                else {
-                    deferred.reject(new Error('data is not defined for setting into scope'));
-                }
-            }
-
-            return deferred.promise;
-        };
-
-        $scope.enqueue('set', function () {
+        this.enqueue('set', function () {
             var deferred = $q.defer();
 
             var allowEdit = true;
@@ -120,48 +73,101 @@
             return deferred.promise;
         });
 
-        $scope.get = function () {
-            return $scope.user;
-        };
-
-        $scope.push = function (data) {
-            var deferred = $q.defer();
-
-            if ($scope.isNew()) {
-
-                var newUser = {};
-                $.extend(true, newUser, data);
-
-                newUser.password = $scope.credentials.password;
-
-                $data.users.post(newUser).then(function (result) {
-                    deferred.resolve(result);
-                }).catch(function (error) {
-                    deferred.reject(error);
-                });
-            }
-            else {
-                $data.users.put($scope.id, data).then(function (result) {
-                    deferred.resolve(result);
-                }).catch(function (error) {
-                    deferred.reject(error);
-                });
-            }
-
-            return deferred.promise;
-        };
-
         $scope.validatePasswordConfirm = function (value) {
             var valid = value === $scope.credentials.password;
             $scope.invalidPasswordComparison = !valid;   
             return valid;
         };
 
-        $scope.init().catch(function (ex) {
+        $scope.isNew = function () {
+            return self.isNew();
+        };
+
+        this.init().catch(function (ex) {
             logger.error(ex);
         });
     };
     UserController.prototype = Object.create(jsnbt.controllers.FormControllerBase.prototype);
+
+    UserController.prototype.load = function () {
+        var deferred = this.ctor.$q.defer();
+
+        if (this.isNew()) {
+            deferred.resolve();
+        }
+        else {
+            this.ctor.$data.users.get(this.scope.id).then(function (result) {
+                deferred.resolve(result);
+            }).catch(function (error) {
+                deferred.reject(error);
+            });
+        }
+
+        return deferred.promise;
+
+    };
+
+    UserController.prototype.set = function (data) {
+        var deferred = this.ctor.$q.defer();
+
+        if (this.isNew()) {
+            this.setTitle('');
+
+            this.scope.user = this.ctor.$data.create('users', {});
+
+            this.setValid(true);
+            this.setPublished(false);
+
+            deferred.resolve(this.scope.user);
+        }
+        else {
+            if (data) {
+                this.setTitle(data.username);
+                this.scope.user = data;
+
+                this.setValid(true);
+                this.setPublished(true);
+
+                deferred.resolve(this.scope.user);
+            }
+            else {
+                deferred.reject(new Error('data is not defined for setting into scope'));
+            }
+        }
+
+        return deferred.promise;
+    };
+
+    UserController.prototype.get = function () {
+        return this.scope.user;
+    };
+
+    UserController.prototype.push = function (data) {
+        var deferred = this.ctor.$q.defer();
+
+        if (this.isNew()) {
+
+            var newUser = {};
+            $.extend(true, newUser, data);
+
+            newUser.password = this.scope.credentials.password;
+
+            this.ctor.$data.users.post(newUser).then(function (result) {
+                deferred.resolve(result);
+            }).catch(function (error) {
+                deferred.reject(error);
+            });
+        }
+        else {
+            this.ctor.$data.users.put(this.scope.id, data).then(function (result) {
+                deferred.resolve(result);
+            }).catch(function (error) {
+                deferred.reject(error);
+            });
+        }
+
+        return deferred.promise;
+    };
 
     angular.module("jsnbt")
         .controller('UserController', ['$scope', '$rootScope', '$routeParams', '$location', '$timeout', '$q', '$logger', '$data', '$jsnbt', 'ScrollSpyService', 'LocationService', 'AuthService', 'CONTROL_EVENTS', UserController]);

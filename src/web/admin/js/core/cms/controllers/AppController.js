@@ -87,20 +87,6 @@
             }
         });
 
-        //fn.setDefaultLanguages().then(function () {
-        //    fn.setApplicationLanguages().then(function () {
-        //        fn.setDefaultLanguage().then(function () {
-        //            console.log('1 -');
-        //        }, function (dlError) {
-        //            logger.error(dlError);
-        //        });
-        //    }, function (alsError) {
-        //        logger.error(alsError);
-        //    });
-        //}, function (dlsError) {
-        //    logger.error(dlsError);
-        //});
-
     };
     AppController.prototype = Object.create(jsnbt.controllers.Controller.prototype);
 

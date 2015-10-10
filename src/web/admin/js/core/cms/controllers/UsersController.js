@@ -8,22 +8,6 @@
 
         var logger = $logger.create('UsersController');
 
-        $scope.load = function () {
-            var deferred = $q.defer();
-
-            PagedDataService.get(jsnbt.db.users.get, {
-                $sort: {
-                    lastName: 1
-                }
-            }).then(function (response) {
-                deferred.resolve(response);
-            }).catch(function (error) {
-                deferred.reject(error);
-            });
-
-            return deferred.promise;
-        };
-
         $scope.canCreate = function () {
             return true;
         };
@@ -44,11 +28,27 @@
 
         };
         
-        $scope.init().catch(function (ex) {
+        this.init().catch(function (ex) {
             logger.error(ex);
         });
     };
     UsersController.prototype = Object.create(jsnbt.controllers.ListControllerBase.prototype);
+
+    UsersController.prototype.load = function () {
+        var deferred = this.ctor.$q.defer();
+
+        this.ctor.PagedDataService.get(this.ctor.$jsnbt.db.users.get, {
+            $sort: {
+                lastName: 1
+            }
+        }).then(function (response) {
+            deferred.resolve(response);
+        }).catch(function (error) {
+            deferred.reject(error);
+        });
+
+        return deferred.promise;
+    };
 
     angular.module("jsnbt")
         .controller('UsersController', ['$scope', '$rootScope', '$location', '$logger', '$q', 'PagedDataService', UsersController]);

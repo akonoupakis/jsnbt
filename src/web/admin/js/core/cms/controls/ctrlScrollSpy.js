@@ -1,7 +1,8 @@
 ﻿/* global angular:false */
-(function () {
 
+(function () {
     "use strict";
+
     angular.scrollspy = false;
     angular.module('jsnbt')
         .directive('ctrlScrollSpy', ['$rootScope', function ($rootScope) {
