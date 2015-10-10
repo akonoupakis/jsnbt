@@ -5,7 +5,48 @@
     "use strict";
 
     angular.module('jsnbt')
-     .directive('ctrlTree', [function () {
+     .directive('ctrlTree', ['$rootScope', function ($rootScope) {
+
+         var TreeControl = function (scope, element, attrs, transclude) {
+             jsnbt.controls.ListControlBase.apply(this, $rootScope.getBaseArguments(scope, element, attrs));
+
+             scope.transcludeFn = scope.ngTranscludeFn || transclude;
+
+             element.addClass('ctrl');
+             element.addClass('ctrl-tree');
+
+             scope.language = scope.ngLanguage;
+
+             scope.$watch('ngLanguage', function (value) {
+                 scope.language = value;
+             });
+
+             var root = scope.ngRoot === undefined || scope.ngRoot === true;
+             scope.root = root;
+
+             scope.$watch('ngModel', function (data) {
+                 element.empty();
+                 $(data).each(function (i, node) {
+                     var childScope = scope.$new();
+                     childScope.node = node;
+                     childScope.ngDomain = scope.ngDomain;
+                     childScope.ngSelectable = scope.ngSelectable;
+                     childScope.ngSelectMode = scope.ngSelectMode;
+                     childScope.ngSelectPointee = scope.ngSelectPointee;
+                     childScope.ngTranscludeFn = scope.transcludeFn;
+                     childScope.ngFn = scope.ngFn;
+                     childScope.ngLanguage = scope.language;
+                     childScope.ngRoot = false;
+
+                     scope.transcludeFn(childScope, function (clone, innerScope) {
+                         element.append(clone);
+                     });
+                 });
+             });
+
+             this.init();
+         };
+         TreeControl.prototype = Object.create(jsnbt.controls.ListControlBase.prototype);
 
          return {
              restrict: 'E',
@@ -24,42 +65,9 @@
              },
              template: '<ol class="dd-list" ng-class="{ \'dd-list-root\': root, \'dd-selectable\': root && ngSelectable }"></ol>',
              compile: function (elem, attrs, transclude) {
-
                  return function (scope, lElem, lAttrs) {
-                     scope.transcludeFn = scope.ngTranscludeFn || transclude;
-
-                     lElem.addClass('ctrl');
-                     lElem.addClass('ctrl-tree');
-
-                     scope.language = scope.ngLanguage;
-
-                     scope.$watch('ngLanguage', function (value) {
-                         scope.language = value;
-                     });
-
-                     var root = scope.ngRoot === undefined || scope.ngRoot === true;
-                     scope.root = root;
-
-                     scope.$watch('ngModel', function (data) {
-                         lElem.empty();
-                         $(data).each(function (i, node) {
-                             var childScope = scope.$new();
-                             childScope.node = node;
-                             childScope.ngDomain = scope.ngDomain;
-                             childScope.ngSelectable = scope.ngSelectable;
-                             childScope.ngSelectMode = scope.ngSelectMode;
-                             childScope.ngSelectPointee = scope.ngSelectPointee;
-                             childScope.ngTranscludeFn = scope.transcludeFn;
-                             childScope.ngFn = scope.ngFn;
-                             childScope.ngLanguage = scope.language;
-                             childScope.ngRoot = false;
-
-                             scope.transcludeFn(childScope, function (clone, innerScope) {
-                                 lElem.append(clone);
-                             });
-                         });
-                     });
-                 };
+                     return new TreeControl(scope, lElem, lAttrs, transclude);
+                 }
              }
          };
 

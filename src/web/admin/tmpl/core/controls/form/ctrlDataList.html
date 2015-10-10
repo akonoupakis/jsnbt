@@ -1,4 +1,4 @@
-﻿<div ng-class="{ 'ng-required': ngRequired, invalid: !ngDisabled && !valid }">
+﻿<div ng-class="{ 'ng-required': ngRequired, invalid: !ngDisabled && !valid, empty: empty }">
     <div class="form-group">
         <label ng-show="ngLabel" class="control-label">{{ngLabel}}<small ng-show="ngTip">({{ngTip}})</small></label>
 
@@ -22,7 +22,7 @@
             <input type="text" class="form-control" disabled="disabled" />
             <span ng-show="!ngDisabled && !valid && empty" class="glyphicon glyphicon-remove form-control-feedback"></span>
             <span class="input-group-btn">
-                <button class="btn btn-default glyphicon glyphicon-plus-sign" type="button" ng-click="add()" ng-disabled="ngDisabled"></button>
+                <button class="btn btn-default glyphicon glyphicon-plus-sign" type="button" ng-click="add()" ng-disabled="ngDisabled || !ngDomain || !ngListId"></button>
             </span>
         </div>
     </div>

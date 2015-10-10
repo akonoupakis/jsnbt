@@ -5,7 +5,93 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlCustomList', ['$timeout', 'ModalService', 'CONTROL_EVENTS', function ($timeout, ModalService, CONTROL_EVENTS) {
+        .directive('ctrlCustomList', ['$rootScope', '$timeout', '$q', 'ModalService', 'CONTROL_EVENTS', function ($rootScope, $timeout, $q, ModalService, CONTROL_EVENTS) {
+
+            var CustomListControl = function (scope, element, attrs) {
+                jsnbt.controls.FormControlBase.apply(this, $rootScope.getBaseArguments(scope, element, attrs));
+
+                var self = this;
+
+                this.defaultValue = [];
+
+                element.addClass('ctrl');
+                element.addClass('ctrl-custom-list');
+                                
+                if (_.isObject(scope.ngScope)) {
+                    for (var contextName in scope.ngScope) {
+                        scope[contextName] = scope.ngScope[contextName];
+                    }
+                }
+
+                scope.$watch('ngScope', function (newValue, prevValue) {
+                    if (_.isObject(newValue)) {
+                        for (var contextName in newValue) {
+                            scope[contextName] = newValue[contextName];
+                        }
+                    }
+                }, true);
+                
+                scope.add = function () {
+                    scope.ngModel.push({});
+
+                    self.validate();
+
+                    scope.changed();
+                };
+
+                scope.clear = function (index) {
+                    scope.ngModel.splice(index, 1);
+                    scope.changed();
+                };
+
+                scope.sortableOptions = {
+                    axis: 'v',
+
+                    handle: '.glyphicon-move',
+                    cancel: '',
+                    containment: "parent",
+
+                    stop: function (e, ui) {
+                        scope.ngModel = scope.ngModel.map(function (x) {
+                            return x;
+                        });
+                        scope.changed();
+                    }
+                };
+
+                this.init();
+            };
+            CustomListControl.prototype = Object.create(jsnbt.controls.FormControlBase.prototype);
+
+            CustomListControl.prototype.isValid = function () {
+                var deferred = $q.defer();
+
+                var self = this;
+
+                self.scope.empty = false;
+
+                jsnbt.controls.FormControlBase.prototype.isValid.apply(this, arguments).then(function (valid) {
+                    if (valid && self.isValidating()) {
+                        if (self.scope.ngRequired) {
+                            if (!self.scope.ngModel) {
+                                valid = false;
+                                self.scope.empty = true;
+                            }
+                            else if (!_.isArray(self.scope.ngModel)) {
+                                valid = false;
+                            }
+                            else if (self.scope.ngModel.length === 0) {
+                                valid = false;
+                                self.scope.empty = true;
+                            }
+                        }
+                    }
+
+                    deferred.resolve(valid);
+                });
+
+                return deferred.promise;
+            };
 
             return {
                 restrict: 'E',
@@ -22,137 +108,9 @@
                     ngChangeFn: '='
                 },
                 link: function (scope, element, attrs) {
-                    element.addClass('ctrl');
-                    element.addClass('ctrl-custom-list');
-
-                    scope.id = Math.random().toString().replace('.', '');
-                    scope.valid = true;
-                    scope.empty = false;
-
-                    var initiated = false;
-
-                    if (_.isObject(scope.ngScope)) {
-                        for (var contextName in scope.ngScope) {
-                            scope[contextName] = scope.ngScope[contextName];
-                        }
-                    }
-
-                    scope.$watch('ngDisabled', function (newValue) {
-                        if (initiated)
-                            scope.valid = isValid();
-                    });
-
-                    scope.$watch('ngValidating', function (newValue) {
-                        if (initiated)
-                            if (newValue === false)
-                                scope.valid = true;
-                            else
-                                scope.valid = isValid();
-                    });
-
-                    scope.$watch('ngScope', function (newValue, prevValue) {
-                        if (_.isObject(newValue)) {
-                            for (var contextName in newValue) {
-                                scope[contextName] = newValue[contextName];
-                            }
-                        }
-                    }, true);
-
-                    scope.changed = function () {
-                        if (scope.ngChangeFn) {
-                            if (typeof (scope.ngChangeFn) === 'function') {
-                                scope.ngChangeFn(scope.ngModel);
-                            }
-                        }
-                        else {
-                            $timeout(function () {
-                                scope.$emit(CONTROL_EVENTS.valueChanged, scope.ngModel);
-                            }, 50);
-                        }
-                    };
-
-                    var isValid = function () {
-                        var valid = true;
-                        scope.empty = false;
-
-                        var validating = scope.ngValidating !== false;
-                        if (validating && !scope.ngDisabled && element.is(':visible')) {
-                            
-                            if (scope.ngRequired) {
-                                if (!scope.ngModel) {
-                                    valid = false;
-                                    scope.empty = true;
-                                }
-                                else if (!_.isArray(scope.ngModel)) {
-                                    valid = false;
-                                }
-                                else if (scope.ngModel.length === 0) {
-                                    valid = false;
-                                    scope.empty = true;
-                                }
-                            }
-                        }
-                        
-                        return valid;
-                    };
-
-                    scope.$watch('ngModel', function (newValue, prevValue) {
-                        if (newValue === undefined)
-                            scope.ngModel = [];
-
-                        if (initiated)
-                            scope.valid = isValid();
-                    }, true);
-
-                    scope.$on(CONTROL_EVENTS.initiateValidation, function (sender) {
-                        initiated = true;
-                        scope.valid = isValid();
-                        scope.$emit(CONTROL_EVENTS.valueIsValid, scope.valid);
-                    });
-                    
-                    scope.$on(CONTROL_EVENTS.validate, function (sender) {
-                        if (initiated) {
-                            scope.valid = isValid();
-                        }
-                        scope.$emit(CONTROL_EVENTS.valueIsValid, scope.valid);
-                    });
-
-                    scope.$on(CONTROL_EVENTS.clearValidation, function (sender) {
-                        initiated = false;
-                        scope.valid = true;
-                    });
-
-                    scope.add = function () {
-                        scope.ngModel.push({ });
-
-                        if (initiated)
-                            scope.valid = isValid();
-
-                        scope.changed();
-                    };
-
-                    scope.clear = function (index) {
-                        scope.ngModel.splice(index, 1);
-                        scope.changed();
-                    };
-
-                    scope.sortableOptions = {
-                        axis: 'v',
-                            
-                        handle: '.glyphicon-move',
-                        cancel: '',
-                        containment: "parent",
-
-                        stop: function (e, ui) {
-                            scope.ngModel = scope.ngModel.map(function (x) {
-                                return x;
-                            });
-                            scope.changed();
-                        }
-                    };
-
+                    return new CustomListControl(scope, element, attrs);
                 },
-                templateUrl: 'tmpl/core/controls/ctrlCustomList.html'
+                templateUrl: 'tmpl/core/controls/form/ctrlCustomList.html'
             };
 
         }]);

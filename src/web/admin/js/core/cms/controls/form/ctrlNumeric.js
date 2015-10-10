@@ -5,7 +5,45 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlNumeric', ['$timeout', 'CONTROL_EVENTS', function ($timeout, CONTROL_EVENTS) {
+        .directive('ctrlNumeric', ['$rootScope', '$timeout', '$q', 'CONTROL_EVENTS', function ($rootScope, $timeout, $q, CONTROL_EVENTS) {
+
+            var NumericControl = function (scope, element, attrs) {
+                jsnbt.controls.FormControlBase.apply(this, $rootScope.getBaseArguments(scope, element, attrs));
+
+                var self = this;
+
+                element.addClass('ctrl');
+                element.addClass('ctrl-numeric');
+                
+                this.init().then(function () {
+                    if (scope.ngAutoFocus === true) {
+                        setTimeout(function () {
+                            element.find('input[type="number"]').focus();
+                        }, 200);
+                    }
+                });
+            };
+            NumericControl.prototype = Object.create(jsnbt.controls.FormControlBase.prototype);
+
+            NumericControl.prototype.isValid = function () {
+                var deferred = $q.defer();
+
+                var self = this;
+
+                jsnbt.controls.FormControlBase.prototype.isValid.apply(this, arguments).then(function (valid) {
+                    if (valid && self.isValidating()) {
+
+
+                        if (self.scope.ngRequired) {
+                            valid = !!self.scope.ngModel && self.scope.ngModel !== '';
+                        }
+                    }
+
+                    deferred.resolve(valid);
+                });
+
+                return deferred.promise;
+            };
 
             return {
                 restrict: 'E',
@@ -25,96 +63,9 @@
                     ngChangeFn: '='
                 },
                 link: function (scope, element, attrs) {
-                    element.addClass('ctrl');
-                    element.addClass('ctrl-numeric');
-
-                    scope.id = Math.random().toString().replace('.', '');
-                    scope.valid = true;
-                    
-                    var initiated = false;
-
-                    scope.changed = function () {
-                        if (scope.ngChangeFn) {
-                            if (typeof (scope.ngChangeFn) === 'function') {
-                                scope.ngChangeFn(scope.ngModel);
-                            }
-                        }
-                        else {
-                            $timeout(function () {
-                                scope.$emit(CONTROL_EVENTS.valueChanged, scope.ngModel);
-                            }, 50);
-                        }
-                    };
-
-                    scope.$watch('ngValid', function (newValue) {
-                        if (initiated)
-                            if (newValue === false)
-                                scope.valid = false;
-                            else
-                                scope.valid = isValid();
-                    });
-                    
-                    scope.$watch('ngValidating', function (newValue) {
-                        if (initiated)
-                            if (newValue === false)
-                                scope.valid = true;
-                            else
-                                scope.valid = isValid();
-                    });
-
-                    var isValid = function () {
-                        var valid = true;
-
-                        var validating = scope.ngValidating !== false;
-                        if (validating && !scope.ngDisabled && element.is(':visible')) {
-                            if (scope.ngRequired) {
-                                valid = !!scope.ngModel && scope.ngModel !== '';
-                            }
-
-                            if (valid) {
-                                if (scope.ngValidate) {
-                                    valid = scope.ngValidate(scope.ngModel);
-                                }
-                            }
-
-                            if (valid && scope.ngValid === false)
-                                valid = false;
-                        }
-
-                        return valid;
-                    };
-
-                    scope.$watch('ngModel', function () {
-                        if (initiated)
-                            scope.valid = isValid();
-                    });
-
-                    scope.$on(CONTROL_EVENTS.initiateValidation, function (sender) {
-                        initiated = true;
-                        scope.valid = isValid();
-                        scope.$emit(CONTROL_EVENTS.valueIsValid, scope.valid);
-                    });
-
-                    scope.$on(CONTROL_EVENTS.validate, function (sender) {
-                        if (initiated) {
-                            scope.valid = isValid();
-                        }
-                        scope.$emit(CONTROL_EVENTS.valueIsValid, scope.valid);
-                    });
-
-                    scope.$on(CONTROL_EVENTS.clearValidation, function (sender) {
-                        initiated = false;
-                        scope.valid = true;
-                    });
-
-                    if (scope.ngAutoFocus === true) {
-                        setTimeout(function () {
-                            element.find('input[type="number"]').focus();
-                        }, 200);
-                    }
-
+                    return new NumericControl(scope, element, attrs);
                 },
-                templateUrl: 'tmpl/core/controls/ctrlNumeric.html'
+                templateUrl: 'tmpl/core/controls/form/ctrlNumeric.html'
             };
 
         }]);

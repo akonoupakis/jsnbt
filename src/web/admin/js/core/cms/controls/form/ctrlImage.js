@@ -5,7 +5,137 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlImage', ['$timeout', 'ModalService', 'CONTROL_EVENTS', function ($timeout, ModalService, CONTROL_EVENTS) {
+        .directive('ctrlImage', ['$rootScope', '$timeout', '$q', 'ModalService', 'CONTROL_EVENTS', function ($rootScope, $timeout, $q, ModalService, CONTROL_EVENTS) {
+
+            var ImageControl = function (scope, element, attrs) {
+                jsnbt.controls.FormControlBase.apply(this, $rootScope.getBaseArguments(scope, element, attrs));
+
+                var self = this;
+
+                element.addClass('ctrl');
+                element.addClass('ctrl-image');
+
+                scope.value = '';
+                scope.wrong = false;
+                scope.extensions = scope.ngExtensions ? scope.ngExtensions : ['.png', '.jpg', '.jpeg', '.gif', '.tiff'];
+
+                var fileGroup = scope.ngFileGroup ? scope.ngFileGroup : 'public';
+
+                scope.$watch('ngModel', function (newValue, prevValue) {
+                    if (newValue) {
+                        if (_.isObject(newValue)) {
+                            scope.value = newValue.src || '';
+                            scope.wrong = false;
+                        }
+                        else {
+                            scope.wrong = true;
+                            scope.value = '';
+                        }
+                    }
+                    else {
+                        scope.value = '';
+                        scope.wrong = false;
+                    }
+
+                    self.validate();
+                });
+
+                scope.edit = function () {
+                    ModalService.open({
+                        title: 'select and crop the image you want',
+                        controller: 'ImageSelectorController',
+                        selected: scope.ngModel,
+                        group: fileGroup,
+                        mode: 'single',
+                        template: 'tmpl/core/modals/imageSelector.html',
+                        extensions: scope.extensions,
+                        step: 1,
+                        height: scope.ngHeight,
+                        width: scope.ngWidth
+                    }).then(function (result) {
+                        scope.ngModel = result;
+                        scope.changed();
+                    });
+                };
+
+                scope.crop = function () {
+                    ModalService.open({
+                        title: 'crop ' + scope.ngModel.src,
+                        controller: 'ImageSelectorController',
+                        selected: scope.ngModel,
+                        group: fileGroup,
+                        mode: 'single',
+                        template: 'tmpl/core/modals/imageSelector.html',
+                        extensions: scope.extensions,
+                        step: 2,
+                        height: scope.ngHeight,
+                        width: scope.ngWidth
+                    }).then(function (result) {
+                        scope.ngModel = result;
+                        scope.changed();
+                    });
+                };
+
+                scope.clear = function () {
+                    scope.ngModel = undefined;
+                    scope.changed();
+                };
+
+                this.init();
+            };
+            ImageControl.prototype = Object.create(jsnbt.controls.FormControlBase.prototype);
+
+            ImageControl.prototype.isValid = function () {
+                var deferred = $q.defer();
+
+                var self = this;
+
+                jsnbt.controls.FormControlBase.prototype.isValid.apply(this, arguments).then(function (valid) {
+                    if (valid && self.isValidating()) {
+
+                        if (self.scope.ngRequired) {
+                            if (!self.scope.ngModel)
+                                valid = false;
+                            else if (!_.isObject(self.scope.ngModel))
+                                valid = false;
+                            else {
+                                if (!self.scope.ngModel.src)
+                                    valid = false;
+                                else if (self.scope.ngModel.src === '')
+                                    valid = false;
+                            }
+                        }
+
+                        if (self.scope.ngModel) {
+                            if (!_.isObject(self.scope.ngModel))
+                                valid = false;
+                            else {
+                                if (!self.scope.ngModel.src)
+                                    valid = false;
+                                else if (!_.isArray(self.scope.ngModel.gen))
+                                    valid = false;
+                                else if (self.scope.ngModel.gen.length !== 2)
+                                    valid = false;
+                                else {
+                                    if (self.scope.ngHeight) {
+                                        if (self.scope.ngModel.gen[1].options.height !== self.scope.ngHeight)
+                                            valid = false;
+                                    }
+                                    if (self.scope.ngWidth) {
+                                        if (self.scope.ngModel.gen[1].options.width !== self.scope.ngWidth)
+                                            valid = false;
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+
+                    deferred.resolve(valid);
+                });
+
+                return deferred.promise;
+            };
 
             return {
                 restrict: 'E',
@@ -24,175 +154,9 @@
                     ngChangeFn: '='
                 },
                 link: function (scope, element, attrs) {
-                    element.addClass('ctrl');
-                    element.addClass('ctrl-image');
-
-                    scope.id = Math.random().toString().replace('.', '');
-                    scope.value = '';
-                    scope.valid = true;
-                    scope.wrong = false;
-                    scope.extensions = scope.ngExtensions ? scope.ngExtensions : ['.png', '.jpg', '.jpeg', '.gif', '.tiff'];
-
-                    var initiated = false;
-
-                    scope.$watch('ngDisabled', function (newValue) {
-                        if (initiated)
-                            scope.valid = isValid();
-                    });
-
-                    scope.$watch('ngValidating', function (newValue) {
-                        if (initiated)
-                            if (newValue === false)
-                                scope.valid = true;
-                            else
-                                scope.valid = isValid();
-                    });
-
-                    scope.changed = function () {
-                        if (scope.ngChangeFn) {
-                            if (typeof (scope.ngChangeFn) === 'function') {
-                                scope.ngChangeFn(scope.ngModel);
-                            }
-                        }
-                        else {
-                            $timeout(function () {
-                                scope.$emit(CONTROL_EVENTS.valueChanged, scope.ngModel);
-                            }, 50);
-                        }
-                    };
-
-                    var fileGroup = scope.ngFileGroup ? scope.ngFileGroup : 'public';
-
-                    var isValid = function () {
-                        var valid = true;
-
-                        var validating = scope.ngValidating !== false;
-                        if (validating && !scope.ngDisabled && element.is(':visible')) {
-
-                            if (valid) {
-                                if (scope.ngRequired) {
-                                    if (!scope.ngModel)
-                                        valid = false;
-                                    else if (!_.isObject(scope.ngModel)) 
-                                        valid = false;
-                                    else {
-                                        if (!scope.ngModel.src)
-                                            valid = false;
-                                        else if (scope.ngModel.src === '')
-                                            valid = false;
-                                    }
-                                }
-
-                                if (scope.ngModel) {
-                                    if (!_.isObject(scope.ngModel))
-                                        valid = false;
-                                    else {
-                                        if (!scope.ngModel.src)
-                                            valid = false;
-                                        else if (!_.isArray(scope.ngModel.gen))
-                                            valid = false;
-                                        else if (scope.ngModel.gen.length !== 2)
-                                            valid = false;
-                                        else {
-                                            if (scope.ngHeight) {
-                                                if (scope.ngModel.gen[1].options.height !== scope.ngHeight)
-                                                    valid = false;
-                                            }
-                                            if (scope.ngWidth) {
-                                                if (scope.ngModel.gen[1].options.width !== scope.ngWidth)
-                                                    valid = false;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                        }
-
-                        return valid;
-                    };
-
-                    scope.$watch('ngModel', function (newValue, prevValue) {
-                        if (newValue) {
-                            if (_.isObject(newValue)) {
-                                scope.value = newValue.src || '';
-                                scope.wrong = false;
-                            }
-                            else {
-                                scope.wrong = true;
-                                scope.value = '';
-                            }
-                        }
-                        else {
-                            scope.value = '';
-                            scope.wrong = false;
-                        }
-
-                        if (initiated)
-                            scope.valid = isValid();
-                    });
-
-                    scope.$on(CONTROL_EVENTS.initiateValidation, function (sender) {
-                        initiated = true;
-                        scope.valid = isValid();
-                        scope.$emit(CONTROL_EVENTS.valueIsValid, scope.valid);
-                    });
-                    
-                    scope.$on(CONTROL_EVENTS.validate, function (sender) {
-                        if (initiated) {
-                            scope.valid = isValid();
-                        }
-                        scope.$emit(CONTROL_EVENTS.valueIsValid, scope.valid);
-                    });
-
-                    scope.$on(CONTROL_EVENTS.clearValidation, function (sender) {
-                        initiated = false;
-                        scope.valid = true;
-                    });
-
-                    scope.edit = function () {
-                        ModalService.open({
-                            title: 'select and crop the image you want',
-                            controller: 'ImageSelectorController',
-                            selected: scope.ngModel,
-                            group: fileGroup,
-                            mode: 'single',
-                            template: 'tmpl/core/modals/imageSelector.html',
-                            extensions: scope.extensions,
-                            step: 1,
-                            height: scope.ngHeight,
-                            width: scope.ngWidth
-                        }).then(function (result) {
-                            scope.ngModel = result;
-                            scope.changed();
-                        });
-                    };
-
-                    scope.crop = function () {
-                        ModalService.open({
-                            title: 'crop ' + scope.ngModel.src,
-                            controller: 'ImageSelectorController',
-                            selected: scope.ngModel,
-                            group: fileGroup,
-                            mode: 'single',
-                            template: 'tmpl/core/modals/imageSelector.html',
-                            extensions: scope.extensions,
-                            step: 2,
-                            height: scope.ngHeight,
-                            width: scope.ngWidth
-                        }).then(function (result) {
-                            scope.ngModel = result;
-                            scope.changed();
-                        });
-                    };
-
-                    scope.clear = function () {
-                        scope.ngModel = undefined;
-                        scope.changed();
-                    };
-
+                    return new ImageControl(scope, element, attrs);
                 },
-                templateUrl: 'tmpl/core/controls/ctrlImage.html'
+                templateUrl: 'tmpl/core/controls/form/ctrlImage.html'
             };
 
         }]);

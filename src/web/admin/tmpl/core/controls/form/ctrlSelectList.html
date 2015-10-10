@@ -1,21 +1,19 @@
-﻿<div ng-class="{ 'ng-required': ngRequired, invalid: !ngDisabled && !valid }">
+﻿<div ng-class="{ 'ng-required': ngRequired, invalid: !ngDisabled && !valid, empty: empty }">
     <div class="form-group">
         <label ng-show="ngLabel" class="control-label">{{ngLabel}}<small ng-show="ngTip">({{ngTip}})</small></label>
 
-        <ul class="ctrl-image-list-contents sortable-group" ui-sortable="sortableOptions" ng-model="value">
-            <li ng-repeat="item in value track by $index" ng-class="{ 'has-error': !ngDisabled && !valid && invalid[$index], 'has-feedback': !ngDisabled && !valid && invalid[$index] }" class="form-control-feedback-container">
+        <ul class="ctrl-select-list-contents sortable-group" ui-sortable="sortableOptions" ng-model="ngModel">
+            <li ng-repeat="item in ngModel track by $index" ng-class="{ 'has-error': !ngDisabled && !valid && invalid[$index], 'has-feedback': !ngDisabled && !valid && invalid[$index] }" class="form-control-feedback-container">
                 <div class="input-group">
                     <span class="input-group-btn">
                         <button class="btn btn-default glyphicon glyphicon-move" type="button" ng-disabled="ngDisabled"></button>
                     </span>
-                    <div class="form-control">
-                        <img err-src="../admin/img/core/noimage.jpg" ng-src="../{{ wrong[$index] ? 'admin/img/core/noimage.jpg' : (item.src != '' ? item.src : 'admin/img/core/noimage.jpg') }}?type=admin-image-thumb" />
-                        <span>{{ wrong[$index] ? '-- invalid value --' : item.src }}</span>
-                    </div>
+                    <select class="form-control" id="ddl{{id}}{{$index}}" ng-model="ngModel[$index]" ng-change="changed()">
+                        <option ng-show="ngDefault" value="" ng-selected="!item || notFound">Please select</option>
+                        <option ng-repeat="option in ngOptions" value="{{option[valueField]}}" ng-selected="option[valueField] === item">{{option[nameField]}}</option>
+                    </select>
                     <span ng-show="!ngDisabled && !valid && invalid[$index]" class="glyphicon glyphicon-remove form-control-feedback"></span>
                     <span class="input-group-btn">
-                        <button title="select" class="btn btn-default glyphicon glyphicon-th" type="button" ng-click="edit($index)" ng-disabled="ngDisabled"></button>
-                        <button title="crop" class="btn btn-default glyphicon glyphicon-picture" type="button" ng-click="crop($index)" ng-disabled="ngDisabled || wrong[$index] || !item.src"></button>
                         <button title="delete" class="btn btn-default glyphicon glyphicon-remove" type="button" ng-click="clear($index)" ng-disabled="ngDisabled"></button>
                     </span>
                 </div>

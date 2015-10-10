@@ -7,7 +7,129 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlDatePicker', ['$timeout', 'CONTROL_EVENTS', function ($timeout, CONTROL_EVENTS) {
+        .directive('ctrlDatePicker', ['$rootScope', '$timeout', '$q', 'CONTROL_EVENTS', function ($rootScope, $timeout, $q, CONTROL_EVENTS) {
+
+            var DatePickerControl = function (scope, element, attrs) {
+                jsnbt.controls.FormControlBase.apply(this, $rootScope.getBaseArguments(scope, element, attrs));
+
+                var self = this;
+
+                element.addClass('ctrl');
+                element.addClass('ctrl-date-picker');
+
+                scope.model = undefined;
+                
+                $timeout(function () {
+
+                    if (scope.ngTime) {
+                        $('.input-group > input', element).datetimepicker({
+                            format: 'DD/MM/YYYY HH:mm',
+                            ignoreReadonly: true,
+                            useCurrent: false
+                        });
+
+                        $('.input-group > input', element).on("dp.change", function (e) {
+                            if (e.date) {
+                                var time = e.date._d.getTime();
+                                if (scope.ngModel !== time) {
+                                    scope.ngModel = time;
+                                    scope.changed();
+                                }
+                            }
+                            else {
+                                scope.ngModel = undefined;
+                                scope.changed();
+                            }
+                        });
+
+                        $('.input-group > input', element).data("DateTimePicker").date(new Date(scope.ngModel));
+                    }
+                    else {
+                        $('.input-group > input', element).datepicker({
+                            autoclose: true,
+                            format: 'dd/mm/yyyy'
+                        }).on('changeDate', function (e) {
+                            if (e.date) {
+                                var time = e.date.getTime();
+                                if (scope.ngModel !== time) {
+                                    scope.ngModel = time;
+                                    scope.changed();
+                                }
+                            }
+                            else {
+                                scope.ngModel = undefined;
+                                scope.changed();
+                            }
+                        });;
+                    }
+                });
+
+                scope.select = function () {
+                    if (scope.ngTime) {
+                        $('.input-group > input', element).data("DateTimePicker").show();
+                    }
+                    else {
+                        $('.input-group > input', element).datepicker('show');
+                    }
+                };
+
+                scope.clear = function () {
+                    if (scope.ngTime) {
+                        $('.input-group > input', element).data("DateTimePicker").clear();
+                    }
+                    else {
+                        $('.input-group > input', element).datepicker('clearDates');
+                    }
+                };
+
+                scope.$watch('ngModel', function (val) {
+                    if (val) {
+                        var date = new Date(val);
+                        if (date) {
+                            if (scope.ngTime) {
+                                scope.model = moment(date).format('DD/MM/YYYY HH:mm');
+                            }
+                            else {
+                                scope.model = moment(date).format('DD/MM/YYYY');
+                            }
+                        }
+                        else {
+                            scope.model = undefined;
+                        }
+                    } else {
+                        scope.model = undefined;
+                    }
+                });
+
+                this.init().then(function () {
+                    if (scope.ngAutoFocus === true) {
+                        setTimeout(function () {
+                            element.find('.input-group .form-control').focus();
+                        }, 200);
+                    }
+                });
+            };
+            DatePickerControl.prototype = Object.create(jsnbt.controls.FormControlBase.prototype);
+
+            DatePickerControl.prototype.isValid = function () {
+                var deferred = $q.defer();
+
+                var self = this;
+
+                jsnbt.controls.FormControlBase.prototype.isValid.apply(this, arguments).then(function (valid) {
+                    if (valid && self.isValidating()) {
+
+                        if (self.scope.ngRequired) {
+                            valid = !!self.scope.model && self.scope.model !== '';
+                        }
+
+                    }
+
+                    deferred.resolve(valid);
+                });
+
+                return deferred.promise;
+            };
 
             return {
                 restrict: 'E',
@@ -26,181 +148,9 @@
                     ngChangeFn: '='
                 },
                 link: function (scope, element, attrs) {
-                    element.addClass('ctrl');
-                    element.addClass('ctrl-date-picker');
-                    
-                    scope.id = Math.random().toString().replace('.', '');
-                    scope.valid = true;
-                    
-                    scope.model = undefined;
-
-                    var initiated = false;
-
-                    scope.changed = function () {
-                        if (scope.ngChangeFn) {
-                            if (typeof (scope.ngChangeFn) === 'function') {
-                                scope.ngChangeFn(scope.ngModel);
-                            }
-                        }
-                        else {
-                            $timeout(function () {
-                                scope.$emit(CONTROL_EVENTS.valueChanged, scope.ngModel);
-                            }, 50);
-                        }
-                    };
-
-                    scope.$watch('ngValid', function (newValue) {
-                        if (initiated)
-                            if (newValue === false)
-                                scope.valid = false;
-                            else
-                                scope.valid = isValid();
-                    });
-                    
-                    scope.$watch('ngValidating', function (newValue) {
-                        if (initiated)
-                            if (newValue === false)
-                                scope.valid = true;
-                            else
-                                scope.valid = isValid();
-                    });
-
-                    var isValid = function () {
-                        var valid = true;
-
-                        var validating = scope.ngValidating !== false;
-                        if (validating && !scope.ngDisabled && element.is(':visible')) {
-                            if (scope.ngRequired) {
-                                valid = !!scope.model && scope.model !== '';
-                            }
-
-                            if (valid) {
-                                if (scope.ngValidate) {
-                                    valid = scope.ngValidate(scope.model);
-                                }
-                            }
-
-                            if (valid && scope.ngValid === false)
-                                valid = false;
-                        }
-
-                        return valid;
-                    };
-
-                    scope.$watch('ngModel', function () {
-                        if (initiated)
-                            scope.valid = isValid();
-                    });
-
-                    scope.$on(CONTROL_EVENTS.initiateValidation, function (sender) {
-                        initiated = true;
-                        scope.valid = isValid();
-                        scope.$emit(CONTROL_EVENTS.valueIsValid, scope.valid);
-                    });
-
-                    scope.$on(CONTROL_EVENTS.validate, function (sender) {
-                        if (initiated) {
-                            scope.valid = isValid();
-                        }
-                        scope.$emit(CONTROL_EVENTS.valueIsValid, scope.valid);
-                    });
-
-                    scope.$on(CONTROL_EVENTS.clearValidation, function (sender) {
-                        initiated = false;
-                        scope.valid = true;
-                    });
-
-                    if (scope.ngAutoFocus === true) {
-                        setTimeout(function () {
-                            element.find('.input-group .form-control').focus();
-                        }, 200);
-                    }
-                    
-
-                    $timeout(function () {
-                        
-                        if (scope.ngTime) {
-                            $('.input-group > input', element).datetimepicker({
-                                format: 'DD/MM/YYYY HH:mm',
-                                ignoreReadonly: true,
-                                useCurrent: false
-                            });
-
-                            $('.input-group > input', element).on("dp.change", function (e) {
-                                if (e.date) {
-                                    var time = e.date._d.getTime();
-                                    if (scope.ngModel !== time) {
-                                        scope.ngModel = time;
-                                        scope.changed();
-                                    }
-                                }
-                                else {
-                                    scope.ngModel = undefined;
-                                    scope.changed();
-                                }
-                            });
-
-                            $('.input-group > input', element).data("DateTimePicker").date(new Date(scope.ngModel));
-                        }
-                        else {
-                            $('.input-group > input', element).datepicker({
-                                autoclose: true,
-                                format: 'dd/mm/yyyy'
-                            }).on('changeDate', function (e) {
-                                if (e.date) {
-                                    var time = e.date.getTime();
-                                    if (scope.ngModel !== time) {
-                                        scope.ngModel = time;
-                                        scope.changed();
-                                    }
-                                }
-                                else {
-                                    scope.ngModel = undefined;
-                                    scope.changed();
-                                }
-                            });;
-                        }
-                    });
-
-                    scope.select = function () {
-                        if (scope.ngTime) {
-                            $('.input-group > input', element).data("DateTimePicker").show();
-                        }
-                        else {
-                            $('.input-group > input', element).datepicker('show');
-                        }
-                    };
-
-                    scope.clear = function () {
-                        if (scope.ngTime) {
-                            $('.input-group > input', element).data("DateTimePicker").clear();
-                        }
-                        else {
-                            $('.input-group > input', element).datepicker('clearDates');
-                        }
-                    };
-
-                    scope.$watch('ngModel', function (val) {
-                        if (val) {
-                            var date = new Date(val);
-                            if (date) {
-                                if (scope.ngTime) {
-                                    scope.model = moment(date).format('DD/MM/YYYY HH:mm');
-                                }
-                                else {
-                                    scope.model = moment(date).format('DD/MM/YYYY');
-                                }
-                            }
-                            else {
-                                scope.model = undefined;
-                            }
-                        } else {
-                            scope.model = undefined;
-                        }
-                    });
-
+                    return new DatePickerControl(scope, element, attrs);
                 },
-                templateUrl: 'tmpl/core/controls/ctrlDatePicker.html'
+                templateUrl: 'tmpl/core/controls/form/ctrlDatePicker.html'
             };
 
         }]);

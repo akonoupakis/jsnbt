@@ -5,7 +5,28 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlGrid', [function () {
+        .directive('ctrlGrid', ['$rootScope', function ($rootScope) {
+
+            var GridControl = function (scope, element, attrs) {
+                jsnbt.controls.ListControlBase.apply(this, $rootScope.getBaseArguments(scope, element, attrs));
+                
+                element.addClass('ctrl');
+                element.addClass('ctrl-grid');
+
+                scope.loading = true;
+
+                scope.$watch('ngModel', function (newValue, prevValue) {
+                    if (newValue.items)
+                        scope.loading = false;
+                });
+
+                scope.$watch('ngFn', function (newValue, prevValue) {
+                    scope.fn = newValue;
+                });
+
+                this.init();
+            };
+            GridControl.prototype = Object.create(jsnbt.controls.ListControlBase.prototype);
 
             return {
                 restrict: 'E',
@@ -30,20 +51,7 @@
                     });
                 },
                 link: function (scope, element, attrs) {
-                    element.addClass('ctrl');
-                    element.addClass('ctrl-grid');
-
-                    scope.loading = true;
-
-                    scope.$watch('ngModel', function (newValue, prevValue) {
-                        if (newValue.items)
-                            scope.loading = false;
-                    });
-
-                    scope.$watch('ngFn', function (newValue, prevValue) {
-                     
-                        scope.fn = newValue;
-                    });
+                    return new GridControl(scope, element, attrs);
                 },
                 template: '<table class="table table-condensed" ng-class="{\'ctrl-grid-loading\': loading}" ng-transclude></table>'
             };

@@ -44,6 +44,7 @@ module.exports = [{
         '/admin/js/core/app/controllers/SettingsControllerBase.js',
         '/admin/js/core/app/controls/ControlBase.js',
         '/admin/js/core/app/controls/FormControlBase.js',
+        '/admin/js/core/app/controls/ListControlBase.js',
         '/admin/js/core/app/nodes/entities.js',
         '/admin/js/core/app/routes/ViewRouter.js',
 
