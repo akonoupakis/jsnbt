@@ -1,93 +1,80 @@
 ﻿;(function () {
     "use strict";
 
-    angular.module("jsnbt")
-        .controller('NodeSelectorController', ['$scope', '$data', 'TreeNodeService', 'CONTROL_EVENTS', 'MODAL_EVENTS', function ($scope, $data, TreeNodeService, CONTROL_EVENTS, MODAL_EVENTS) {
-     
-            $scope.nodes = [];
+    var TreeNodeSelectorController = function ($scope, $rootScope, $data, $logger, TreeNodeService, CONTROL_EVENTS, MODAL_EVENTS) {
+        jsnbt.controllers.TreeSelectorModalControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
-            if (!$scope.domain)
-                throw new Error('$scope.domain not defined in NodeSelectorController');
-            
-            if (!$scope.mode)
-                $scope.mode = 'single';
+        var logger = $logger.create('TreeNodeSelectorController');
+        
+        this.init().catch(function (ex) {
+            logger.error(ex);
+        });
+    };
+    TreeNodeSelectorController.prototype = Object.create(jsnbt.controllers.TreeSelectorModalControllerBase.prototype);
+    
+    TreeNodeSelectorController.prototype.load = function () {
+        var deferred = this.ctor.$q.defer();
 
-            if (['single', 'multiple'].indexOf($scope.mode) === -1)
-                $scope.mode = 'single';
+        var self = this;
 
-            if (($scope.mode === 'single' && $scope.selected) || ($scope.mode === 'multiple' && $scope.selected && $scope.selected.length > 0)) {
-                var selectedQry = $scope.mode === 'multiple' ? { id: { $in: $scope.selected } } : { id: { $in: [$scope.selected] } };
+        if ((self.scope.mode === 'single' && self.scope.selected) || (self.scope.mode === 'multiple' && self.scope.selected && self.scope.selected.length > 0)) {
+            var selectedQry = self.scope.mode === 'multiple' ? { id: { $in: self.scope.selected } } : { id: { $in: [self.scope.selected] } };
 
-                $data.nodes.get(selectedQry).then(function (nodes) {
-                    var parentIds = [];
-                    $(nodes).each(function (n, node) {
-                        var nodeParentIds = node.hierarchy.reverse().slice(1).reverse();
-                        $(nodeParentIds).each(function (np, nodeParent) {
-                            if(parentIds.indexOf(nodeParent) === -1)
-                                parentIds.push(nodeParent);
-                        });
+            self.ctor.$data.nodes.get(selectedQry).then(function (nodes) {
+                var parentIds = [];
+                $(nodes).each(function (n, node) {
+                    var nodeParentIds = node.hierarchy.reverse().slice(1).reverse();
+                    $(nodeParentIds).each(function (np, nodeParent) {
+                        if (parentIds.indexOf(nodeParent) === -1)
+                            parentIds.push(nodeParent);
                     });
-                    
-                    var opts = {};
-                    $.extend(true, opts, {
-                        domain: $scope.domain,
-                        parentId: '',
-                        parentIds: parentIds
-                    }, $scope.options);
-                    
-                    TreeNodeService.getNodes(opts).then(function (response) {
-                        if (response.length === 0) {
-                            $scope.nodes = [];
-                        }
-                        else {
-                            $scope.nodes = response[0].children;
-                        }
-
-                        if ($scope.selected)
-                            TreeNodeService.setSelected($scope.nodes, $scope.mode === 'multiple' ? $scope.selected : [$scope.selected]);
-                    }).catch(function (error) {
-                        throw error;
-                    });
-
-                }, function (ex) {
-                    throw ex;
                 });
-            }
-            else {
-                var opts2 = {};
-                $.extend(true, opts2, {
-                    domain: $scope.domain,
-                    parentId: '',
-                    parentIds: []
-                }, $scope.options);
 
-                TreeNodeService.getNodes(opts2).then(function (response) {
+                var opts = {};
+                $.extend(true, opts, {
+                    domain: self.scope.domain,
+                    parentId: '',
+                    parentIds: parentIds
+                }, self.scope.options);
+
+                self.ctor.TreeNodeService.getNodes(opts).then(function (response) {
                     if (response.length === 0) {
-                        $scope.nodes = [];
+                        deferred.resolve([]);
                     }
                     else {
-                        $scope.nodes = response[0].children;
+                        deferred.resolve(response[0].children);
                     }
                 }).catch(function (error) {
-                    throw error;
+                    deferred.reject(error);
                 });
-            }
 
-
-            $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
-                var selected = $scope.mode === 'single' ? _.first(TreeNodeService.getSelected($scope.nodes)) : TreeNodeService.getSelected($scope.nodes);
-                $scope.$emit(MODAL_EVENTS.valueSubmitted, selected);
+            }).catch(function (ex) {
+                deferred.reject(ex);
             });
+        }
+        else {
+            var opts2 = {};
+            $.extend(true, opts2, {
+                domain: self.scope.domain,
+                parentId: '',
+                parentIds: []
+            }, self.scope.options);
 
-            $scope.$on(CONTROL_EVENTS.valueSelected, function (sender, selected) {
-                sender.stopPropagation();
-
-                var selectedId = selected.id;
-                $scope.$emit(MODAL_EVENTS.valueSubmitted, selectedId);
+            self.ctor.TreeNodeService.getNodes(opts2).then(function (response) {
+                if (response.length === 0) {
+                    deferred.resolve([]);
+                }
+                else {
+                    deferred.resolve(response[0].children);
+                }
+            }).catch(function (error) {
+                deferred.reject(error);
             });
+        }
 
-            $scope.$on(CONTROL_EVENTS.valueSubmitted, function (sender, selected) {
-                sender.stopPropagation();
-            });
-        }]);
+        return deferred.promise;
+    };
+
+    angular.module("jsnbt")
+        .controller('NodeSelectorController', ['$scope', '$rootScope', '$data', '$logger', 'TreeNodeService', 'CONTROL_EVENTS', 'MODAL_EVENTS', TreeNodeSelectorController]);
 })();

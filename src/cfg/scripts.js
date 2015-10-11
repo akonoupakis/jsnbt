@@ -44,6 +44,8 @@ module.exports = [{
         '/admin/js/core/app/controllers/DataFormControllerBase.js',
         '/admin/js/core/app/controllers/NodeFormControllerBase.js',
         '/admin/js/core/app/controllers/SettingsControllerBase.js',
+        '/admin/js/core/app/controllers/modal/TreeSelectorModalControllerBase.js',
+        '/admin/js/core/app/controllers/modal/ListSelectorModalControllerBase.js',
         '/admin/js/core/app/controls/ControlBase.js',
         '/admin/js/core/app/controls/FormControlBase.js',
         '/admin/js/core/app/controls/ListControlBase.js',

@@ -9,7 +9,7 @@
 
             controllers.ControllerBase = (function (ControllerBase) {
 
-                ControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
+                ControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
 
                     var logger = $logger.create('ControllerBase');
 
@@ -147,7 +147,7 @@
                         });
                     }
                     else {
-                        deferred.reject(new Error('ControllerBase should have the AppController as base'));
+                        deferred.resolve();
                     }
 
                     return deferred.promise;
