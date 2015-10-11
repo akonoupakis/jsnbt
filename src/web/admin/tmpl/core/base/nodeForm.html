@@ -42,7 +42,7 @@
 
         <div id="page-parent" data-scrollspy="parent" ng-show="entity.properties.parent">
             <div class="row">
-                <ctrl-node class="col-sm-12" ng-language="defaults.language" ng-model="node.parent" ng-domain="node.domain" ng-disabled="!entity.properties.parent" ng-required="false" ng-options="parentOptions" ng-label="parent" ng-tip="leave blank for root"></ctrl-node>
+                <ctrl-node class="col-sm-12" ng-language="defaults.language" ng-model="node.parent" ng-domain="node.domain" ng-entities="parentOptions.entities" ng-disabled="!entity.properties.parent" ng-required="false" ng-options="parentOptions" ng-label="parent" ng-tip="leave blank for root"></ctrl-node>
             </div>
 
             <hr />

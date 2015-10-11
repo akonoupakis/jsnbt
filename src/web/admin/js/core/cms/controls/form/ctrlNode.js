@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlNode', ['$rootScope', '$timeout', '$data', '$fn', '$q', 'CONTROL_EVENTS', function ($rootScope, $timeout, $data, $fn, $q, CONTROL_EVENTS) {
+        .directive('ctrlNode', ['$rootScope', '$timeout', '$data', '$jsnbt', '$q', 'ModalService', 'CONTROL_EVENTS', function ($rootScope, $timeout, $data, $jsnbt, $q, ModalService, CONTROL_EVENTS) {
 
             var NodeControl = function (scope, element, attrs) {
                 jsnbt.controls.FormControlBase.apply(this, $rootScope.getBaseArguments(scope, element, attrs));
@@ -66,21 +66,77 @@
                     }
                 });
 
+                var moduleLookup = function (entities) {
+                    var deferred = $q.defer();
+
+                    var opts = {};
+                    $.extend(true, opts, {
+                        entities: entities
+                    }, scope.ngOptions);
+
+                    var modalOpts = $jsnbt.modules[scope.ngDomain].lookup(scope.ngModel, opts);
+                    
+                    ModalService.open(modalOpts).then(function (selectedNodeId) {
+                        deferred.resolve(selectedNodeId);
+                    }).catch(function (error) {
+                        deferred.reject(error);
+                    });
+
+                    return deferred.promise;
+                };
+
+                var entityLookup = function (entity) {
+                    var deferred = $q.defer();
+
+                    if (typeof ($jsnbt.entities[entity].lookup) === 'function') {
+                        var opts = $.extend({
+                            entities: [entity]
+                        }, scope.ngOptions);
+
+                        var modalOpts = $jsnbt.entities[entity].lookup(scope.ngModel, opts);
+
+                        ModalService.open(modalOpts).then(function (selectedNodeId) {
+                            deferred.resolve(selectedNodeId);
+                        }).catch(function (error) {
+                            deferred.reject(error);
+                        });
+                    }
+                    else {
+                        moduleLookup([entity]).then(function (selectedNodeId) {
+                            deferred.resolve(selectedNodeId);
+                        }).catch(function (error) {
+                            deferred.reject(error);
+                        });
+                    }
+
+                    return deferred.promise;
+                };
+
                 scope.select = function () {
                     if (!scope.ngDomain || scope.ngDomain === '')
                         return;
 
-                    var invoked = $fn.invoke(scope.ngDomain, 'selectNode', [scope.ngDomain, scope.ngModel, scope.ngOptions], true);
-                    if (invoked) {
-                        invoked.then(function (selectedNodeId) {
-                            scope.ngModel = selectedNodeId || '';
-                            scope.changed();
-                        }).catch(function (error) {
-                            throw error;
-                        });
+                    if (_.isArray(scope.ngEntities) && scope.ngEntities.length > 0) {
+                        if (scope.ngEntities.length === 1) {
+                            
+                            var entity = _.first(scope.ngEntities);
+                            entityLookup(entity).then(function (selectedNodeId) {
+                                scope.ngModel = selectedNodeId || '';
+                                scope.changed();
+                            });
+                        }
+                        else {
+                            moduleLookup(scope.ngEntities).then(function (selectedNodeId) {
+                                scope.ngModel = selectedNodeId || '';
+                                scope.changed();
+                            });
+                        }
                     }
                     else {
-                        throw new Error('unable to select node for domain: ' + scope.ngDomain);
+                        moduleLookup().then(function (selectedNodeId) {
+                            scope.ngModel = selectedNodeId || '';
+                            scope.changed();
+                        });
                     }
                 };
 
@@ -133,6 +189,7 @@
                 scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
                     ngLanguage: '=',
                     ngDomain: '=',
+                    ngEntities: '=',
                     ngOptions: '='
                 }),
                 link: function (scope, element, attrs) {

@@ -32,6 +32,8 @@ module.exports = [{
     items: [
         '/jsnbt.js',
         '/admin/js/core/app/main.js',
+        '/admin/js/core/app/modules.js',
+        '/admin/js/core/app/entities.js',
         '/admin/js/core/app/constants/TEMPLATE_BASE.js',
         '/admin/js/core/app/controllers/Controller.js',
         '/admin/js/core/app/controllers/ControllerBase.js',
@@ -45,7 +47,6 @@ module.exports = [{
         '/admin/js/core/app/controls/ControlBase.js',
         '/admin/js/core/app/controls/FormControlBase.js',
         '/admin/js/core/app/controls/ListControlBase.js',
-        '/admin/js/core/app/nodes/entities.js',
         '/admin/js/core/app/routes/ViewRouter.js',
 
 
@@ -124,14 +125,12 @@ module.exports = [{
         '/admin/js/core/cms/panels/pnlRegistration.js',
 
         '/admin/js/core/cms/providers/$data.js',
-        '/admin/js/core/cms/providers/$fn.js',
         '/admin/js/core/cms/providers/$jsnbt.js',
         '/admin/js/core/cms/providers/$logger.js',
         '/admin/js/core/cms/providers/$queue.js',
 
         '/admin/js/core/cms/services/AuthService.js',
         '/admin/js/core/cms/services/FileService.js',
-        '/admin/js/core/cms/services/FunctionService.js',
         '/admin/js/core/cms/services/LocationService.js',
         '/admin/js/core/cms/services/ModalService.js',
         '/admin/js/core/cms/services/PagedDataService.js',

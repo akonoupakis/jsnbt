@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlNodeList', ['$rootScope', '$timeout', '$data', '$fn', '$q', 'CONTROL_EVENTS', function ($rootScope, $timeout, $data, $fn, $q, CONTROL_EVENTS) {
+        .directive('ctrlNodeList', ['$rootScope', '$timeout', '$data', '$jsnbt', '$q', 'ModalService', 'CONTROL_EVENTS', function ($rootScope, $timeout, $data, $jsnbt, $q, ModalService, CONTROL_EVENTS) {
 
             var NodeListControl = function (scope, element, attrs) {
                 jsnbt.controls.FormControlBase.apply(this, $rootScope.getBaseArguments(scope, element, attrs));
@@ -95,33 +95,179 @@
                     }
                 });
                 
+                var moduleLookup = function (entities) {
+                    var deferred = $q.defer();
+
+                    var opts = {};
+                    $.extend(true, opts, {
+                        entities: entities
+                    }, scope.ngOptions);
+
+                    var modalOpts = $jsnbt.modules[scope.ngDomain].lookup(scope.ngModel, opts);
+                    
+                    ModalService.open(modalOpts).then(function (selectedNodeId) {
+                        deferred.resolve(selectedNodeId);
+                    }).catch(function (error) {
+                        deferred.reject(error);
+                    });
+
+                    return deferred.promise;
+                };
+
+                var moduleLookupMany = function (entities, selected) {
+                    var deferred = $q.defer();
+
+                    var opts = {};
+                    $.extend(true, opts, {
+                        entities: entities
+                    }, scope.ngOptions);
+
+                    var modalOpts = $jsnbt.modules[scope.ngDomain].lookupMany(selected || scope.ngModel, opts);
+
+                    ModalService.open(modalOpts).then(function (selectedNodeId) {
+                        deferred.resolve(selectedNodeId);
+                    }).catch(function (error) {
+                        deferred.reject(error);
+                    });
+
+                    return deferred.promise;
+                };
+
+                var entityLookup = function (entity) {
+                    var deferred = $q.defer();
+
+                    if (typeof ($jsnbt.entities[entity].lookup) === 'function') {
+                        var opts = $.extend({
+                            entities: [entity]
+                        }, scope.ngOptions);
+
+                        var modalOpts = $jsnbt.entities[entity].lookup(scope.ngModel, opts);
+
+                        ModalService.open(modalOpts).then(function (selectedNodeId) {
+                            deferred.resolve(selectedNodeId);
+                        }).catch(function (error) {
+                            deferred.reject(error);
+                        });
+                    }
+                    else {
+                        moduleLookup([entity]).then(function (selectedNodeId) {
+                            deferred.resolve(selectedNodeId);
+                        }).catch(function (error) {
+                            deferred.reject(error);
+                        });
+                    }
+
+                    return deferred.promise;
+                };
+
+                var entityLookupMany = function (entity, selected) {
+                    var deferred = $q.defer();
+
+                    if (typeof ($jsnbt.entities[entity].lookupMany) === 'function') {
+                        var opts = $.extend({
+                            entities: [entity]
+                        }, scope.ngOptions);
+
+                        var modalOpts = $jsnbt.entities[entity].lookupMany(selected || scope.ngModel, opts);
+
+                        ModalService.open(modalOpts).then(function (selectedNodeId) {
+                            deferred.resolve(selectedNodeId);
+                        }).catch(function (error) {
+                            deferred.reject(error);
+                        });
+                    }
+                    else {
+                        moduleLookupMany([entity]).then(function (selectedNodeId) {
+                            deferred.resolve(selectedNodeId);
+                        }).catch(function (error) {
+                            deferred.reject(error);
+                        });
+                    }
+
+                    return deferred.promise;
+                };
+
                 scope.edit = function (index) {
                     var item = scope.ngModel[index];
 
-                    var invoked = $fn.invoke(scope.ngDomain, 'selectNode', [scope.ngDomain, item, scope.ngOptions], true);
+                    if (_.isArray(scope.ngEntities) && scope.ngEntities.length > 0) {
+                        if (scope.ngEntities.length === 1) {
 
-                    if (invoked) {
-                        invoked.then(function (selectedNodeId) {
+                            var entity = _.first(scope.ngEntities);
+                            entityLookup(entity).then(function (selectedNodeId) {
+                                scope.ngModel[index] = selectedNodeId;
+                                scope.ngModel = scope.ngModel.slice(0);
+
+                                self.validate();
+
+                                scope.changed();
+                            });
+                        }
+                        else {
+                            moduleLookup(scope.ngEntities).then(function (selectedNodeId) {
+                                scope.ngModel[index] = selectedNodeId;
+                                scope.ngModel = scope.ngModel.slice(0);
+
+                                self.validate();
+
+                                scope.changed();
+                            });
+                        }
+                    }
+                    else {
+                        moduleLookup().then(function (selectedNodeId) {
                             scope.ngModel[index] = selectedNodeId;
                             scope.ngModel = scope.ngModel.slice(0);
 
                             self.validate();
 
                             scope.changed();
-                        }).catch(function (error) {
-                            throw error;
                         });
                     }
-                    else {
-                        throw new Error('unable to select node for domain: ' + scope.ngDomain);
-                    }
+
                 };
 
                 scope.add = function () {
-                    var invoked = $fn.invoke(scope.ngDomain, 'selectNodes', [scope.ngDomain, [], scope.ngOptions], true);
 
-                    if (invoked) {
-                        invoked.then(function (selectedNodeIds) {
+                    if (_.isArray(scope.ngEntities) && scope.ngEntities.length > 0) {
+                        if (scope.ngEntities.length === 1) {
+
+                            var entity = _.first(scope.ngEntities);
+                            entityLookupMany(entity, []).then(function (selectedNodeIds) {
+                                if (!scope.ngModel)
+                                    scope.ngModel = [];
+
+                                $(selectedNodeIds).each(function (i, item) {
+                                    scope.ngModel.push(item);
+                                });
+
+                                scope.ngModel = scope.ngModel.slice(0);
+
+                                self.validate();
+
+                                scope.changed();
+                            });
+                        }
+                        else {
+
+                            moduleLookupMany(scope.ngEntities, []).then(function (selectedNodeIds) {
+                                if (!scope.ngModel)
+                                    scope.ngModel = [];
+
+                                $(selectedNodeIds).each(function (i, item) {
+                                    scope.ngModel.push(item);
+                                });
+
+                                scope.ngModel = scope.ngModel.slice(0);
+
+                                self.validate();
+
+                                scope.changed();
+                            });
+                        }
+                    }
+                    else {
+                        moduleLookupMany(undefined, []).then(function (selectedNodeIds) {
                             if (!scope.ngModel)
                                 scope.ngModel = [];
 
@@ -134,13 +280,9 @@
                             self.validate();
 
                             scope.changed();
-                        }).catch(function (error) {
-                            throw error;
                         });
                     }
-                    else {
-                        throw new Error('unable to select node for domain: ' + scope.ngDomain);
-                    }
+
                 };
 
                 scope.clear = function (index) {

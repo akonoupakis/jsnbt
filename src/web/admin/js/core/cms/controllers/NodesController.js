@@ -3,7 +3,7 @@
 (function () {
     "use strict";
     
-    var NodesController = function ($scope, $rootScope, $location, $jsnbt, $logger, $fn, $data, ModalService) {
+    var NodesController = function ($scope, $rootScope, $location, $jsnbt, $logger, $data, ModalService) {
         jsnbt.controllers.TreeControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var self = this;
@@ -156,5 +156,5 @@
     NodesController.prototype = Object.create(jsnbt.controllers.TreeControllerBase.prototype);
 
     angular.module("jsnbt")
-        .controller('NodesController', ['$scope', '$rootScope', '$location', '$jsnbt', '$logger', '$fn', '$data', 'ModalService', NodesController]);
+        .controller('NodesController', ['$scope', '$rootScope', '$location', '$jsnbt', '$logger', '$data', 'ModalService', NodesController]);
 })();
