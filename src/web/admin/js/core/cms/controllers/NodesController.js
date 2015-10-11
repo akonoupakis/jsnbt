@@ -86,39 +86,34 @@
 
                     if (nodes.length > 0) {
 
-                        ModalService.open({
-                            title: 'oops',
-                            message: 'this node is not empty and cannot be deleted',
-                            controller: 'ErrorPromptController',
-                            template: 'tmpl/core/modals/errorPrompt.html',
-                            btn: {
-                                ok: 'ok',
-                                cancel: false
-                            }
+                        ModalService.prompt(function (x) {
+                            x.title('oops');
+                            x.message('this node is not empty and cannot be deleted');
                         }).then(function (result) {
-
+                       
+                        }).catch(function (ex) {
+                            throw ex;
                         });
-
                     }
                     else {
 
-                        ModalService.open({
-                            title: 'are you sure you want to permanently delete the node ' + node.title[$scope.defaults.language] + '?',
-                            controller: 'DeletePromptController',
-                            template: 'tmpl/core/modals/deletePrompt.html'
+                        ModalService.confirm(function (x) {
+                            x.title('are you sure you want to permanently delete the node ' + node.title[$scope.defaults.language] + '?');
                         }).then(function (result) {
                             if (result) {
                                 $data.nodes.del(node.id).then(function (nodeDeleteResults) {
                                     self.remove(node);
                                 }, function (nodeDeleteError) {
-                                    deferred.reject(nodeDeleteError);
+                                    throw nodeDeleteError;
                                 });
                             }
+                        }).catch(function (ex) {
+                            throw ex;
                         });
                     }
 
                 }).catch(function (ex) {
-                    deferred.reject(ex);
+                    throw ex;
                 });
             },
 

@@ -112,10 +112,8 @@
                 var deletePromise = function (data) {
                     var deferred = $q.defer();
 
-                    ModalService.open({
-                        title: 'are you sure you want to delete the language ' + data.name + '?',
-                        controller: 'DeletePromptController',
-                        template: 'tmpl/core/modals/deletePrompt.html'
+                    ModalService.confirm(function (x) {
+                        x.title('are you sure you want to delete the language ' + data.name + '?');
                     }).then(function (confirmed) {
                         if (confirmed) {
                             $data.languages.get(data.id).then(function (response) {

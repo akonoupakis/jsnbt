@@ -34,23 +34,7 @@
 
             return deferred.promise;
         });
-
-        $scope.$on(CONTROL_EVENTS.valueChanged, function (sender, value) {
-            sender.stopPropagation();
-            $scope.ngModel = value;
-        });
-        
-        $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
-            $scope.valid = true;
-            $scope.$broadcast(CONTROL_EVENTS.initiateValidation);
-            if ($scope.valid) {
-                var selectedFolder = _.first(TreeNodeService.getSelected($scope.nodes));
-                var targetPath = (selectedFolder ? selectedFolder : '/' + $scope.group);
-                var selectedPath = targetPath + '/' + $scope.ngModel + $scope.data.ext;
-                $scope.$emit(MODAL_EVENTS.valueSubmitted, $scope.ngModel !== '' ? selectedPath : '');
-            }
-        });
-
+      
         this.init().catch(function (ex) {
             logger.error(ex);
         });
@@ -95,6 +79,18 @@
 
     FileSystemEditorController.prototype.get = function () {
         return this.scope.nodes;
+    };
+
+    FileSystemEditorController.prototype.publish = function (data) {
+        var deferred = this.ctor.$q.defer();
+
+        var selectedFolder = _.first(this.ctor.TreeNodeService.getSelected(this.scope.nodes));
+        var targetPath = (selectedFolder ? selectedFolder : '/' + this.scope.group);
+        var selectedPath = targetPath + '/' + this.scope.ngModel + this.scope.data.ext;
+
+        deferred.resolve(this.scope.ngModel !== '' ? selectedPath : '');
+
+        return deferred.promise;
     };
 
     angular.module("jsnbt")

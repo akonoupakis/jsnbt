@@ -84,6 +84,8 @@ module.exports = [{
         '/admin/js/core/cms/controllers/FilesController.js',
         '/admin/js/core/cms/controllers/SettingsController.js',
 
+        '/admin/js/core/cms/controllers/modal/ConfirmController.js',
+        '/admin/js/core/cms/controllers/modal/PromptController.js',
         '/admin/js/core/cms/controllers/modal/ErrorPromptController.js',
         '/admin/js/core/cms/controllers/modal/ContainerSelectorController.js',
         '/admin/js/core/cms/controllers/modal/DataSelectorController.js',

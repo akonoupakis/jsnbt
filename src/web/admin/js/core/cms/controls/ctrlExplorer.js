@@ -224,10 +224,8 @@
                 };
 
                 scope.delete = function (item) {
-                    ModalService.open({
-                        title: 'are you sure you want to delete the ' + item.type + ' ' + item.name + '?',
-                        controller: 'DeletePromptController',
-                        template: 'tmpl/core/modals/deletePrompt.html'
+                    ModalService.confirm(function (x) {
+                        x.title('are you sure you want to delete the ' + item.type + ' ' + item.name + '?');
                     }).then(function (confirmed) {
                         if (confirmed) {
                             FileService.delete(item.path).then(function (response) {

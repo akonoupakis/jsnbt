@@ -34,10 +34,8 @@
 
             delete: function (row) {
 
-                ModalService.open({
-                    title: 'are you sure you want to delete the key ' + row.key + '?',
-                    controller: 'DeletePromptController',
-                    template: 'tmpl/core/modals/deletePrompt.html'
+                ModalService.confirm(function (x) {
+                    x.title('are you sure you want to delete the key ' + row.key + '?');
                 }).then(function (confirmed) {
                     if (confirmed) {
                         $data.texts.del(row.id).then(function () {

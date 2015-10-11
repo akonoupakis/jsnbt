@@ -14,9 +14,32 @@
 
                     var self = this;
 
+                    $scope.$on(CONTROL_EVENTS.valueChanged, function (sender, value) {
+                        sender.stopPropagation();
+                        $scope.ngModel = value;
+                    });
 
+                    $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
+                        self.validate();
+
+                        if (self.isValid()) {
+                            self.publish().then(function (response) {
+                                $scope.$emit(MODAL_EVENTS.valueSubmitted, response);
+                            }).catch(function (ex) {
+                                throw ex;
+                            });
+                        }
+                    });
                 };
                 FormModalControllerBase.prototype = Object.create(controllers.FormControllerBase.prototype);
+
+                FormModalControllerBase.prototype.publish = function () {
+                    var deferred = this.ctor.$q.defer();
+
+                    deferred.resolve(null);
+
+                    return deferred;
+                };
 
                 return FormModalControllerBase;
 

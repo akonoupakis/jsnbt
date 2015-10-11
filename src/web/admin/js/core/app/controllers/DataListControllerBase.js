@@ -65,10 +65,8 @@
                     };
 
                     $scope.gridFn.delete = function (row) {
-                        ModalService.open({
-                            title: 'are you sure you want to permanently delete ' + row.title[$scope.defaults.language] + '?',
-                            controller: 'DeletePromptController',
-                            template: 'tmpl/core/modals/deletePrompt.html'
+                        ModalService.confirm(function (x) {
+                            x.title('are you sure you want to permanently delete ' + row.title[$scope.defaults.language] + '?');
                         }).then(function (result) {
                             if (result) {
                                 $data.data.del(row.id).then(function () {
