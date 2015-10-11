@@ -64,6 +64,12 @@
                     return deferred.promise;
                 };
 
+                ListControllerBase.prototype.get = function () {
+                    
+                    return this.scope.data;
+
+                };
+
                 ListControllerBase.prototype.setTitle = function (title) {
                     this.scope.title = title;
                 };

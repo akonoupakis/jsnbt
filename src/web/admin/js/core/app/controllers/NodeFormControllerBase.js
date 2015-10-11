@@ -993,7 +993,7 @@
                     }
                     else {
                         for (var entityName in this.ctor.$jsnbt.entities) {
-                            if (this.ctor.$jsnbt.entities[entityName].domain === $scope.domain) {
+                            if (this.ctor.$jsnbt.entities[entityName].domain === this.scope.domain) {
                                 types.push({ value: entityName, name: this.ctor.$jsnbt.entities[entityName].name });
                             }
                         }

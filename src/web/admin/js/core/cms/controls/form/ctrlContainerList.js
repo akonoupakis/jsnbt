@@ -36,7 +36,7 @@
 
                                     scope.wrong[nv] = false;
 
-                                    var selectedContainer = $jsnbt.containers[nValue.id];
+                                    var selectedContainer = $jsnbt.containers[nValue];
 
                                     if (selectedContainer) {
                                         scopeValues.push({

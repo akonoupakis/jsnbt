@@ -1,44 +1,67 @@
 ﻿;(function () {
     "use strict";
 
-    angular.module("jsnbt")
-        .controller('FileSelectorController', ['$scope', 'CONTROL_EVENTS', 'MODAL_EVENTS', function ($scope, CONTROL_EVENTS, MODAL_EVENTS) {
+    var FileSelectorController = function ($scope, $rootScope, $logger, CONTROL_EVENTS, MODAL_EVENTS) {
+        jsnbt.controllers.ListSelectorModalControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
-            if (!$scope.mode)
-                $scope.mode = 'single';
+        var self = this;
 
-            if (['single', 'multiple'].indexOf($scope.mode) === -1)
-                $scope.mode = 'single';
+        var logger = $logger.create('FileSelectorController');
 
-            $scope.fileGroup = $scope.group ? $scope.group : 'public';
+        $scope.fileGroup = $scope.group ? $scope.group : 'public';
 
-            $scope.selected = $scope.selected || [];
+        $scope.selected = $scope.selected || [];
 
-            $scope.path = '/';
+        $scope.path = '/';
 
-            if ($scope.mode === 'single') {
-                if ($scope.selected && typeof($scope.selected) === 'string') {
-                    var parts = $scope.selected.split('/');
-                    if (parts.length > 2)
-                        $scope.path += _.initial(_.rest(parts, 1), 1).join('/');
-                }
+        if ($scope.mode === 'single') {
+            if ($scope.selected && typeof ($scope.selected) === 'string') {
+                var parts = $scope.selected.split('/');
+                if (parts.length > 2)
+                    $scope.path += _.initial(_.rest(parts, 1), 1).join('/');
             }
+        }
 
-            $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
-                $scope.$broadcast(CONTROL_EVENTS.valueRequested);
-             
-                $scope.$emit(MODAL_EVENTS.valueSubmitted, $scope.selected);
-            });
+        this.init().catch(function (ex) {
+            logger.error(ex);
+        });
+    };
+    FileSelectorController.prototype = Object.create(jsnbt.controllers.ListSelectorModalControllerBase.prototype);
 
-            $scope.$on(CONTROL_EVENTS.valueSelected, function (sender, selected) {
-                sender.stopPropagation();
+    FileSelectorController.prototype.load = function () {
+        var deferred = this.ctor.$q.defer();
 
-                $scope.$emit(MODAL_EVENTS.valueSubmitted, selected);
-            });
+        deferred.resolve({});
 
-            $scope.$on(CONTROL_EVENTS.valueSubmitted, function (sender, selected) {
-                $scope.selected = selected;
-                sender.stopPropagation();
-            });
-        }]);
+        return deferred.promise;
+    };
+
+    FileSelectorController.prototype.select = function (selected) {
+        return selected;
+    };
+
+    FileSelectorController.prototype.getSelected = function () {
+        return this.scope.selected;
+    };
+
+    FileSelectorController.prototype.setSelected = function (selected) {
+        
+    };
+    
+    FileSelectorController.prototype.requested = function () {
+        this.scope.$broadcast(this.ctor.CONTROL_EVENTS.valueRequested);
+
+        this.scope.$emit(this.ctor.MODAL_EVENTS.valueSubmitted, this.scope.selected);
+    };
+
+    FileSelectorController.prototype.selected = function (selected) {
+        this.scope.$emit(this.ctor.MODAL_EVENTS.valueSubmitted, this.select(selected));
+    };
+
+    FileSelectorController.prototype.submitted = function (selected) {
+        this.scope.selected = selected;
+    };
+
+    angular.module("jsnbt")
+        .controller('FileSelectorController', ['$scope', '$rootScope', '$logger', 'CONTROL_EVENTS', 'MODAL_EVENTS', FileSelectorController]);
 })();

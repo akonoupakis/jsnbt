@@ -12,6 +12,8 @@
                 DataFormControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
                     controllers.FormControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
+                    var self = this;
+
                     var logger = $logger.create('DataFormControllerBase');
 
                     $scope.localization = true;
@@ -24,7 +26,7 @@
 
                         $scope.list = _.find($jsnbt.lists, function (x) { return x.domain === $scope.domain && x.id === ($scope.listId || $routeParams.list); });
 
-                        $scope.setTitle($scope.list.name);
+                        self.setTitle($scope.list.name);
 
                         $scope.localized = $scope.application.localization.enabled && ($scope.list.localized === undefined || $scope.list.localized === true);
 

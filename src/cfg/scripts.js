@@ -46,6 +46,10 @@ module.exports = [{
         '/admin/js/core/app/controllers/SettingsControllerBase.js',
         '/admin/js/core/app/controllers/modal/TreeSelectorModalControllerBase.js',
         '/admin/js/core/app/controllers/modal/ListSelectorModalControllerBase.js',
+        '/admin/js/core/app/controllers/modal/PromptModalControllerBase.js',
+        '/admin/js/core/app/controllers/modal/ConfirmModalControllerBase.js',
+        '/admin/js/core/app/controllers/modal/UploadModalControllerBase.js',
+        '/admin/js/core/app/controllers/modal/FormModalControllerBase.js',
         '/admin/js/core/app/controls/ControlBase.js',
         '/admin/js/core/app/controls/FormControlBase.js',
         '/admin/js/core/app/controls/ListControlBase.js',
@@ -88,7 +92,6 @@ module.exports = [{
         '/admin/js/core/cms/controllers/modal/FileSystemEditorController.js',
         '/admin/js/core/cms/controllers/modal/FileUploadController.js',
         '/admin/js/core/cms/controllers/modal/ImageSelectorController.js',
-        '/admin/js/core/cms/controllers/modal/NamePromptController.js',
         '/admin/js/core/cms/controllers/modal/NodeSelectorController.js',
         
         '/admin/js/core/cms/controls/form/ctrlCheck.js',

@@ -1,53 +1,44 @@
 ﻿;(function () {
     "use strict";
 
+    var ContainerSelectorController = function ($scope, $rootScope, $jsnbt, $logger, CONTROL_EVENTS, MODAL_EVENTS) {
+        jsnbt.controllers.ListSelectorModalControllerBase.apply(this, $rootScope.getBaseArguments($scope));
+
+        var self = this;
+
+        var logger = $logger.create('ContainerSelectorController');
+
+        this.init().catch(function (ex) {
+            logger.error(ex);
+        });
+    };
+    ContainerSelectorController.prototype = Object.create(jsnbt.controllers.ListSelectorModalControllerBase.prototype);
+
+    ContainerSelectorController.prototype.load = function () {
+        var deferred = this.ctor.$q.defer();
+        
+        var data = {
+            items: []
+        };
+
+        for (var containerName in this.ctor.$jsnbt.containers) {
+            var container = this.ctor.$jsnbt.containers[containerName];
+
+            var containerItem = {
+                id: container.id,
+                name: container.name,
+                html: container.html,
+                $parent: data
+            };
+
+            data.items.push(containerItem);
+        };
+
+        deferred.resolve(data);
+
+        return deferred.promise;
+    };
+
     angular.module("jsnbt")
-        .controller('ContainerSelectorController', ['$scope', '$jsnbt', 'CONTROL_EVENTS', 'MODAL_EVENTS', function ($scope, $jsnbt, CONTROL_EVENTS, MODAL_EVENTS) {
-     
-            if (!$scope.mode)
-                $scope.mode = 'single';
-
-            if (['single', 'multiple'].indexOf($scope.mode) === -1)
-                $scope.mode = 'single';
-
-            $scope.data = {};
-
-            var dataItems = [];
-            for (var containerName in $jsnbt.containers) {
-                var container = $jsnbt.containers[containerName];
-
-                var allSelected = $scope.mode === 'multiple' ? (_.isArray($scope.selected) ? $scope.selected : []) : (_.isString($scope.selected) ? [$scope.selected] : []);
-
-                var containerItem = {
-                    id: container.id,
-                    name: container.name,
-                    html: container.html,
-                    selected: allSelected.indexOf(container.id) !== -1,
-                    $parent: $scope.data
-                };
-
-                dataItems.push(containerItem);
-            };
-
-            $scope.data = {
-                items: dataItems
-            };
-            
-            $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
-                var allSelected = _.pluck(_.filter($scope.data.items, function (x) { return x.selected; }), 'id');
-                var selected = $scope.mode === 'single' ? _.first(allSelected) : allSelected;
-                $scope.$emit(MODAL_EVENTS.valueSubmitted, selected);
-            });
-
-            $scope.$on(CONTROL_EVENTS.valueSelected, function (sender, selected) {
-                sender.stopPropagation();
-
-                $scope.$emit(MODAL_EVENTS.valueSubmitted, selected.id);
-            });
-            
-            $scope.$on(CONTROL_EVENTS.valueSubmitted, function (sender, selected) {
-                sender.stopPropagation();
-            });
-
-        }]);
+        .controller('ContainerSelectorController', ['$scope', '$rootScope', '$jsnbt', '$logger', 'CONTROL_EVENTS', 'MODAL_EVENTS', ContainerSelectorController]);
 })();

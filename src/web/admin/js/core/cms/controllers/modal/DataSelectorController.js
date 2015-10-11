@@ -1,45 +1,42 @@
 ﻿;(function () {
     "use strict";
 
+    var DataSelectorController = function ($scope, $rootScope, $data, $logger, PagedDataService, CONTROL_EVENTS, MODAL_EVENTS) {
+        jsnbt.controllers.ListSelectorModalControllerBase.apply(this, $rootScope.getBaseArguments($scope));
+
+        var self = this;
+
+        var logger = $logger.create('DataSelectorController');
+
+        if (!$scope.domain)
+            throw new Error('$scope.domain not defined in DataSelectorController');
+        
+        if (!$scope.list)
+            throw new Error('$scope.list not defined in DataSelectorController');
+
+        this.init().catch(function (ex) {
+            logger.error(ex);
+        });
+
+    };
+    DataSelectorController.prototype = Object.create(jsnbt.controllers.ListSelectorModalControllerBase.prototype);
+
+    DataSelectorController.prototype.load = function () {
+        var deferred = this.ctor.$q.defer();    
+
+        this.ctor.PagedDataService.get(this.ctor.$jsnbt.db.data.get, {
+            domain: this.scope.domain,
+            list: this.scope.list
+        }).then(function (response) {
+            
+            deferred.resolve(response);
+        }).catch(function (error) {
+            deferred.reject(error);
+        });
+        
+        return deferred.promise;
+    };
+
     angular.module("jsnbt")
-        .controller('DataSelectorController', ['$scope', '$data', 'PagedDataService', 'CONTROL_EVENTS', 'MODAL_EVENTS', function ($scope, $data, PagedDataService, CONTROL_EVENTS, MODAL_EVENTS) {
-     
-            $scope.data = [];
-
-            if (!$scope.domain)
-                throw new Error('$scope.domain not defined in DataSelectorController');
-            
-            if (!$scope.mode)
-                $scope.mode = 'single';
-
-            if (['single', 'multiple'].indexOf($scope.mode) === -1)
-                $scope.mode = 'single';
-            
-            PagedDataService.get(jsnbt.db.data.get, {
-                domain: $scope.domain,
-                list: $scope.list
-            }, undefined, undefined, ($scope.mode === 'single' ? [$scope.selected] : $scope.selected)).then(function (response) {
-                $scope.data = response;
-            }).catch(function (error) {
-                throw error;
-            });
-
-            $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
-                var allSelected = _.pluck(_.filter($scope.data.items, function (x) { return x.selected; }), 'id');
-                var selected = $scope.mode === 'single' ? _.first(allSelected) : allSelected;
-                $scope.$emit(MODAL_EVENTS.valueSubmitted, selected);
-            });
-
-            $scope.$on(CONTROL_EVENTS.valueSelected, function (sender, selected) {
-                sender.stopPropagation();
-
-                var selectedId = selected.id;
-                $scope.$emit(MODAL_EVENTS.valueSubmitted, selectedId);
-            });
-            
-            $scope.$on(CONTROL_EVENTS.valueSubmitted, function (sender, selected) {
-                sender.stopPropagation();
-            });
-
-        }]);
+        .controller('DataSelectorController', ['$scope', '$rootScope', '$data', '$logger', 'PagedDataService', 'CONTROL_EVENTS', 'MODAL_EVENTS', DataSelectorController]);
 })();

@@ -4,8 +4,13 @@
     var TreeNodeSelectorController = function ($scope, $rootScope, $data, $logger, TreeNodeService, CONTROL_EVENTS, MODAL_EVENTS) {
         jsnbt.controllers.TreeSelectorModalControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
+        var self = this;
+
         var logger = $logger.create('TreeNodeSelectorController');
         
+        if (!$scope.domain)
+            throw new Error('$scope.domain not defined in TreeNodeSelectorController');
+
         this.init().catch(function (ex) {
             logger.error(ex);
         });

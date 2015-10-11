@@ -13,6 +13,11 @@
                 var modalCtrl = function ($scope, $modalInstance) {
                     angular.extend($scope, scope);
                     
+                    $scope.modal = {
+                        title: scope.title,
+                        template: scope.template                        
+                    };
+                    
                     if ($scope.btn) {
                         if ($scope.btn.cancel === undefined)
                             $scope.btn.cancel = 'cancel';
@@ -36,8 +41,9 @@
 
                         $scope.selected = value;
 
-                        if ($scope.selected !== undefined && $scope.selected !== '')
-                            $modalInstance.close($scope.selected);
+                        if (value !== undefined && value !== '') {
+                            $modalInstance.close(value);
+                        }
                     });
 
                     $scope.ok = function () {
@@ -58,7 +64,7 @@
 
                 modalInstance.result.then(function (selectedItem) {
                     deferred.resolve(selectedItem);
-                }, function () {
+                }, function (ex) {
                     deferred.reject();
                 });
 

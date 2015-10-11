@@ -85,6 +85,7 @@
                         mode: 'multiple',
                         extensions: scope.ngExtensions || []
                     }).then(function (results) {
+
                         if (!scope.ngModel)
                             scope.ngModel = [];
 

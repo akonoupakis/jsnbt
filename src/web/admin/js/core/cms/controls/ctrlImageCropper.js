@@ -12,6 +12,8 @@
                 element.addClass('ctrl');
                 element.addClass('ctrl-image-cropper');
                 
+                scope.ctrl = 'ctrlImageCropper';
+
                 scope.id = Math.random().toString().replace('.', '');
 
                 scope.$watch('ngModel.src', function (newValue) {

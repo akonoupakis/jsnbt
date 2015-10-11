@@ -67,6 +67,18 @@
                 return deferred.promise;
             };
 
+            PagedDataService.getSelected = function (data, field) {
+                var results = _.pluck(_.filter(data.items, function (x) { return x.selected; }), field || 'id');
+                return results;
+            };
+
+            PagedDataService.setSelected = function (data, selected, field) {
+                $(data.items).each(function (d, ditem) {
+                    if(selected.indexOf(ditem[field || 'id']) !== -1)
+                        ditem.selected = true;
+                });
+            };
+
             return PagedDataService;
         }]);
 })();

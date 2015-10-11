@@ -185,6 +185,7 @@ var FileManager = function (server) {
 
             var fullPath = path.join(server.getPath('www'), 'public', root, normalize(opts.from));
             var fullNewPath = path.join(server.getPath('www'), 'public', root, normalize(opts.to));
+            
             if (fs.existsSync(fullPath) && !fs.existsSync(fullNewPath)) {
                 fs.copySync(fullPath, fullNewPath);
                 fs.removeSync(fullPath);

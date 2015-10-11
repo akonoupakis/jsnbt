@@ -313,8 +313,10 @@
 
                     controllers.ControllerBase.prototype.init.apply(this, arguments).then(function () {
 
-                        self.scope.localized = self.scope.application.localization.enabled;
-                        self.scope.language = self.scope.application.localization.enabled ? (self.scope.defaults.language ? self.scope.defaults.language : _.first(self.scope.application.languages).code) : self.scope.defaults.language;
+                        if (self.scope.application) {
+                            self.scope.localized = self.scope.application.localization.enabled;
+                            self.scope.language = self.scope.application.localization.enabled ? (self.scope.defaults.language ? self.scope.defaults.language : _.first(self.scope.application.languages).code) : self.scope.defaults.language;
+                        }
 
                         self.run('preloading').then(function () {
                             self.preload().then(function () {

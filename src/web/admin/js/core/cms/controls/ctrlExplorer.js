@@ -13,6 +13,8 @@
                 element.addClass('ctrl');
                 element.addClass('ctrl-explorer');
 
+                scope.ctrl = 'ctrlExplorer';
+
                 scope.new = '';
                 scope.current = '';
                 scope.breadcrumb = [];

@@ -34,7 +34,8 @@
                         CONTROL_EVENTS: CONTROL_EVENTS,
                         AUTH_EVENTS: AUTH_EVENTS,
                         DATA_EVENTS: DATA_EVENTS,
-                        ROUTE_EVENTS: ROUTE_EVENTS
+                        ROUTE_EVENTS: ROUTE_EVENTS,
+                        MODAL_EVENTS: MODAL_EVENTS
                     };
 
                     this.queue = {};
@@ -94,7 +95,9 @@
 
                     var deferred = this.ctor.$q.defer();
 
-                    this.scope.current.setBreadcrumb(breadcrumb);
+                    if (this.scope.current)
+                        this.scope.current.setBreadcrumb(breadcrumb);
+
                     deferred.resolve();
 
                     return deferred.promise;
