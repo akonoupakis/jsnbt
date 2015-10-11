@@ -102,10 +102,13 @@
                     $.extend(true, opts, {
                         entities: entities
                     }, scope.ngOptions);
-
-                    var modalOpts = $jsnbt.modules[scope.ngDomain].lookup(scope.ngModel, opts);
-                    
-                    ModalService.open(modalOpts).then(function (selectedNodeId) {
+                                        
+                    ModalService.select(function (x) {
+                        x.title('select a content node');
+                        x.controller('NodeSelectorController');
+                        x.template('tmpl/core/modals/nodeSelector.html');
+                        $jsnbt.entities[entity].lookup(x, scope.ngModel, opts);
+                    }).then(function (selectedNodeId) {
                         deferred.resolve(selectedNodeId);
                     }).catch(function (error) {
                         deferred.reject(error);
@@ -122,9 +125,12 @@
                         entities: entities
                     }, scope.ngOptions);
 
-                    var modalOpts = $jsnbt.modules[scope.ngDomain].lookupMany(selected || scope.ngModel, opts);
-
-                    ModalService.open(modalOpts).then(function (selectedNodeId) {
+                    ModalService.select(function (x) {
+                        x.title('select the content nodes you want');
+                        x.controller('NodeSelectorController');
+                        x.template('tmpl/core/modals/nodeSelector.html');
+                        $jsnbt.modules[scope.ngDomain].lookupMany(x, selected || scope.ngModel, opts);
+                    }).then(function (selectedNodeId) {
                         deferred.resolve(selectedNodeId);
                     }).catch(function (error) {
                         deferred.reject(error);
@@ -141,9 +147,14 @@
                             entities: [entity]
                         }, scope.ngOptions);
 
-                        var modalOpts = $jsnbt.entities[entity].lookup(scope.ngModel, opts);
+                        var modalOpts = 
 
-                        ModalService.open(modalOpts).then(function (selectedNodeId) {
+                        ModalService.select(function (x) {
+                            x.title('select a content node');
+                            x.controller('NodeSelectorController');
+                            x.template('tmpl/core/modals/nodeSelector.html');
+                            $jsnbt.entities[entity].lookup(x, scope.ngModel, opts);
+                        }).then(function (selectedNodeId) {
                             deferred.resolve(selectedNodeId);
                         }).catch(function (error) {
                             deferred.reject(error);
@@ -168,9 +179,12 @@
                             entities: [entity]
                         }, scope.ngOptions);
 
-                        var modalOpts = $jsnbt.entities[entity].lookupMany(selected || scope.ngModel, opts);
-
-                        ModalService.open(modalOpts).then(function (selectedNodeId) {
+                        ModalService.select(function (x) {
+                            x.title('select the content nodes you want');
+                            x.controller('NodeSelectorController');
+                            x.template('tmpl/core/modals/nodeSelector.html');
+                            $jsnbt.entities[entity].lookupMany(x, selected || scope.ngModel, opts);
+                        }).then(function (selectedNodeId) {
                             deferred.resolve(selectedNodeId);
                         }).catch(function (error) {
                             deferred.reject(error);

@@ -58,14 +58,16 @@
                 scope.edit = function (index) {
                     var item = scope.ngModel[index];
 
-                    ModalService.open({
-                        title: 'select the file you want',
-                        controller: 'FileSelectorController',
-                        selected: item,
-                        group: fileGroup,
-                        template: 'tmpl/core/modals/FileSelector.html',
-                        mode: 'single',
-                        extensions: scope.ngExtensions || []
+                    ModalService.select(function (x) {
+                        x.title('select the file you want');
+                        x.controller('FileSelectorController');
+                        x.template('tmpl/core/modals/FileSelector.html');
+                        x.scope({
+                            selected: item,
+                            group: fileGroup,
+                            mode: 'single',
+                            extensions: scope.ngExtensions || []
+                        });
                     }).then(function (result) {
                         scope.ngModel[index] = result;
                         scope.ngModel = scope.ngModel.slice(0);
@@ -77,13 +79,15 @@
                 };
 
                 scope.add = function () {
-                    ModalService.open({
-                        title: 'select the files you want',
-                        controller: 'FileSelectorController',
-                        template: 'tmpl/core/modals/FileSelector.html',
-                        group: fileGroup,
-                        mode: 'multiple',
-                        extensions: scope.ngExtensions || []
+                    ModalService.select(function (x) {
+                        x.title('select the files you want');
+                        x.controller('FileSelectorController');
+                        x.template('tmpl/core/modals/FileSelector.html');
+                        x.scope({
+                            group: fileGroup,
+                            mode: 'multiple',
+                            extensions: scope.ngExtensions || []
+                        });
                     }).then(function (results) {
 
                         if (!scope.ngModel)

@@ -38,7 +38,7 @@
 
         return deferred.promise;
     };
-
+    
     angular.module("jsnbt")
         .controller('ContainerSelectorController', ['$scope', '$rootScope', '$jsnbt', '$logger', 'CONTROL_EVENTS', 'MODAL_EVENTS', ContainerSelectorController]);
 })();

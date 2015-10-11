@@ -74,9 +74,12 @@
                         entities: entities
                     }, scope.ngOptions);
 
-                    var modalOpts = $jsnbt.modules[scope.ngDomain].lookup(scope.ngModel, opts);
-                    
-                    ModalService.open(modalOpts).then(function (selectedNodeId) {
+                    ModalService.select(function (x) {
+                        x.title('select a content node');
+                        x.controller('NodeSelectorController');
+                        x.template('tmpl/core/modals/nodeSelector.html');
+                        $jsnbt.modules[scope.ngDomain].lookup(x, scope.ngModel, opts);
+                    }).then(function (selectedNodeId) {
                         deferred.resolve(selectedNodeId);
                     }).catch(function (error) {
                         deferred.reject(error);
@@ -92,10 +95,13 @@
                         var opts = $.extend({
                             entities: [entity]
                         }, scope.ngOptions);
-
-                        var modalOpts = $jsnbt.entities[entity].lookup(scope.ngModel, opts);
-
-                        ModalService.open(modalOpts).then(function (selectedNodeId) {
+                                                
+                        ModalService.select(function (x) {
+                            x.title('select a content node');
+                            x.controller('NodeSelectorController');
+                            x.template('tmpl/core/modals/nodeSelector.html');
+                            $jsnbt.entities[entity].lookup(x, scope.ngModel, opts);
+                        }).then(function (selectedNodeId) {
                             deferred.resolve(selectedNodeId);
                         }).catch(function (error) {
                             deferred.reject(error);

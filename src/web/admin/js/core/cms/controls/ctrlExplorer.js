@@ -189,11 +189,9 @@
                 };
 
                 scope.upload = function () {
-                    ModalService.open({
-                        title: 'upload files',
-                        controller: 'FileUploadController',
-                        template: 'tmpl/core/modals/fileUpload.html',
-                        path: scope.current
+                    ModalService.upload(function (x) {
+                        x.title('upload files');
+                        x.path(scope.current);
                     }).then(function (result) {
                         load(scope.current);
                         scrollToTop();
@@ -204,12 +202,14 @@
                 };
 
                 scope.edit = function (item) {
-                    ModalService.open({
-                        title: 'edit this ' + item.type,
-                        controller: 'FileSystemEditorController',
-                        template: 'tmpl/core/modals/fsEditor.html',
-                        group: fileGroup,
-                        data: item
+                    ModalService.form(function (x) {
+                        x.title('edit this ' + item.type);
+                        x.controller('FileSystemEditorController');
+                        x.template('tmpl/core/modals/fsEditor.html');
+                        x.data(item);
+                        x.scope({
+                            group: fileGroup
+                        });
                     }).then(function (result) {
                         if (result !== '' && result !== item.path) {
                             FileService.move(item.path, result).then(function (response) {

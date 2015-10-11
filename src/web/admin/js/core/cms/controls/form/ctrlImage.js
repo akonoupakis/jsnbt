@@ -41,17 +41,19 @@
                 });
 
                 scope.edit = function () {
-                    ModalService.open({
-                        title: 'select and crop the image you want',
-                        controller: 'ImageSelectorController',
-                        selected: scope.ngModel,
-                        group: fileGroup,
-                        mode: 'single',
-                        template: 'tmpl/core/modals/imageSelector.html',
-                        extensions: scope.extensions,
-                        step: 1,
-                        height: scope.ngHeight,
-                        width: scope.ngWidth
+                    ModalService.select(function (x) {
+                        x.title('select and crop the image you want');
+                        x.controller('ImageSelectorController');
+                        x.template('tmpl/core/modals/imageSelector.html');
+                        x.scope({
+                            selected: scope.ngModel,
+                            group: fileGroup,
+                            mode: 'single',
+                            extensions: scope.extensions,
+                            step: 1,
+                            height: scope.ngHeight,
+                            width: scope.ngWidth
+                        });
                     }).then(function (result) {
                         scope.ngModel = result;
                         scope.changed();
@@ -59,17 +61,19 @@
                 };
 
                 scope.crop = function () {
-                    ModalService.open({
-                        title: 'crop ' + scope.ngModel.src,
-                        controller: 'ImageSelectorController',
-                        selected: scope.ngModel,
-                        group: fileGroup,
-                        mode: 'single',
-                        template: 'tmpl/core/modals/imageSelector.html',
-                        extensions: scope.extensions,
-                        step: 2,
-                        height: scope.ngHeight,
-                        width: scope.ngWidth
+                    ModalService.select(function (x) {
+                        x.title('crop ' + scope.ngModel.src);
+                        x.controller('ImageSelectorController');
+                        x.template('tmpl/core/modals/imageSelector.html');
+                        x.scope({
+                            selected: scope.ngModel,
+                            group: fileGroup,
+                            mode: 'single',
+                            extensions: scope.extensions,
+                            step: 2,
+                            height: scope.ngHeight,
+                            width: scope.ngWidth
+                        });
                     }).then(function (result) {
                         scope.ngModel = result;
                         scope.changed();

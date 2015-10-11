@@ -88,12 +88,14 @@
                 scope.edit = function (index) {
                     var item = scope.ngModel[index];
 
-                    ModalService.open({
-                        title: 'select the container item you want',
-                        controller: 'ContainerSelectorController',
-                        selected: item,
-                        template: 'tmpl/core/modals/containerSelector.html',
-                        mode: 'single'
+                    ModalService.select(function (x) {
+                        x.title('select the container item you want');
+                        x.controller('ContainerSelectorController');
+                        x.template('tmpl/core/modals/containerSelector.html');
+                        x.scope({
+                            selected: item,
+                            mode: 'single'
+                        });
                     }).then(function (result) {
                         scope.ngModel[index] = result;
                         scope.ngModel = scope.ngModel.slice(0);
@@ -105,11 +107,13 @@
                 };
 
                 scope.add = function () {
-                    ModalService.open({
-                        title: 'select the container items you want',
-                        controller: 'ContainerSelectorController',
-                        template: 'tmpl/core/modals/containerSelector.html',
-                        mode: 'multiple'
+                    ModalService.select(function (x) {
+                        x.title('select the container items you want');
+                        x.controller('ContainerSelectorController');
+                        x.template('tmpl/core/modals/containerSelector.html');
+                        x.scope({
+                            mode: 'multiple'
+                        });
                     }).then(function (results) {
                         if (!scope.ngModel)
                             scope.ngModel = [];

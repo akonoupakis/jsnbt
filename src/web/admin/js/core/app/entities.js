@@ -27,34 +27,22 @@
 
 
                 if (entity.domain === 'core') {
-                    entity.lookup = function (selected, options) {
-                        var entityDomain = this.domain;
-                        var lookupOptions = {};
-                        $.extend(true, lookupOptions, {
-                            title: 'select a content node',
-                            controller: 'NodeSelectorController',
+                    entity.lookup = function (fn, selected, options) {
+                        fn.scope({
                             selected: selected,
-                            template: 'tmpl/core/modals/nodeSelector.html',
-                            domain: entityDomain,
+                            domain: this.domain,
                             mode: 'single',
                             options: options
                         });
-                        return lookupOptions;
                     };
 
-                    entity.lookupMany = function (selected, options) {
-                        var entityDomain = this.domain;
-                        var lookupOptions = {};
-                        $.extend(true, lookupOptions, {
-                            title: 'select the content nodes you want',
-                            controller: 'NodeSelectorController',
+                    entity.lookupMany = function (fn, selected, options) {
+                        fn.scope({
                             selected: selected,
-                            template: 'tmpl/core/modals/nodeSelector.html',
-                            domain: entityDomain,
+                            domain: this.domain,
                             mode: 'multiple',
                             options: options
                         });
-                        return lookupOptions;
                     };
                 }
             }

@@ -63,14 +63,16 @@
                     if (!scope.ngDomain || scope.ngDomain === '')
                         return;
 
-                    ModalService.open({
-                        title: 'select a data item',
-                        controller: 'DataSelectorController',
-                        selected: scope.ngModel,
-                        template: 'tmpl/core/modals/dataSelector.html',
-                        domain: scope.ngDomain,
-                        list: scope.ngListId,
-                        mode: 'single'
+                    ModalService.select(function (x) {
+                        x.title('select a data item');
+                        x.controller('DataSelectorController');
+                        x.template('tmpl/core/modals/dataSelector.html');
+                        x.scope({
+                            selected: scope.ngModel,
+                            domain: scope.ngDomain,
+                            list: scope.ngListId,
+                            mode: 'single'
+                        });
                     }).then(function (result) {
                         scope.ngModel = result || '';
                         scope.changed();

@@ -40,14 +40,16 @@
                 });
                 
                 scope.select = function () {
-                    ModalService.open({
-                        title: 'select a file',
-                        controller: 'FileSelectorController',
-                        selected: scope.ngModel,
-                        group: fileGroup,
-                        mode: 'single',
-                        template: 'tmpl/core/modals/fileSelector.html',
-                        extensions: scope.ngExtensions || []
+                    ModalService.select(function (x) {
+                        x.title('select a file');
+                        x.controller('FileSelectorController');
+                        x.template('tmpl/core/modals/fileSelector.html');
+                        x.scope({
+                            selected: scope.ngModel,
+                            group: fileGroup,
+                            mode: 'single',
+                            extensions: scope.ngExtensions || []
+                        });
                     }).then(function (result) {
                         scope.ngModel = result;
                         scope.changed();

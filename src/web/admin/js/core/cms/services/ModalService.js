@@ -7,7 +7,7 @@
         .factory('ModalService', ['$q', '$modal', 'MODAL_EVENTS', function ($q, $modal, MODAL_EVENTS) {
             var ModalService = {};
             
-            ModalService.open = function (options) {
+            var openModal = function (options) {
                 var deferred = $q.defer();
 
                 var modalCtrl = function ($scope, $modalInstance) {
@@ -109,9 +109,24 @@
 
                 if (type === 'confirm' || type === 'prompt') {
                     optionMethods.message = function (message) {
-                        console.log(12, message);
                         $.extend(true, options.scope, {
                             message: message
+                        });
+                    };
+                }
+
+                if (type === 'upload') {
+                    optionMethods.path = function (path) {
+                        $.extend(true, options.scope, {
+                            path: path
+                        });
+                    };
+                }
+
+                if (type === 'form') {
+                    optionMethods.data = function (data) {
+                        $.extend(true, options.scope, {
+                            data: data
                         });
                     };
                 }
@@ -132,13 +147,18 @@
                 optionMethods.controller('ConfirmController');
                 optionMethods.template('tmpl/core/base/modals/confirm.html');
                 optionMethods.message('this action cannot be undone<br />please think twice and confirm to continue');
-                
+                optionMethods.scope({
+                    btn: {
+                        ok: 'continue'
+                    }
+                });
+
                 if (typeof (opts) === 'function')
                     opts(optionMethods);
 
                 var options = optionMethods.get();
 
-                this.open(options).then(function (result) {
+                openModal(options).then(function (result) {
                     deferred.resolve(result);
                 }).catch(function (ex) {
                     deferred.reject(ex);
@@ -167,7 +187,87 @@
                 
                 var options = optionMethods.get();
                 
-                this.open(options).then(function (result) {
+                openModal(options).then(function (result) {
+                    deferred.resolve(result);
+                }).catch(function (ex) {
+                    deferred.reject(ex);
+                });
+
+                return deferred.promise;
+            }
+
+            ModalService.select = function (opts) {
+                var deferred = $q.defer();
+
+                var optionMethods = createOptionMethods('select');
+                optionMethods.title('select');
+
+                if (typeof (opts) === 'function')
+                    opts(optionMethods);
+
+                var options = optionMethods.get();
+
+                openModal(options).then(function (result) {
+                    deferred.resolve(result);
+                }).catch(function (ex) {
+                    deferred.reject(ex);
+                });
+
+                return deferred.promise;
+            }
+
+            ModalService.upload = function (opts) {
+                var deferred = $q.defer();
+
+                var optionMethods = createOptionMethods('upload');
+                optionMethods.title('upload');
+                optionMethods.controller('FileUploadController');
+                optionMethods.template('tmpl/core/modals/fileUpload.html');
+
+                if (typeof (opts) === 'function')
+                    opts(optionMethods);
+
+                var options = optionMethods.get();
+
+                openModal(options).then(function (result) {
+                    deferred.resolve(result);
+                }).catch(function (ex) {
+                    deferred.reject(ex);
+                });
+
+                return deferred.promise;
+            }
+
+            ModalService.form = function (opts) {
+                var deferred = $q.defer();
+
+                var optionMethods = createOptionMethods('form');
+                
+                if (typeof (opts) === 'function')
+                    opts(optionMethods);
+
+                var options = optionMethods.get();
+
+                openModal(options).then(function (result) {
+                    deferred.resolve(result);
+                }).catch(function (ex) {
+                    deferred.reject(ex);
+                });
+
+                return deferred.promise;
+            }
+
+            ModalService.open = function (opts) {
+                var deferred = $q.defer();
+
+                var optionMethods = createOptionMethods();
+
+                if (typeof (opts) === 'function')
+                    opts(optionMethods);
+
+                var options = optionMethods.get();
+
+                openModal(options).then(function (result) {
                     deferred.resolve(result);
                 }).catch(function (ex) {
                     deferred.reject(ex);

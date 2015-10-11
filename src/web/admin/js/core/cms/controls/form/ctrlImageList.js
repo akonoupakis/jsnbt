@@ -72,17 +72,19 @@
                 scope.edit = function (index) {
                     var item = scope.ngModel[index];
 
-                    ModalService.open({
-                        title: 'select and crop the image you want',
-                        controller: 'ImageSelectorController',
-                        selected: item,
-                        template: 'tmpl/core/modals/ImageSelector.html',
-                        group: fileGroup,
-                        mode: 'single',
-                        extensions: scope.extensions,
-                        step: 1,
-                        height: scope.ngHeight,
-                        width: scope.ngWidth
+                    ModalService.select(function (x) {
+                        x.title('select and crop the image you want');
+                        x.controller('ImageSelectorController');
+                        x.template('tmpl/core/modals/imageSelector.html');
+                        x.scope({
+                            selected: item,
+                            group: fileGroup,
+                            mode: 'single',
+                            extensions: scope.extensions,
+                            step: 1,
+                            height: scope.ngHeight,
+                            width: scope.ngWidth
+                        });
                     }).then(function (result) {
                         scope.ngModel[index] = result;
                         scope.ngModel = scope.ngModel.slice(0);
@@ -96,17 +98,19 @@
                 scope.crop = function (index) {
                     var item = scope.ngModel[index];
 
-                    ModalService.open({
-                        title: 'crop ' + item.src,
-                        controller: 'ImageSelectorController',
-                        selected: item,
-                        template: 'tmpl/core/modals/ImageSelector.html',
-                        group: fileGroup,
-                        mode: 'single',
-                        extensions: scope.extensions,
-                        step: 2,
-                        height: scope.ngHeight,
-                        width: scope.ngWidth
+                    ModalService.select(function (x) {
+                        x.title('crop ' + item.src);
+                        x.controller('ImageSelectorController');
+                        x.template('tmpl/core/modals/imageSelector.html');
+                        x.scope({
+                            selected: item,
+                            group: fileGroup,
+                            mode: 'single',
+                            extensions: scope.extensions,
+                            step: 2,
+                            height: scope.ngHeight,
+                            width: scope.ngWidth
+                        });
                     }).then(function (result) {
                         scope.ngModel[index] = result;
                         scope.ngModel = scope.ngModel.slice(0);
@@ -118,16 +122,19 @@
                 };
 
                 scope.add = function () {
-                    ModalService.open({
-                        title: 'select and crop the image you want',
-                        controller: 'ImageSelectorController',
-                        template: 'tmpl/core/modals/ImageSelector.html',
-                        group: fileGroup,
-                        mode: 'single',
-                        extensions: scope.extensions,
-                        step: 1,
-                        height: scope.ngHeight,
-                        width: scope.ngWidth
+
+                    ModalService.select(function (x) {
+                        x.title('select and crop the image you want');
+                        x.controller('ImageSelectorController');
+                        x.template('tmpl/core/modals/imageSelector.html');
+                        x.scope({                  
+                            group: fileGroup,
+                            mode: 'single',
+                            extensions: scope.extensions,
+                            step: 1,
+                            height: scope.ngHeight,
+                            width: scope.ngWidth
+                        });
                     }).then(function (result) {
                         if (!scope.ngModel)
                             scope.ngModel = [];

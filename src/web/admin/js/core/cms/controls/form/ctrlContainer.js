@@ -58,12 +58,14 @@
                 });
 
                 scope.select = function () {
-                    ModalService.open({
-                        title: 'select a container item',
-                        controller: 'ContainerSelectorController',
-                        selected: scope.ngModel,
-                        template: 'tmpl/core/modals/containerSelector.html',
-                        mode: 'single'
+                    ModalService.select(function(x) {
+                        x.title('select a container item');
+                        x.controller('ContainerSelectorController');
+                        x.template('tmpl/core/modals/containerSelector.html');
+                        x.scope({
+                            selected: scope.ngModel,
+                            mode: 'single'
+                        });
                     }).then(function (result) {
                         scope.ngModel = result || '';
                         scope.changed();

@@ -12,19 +12,15 @@
 
             $scope.result = '';
 
-            var options = {
-                // a custom title for the modal window
-                title: 'the modal window title',
-                // the controller to be used
-                controller: 'ErrorPromptController',
-                // the template to be used
-                template: 'tmpl/core/modals/namePrompt.html',
-                // any extra option properties, will be available in the controller's scope
-                valueA: 'value 1',
-                valueB: 'value 2'
-            };
-
-            ModalService.open(options).then(function (result) {
+            ModalService.open(function(x) {
+                x.title('the modal window title');
+                x.controller('ErrorPromptController');
+                x.template('tmpl/core/modals/namePrompt.html');
+                x.scope({
+                    valueA: 'value 1',
+                    valueB: 'value 2'
+                });
+            }).then(function (result) {
                 $scope.result = result;
             }, function (error) {
                 throw error;
