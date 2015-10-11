@@ -222,7 +222,7 @@
                 var optionMethods = createOptionMethods('upload');
                 optionMethods.title('upload');
                 optionMethods.controller('FileUploadController');
-                optionMethods.template('tmpl/core/modals/fileUpload.html');
+                optionMethods.template('tmpl/core/base/modals/upload.html');
 
                 if (typeof (opts) === 'function')
                     opts(optionMethods);
