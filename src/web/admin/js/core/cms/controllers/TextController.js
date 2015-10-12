@@ -19,7 +19,7 @@
         this.enqueue('preloading', function () {
             var deferred = $q.defer();
 
-            $scope.languages = $scope.application.localization.enabled ? $scope.application.languages : _.filter($scope.application.languages, function (x) { return x.code === $scope.defaults.language; });
+            $scope.languages = $scope.application.localization.enabled ? $scope.application.languages : [$scope.defaults.languages[$scope.defaults.language]];
             
             deferred.resolve();
 

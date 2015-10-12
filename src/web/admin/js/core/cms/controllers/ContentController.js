@@ -8,9 +8,20 @@
 
         var logger = $logger.create('ContentController');
 
-        $scope.items = $jsnbt.content;
+        $scope.items = [];
+               
+        
+        this.init().then(function () {
 
-        this.init().catch(function (ex) {
+            $scope.items = $jsnbt.content;
+
+            if (!$scope.application.localization.enabled) {
+                $scope.items = _.filter($jsnbt.content, function (x) {
+                    return x.id !== 'languages';
+                });
+            }
+
+        }).catch(function (ex) {
             logger.error(ex);
         });
     };

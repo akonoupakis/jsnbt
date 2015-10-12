@@ -109,7 +109,7 @@
             <hr ng-show="entity.properties.template" />
 
             <div ng-include="template"></div>
-            <hr />
+            <hr ng-show="template" />
 
             <div ng-show="form" ng-include="form"></div>
             <hr ng-show="form" />
@@ -117,7 +117,7 @@
 
         <div id="page-meta" data-scrollspy="meta" ng-show="entity.properties.meta">
             <div id="page-meta-title" class="row" data-scrollspy="title">
-                <ctrl-text class="col-sm-12" ng-model="node.meta[language].title" ng-required="true" ng-validating="node.active[language]" ng-disabled="true" ng-label="meta title"></ctrl-text>
+                <ctrl-text class="col-sm-12" ng-model="node.meta[language].title" ng-required="true" ng-validating="node.active[language]" ng-disabled="!entity.properties.meta" ng-label="meta title"></ctrl-text>
             </div>
             <div id="page-meta-description" class="row" data-scrollspy="description">
                 <ctrl-text-area class="col-sm-12" ng-rows="4" ng-model="node.meta[language].description" ng-required="false" ng-validating="node.active[language]" ng-disabled="!entity.properties.meta" ng-label="meta description"></ctrl-text-area>
