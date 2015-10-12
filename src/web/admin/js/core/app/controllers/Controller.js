@@ -43,6 +43,10 @@
 
                     };
 
+                    $rootScope.application = $scope.application;
+                    $rootScope.current = $scope.current;
+                    $rootScope.defaults = $scope.defaults;
+
                     var navigationInjects = [];
                     _.each($jsnbt.injects, function (inject) {
                         if (_.isArray(inject.navigation)) {
