@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .factory('ModalService', ['$q', '$modal', 'MODAL_EVENTS', function ($q, $modal, MODAL_EVENTS) {
+        .factory('ModalService', ['$rootScope', '$q', '$modal', 'MODAL_EVENTS', function ($rootScope, $q, $modal, MODAL_EVENTS) {
             var ModalService = {};
             
             var openModal = function (options) {
@@ -32,7 +32,7 @@
                         };
                     }
 
-                    $scope.defaults = $scope.$$prevSibling.defaults;
+                    $scope.defaults = $rootScope.defaults;
 
                     $scope.valid = false;
                     
@@ -56,7 +56,7 @@
                 };
 
                 var modalInstance = $modal.open({
-                    template: '<div ng-controller="' + options.controller + '" ng-include="\'tmpl/core/common/modal-content.html\'"></div>',
+                    template: '<div ng-controller="' + options.controller + '" ng-include="\'tmpl/core/common/modal.html\'"></div>',
                     backdrop: true,
                     controller: modalCtrl,
                     size: 'lg'

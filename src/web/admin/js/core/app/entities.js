@@ -27,20 +27,11 @@
 
 
                 if (entity.domain === 'core') {
-                    entity.lookup = function (fn, selected, options) {
+                    entity.lookupNode = function (fn, mode, selected, options) {
                         fn.scope({
                             selected: selected,
                             domain: this.domain,
-                            mode: 'single',
-                            options: options
-                        });
-                    };
-
-                    entity.lookupMany = function (fn, selected, options) {
-                        fn.scope({
-                            selected: selected,
-                            domain: this.domain,
-                            mode: 'multiple',
+                            mode: mode,
                             options: options
                         });
                     };

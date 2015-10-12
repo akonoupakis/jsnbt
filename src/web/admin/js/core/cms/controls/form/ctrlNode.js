@@ -78,7 +78,7 @@
                         x.title('select a content node');
                         x.controller('NodeSelectorController');
                         x.template('tmpl/core/modals/nodeSelector.html');
-                        $jsnbt.modules[scope.ngDomain].lookup(x, scope.ngModel, opts);
+                        $jsnbt.modules[scope.ngDomain].lookupNode(x, 'single', scope.ngModel, opts);
                     }).then(function (selectedNodeId) {
                         deferred.resolve(selectedNodeId);
                     }).catch(function (error) {
@@ -91,7 +91,7 @@
                 var entityLookup = function (entity) {
                     var deferred = $q.defer();
 
-                    if (typeof ($jsnbt.entities[entity].lookup) === 'function') {
+                    if (typeof ($jsnbt.entities[entity].lookupNode) === 'function') {
                         var opts = $.extend({
                             entities: [entity]
                         }, scope.ngOptions);
@@ -100,7 +100,7 @@
                             x.title('select a content node');
                             x.controller('NodeSelectorController');
                             x.template('tmpl/core/modals/nodeSelector.html');
-                            $jsnbt.entities[entity].lookup(x, scope.ngModel, opts);
+                            $jsnbt.entities[entity].lookupNode(x, 'single', scope.ngModel, opts);
                         }).then(function (selectedNodeId) {
                             deferred.resolve(selectedNodeId);
                         }).catch(function (error) {

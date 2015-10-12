@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlData', ['$rootScope', '$timeout', '$data', '$q', 'ModalService', 'CONTROL_EVENTS', function ($rootScope, $timeout, $data, $q, ModalService, CONTROL_EVENTS) {
+        .directive('ctrlData', ['$rootScope', '$timeout', '$data', '$jsnbt', '$q', 'ModalService', 'CONTROL_EVENTS', function ($rootScope, $timeout, $data, $jsnbt, $q, ModalService, CONTROL_EVENTS) {
 
             var DataControl = function (scope, element, attrs) {
                 jsnbt.controls.FormControlBase.apply(this, $rootScope.getBaseArguments(scope, element, attrs));
@@ -63,16 +63,15 @@
                     if (!scope.ngDomain || scope.ngDomain === '')
                         return;
 
+                    var list = _.find($jsnbt.lists, function (x) {
+                        return x.id === scope.ngListId;
+                    });
+
                     ModalService.select(function (x) {
                         x.title('select a data item');
                         x.controller('DataSelectorController');
                         x.template('tmpl/core/modals/dataSelector.html');
-                        x.scope({
-                            selected: scope.ngModel,
-                            domain: scope.ngDomain,
-                            list: scope.ngListId,
-                            mode: 'single'
-                        });
+                        list.lookupData(x, 'single', scope.ngModel);
                     }).then(function (result) {
                         scope.ngModel = result || '';
                         scope.changed();

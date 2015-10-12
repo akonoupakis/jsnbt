@@ -34,6 +34,7 @@ module.exports = [{
         '/admin/js/core/app/main.js',
         '/admin/js/core/app/modules.js',
         '/admin/js/core/app/entities.js',
+        '/admin/js/core/app/lists.js',
         '/admin/js/core/app/constants/TEMPLATE_BASE.js',
         '/admin/js/core/app/controllers/Controller.js',
         '/admin/js/core/app/controllers/ControllerBase.js',
@@ -147,7 +148,6 @@ module.exports = [{
         '/admin/js/core/cms/utils/date.js',
         '/admin/js/core/cms/utils/errSrc.js',
         '/admin/js/core/cms/utils/lkRepeat.js',
-        '/admin/js/core/cms/utils/modal.js',
 
         '/admin/js/init.js'
     ]

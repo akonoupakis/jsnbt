@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlDataList', ['$rootScope', '$timeout', '$data', '$q', 'ModalService', 'CONTROL_EVENTS', function ($rootScope, $timeout, $data, $q, ModalService, CONTROL_EVENTS) {
+        .directive('ctrlDataList', ['$rootScope', '$timeout', '$data', '$jsnbt', '$q', 'ModalService', 'CONTROL_EVENTS', function ($rootScope, $timeout, $data, $jsnbt, $q, ModalService, CONTROL_EVENTS) {
 
             var DataListControl = function (scope, element, attrs) {
                 jsnbt.controls.FormControlBase.apply(this, $rootScope.getBaseArguments(scope, element, attrs));
@@ -100,16 +100,15 @@
                 scope.edit = function (index) {
                     var item = scope.ngModel[index];
 
+                    var list = _.find($jsnbt.lists, function (x) {
+                        return x.id === scope.ngListId;
+                    });
+
                     ModalService.select(function (x) {
                         x.title('select the data item you want');
                         x.controller('DataSelectorController');
                         x.template('tmpl/core/modals/dataSelector.html');
-                        x.scope({
-                            selected: item,
-                            domain: scope.ngDomain,
-                            list: scope.ngListId,
-                            mode: 'single'
-                        });
+                        list.lookupData(x, 'single', item);
                     }).then(function (result) {
                         scope.ngModel[index] = result;
                         scope.ngModel = scope.ngModel.slice(0);
@@ -121,15 +120,16 @@
                 };
 
                 scope.add = function () {
+
+                    var list = _.find($jsnbt.lists, function (x) {
+                        return x.id === scope.ngListId;
+                    });
+
                     ModalService.select(function (x) {
                         x.title('select the data items you want');
                         x.controller('DataSelectorController');
                         x.template('tmpl/core/modals/dataSelector.html');
-                        x.scope({
-                            domain: scope.ngDomain,
-                            list: scope.ngListId,
-                            mode: 'multiple'
-                        });
+                        list.lookupData(x, 'multiple');
                     }).then(function (results) {
                         if (!scope.ngModel)
                             scope.ngModel = [];

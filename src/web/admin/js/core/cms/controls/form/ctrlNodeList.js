@@ -107,7 +107,7 @@
                         x.title('select a content node');
                         x.controller('NodeSelectorController');
                         x.template('tmpl/core/modals/nodeSelector.html');
-                        $jsnbt.entities[entity].lookup(x, scope.ngModel, opts);
+                        $jsnbt.entities[entity].lookupNode(x, 'single', scope.ngModel, opts);
                     }).then(function (selectedNodeId) {
                         deferred.resolve(selectedNodeId);
                     }).catch(function (error) {
@@ -129,7 +129,7 @@
                         x.title('select the content nodes you want');
                         x.controller('NodeSelectorController');
                         x.template('tmpl/core/modals/nodeSelector.html');
-                        $jsnbt.modules[scope.ngDomain].lookupMany(x, selected || scope.ngModel, opts);
+                        $jsnbt.modules[scope.ngDomain].lookupNode(x, 'multiple', selected || scope.ngModel, opts);
                     }).then(function (selectedNodeId) {
                         deferred.resolve(selectedNodeId);
                     }).catch(function (error) {
@@ -142,7 +142,7 @@
                 var entityLookup = function (entity) {
                     var deferred = $q.defer();
 
-                    if (typeof ($jsnbt.entities[entity].lookup) === 'function') {
+                    if (typeof ($jsnbt.entities[entity].lookupNode) === 'function') {
                         var opts = $.extend({
                             entities: [entity]
                         }, scope.ngOptions);
@@ -153,7 +153,7 @@
                             x.title('select a content node');
                             x.controller('NodeSelectorController');
                             x.template('tmpl/core/modals/nodeSelector.html');
-                            $jsnbt.entities[entity].lookup(x, scope.ngModel, opts);
+                            $jsnbt.entities[entity].lookupNode(x, 'single', scope.ngModel, opts);
                         }).then(function (selectedNodeId) {
                             deferred.resolve(selectedNodeId);
                         }).catch(function (error) {
@@ -174,7 +174,7 @@
                 var entityLookupMany = function (entity, selected) {
                     var deferred = $q.defer();
 
-                    if (typeof ($jsnbt.entities[entity].lookupMany) === 'function') {
+                    if (typeof ($jsnbt.entities[entity].lookupNode) === 'function') {
                         var opts = $.extend({
                             entities: [entity]
                         }, scope.ngOptions);
@@ -183,7 +183,7 @@
                             x.title('select the content nodes you want');
                             x.controller('NodeSelectorController');
                             x.template('tmpl/core/modals/nodeSelector.html');
-                            $jsnbt.entities[entity].lookupMany(x, selected || scope.ngModel, opts);
+                            $jsnbt.entities[entity].lookupNode(x, 'multiple', selected || scope.ngModel, opts);
                         }).then(function (selectedNodeId) {
                             deferred.resolve(selectedNodeId);
                         }).catch(function (error) {
