@@ -446,7 +446,14 @@ module.exports = function(server, db) {
                             return x.domain === node.domain
                                   && _.isObject(x.url) && _.isFunction(x.url.build);
                         });
+
                         if (pack) {
+
+                            for (var item in node.seo) {
+                                if (!newUrl[item])
+                                    newUrl[item] = '';
+                            }
+                            
                             pack.url.build({
                                 node: node,
                                 url: newUrl
@@ -537,6 +544,11 @@ module.exports = function(server, db) {
                                         if (pack) {
                                             extend(true, newUrl, parentUrl);
 
+                                            for (var item in node.seo) {
+                                                if (!newUrl[item])
+                                                    newUrl[item] = '';
+                                            }
+
                                             pack.url.build({
                                                 node: node,
                                                 url: newUrl
@@ -568,9 +580,16 @@ module.exports = function(server, db) {
             else {
                 var pack = _.find(server.app.modules.rest, function (x) { return x.domain === node.domain && _.isObject(x.url) && typeof (x.url.build) === 'function'; });
                 if (pack) {
+
+                    var newUrl = {};
+                    for (var item in node.seo) {
+                        if (!newUrl[item])
+                            newUrl[item] = '';
+                    }
+
                     pack.url.build({
                         node: node,
-                        url: {}
+                        url: newUrl
                     }, cb);
                 }
                 else {
