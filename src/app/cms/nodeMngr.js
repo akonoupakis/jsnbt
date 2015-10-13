@@ -110,8 +110,8 @@ module.exports = function(server, db) {
                     returnObj.pointed = pointedNode;
                     returnObj.db = db;
 
-                    returnObj.nodes = seoNodes;
                     if (pointedSeoNames.length === 0) {
+                        returnObj.nodes = seoNodes;
                         returnObj.page = pointedNode;
                         returnObj.template = pointedNode.template;
                     }
@@ -119,7 +119,9 @@ module.exports = function(server, db) {
                         if (targetMatchedNode) {
                             returnObj.page = targetMatchedNode;
                             returnObj.template = targetMatchedNode.template;
-                            returnObj.nodes = _.union(returnObj.nodes, pointedFoundNodes);
+                            _.each(pointedFoundNodes, function (pointedFoundNode) { 
+                                returnObj.nodes.push(pointedFoundNode);
+                            });
                         }
                     }
                     pack.url.resolve(returnObj, cb);
@@ -128,7 +130,7 @@ module.exports = function(server, db) {
                     if (pointedSeoNames.length === 0) {
                         returnObj.page = pointedNode;
                         returnObj.template = pointedNode.template;
-                        returnObj.nodes = _.union(returnObj.nodes, [pointedNode]);
+                        returnObj.nodes.push(pointedNode);
                         cb(returnObj);
                     }
                     else {
@@ -136,8 +138,9 @@ module.exports = function(server, db) {
                         if (targetMatchedNode) {
                             returnObj.page = targetMatchedNode;
                             returnObj.template = targetMatchedNode.template;
-                            returnObj.nodes = _.union(returnObj.nodes, pointedFoundNodes);
-
+                            _.each(pointedFoundNodes, function (pointedFoundNode) {
+                                returnObj.nodes.push(pointedFoundNode);
+                            });
                             cb(returnObj);
 
                         }
@@ -293,6 +296,9 @@ module.exports = function(server, db) {
                     var rSelf = this;
                     return _.every(rSelf.nodes, function (x) { return x.active[rSelf.language] === true; });
                 },
+                getHierarchy: function () {
+                    return _.map(this.nodes, function (x) { return x.id; });
+                },
                 getInheritedProperties: function () {
                     var rSelf = this;
 
@@ -359,7 +365,7 @@ module.exports = function(server, db) {
                                                     if (resolvedNode)
                                                         resolvedNodes.push(resolvedNode);
                                                 });
-
+                                                
                                                 returnObj.page = resolvedNode;
 
                                                 if (resolvedNode.entity == 'router') {

@@ -19,6 +19,7 @@ var HomeRouter = function (server) {
             ctx.layouts = ctx.inherited.layouts || [];
             ctx.language = server.app.localization.enabled ? resolved.language || server.app.localization.locale : server.app.localization.locale;
             ctx.template = resolved.template || '';
+            ctx.hierarchy = resolved.getHierarchy();
 
             ctx.meta = {};
             if (resolved.page.meta && resolved.page.meta[ctx.language])

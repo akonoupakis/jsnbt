@@ -37,7 +37,10 @@ var Parser = function (server) {
         }, {
             name: 'pointer',
             content: (ctx.pointer || {}).id
-        }], ctx.params);
+        }], {
+            name: 'hierarchy',
+            content: ctx.hierarchy
+        }, ctx.params);
 
         var isAdmin = ctx.uri.first === 'admin';
 

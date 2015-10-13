@@ -14,7 +14,6 @@ var Context = function (server, req, res) {
     var checkTemplate = function (ctx) {
         var installedTemplate = _.find(server.app.config.templates, function (x) { return x.id === ctx.template; });
         if (installedTemplate) {
-            //ctx.template = installedTemplate.html;
             return true;
         }
         else {
@@ -101,6 +100,7 @@ var Context = function (server, req, res) {
         timer: timer,
 
         node: undefined,
+        hierarchy: [],
         pointer: undefined,
         layouts: [],
 
