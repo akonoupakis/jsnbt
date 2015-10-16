@@ -291,23 +291,25 @@ exports.register = function (module) {
         }
     }
 
-    if (moduleConfig.messaging && moduleConfig.messaging.mail) {
-        if (moduleConfig.messaging.mail.provider && typeof (moduleConfig.messaging.mail.getSender) === 'function') {
-            self.config.messaging.mail.implementations[module.domain] = {
-                provider: moduleConfig.messaging.mail.provider,
-                settingsTmpl: moduleConfig.messaging.mail.settingsTmpl,
-                getSender: moduleConfig.messaging.mail.getSender
-            };
+    if (module.messager) {
+        if (moduleConfig.messaging && moduleConfig.messaging.mail) {
+            if (moduleConfig.messaging.mail.provider && typeof (moduleConfig.messaging.mail.getSender) === 'function') {
+                self.config.messaging.mail.implementations[module.domain] = {
+                    provider: moduleConfig.messaging.mail.provider,
+                    settingsTmpl: moduleConfig.messaging.mail.settingsTmpl,
+                    getSender: moduleConfig.messaging.mail.getSender
+                };
+            }
         }
-    }
 
-    if (moduleConfig.messaging && moduleConfig.messaging.sms) {
-        if (moduleConfig.messaging.sms.provider && typeof (moduleConfig.messaging.sms.getSender) === 'function') {
-            self.config.messaging.sms.implementations[module.domain] = {
-                provider: moduleConfig.messaging.sms.provider,
-                settingsTmpl: moduleConfig.messaging.sms.settingsTmpl,
-                getSender: moduleConfig.messaging.sms.getSender
-            };
+        if (moduleConfig.messaging && moduleConfig.messaging.sms) {
+            if (moduleConfig.messaging.sms.provider && typeof (moduleConfig.messaging.sms.getSender) === 'function') {
+                self.config.messaging.sms.implementations[module.domain] = {
+                    provider: moduleConfig.messaging.sms.provider,
+                    settingsTmpl: moduleConfig.messaging.sms.settingsTmpl,
+                    getSender: moduleConfig.messaging.sms.getSender
+                };
+            }
         }
     }
 
@@ -345,18 +347,17 @@ exports.register = function (module) {
 
         applyArray('routes', 'id');
 
-        if (module.messager) {
-            if (moduleConfig.messaging && moduleConfig.messaging.mail && moduleConfig.messaging.mail.templates && _.isArray(moduleConfig.messaging.mail.templates)) {
-                _.each(moduleConfig.messaging.mail.templates, function (template) {
-                    self.config.messaging.mail.templates[template.code] = template;
-                });
-            }
 
-            if (moduleConfig.messaging && moduleConfig.messaging.sms && moduleConfig.messaging.sms.templates && _.isArray(moduleConfig.messaging.sms.templates)) {
-                _.each(moduleConfig.messaging.sms.templates, function (template) {
-                    self.config.messaging.sms.templates[template.code] = template;
-                });
-            }
+        if (moduleConfig.messaging && moduleConfig.messaging.mail && moduleConfig.messaging.mail.templates && _.isArray(moduleConfig.messaging.mail.templates)) {
+            _.each(moduleConfig.messaging.mail.templates, function (template) {
+                self.config.messaging.mail.templates[template.code] = template;
+            });
+        }
+
+        if (moduleConfig.messaging && moduleConfig.messaging.sms && moduleConfig.messaging.sms.templates && _.isArray(moduleConfig.messaging.sms.templates)) {
+            _.each(moduleConfig.messaging.sms.templates, function (template) {
+                self.config.messaging.sms.templates[template.code] = template;
+            });
         }
     }
 
