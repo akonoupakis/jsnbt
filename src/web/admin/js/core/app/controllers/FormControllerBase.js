@@ -74,7 +74,7 @@
                             logger.error(ex);
                         });
                     };
-
+                 
                     $scope.publish = function () {
                         self.run('validating').then(function () {
                             self.validate().then(function (validationResults) {
@@ -86,7 +86,10 @@
                                                 self.run('published', [pushed]).then(function () {
                                                     if (pushed) {
                                                         if (self.isNew()) {
-                                                            var targetUrl = $scope.current.breadcrumb.items[$scope.current.breadcrumb.items.length - 2].url + '/' + pushed.id;
+                                                            var currentUrlParts = $route.current.$$route.originalPath.split('/');
+                                                            currentUrlParts.pop();
+                                                            var currentUrl = currentUrlParts.join('/');
+                                                            var targetUrl = currentUrl + '/' + pushed.id;
                                                             $location.goto(targetUrl);
                                                         }
                                                         else {
@@ -94,7 +97,7 @@
                                                         }
                                                     }
                                                     else {
-                                                        throw new Error('save unsuccessful');
+                                                        logger.error(new Error('save unsuccessful'));
                                                     }
                                                 }).catch(function (publishedError) {
                                                     logger.error(publishedError);

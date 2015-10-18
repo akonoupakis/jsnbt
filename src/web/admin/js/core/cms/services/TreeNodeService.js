@@ -624,7 +624,7 @@
                     $data.nodes.get({ id: { $in: hierarchy } }).then(function (results) {
 
                         var breadcrumb = [];
-
+                        
                         $(hierarchy).each(function (i, item) {
                             if (item === 'new') {
                                 breadcrumb.push({
