@@ -30,7 +30,7 @@ validate({
     }
 });
 
-var keyValidChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'.split('');
+var keyValidChars = 'abcdefghijklmnopqrstuvwxyz0123456789_.'.split('');
 
 var currentChars = (self.key || '').split('');
 _.each(currentChars, function (char) {
