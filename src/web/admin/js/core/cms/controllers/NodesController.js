@@ -68,7 +68,11 @@
 
             canDelete: function (node) {
                 if (node.domain === 'core') {
-                    return $jsnbt.entities[node.entity].deletable && node.childCount === 0;
+                    if (node.entity !== 'pointer') {
+                        return $jsnbt.entities[node.entity].deletable && node.childCount === 0;
+                    } else {
+                        return true;
+                    }
                 }
                 else {
                     return false;

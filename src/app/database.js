@@ -511,19 +511,19 @@ function createResourceClient(server, resource, collection, baseMethods) {
 
            server.cache.get(cacheKey, function (cachedData) {
                if (!cachedData) {
-                   baseMethods.request('GET', settings, function (res, ex) {
-                       if (res) {
-                           server.cache.add(cacheKey, res, function (cachedRes) {
-                               settings.fn(res, ex);
-                           });
+                   baseMethods.request('GET', settings, function (ex, res) {
+                       if (ex) {
+                           settings.fn(ex, res);
                        }
                        else {
-                           settings.fn(res, ex);
+                           server.cache.add(cacheKey, res, function (cachedRes) {
+                               settings.fn(ex, res);
+                           });
                        }
                    });
                }
                else {
-                   settings.fn(cachedData, null);
+                   settings.fn(null, cachedData);
                }
            });
        }

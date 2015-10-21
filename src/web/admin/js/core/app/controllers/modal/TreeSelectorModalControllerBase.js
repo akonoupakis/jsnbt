@@ -10,10 +10,14 @@
             controllers.TreeSelectorModalControllerBase = (function (TreeSelectorModalControllerBase) {
 
                 TreeSelectorModalControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                    var domain = $scope.domain;
+
                     controllers.TreeControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
                     var self = this;
                     
+                    $scope.domain = domain;
+
                     if (!$scope.mode)
                         $scope.mode = 'single';
 

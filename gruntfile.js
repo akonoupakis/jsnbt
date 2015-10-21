@@ -622,6 +622,11 @@ module.exports = function (grunt) {
     fs.mkdirpSync('./src/web/public/css');
     fs.mkdirpSync('./src/web/public/err');
     fs.mkdirpSync('./src/web/public/files');
+
+    _.each(self.app.config.fileGroups, function (fileGroup) {
+        fs.mkdirpSync('./src/web/public/files/' + fileGroup);
+    });
+
     fs.mkdirpSync('./src/web/public/img');
     fs.mkdirpSync('./src/web/public/js');
     fs.mkdirpSync('./src/web/public/tmp');

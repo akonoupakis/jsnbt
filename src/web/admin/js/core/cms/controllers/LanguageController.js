@@ -16,7 +16,7 @@
         this.enqueue('watch', function () {
             var deferred = $q.defer();
 
-            $scope.$watch('language.code', function (newValue, prevValue) {
+            $scope.$watch('data.code', function (newValue, prevValue) {
                 if (newValue !== prevValue && newValue !== undefined) {
                     var language = _.find($scope.defaults.languages, function (x) { return x.code === newValue });
                     if (language)
@@ -72,7 +72,7 @@
             this.setValid(true);
             this.setPublished(false);
 
-            deferred.resolve($scope.data);
+            deferred.resolve(this.scope.data);
         }
         else {
             if (data) {

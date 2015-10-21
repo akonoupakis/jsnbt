@@ -10,7 +10,7 @@
         
         if (!$scope.domain)
             throw new Error('$scope.domain not defined in TreeNodeSelectorController');
-
+        
         this.init().catch(function (ex) {
             logger.error(ex);
         });

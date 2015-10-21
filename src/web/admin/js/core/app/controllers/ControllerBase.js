@@ -14,7 +14,7 @@
                     var logger = $logger.create('ControllerBase');
 
                     this.scope = $scope;
-
+                    
                     this.ctor = {
                         $rootScope: $rootScope,
                         $route: $route,

@@ -78,6 +78,9 @@
                         x.title('select a content node');
                         x.controller('NodeSelectorController');
                         x.template('tmpl/core/modals/nodeSelector.html');
+                        x.scope({
+                            domain: scope.ngDomain
+                        });
                         $jsnbt.modules[scope.ngDomain].lookupNode(x, 'single', scope.ngModel, opts);
                     }).then(function (selectedNodeId) {
                         deferred.resolve(selectedNodeId);
@@ -100,6 +103,9 @@
                             x.title('select a content node');
                             x.controller('NodeSelectorController');
                             x.template('tmpl/core/modals/nodeSelector.html');
+                            x.scope({
+                                domain: scope.ngDomain
+                            });
                             $jsnbt.entities[entity].lookupNode(x, 'single', scope.ngModel, opts);
                         }).then(function (selectedNodeId) {
                             deferred.resolve(selectedNodeId);

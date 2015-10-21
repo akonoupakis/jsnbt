@@ -12,7 +12,7 @@
 
                 var modalCtrl = function ($scope, $modalInstance) {
                     angular.extend($scope, options.scope);
-                    
+
                     $scope.modal = {
                         title: options.title,
                         template: options.template
