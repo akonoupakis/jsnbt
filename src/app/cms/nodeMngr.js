@@ -114,6 +114,9 @@ module.exports = function(server, db) {
                         returnObj.nodes = seoNodes;
                         returnObj.page = pointedNode;
                         returnObj.template = pointedNode.template;
+                         _.each(pointedFoundNodes, function (pointedFoundNode) { 
+                                returnObj.nodes.push(pointedFoundNode);
+                            });
                     }
                     else {
                         if (targetMatchedNode) {
@@ -297,7 +300,7 @@ module.exports = function(server, db) {
                     return _.every(rSelf.nodes, function (x) { return x.active[rSelf.language] === true; });
                 },
                 getHierarchy: function () {
-                    return _.map(this.nodes, function (x) { return x.id; });
+                    return _.map(_.filter(this.nodes, function (y) { return y.entity !== 'pointer'; }), function (x) { return x.id; });
                 },
                 getInheritedProperties: function () {
                     var rSelf = this;
