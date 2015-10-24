@@ -9,17 +9,64 @@
         var logger = $logger.create('ContentController');
 
         $scope.items = [];
-               
         
+        var defaultItems = [];
+        
+        if ($scope.application.localization.enabled) {
+            defaultItems.push({
+                id: 'languages',
+                title: 'languages',
+                body: 'the localization languages of the front end site',
+                image: 'img/core/content/languages.png',
+                url: '/content/languages'
+            });
+        }
+        
+        defaultItems.push({
+            id: 'layouts',
+            title: 'layouts',
+            body: 'layout registrations for commonly used data',
+            image: 'img/core/content/layouts.png',
+            url: '/content/layouts'
+        });
+
+        defaultItems.push({
+            id: 'nodes',
+            title: 'nodes',
+            body: 'the page system building the urls of the front end site',
+            image: 'img/core/content/nodes.png',
+            url: '/content/nodes'
+        });
+
+        if (_.any($jsnbt.lists, function (x) { return x.domain === 'core'; })) {
+            defaultItems.push({
+                id: 'data',
+                title: 'data',
+                body: 'data list catalogues with data of any type',
+                image: 'img/core/content/data.png',
+                url: '/content/data'
+            });
+        }
+
+        defaultItems.push({
+            id: 'texts',
+            title: 'texts',
+            body: 'the text translations for each language',
+            image: 'img/core/content/texts.png',
+            url: '/content/texts'
+        });
+
+        defaultItems.push({
+            id: 'files',
+            title: 'files',
+            body: 'the jsnbt file manager',
+            image: 'img/core/content/files.png',
+            url: '/content/files'
+        });
+
         this.init().then(function () {
 
-            $scope.items = $jsnbt.content;
-
-            if (!$scope.application.localization.enabled) {
-                $scope.items = _.filter($jsnbt.content, function (x) {
-                    return x.id !== 'languages';
-                });
-            }
+            $scope.items = _.union(defaultItems, $jsnbt.content);
 
         }).catch(function (ex) {
             logger.error(ex);
