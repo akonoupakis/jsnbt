@@ -34,6 +34,9 @@ if (internal) {
         processChildren(this.domain, this.hierarchy);
 }
 else {
+    if (!authMngr.isAuthorized(me, 'nodes:' + self.entity, 'U'))
+        cancel('Access denied', 401);
+
     self.modifiedOn = new Date().getTime();
 
     var hierarchyChange = false;

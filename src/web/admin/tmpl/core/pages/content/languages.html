@@ -36,8 +36,8 @@
                     <input type="checkbox" ng-disabled="row.default || !row.active" ng-checked="row.default" ng-click="fn.setDefault(row)" />
                 </ctrl-grid-column>
                 <ctrl-grid-buttons-column>
-                    <button title="edit" class="btn btn-default glyphicon glyphicon-edit btn-sm" ng-click="fn.edit(row)" />
-                    <button title="delete" class="btn btn-default glyphicon glyphicon-remove btn-sm" ng-disabled="row.default" ng-click="fn.delete(row)" />
+                    <button title="edit" class="btn btn-default glyphicon glyphicon-edit btn-sm" ng-disabled="!fn.canEdit(row)" ng-click="fn.edit(row)" />
+                    <button title="delete" class="btn btn-default glyphicon glyphicon-remove btn-sm" ng-disabled="row.default || !fn.canDelete(row)" ng-click="fn.delete(row)" />
                 </ctrl-grid-buttons-column>
             </ctrl-grid-body>
         </ctrl-grid>

@@ -83,74 +83,35 @@
                 return deferred.promise;
             };
             
-            var getAllRoles = function (role) {
-                var results = [];
-
-                var matchedRole = $jsnbt.roles[role];
-                if (matchedRole) {
-                    results.push(role);
-
-                    if (matchedRole.inherits) {
-                        $(matchedRole.inherits).each(function (i, item) {
-                            var allRoles = getAllRoles(item);
-                            $(allRoles).each(function (r, rol) {
-                                if (results.indexOf(rol) === -1) {
-                                    results.push(rol);
-                                }
-                            });
-                        });
-                    }
-                }
-
-                return results;
-            };
-            
-            AuthService.getRoles = function (role) {
-                return getAllRoles(role);
-            };
-
             AuthService.isInRole = function (user, role) {
-                if (!user)
-                    return false;
-
-                var result = false;
-                
-                var roles = user.roles || [];
-
-                var allRoles = [];
-
-                $(roles).each(function (i, item) {
-                    var itemRoles = getAllRoles(item);
-                    $(itemRoles).each(function (r, rol) {
-                        if (allRoles.indexOf(rol) === -1) {
-                            allRoles.push(rol);
-                        }
-                    });
-                });
-
-                return allRoles.indexOf(role) !== -1;
+                return $jsnbt.auth.isInRole(user, role);
             };
 
-            AuthService.authorize = function (user, section) {
+            AuthService.isAuthorized = function (user, section, permission) {
                 var self = this;
 
-                if (!user)
-                    return false;
-
-                var result = false;
-
-                var matchedSection = $jsnbt.sections[section];
-                if (matchedSection && matchedSection.roles) {
-                    $(matchedSection.roles).each(function (r, role) {
-                        if (self.isInRole(user, role)) {
-                            result = true;
-                            return false;
-                        }
-                    });
+                if (permission) {
+                    return $jsnbt.auth.isAuthorized(user, section, permission);
                 }
+                else {
+                    if (!user)
+                        return false;
 
-                return result;
-            }
+                    var result = false;
+
+                    var matchedSection = $jsnbt.sections[section];
+                    if (matchedSection && matchedSection.roles) {
+                        $(matchedSection.roles).each(function (r, role) {
+                            if (self.isInRole(user, role)) {
+                                result = true;
+                                return false;
+                            }
+                        });
+                    }
+
+                    return result;
+                }
+            };
 
             return AuthService;
         }]);

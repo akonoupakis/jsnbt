@@ -68,6 +68,34 @@ var AuthorizationManager = function (server) {
         return result;
     }
 
+    var isUserNodeAuthorized = function (user, section, permission) {
+        var sectionParts = section.split(':');
+        if (sectionParts.length === 2) {
+            var dataName = sectionParts[0];
+            var entityName = sectionParts[1];
+
+            if (server.app.config.entities[entityName] && server.app.config.entities[entityName].permissions) {
+                var roles = getUserRoles(user);
+                result = false;
+
+                _.each(server.app.config.entities[entityName].permissions, function (perm) {
+                    if (roles.indexOf(perm.role) !== -1) {
+                        if (perm.crud.indexOf(permission) !== -1)
+                            result = true;
+                    }
+                });
+
+                return result;
+            }
+            else {
+                return isUserAuthorized(user, 'nodes', permission);
+            }
+        }
+        else {
+            return isUserAuthorized(user, 'nodes', permission);
+        }
+    }
+
     var isUserDataAuthorized = function (user, section, permission) {
         var sectionParts = section.split(':');
         if (sectionParts.length === 3) {
@@ -123,6 +151,9 @@ var AuthorizationManager = function (server) {
                 var sectionParts = section.split(':');
                 if (sectionParts[0] === 'data') {
                     return isUserDataAuthorized(user, section, permission);
+                }
+                else if (sectionParts[0] === 'nodes') {
+                    return isUserNodeAuthorized(user, section, permission);
                 }
                 else {
                     return isUserAuthorized(user, section, permission);

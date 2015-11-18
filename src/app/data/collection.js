@@ -201,10 +201,12 @@ var logAction = function (server, db, user, collection, action, objectId, object
 
 };
 
+var authIgnoredCollections = ['nodes', 'data'];
+
 var events = {
     onPreRead: function (server, scriptContext, collection, callback) {
         var authMngr = require('../cms/authMngr.js')(server);
-        if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'R')) {
+        if (!scriptContext.internal && authIgnoredCollections.indexOf(collection) === -1 && !authMngr.isAuthorized(scriptContext.me, collection, 'R')) {
             var accessDenied = new Error('access denied');
             accessDenied.statusCode = 401;
             callback(accessDenied);
@@ -218,7 +220,7 @@ var events = {
     },
     onPreCreate: function (server, scriptContext, collection, callback) {
         var authMngr = require('../cms/authMngr.js')(server);
-        if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'C')) {
+        if (!scriptContext.internal && authIgnoredCollections.indexOf(collection) === -1 && !authMngr.isAuthorized(scriptContext.me, collection, 'C')) {
             var accessDenied = new Error('access denied');
             accessDenied.statusCode = 401;
             callback(accessDenied);
@@ -242,7 +244,7 @@ var events = {
     },
     onPreUpdate: function (server, scriptContext, collection, object, callback) {
         var authMngr = require('../cms/authMngr.js')(server);
-        if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'U')) {
+        if (!scriptContext.internal && authIgnoredCollections.indexOf(collection) === -1 && !authMngr.isAuthorized(scriptContext.me, collection, 'U')) {
             var accessDenied = new Error('access denied');
             accessDenied.statusCode = 401;
             callback(accessDenied);
@@ -266,7 +268,7 @@ var events = {
     },
     onPreDelete: function (server, scriptContext, collection, object, callback) {
         var authMngr = require('../cms/authMngr.js')(server);
-        if (!scriptContext.internal && !authMngr.isAuthorized(scriptContext.me, collection, 'D')) {
+        if (!scriptContext.internal && authIgnoredCollections.indexOf(collection) === -1 && !authMngr.isAuthorized(scriptContext.me, collection, 'D')) {
             var accessDenied = new Error('access denied');
             accessDenied.statusCode = 401;
             callback(accessDenied);

@@ -16,7 +16,8 @@ module.exports = [{
         get: fs.readFileSync(__dirname + "/collections/data/events/get.js", "utf8"),
         validate: fs.readFileSync(__dirname + "/collections/data/events/validate.js", "utf8"),
         post: fs.readFileSync(__dirname + "/collections/data/events/post.js", "utf8"),
-        put: fs.readFileSync(__dirname + "/collections/data/events/put.js", "utf8")
+        put: fs.readFileSync(__dirname + "/collections/data/events/put.js", "utf8"),
+        delete: fs.readFileSync(__dirname + "/collections/data/events/delete.js", "utf8")
     },
     default: require('./collections/data/default.json')
 }, {

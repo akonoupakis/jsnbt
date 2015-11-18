@@ -1,8 +1,12 @@
+var authMngr = requireApp('cms/authMngr.js')(server);
 var node = requireApp('cms/nodeMngr.js')(server, db);
 
 var _ = require('underscore');
 
 var self = this;
+
+if (!internal && !authMngr.isAuthorized(me, 'nodes:' + self.entity, 'C'))
+    cancel('Access denied', 401);
     
 var entity = requireApp('cms/entityMngr.js')(server, self.entity);
 

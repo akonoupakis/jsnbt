@@ -38,7 +38,7 @@
             url: '/content/nodes'
         });
 
-        if (_.any($jsnbt.lists, function (x) { return x.domain === 'core'; })) {
+        if (_.any($jsnbt.lists, function (x) { return x.domain === 'public'; })) {
             defaultItems.push({
                 id: 'data',
                 title: 'data',

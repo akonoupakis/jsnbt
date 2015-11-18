@@ -67,13 +67,7 @@ var Script = function (app) {
             }
         });
 
-        result.lists = [];
-        _.each(app.config.lists, function (list) {
-            var newList = {};
-            extend(true, newList, list);
-            delete newList.permissions;
-            result.lists.push(newList);
-        });
+        result.lists = app.config.lists;
 
         result.injects = app.config.injects;
 
@@ -136,7 +130,9 @@ var Script = function (app) {
             result.collections[collection] = {};
             if (app.config.collections[collection].default) {
                 result.collections[collection].default = app.config.collections[collection].default;
-                
+            }
+            if (app.config.collections[collection].permissions) {
+                result.collections[collection].permissions = app.config.collections[collection].permissions;
             }
         });
         

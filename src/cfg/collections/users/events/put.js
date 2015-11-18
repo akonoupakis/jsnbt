@@ -10,7 +10,7 @@ if (me && me.id === self.id) {
 }
 else {
     if (!internal && !authMngr.isAuthorized(me, 'users', 'U'))
-        cancel('access denied', 500);
+        cancel('access denied', 401);
 
     if (changed('roles') && !_.isEmpty(_.difference(previous.roles, self.roles))) {
         if (self.roles.length === 0) {

@@ -12,7 +12,7 @@
 
             canOpen: function (module) {
                 if (module.section) {
-                    return AuthService.authorize($scope.current.user, module.section);
+                    return AuthService.isAuthorized($scope.current.user, module.section);
                 }
                 else {
                     return true;

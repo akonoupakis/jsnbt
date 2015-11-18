@@ -3,7 +3,7 @@
 (function () {
     "use strict";
     
-    var LanguagesController = function ($scope, $rootScope, $location, $q, $logger, $data, PagedDataService, ModalService) {
+    var LanguagesController = function ($scope, $rootScope, $location, $q, $logger, $data, PagedDataService, ModalService, AuthService) {
         jsnbt.controllers.ListControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var self = this;
@@ -23,7 +23,7 @@
         });
 
         $scope.canCreate = function () {
-            return $scope.available;
+            return $scope.available && AuthService.isAuthorized($scope.current.user, 'languages', 'C');
         };
 
         $scope.create = function () {
@@ -31,6 +31,10 @@
         };
 
         $scope.gridFn = {
+
+            canEdit: function (language) {
+                return AuthService.isAuthorized($scope.current.user, 'languages', 'U');
+            },
 
             edit: function (language) {
                 $location.next('/content/languages/' + language.id);
@@ -107,6 +111,10 @@
 
             },
 
+            canDelete: function (language) {
+                return AuthService.isAuthorized($scope.current.user, 'languages', 'D');
+            },
+
             delete: function (language) {
 
                 var deletePromise = function (data) {
@@ -168,5 +176,5 @@
     };
 
     angular.module("jsnbt")
-        .controller('LanguagesController', ['$scope', '$rootScope', '$location', '$q', '$logger', '$data', 'PagedDataService', 'ModalService', LanguagesController]);
+        .controller('LanguagesController', ['$scope', '$rootScope', '$location', '$q', '$logger', '$data', 'PagedDataService', 'ModalService', 'AuthService', LanguagesController]);
 })();

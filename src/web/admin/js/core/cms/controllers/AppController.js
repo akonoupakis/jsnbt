@@ -37,7 +37,7 @@
         };
 
         $scope.isAuthorized = function (section) {
-            return AuthService.authorize($scope.current.user, section);
+            return AuthService.isAuthorized($scope.current.user, section);
         };
         
         $scope.$on(ROUTE_EVENTS.routeStarted, function (sender) {
@@ -76,7 +76,7 @@
         $scope.$on(AUTH_EVENTS.loginSuccess, function (sender, user) {
             $scope.current.setUser(user);
 
-            if ($route.current.$$route.section && !AuthService.authorize(user, $route.current.$$route.section)) {
+            if ($route.current.$$route.section && !AuthService.isAuthorized(user, $route.current.$$route.section)) {
                 $scope.current.denied = true;
             }
             else {

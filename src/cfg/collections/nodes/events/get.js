@@ -7,6 +7,10 @@ var self = this;
 
 if (!internal) {
     if (self.id) {
+
+        if (!authMngr.isAuthorized(me, 'nodes:' + self.entity, 'R'))
+            cancel('Access denied', 401);
+
         node.buildUrl(self, function (response) {
             self.url = response;
         });

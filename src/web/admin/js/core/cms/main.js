@@ -174,7 +174,7 @@
                         $rootScope.$broadcast(AUTH_EVENTS.authenticated, user);
                         var currentSection = $route.current.$$route && $route.current.$$route.section;
                         if (currentSection) {
-                            if (!AuthService.authorize(user, currentSection)) {
+                            if (!AuthService.isAuthorized(user, currentSection)) {
                                 $rootScope.$broadcast(AUTH_EVENTS.accessDenied);
                             }
                         }

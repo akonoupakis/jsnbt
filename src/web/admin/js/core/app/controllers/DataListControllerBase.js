@@ -43,7 +43,7 @@
                     });
                     
                     $scope.canCreate = function () {
-                        return true;
+                        return AuthService.isAuthorized($scope.current.user, 'data:' + $scope.domain + ':' + $scope.id, 'C');
                     };
 
                     $scope.create = function () {
@@ -53,7 +53,7 @@
                     $scope.gridFn = $scope.gridFn || {};
 
                     $scope.gridFn.canEdit = function (row) {
-                        return true;
+                        return AuthService.isAuthorized($scope.current.user, 'data:' + row.domain + ':' + row.list, 'U');
                     };
 
                     $scope.gridFn.edit = function (row) {
@@ -61,7 +61,7 @@
                     };
 
                     $scope.gridFn.canDelete = function (row) {
-                        return true;
+                        return AuthService.isAuthorized($scope.current.user, 'data:' + row.domain + ':' + row.list, 'D');
                     };
 
                     $scope.gridFn.delete = function (row) {

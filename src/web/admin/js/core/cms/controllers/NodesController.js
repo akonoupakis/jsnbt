@@ -3,7 +3,7 @@
 (function () {
     "use strict";
     
-    var NodesController = function ($scope, $rootScope, $location, $jsnbt, $logger, $data, ModalService) {
+    var NodesController = function ($scope, $rootScope, $location, $jsnbt, $logger, $data, ModalService, AuthService) {
         jsnbt.controllers.TreeControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var self = this;
@@ -15,7 +15,7 @@
         $scope.offset = 2;
     
         $scope.canCreate = function () {
-            return true;
+            return AuthService.isAuthorized($scope.current.user, 'nodes', 'C');
         };
 
         $scope.create = function () {
@@ -30,14 +30,14 @@
 
                 if (node.domain === 'core') {
                     if (node.entity === 'pointer') {
-                        return $jsnbt.entities[node.pointer.entity].parentable;
+                        return $jsnbt.entities[node.pointer.entity].parentable && AuthService.isAuthorized($scope.current.user, 'nodes:' + node.pointer.entity, 'C');
                     }
                     else {
-                        return $jsnbt.entities[node.entity].parentable;
+                        return $jsnbt.entities[node.entity].parentable && AuthService.isAuthorized($scope.current.user, 'nodes:' + node.entity, 'C');
                     }
                 }
                 else {
-                    if ($jsnbt.entities[node.entity].parentable) {
+                    if ($jsnbt.entities[node.entity].parentable && AuthService.isAuthorized($scope.current.user, 'nodes:' + node.entity, 'C')) {
                         return true;
                     }
                 }
@@ -58,7 +58,7 @@
             },
 
             canEdit: function (node) {
-                return $jsnbt.entities[node.entity].editable;
+                return $jsnbt.entities[node.entity].editable && AuthService.isAuthorized($scope.current.user, 'nodes:' + node.entity, 'U');
             },
 
             edit: function (node) {
@@ -69,9 +69,9 @@
             canDelete: function (node) {
                 if (node.domain === 'core') {
                     if (node.entity !== 'pointer') {
-                        return $jsnbt.entities[node.entity].deletable && node.childCount === 0;
+                        return $jsnbt.entities[node.entity].deletable && node.childCount === 0 && AuthService.isAuthorized($scope.current.user, 'nodes:' + node.entity, 'D');
                     } else {
-                        return true;
+                        return AuthService.isAuthorized($scope.current.user, 'nodes:' + node.entity, 'D');
                     }
                 }
                 else {
@@ -124,7 +124,7 @@
             canOpen: function (node) {
                 var targetEntity = node.domain === 'core' && node.entity === 'pointer' ? node.pointer.entity : node.entity;
                 if (targetEntity) {
-                    return $jsnbt.entities[targetEntity].viewable;
+                    return $jsnbt.entities[targetEntity].viewable && AuthService.isAuthorized($scope.current.user, 'nodes:' + targetEntity, 'R');
                 }
                 else {
                     return false;
@@ -155,5 +155,5 @@
     NodesController.prototype = Object.create(jsnbt.controllers.TreeControllerBase.prototype);
 
     angular.module("jsnbt")
-        .controller('NodesController', ['$scope', '$rootScope', '$location', '$jsnbt', '$logger', '$data', 'ModalService', NodesController]);
+        .controller('NodesController', ['$scope', '$rootScope', '$location', '$jsnbt', '$logger', '$data', 'ModalService', 'AuthService', NodesController]);
 })();
