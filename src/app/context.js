@@ -137,11 +137,12 @@ var Context = function (server, req, res) {
                 var href = this.scheme;
                 href += '://';
                 href += this.host;
+                
                 if (this.scheme === 'https') {
-                    href += (this.port != 433) ? ':' + this.port : '';
+                    href += (this.port !== '433' && this.port !== '433') ? ':' + this.port : '';
                 }
                 else {
-                    href += (this.port != 80) ? ':' + this.port : '';
+                    href += (this.port !== '80' && this.port !== '') ? ':' + this.port : '';
                 }
                 href += '/';
                 return href;

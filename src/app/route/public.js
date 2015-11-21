@@ -1,6 +1,7 @@
 var path = require('path');
 var send = require('send');
 var url = require('url');
+var parseUri = require('parseUri');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
@@ -122,12 +123,12 @@ var PublicRouter = function (server) {
     return {
         route: function (ctx, next) {
             if (ctx.uri.path !== '/') {
-                send(ctx.req, url.parse(ctx.uri.path).pathname)                    
+                var parsedUri = new parseUri('http://' + server.host + ctx.req.url);
+                send(ctx.req, url.parse(parsedUri.path).pathname)
                     .root('public')
                     .on('error', function (err) {
                         try {
-                            var node = require('../cms/nodeMngr.js')(server, ctx.db);
-
+                            var node = require('../cms/nodeMngr.js')(server, ctx.db);                         
                             node.resolveUrl(ctx.uri.url, function (resolved) {
                                 if (resolved) {
                                     ctx.debug('node resolved: ' + resolved.page.id);
