@@ -16,7 +16,7 @@ var Crawler = function (server) {
                 url
             ];
 
-            childProcess.execFile('phantomjs.exe', childArgs, function (err, stdout, stderr) {
+            childProcess.execFile('phantomjs', childArgs, function (err, stdout, stderr) {
                 if (err) {
                     onError(err);
                 }
