@@ -530,24 +530,18 @@ function createResourceClient(server, resource, collection, baseMethods) {
       , post: function (p, query, body, fn) {
           var settings = parsePostSignature(arguments);
           settings.path = joinPath(resource.path, settings.path);
-
-          // cache invalidation could occur here, but at best its placed on script.js to grap also client post requests
-
+          
           return baseMethods.post(settings, settings.fn);
       }
       , put: function (p, query, body, fn) {
           var settings = parsePostSignature(arguments);
           settings.path = joinPath(resource.path, settings.path);
 
-          // cache invalidation could occur here, but at best its placed on script.js to grap also client put requests
-
           return baseMethods.put(settings, settings.fn);
       }
       , del: function (p, query, fn) {
           var settings = parseGetSignature(arguments);
           settings.path = joinPath(resource.path, settings.path);
-
-          // cache invalidation could occur here, but at best its placed on script.js to grap also client del requests
 
           return baseMethods.del(settings, settings.fn);
       }

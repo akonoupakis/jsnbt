@@ -230,16 +230,18 @@ var events = {
         }
     },
     onPostCreate: function (server, scriptContext, collection, object, callback) {
-        logAction(server, scriptContext.db, scriptContext.me, collection, 'create', object.id, object, function (err, res) {
-            if (err) {
-                callback(err);
-            }
-            else {
-                if (!scriptContext.internal)
-                    scriptContext.emit(collection + 'Created', object);
+        server.cache.purge('db.' + collection, function () {
+            logAction(server, scriptContext.db, scriptContext.me, collection, 'create', object.id, object, function (err, res) {
+                if (err) {
+                    callback(err);
+                }
+                else {
+                    if (!scriptContext.internal)
+                        scriptContext.emit(collection + 'Created', object);
 
-                callback();
-            }
+                    callback();
+                }
+            });
         });
     },
     onPreUpdate: function (server, scriptContext, collection, object, callback) {
@@ -254,16 +256,18 @@ var events = {
         }
     },
     onPostUpdate: function (server, scriptContext, collection, object, callback) {
-        logAction(server, scriptContext.db, scriptContext.me, collection, 'update', object.id, object, function (err, res) {
-            if (err) {
-                callback(err);
-            }
-            else {
-                if (!scriptContext.internal)
-                    scriptContext.emit(collection + 'Updated', object);
+        server.cache.purge('db.' + collection, function () {
+            logAction(server, scriptContext.db, scriptContext.me, collection, 'update', object.id, object, function (err, res) {
+                if (err) {
+                    callback(err);
+                }
+                else {
+                    if (!scriptContext.internal)
+                        scriptContext.emit(collection + 'Updated', object);
 
-                callback();
-            }
+                    callback();
+                }
+            });
         });
     },
     onPreDelete: function (server, scriptContext, collection, object, callback) {
@@ -278,16 +282,18 @@ var events = {
         }
     },
     onPostDelete: function (server, scriptContext, collection, object, callback) {
-        logAction(server, scriptContext.db, scriptContext.me, collection, 'delete', object.id, object, function (err, res) {
-            if (err) {
-                callback(err);
-            }
-            else {
-                if (!scriptContext.internal)
-                    scriptContext.emit(collection + 'Deleted', object);
+        server.cache.purge('db.' + collection, function () {
+            logAction(server, scriptContext.db, scriptContext.me, collection, 'delete', object.id, object, function (err, res) {
+                if (err) {
+                    callback(err);
+                }
+                else {
+                    if (!scriptContext.internal)
+                        scriptContext.emit(collection + 'Deleted', object);
 
-                callback();
-            }
+                    callback();
+                }
+            });
         });
     }
 };
@@ -478,6 +484,7 @@ Collection.prototype.save = function (ctx, fn) {
     var commands = {};
     Object.keys(item).forEach(function (key) {
         if (item[key] && typeof item[key] === 'object' && !Array.isArray(item[key])) {
+
             Object.keys(item[key]).forEach(function (k) {
                 if (k[0] == '$') {
                     commands[key] = item[key];
