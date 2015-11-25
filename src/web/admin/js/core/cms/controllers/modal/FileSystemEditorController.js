@@ -14,7 +14,7 @@
         if (!$scope.data)
             throw new Error('$scope.data not defined in FileSystemEditorController');
         
-        this.enqueue('loaded', function () {
+        this.enqueue('loaded', '', function () {
             var deferred = $q.defer();
 
             $scope.name = $scope.data.type === 'folder' ? $scope.data.name : $scope.data.name.substring(0, $scope.data.name.length - $scope.data.ext.length);
@@ -25,7 +25,7 @@
             return deferred.promise;
         });
 
-        this.enqueue('set', function (data) {
+        this.enqueue('set', '', function (data) {
             var deferred = $q.defer();
 
             TreeNodeService.setSelected(data, [self.scope.data.dir]);

@@ -20,7 +20,7 @@
                     if (['single', 'multiple'].indexOf($scope.mode) === -1)
                         $scope.mode = 'single';
 
-                    this.enqueue('set', function (data) {
+                    this.enqueue('set', '', function (data) {
                         self.setSelected($scope.selected);
                     });
 

@@ -23,7 +23,7 @@
 
                     $scope.loadingOptions = {};
 
-                    this.enqueue('preloading', function () {
+                    this.enqueue('preloading', '', function () {
                         var deferred = $q.defer();
 
                         $scope.list = _.find($jsnbt.lists, function (x) { return x.domain === $scope.domain && x.id === ($scope.listId || $scope.id); });

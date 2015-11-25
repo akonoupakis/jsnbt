@@ -13,7 +13,7 @@
         $scope.data = undefined;
         $scope.options = [];
 
-        this.enqueue('watch', function () {
+        this.enqueue('watch', '', function () {
             var deferred = $q.defer();
 
             $scope.$watch('data.code', function (newValue, prevValue) {

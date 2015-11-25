@@ -19,7 +19,7 @@
                     $scope.title = undefined;
                     $scope.data = {};
 
-                    this.enqueue('watch', function () {
+                    this.enqueue('watch', '', function () {
                         var deferred = $q.defer();
 
                         $scope.$watch('title', function (newValue, prevValue) {

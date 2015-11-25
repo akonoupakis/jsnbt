@@ -37,7 +37,7 @@
                     $scope.localized = false;
                     $scope.language = '';
                                         
-                    this.enqueue('preloaded', function () {
+                    this.enqueue('preloaded', '', function () {
                         var deferred = $q.defer();
 
                         $($scope.languages).each(function (i, item) {
@@ -49,7 +49,7 @@
                         return deferred.promise;
                     });
 
-                    this.enqueue('watch', function () {
+                    this.enqueue('watch', '', function () {
                         var deferred = $q.defer();
 
                         $scope.$watch('title', function (newValue, prevValue) {

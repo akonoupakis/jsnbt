@@ -22,7 +22,7 @@
         $scope.smsProviders = [];
         $scope.smsTmpl = null;
 
-        this.enqueue('preloading', function () {
+        this.enqueue('preloading', '', function () {
             var deferred = $q.defer();
 
             var injects = [];
@@ -37,7 +37,7 @@
             return deferred.promise;
         });
 
-        this.enqueue('preloading', function () {
+        this.enqueue('preloading', '', function () {
             var deferred = $q.defer();
 
             var providers = [];
@@ -54,7 +54,7 @@
             return deferred.promise;
         });
 
-        this.enqueue('preloading', function () {
+        this.enqueue('preloading', '', function () {
             var deferred = $q.defer();
 
             var providers = [];
@@ -71,7 +71,7 @@
             return deferred.promise;
         });
      
-        this.enqueue('set', function () {
+        this.enqueue('set', '', function () {
             var deferred = $q.defer();
             
             if ($scope.messaging && $scope.messaging.mail && $scope.messaging.mail.provider)
@@ -84,7 +84,7 @@
             return deferred.promise;
         });
 
-        this.enqueue('set', function () {
+        this.enqueue('set', '', function () {
             var deferred = $q.defer();
 
             if ($scope.messaging && $scope.messaging.sms && $scope.messaging.sms.provider)
@@ -97,7 +97,7 @@
             return deferred.promise;
         });
 
-        this.enqueue('watch', function () {
+        this.enqueue('watch', '', function () {
             var deferred = $q.defer();
 
             $scope.$watch('settings.messaging.mail.provider', function (newValue, prevValue) {
@@ -112,7 +112,7 @@
             return deferred.promise;
         });
 
-        this.enqueue('watch', function () {
+        this.enqueue('watch', '', function () {
             var deferred = $q.defer();
 
             $scope.$watch('settings.messaging.sms.provider', function (newValue, prevValue) {

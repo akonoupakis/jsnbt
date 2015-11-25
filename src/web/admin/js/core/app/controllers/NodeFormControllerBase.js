@@ -88,7 +88,7 @@
                     };
 
 
-                    this.enqueue('preloading', function () {
+                    this.enqueue('preloading', '', function () {
                         var deferred = $q.defer();
 
                         $q.all(self.setLayouts(), self.setRoles(), self.setRobots(), self.setModules(), self.setLanguages(), self.setLanguage(), self.setEntities(), self.setRoutes(), self.setViews()).then(function (results) {
@@ -100,7 +100,7 @@
                         return deferred.promise;
                     });
 
-                    this.enqueue('preloading', function () {
+                    this.enqueue('preloading', '', function () {
                         var deferred = $q.defer();
 
                         if (self.isNew()) {
@@ -125,7 +125,7 @@
                     });
 
 
-                    this.enqueue('loaded', function (node) {
+                    this.enqueue('loaded', '', function (node) {
                         var deferred = $q.defer();
 
                         if (!self.isNew()) {
@@ -149,7 +149,7 @@
                     });
 
 
-                    this.enqueue('setting', function (node) {
+                    this.enqueue('setting', '', function (node) {
                         var deferred = $q.defer();
 
                         self.setHierarchyNodes(node).then(function () {
@@ -162,7 +162,7 @@
                     });
 
 
-                    this.enqueue('set', function (node) {
+                    this.enqueue('set', '', function (node) {
                         if (node && _.isObject(node.active)) {
                             _.each($scope.application.languages, function (lang) {
                                 if (node.active[lang.code] === undefined)
@@ -171,7 +171,7 @@
                         }
                     });
 
-                    this.enqueue('set', function (node) {
+                    this.enqueue('set', '', function (node) {
                         var deferred = $q.defer();
 
                         self.setParentEntities().then(function () {
@@ -187,23 +187,23 @@
                         return deferred.promise;
                     });
 
-                    this.enqueue('set', function (node) {
+                    this.enqueue('set', '', function (node) {
                         return self.setSelectedSSL(node);
                     });
 
-                    this.enqueue('set', function (node) {
+                    this.enqueue('set', '', function (node) {
                         return self.setSelectedLayout(node);
                     });
 
-                    this.enqueue('set', function (node) {
+                    this.enqueue('set', '', function (node) {
                         return self.setSelectedRoles(node);
                     });
 
-                    this.enqueue('set', function (node) {
+                    this.enqueue('set', '', function (node) {
                         return self.setSelectedRobots(node);
                     });
 
-                    this.enqueue('set', function (node) {
+                    this.enqueue('set', '', function (node) {
                         var deferred = $q.defer();
 
                         if (!self.isNew()) {
@@ -216,7 +216,7 @@
                         return deferred.promise;
                     });
 
-                    this.enqueue('set', function (node) {
+                    this.enqueue('set', '', function (node) {
                         var deferred = $q.defer();
 
                         if (!self.isNew()) {
@@ -229,7 +229,7 @@
                         return deferred.promise;
                     });
 
-                    this.enqueue('set', function (node) {
+                    this.enqueue('set', '', function (node) {
                         var deferred = $q.defer();
 
                         if (!self.isNew()) {
@@ -242,7 +242,7 @@
                         return deferred.promise;
                     });
 
-                    this.enqueue('set', function (node) {
+                    this.enqueue('set', '', function (node) {
                         var deferred = $q.defer();
 
                         if (!self.isNew()) {
@@ -255,7 +255,7 @@
                         return deferred.promise;
                     });
 
-                    this.enqueue('set', function (node) {
+                    this.enqueue('set', '', function (node) {
                         var deferred = $q.defer();
 
                         if (node.parent && node.parent !== '') {
@@ -273,7 +273,7 @@
                     });
              
 
-                    this.enqueue('publishing', function (node) {
+                    this.enqueue('publishing', '', function (node) {
                         var deferred = $q.defer();
 
                         if (!node.roles)
@@ -286,7 +286,7 @@
                         return deferred.promise;
                     });
 
-                    this.enqueue('publishing', function (node) {
+                    this.enqueue('publishing', '', function (node) {
                         var deferred = $q.defer();
 
                         if (!node.robots)
@@ -299,7 +299,7 @@
                         return deferred.promise;
                     });
 
-                    this.enqueue('publishing', function (node) {
+                    this.enqueue('publishing', '', function (node) {
                         var deferred = $q.defer();
 
                         if (!node.layouts)
@@ -312,7 +312,7 @@
                         return deferred.promise;
                     });
 
-                    this.enqueue('publishing', function (node) {
+                    this.enqueue('publishing', '', function (node) {
                         var deferred = $q.defer();
 
                         if (!node.secure)
@@ -326,7 +326,7 @@
                     });
 
 
-                    this.enqueue('watch', function () {
+                    this.enqueue('watch', '', function () {
                         var deferred = $q.defer();
 
                         $scope.$watch('node.entity', function (newValue, prevValue) {
@@ -358,7 +358,7 @@
                         return deferred.promise;
                     });
 
-                    this.enqueue('watch', function () {
+                    this.enqueue('watch', '', function () {
                         var deferred = $q.defer();
 
                         $scope.$watch('node.template', function (newValue, prevValue) {
@@ -376,7 +376,7 @@
                         return deferred.promise;
                     });
 
-                    this.enqueue('watch', function () {
+                    this.enqueue('watch', '', function () {
                         var deferred = $q.defer();
 
                         $scope.$watch('node.parent', function (newValue, prevValue) {
@@ -425,7 +425,7 @@
                         return deferred.promise;
                     });
 
-                    this.enqueue('watch', function () {
+                    this.enqueue('watch', '', function () {
                         var deferred = $q.defer();
 
                         $scope.$watch('node.pointer.domain', function (newValue, prevValue) {
@@ -439,7 +439,7 @@
                         return deferred.promise;
                     });
 
-                    this.enqueue('watch', function () {
+                    this.enqueue('watch', '', function () {
                         var deferred = $q.defer();
 
                         $scope.$watch('node.layouts.inherits', function (newValue, prevValue) {
@@ -466,7 +466,7 @@
                         return deferred.promise;
                     });
 
-                    this.enqueue('watch', function () {
+                    this.enqueue('watch', '', function () {
                         var deferred = $q.defer();
 
                         $scope.$watch('node.secure.inherits', function (newValue, prevValue) {
@@ -493,7 +493,7 @@
                         return deferred.promise;
                     });
 
-                    this.enqueue('watch', function () {
+                    this.enqueue('watch', '', function () {
                         var deferred = $q.defer();
 
                         $scope.$watch('node.roles.inherits', function (newValue, prevValue) {
@@ -520,7 +520,7 @@
                         return deferred.promise;
                     });
 
-                    this.enqueue('watch', function () {
+                    this.enqueue('watch', '', function () {
                         var deferred = $q.defer();
 
                         $scope.$watch('node.robots.inherits', function (newValue, prevValue) {

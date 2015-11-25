@@ -13,7 +13,7 @@
         
         $scope.tmpl = null;
         
-        this.enqueue('loaded', function () {
+        this.enqueue('loaded', '', function () {
             var deferred = $q.defer();
 
             var layout = $jsnbt.layouts[$scope.id];
@@ -27,7 +27,7 @@
             return deferred.promise;
         });
         
-        this.enqueue('published', function (data) {
+        this.enqueue('published', '', function (data) {
             var deferred = $q.defer();
 
             if (!$scope.layoutId) {

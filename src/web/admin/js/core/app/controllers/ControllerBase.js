@@ -74,11 +74,32 @@
                     
                 };
 
-                ControllerBase.prototype.enqueue = function (key, fn) {
-                    if (!this.queue[key])
-                        this.queue[key] = [];
+                ControllerBase.prototype.enqueue = function (queue, key, fn) {
 
-                    this.queue[key].push(fn);
+                    if (!this.queue[queue])
+                        this.queue[queue] = [];
+
+                    this.queue[queue].push({
+                        key: key,
+                        fn: fn
+                    });
+
+
+                    //if (!this.queue[key])
+                    //    this.queue[key] = [];
+
+                    //this.queue[key].push(fn);
+                };
+
+                ControllerBase.prototype.dequeue = function (queue, key) {
+                    if (this.queue[queue]) {
+                        this.queue[queue] = _.filter(this.queue[queue], function (x) { return x.key !== key });
+                    }
+
+                    //if (!this.queue[key])
+                    //    this.queue[key] = [];
+
+                    //this.queue[key].push(fn);
                 };
 
                 ControllerBase.prototype.getBreadcrumb = function () {
@@ -104,11 +125,11 @@
 
                 };
 
-                ControllerBase.prototype.run = function (key, args) {
+                ControllerBase.prototype.run = function (queue, args) {
                     var deferred = this.ctor.$q.defer();
 
-                    if (this.queue[key]) {
-                        this.ctor.$q.all(_.map(this.queue[key], function (x) { return x.apply(x, args); })).then(function () {
+                    if (this.queue[queue]) {
+                        this.ctor.$q.all(_.map(this.queue[queue], function (x) { return x.fn.apply(x.fn, args); })).then(function () {
                             deferred.resolve();
                         }).catch(function (error) {
                             deferred.reject(error);

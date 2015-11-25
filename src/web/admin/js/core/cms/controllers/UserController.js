@@ -24,7 +24,7 @@
 
         $scope.invalidPasswordComparison = false;
         
-        this.enqueue('preloading', function () {
+        this.enqueue('preloading', '', function () {
             var deferred = $q.defer();
             
             var allRoles = [];
@@ -48,7 +48,7 @@
             return deferred.promise;
         });
 
-        this.enqueue('set', function () {
+        this.enqueue('set', '', function () {
             var deferred = $q.defer();
 
             var allowEdit = true;

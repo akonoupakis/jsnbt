@@ -16,7 +16,7 @@
 
         $scope.validation.key = true;
 
-        this.enqueue('preloading', function () {
+        this.enqueue('preloading', '', function () {
             var deferred = $q.defer();
 
             $scope.languages = $scope.application.localization.enabled ? $scope.application.languages : [$scope.defaults.languages[$scope.defaults.language]];

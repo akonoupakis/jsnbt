@@ -12,7 +12,7 @@
 
         $scope.available = false;
 
-        this.enqueue('loaded', function (data) {
+        this.enqueue('loaded', '', function (data) {
             var deferred = $q.defer();
 
             $scope.available = data.items.length < _.keys($scope.defaults.languages).length;
