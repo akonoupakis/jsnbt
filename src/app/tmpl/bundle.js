@@ -20,12 +20,10 @@ var Bundle = function (app) {
                     });
                 }), function (z) { return z !== undefined; });
 
-                if (groups.length > 1) {
-                    if (_.filter(groups, function (x) { return x.process === false; }).length > 1) {
-                        combine = false;
-                    }
+                if (_.any(groups, function (x) { return x.process === false; })) {
+                    combine = false;
                 }
-                
+
                 if (combine) {
                     var groupsScripts = [];
                     _.each(groups, function (g) {
@@ -96,10 +94,8 @@ var Bundle = function (app) {
                     });
                 }), function (z) { return z !== undefined; });
 
-                if (groups.length > 1) {
-                    if (_.filter(groups, function (x) { return x.process === false; }).length > 1) {
-                        combine = false;
-                    }
+                if (_.any(groups, function (x) { return x.process === false; })) {
+                    combine = false;
                 }
 
                 var groupsScripts = [];
