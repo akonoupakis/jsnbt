@@ -5,6 +5,9 @@ var _ = require('underscore');
 
 var self = this;
 
+delete self.enabled;
+delete self.url;
+
 var processChildren = function (domain, hierarchy) {
     if (hierarchy.length > 0) {
         var nodeId = hierarchy[hierarchy.length - 1];
