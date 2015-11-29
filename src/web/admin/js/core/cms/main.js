@@ -162,7 +162,7 @@
 
             $rootScope.$on('$locationChangeStart', function (event, next) {
                 $rootScope.$broadcast(ROUTE_EVENTS.routeStarted);
-
+                
                 AuthService.get().then(function (user) {
                     $rootScope.$broadcast(ROUTE_EVENTS.routeCompleted);
                     if (!AuthService.isInRole(user, 'admin')) {
@@ -183,10 +183,10 @@
                     event.preventDefault();
 
                     if (!$rootScope.initiated) {
-
+                        
                         AuthService.count().then(function (count) {
                             $rootScope.$broadcast(ROUTE_EVENTS.routeCompleted);
-
+                            
                             if (count === 0) {
                                 $rootScope.$broadcast(AUTH_EVENTS.noUsers, function () {
                                     $route.reload();

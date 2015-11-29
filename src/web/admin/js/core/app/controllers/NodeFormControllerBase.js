@@ -207,8 +207,8 @@
                         var deferred = $q.defer();
 
                         if (!self.isNew()) {
-                            $scope.values.layouts = node.layouts.value || [];
-                            $scope.draftValues.layouts = node.layouts.value || [];
+                            $scope.values.layouts = node.layouts ? node.layouts.value : [];
+                            $scope.draftValues.layouts = node.layouts ? node.layouts.value : [];
                         }
 
                         deferred.resolve();
@@ -220,8 +220,8 @@
                         var deferred = $q.defer();
 
                         if (!self.isNew()) {
-                            $scope.values.roles = node.roles.value || [];
-                            $scope.draftValues.roles = node.roles.value || [];
+                            $scope.values.roles = node.roles ? node.roles.value : [];
+                            $scope.draftValues.roles = node.roles ? node.roles.value : [];
                         }
 
                         deferred.resolve();
@@ -233,8 +233,8 @@
                         var deferred = $q.defer();
 
                         if (!self.isNew()) {
-                            $scope.values.robots = node.robots.value || [];
-                            $scope.draftValues.robots = node.robots.value || [];
+                            $scope.values.robots = node.robots ? node.robots.value : [];
+                            $scope.draftValues.robots = node.robots ? node.robots.value : [];
                         }
 
                         deferred.resolve();
@@ -246,8 +246,8 @@
                         var deferred = $q.defer();
 
                         if (!self.isNew()) {
-                            $scope.values.secure = node.secure.value || false;
-                            $scope.draftValues.secure = node.secure.value || false;
+                            $scope.values.secure = node.secure ? node.secure.value : false;
+                            $scope.draftValues.secure = node.secure ? node.secure.value : false;
                         }
 
                         deferred.resolve();
@@ -617,7 +617,7 @@
 
                     var self = this;
 
-                    if (this.scope.node.layouts.inherits) {
+                    if (this.scope.node.layouts && this.scope.node.layouts.inherits) {
                         this.scope.draftValues.layouts = this.scope.values.layouts;
 
                         var layouts = [];
@@ -651,7 +651,7 @@
 
                     var self = this;
 
-                    if (this.scope.node.secure.inherits) {
+                    if (this.scope.node.secure && this.scope.node.secure.inherits) {
                         this.scope.draftValues.secure = this.scope.values.secure;
 
                         var ssl = false;
@@ -683,7 +683,7 @@
 
                     var self = this;
 
-                    if (this.scope.node.roles.inherits) {
+                    if (this.scope.node.roles && this.scope.node.roles.inherits) {
                         this.scope.draftValues.roles = this.scope.values.roles.slice(0);
 
                         var roles = [];
@@ -717,7 +717,7 @@
 
                     var self = this;
                     
-                    if (this.scope.node.robots.inherits) {
+                    if (this.scope.node.robots && this.scope.node.robots.inherits) {
                         this.scope.draftValues.robots = this.scope.values.robots.slice(0);
 
                         var robots = [];

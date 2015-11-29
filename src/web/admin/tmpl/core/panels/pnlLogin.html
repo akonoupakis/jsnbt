@@ -1,4 +1,4 @@
-﻿<form name="loginForm" action="/admin/logging" target="sink" method="post" ng-submit="login()" class="col-md-12">
+﻿<form name="loginForm" method="post" ng-submit="login()" class="col-md-12">
     <div class="row username">
         <ctrl-text ng-model="username" ng-required="true" ng-label="email"></ctrl-text>
     </div>
@@ -13,6 +13,4 @@
     </div>
     
     <p class="text-danger failed" ng-show="failed">unsuccessful login attempt</p>
-
-    <iframe src="/admin/logging" name="sink" ng-hide="true"></iframe>
 </form>
