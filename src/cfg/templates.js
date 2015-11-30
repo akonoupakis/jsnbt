@@ -4,8 +4,7 @@ module.exports = [{
     html: '/admin/index.html',
     restricted: [],
     scripts: [
-        ['admin-lib', 'admin-app'],
-        'admin-scripts'
+        'admin-inline', ['admin-lib', 'admin-app']
     ],
     styles: [
         ['admin-lib', 'admin-app']
@@ -16,8 +15,7 @@ module.exports = [{
     html: '/admin/err/error.html',
     restricted: [],
     scripts: [
-        ['admin-lib', 'admin-app'],
-        'admin-scripts'
+        ['admin-lib', 'admin-app']
     ],
     styles: [
         ['admin-lib', 'admin-app']

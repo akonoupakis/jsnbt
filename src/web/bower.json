@@ -23,7 +23,8 @@
 	"bootstrap-datepicker": "1.4.0",
 	"moment": "2.10.6",
 	"moment-timezone": "0.4.0",
-	"eonasdan-bootstrap-datetimepicker": "4.17.37"
+	"eonasdan-bootstrap-datetimepicker": "4.17.37",
+	"gmaps": "0.4.21"
   },
   "deploy": {
     "jquery": {
@@ -323,6 +324,16 @@
           ]
         }
       ]
-	}
+	},
+	"gmaps": {
+      "files": [
+        {
+          "src": "gmaps-0.4.21/gmaps.js",
+          "dest": [
+            "admin/js/core/lib/gmaps.js"
+          ]
+        }
+      ]
+    }
   }
 }

@@ -25,7 +25,8 @@ module.exports = [{
         '/admin/js/core/lib/underscore/underscore.string.js',
         '/admin/js/core/lib/moment.js',
         '/admin/js/core/lib/moment-timezone.js',
-        '/admin/js/core/lib/bootstrap-datetimepicker.js'
+        '/admin/js/core/lib/bootstrap-datetimepicker.js',
+        '/admin/js/core/lib/gmaps.js'
     ]
 }, {
     name: 'admin-app',
@@ -119,6 +120,7 @@ module.exports = [{
         '/admin/js/core/cms/controls/form/ctrlSelectList.js',
         '/admin/js/core/cms/controls/form/ctrlText.js',
         '/admin/js/core/cms/controls/form/ctrlTextArea.js',
+        '/admin/js/core/cms/controls/form/ctrlMap.js',
 
         '/admin/js/core/cms/controls/list/ctrlGrid.js',
         '/admin/js/core/cms/controls/list/ctrlTree.js',
@@ -155,6 +157,6 @@ module.exports = [{
     name: 'admin-inline',
     process: false,
     items: [
-         //'http://asdasd.com/asdfasf/qwerqwerqw'
+         'https://maps.googleapis.com/maps/api/js'
     ]
 }];

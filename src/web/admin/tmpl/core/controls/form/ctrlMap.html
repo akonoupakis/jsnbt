@@ -1,0 +1,18 @@
+﻿<div ng-class="{ invalid: !ngDisabled && !valid }">
+    <div class="form-group" ng-class="{ 'has-error': !ngDisabled && !valid, 'has-feedback': !ngDisabled && !valid }">
+        <label ng-show="ngLabel" class="control-label">{{ngLabel}}<small ng-show="ngTip">({{ngTip}})</small></label>
+        <div class="row coordinates-container">
+            <div class="col-sm-6 form-control-feedback-container">
+                <input type="text" class="form-control" ng-disabled="ngDisabled" ng-model="coordinates.longitude" ng-change="changed()" placeholder="longitude" ng-keypress="preventInvalidCharaters($event)" />
+                <span ng-show="!ngDisabled && !valid && coordinates.longitude === ''" class="glyphicon glyphicon-remove form-control-feedback"></span>
+            </div>
+            <div class="col-sm-6 form-control-feedback-container">
+                <input type="text" class="form-control" ng-disabled="ngDisabled" ng-model="coordinates.latitude" ng-change="changed()" placeholder="latitude" ng-keypress="preventInvalidCharaters($event)" />
+                <span ng-show="!ngDisabled && !valid && coordinates.latitude === ''" class="glyphicon glyphicon-remove form-control-feedback"></span>
+            </div>
+        </div>
+        <div class="map-container">
+            <div id="map{{id}}" class="form-map" ng-style="{ 'height': height }"></div>
+        </div>
+    </div>
+</div>

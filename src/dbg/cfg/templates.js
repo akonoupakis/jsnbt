@@ -111,4 +111,15 @@ module.exports = [{
     styles: [
         ['lib', 'app']
     ]
+}, {
+    id: 'contact',
+    name: 'contact page',
+    html: '/tmpl/contact.html',
+    form: 'tmpl/public/contactPage.html',
+    scripts: [
+        ['lib', 'app']
+    ],
+    styles: [
+        ['lib', 'app']
+    ]
 }];
