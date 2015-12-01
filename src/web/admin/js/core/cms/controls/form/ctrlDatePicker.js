@@ -45,9 +45,11 @@
                         $('.input-group > input', element).data("DateTimePicker").date(new Date(scope.ngModel));
                     }
                     else {
+                        console.log(12);
                         $('.input-group > input', element).datepicker({
                             autoclose: true,
-                            format: 'dd/mm/yyyy'
+                            format: 'dd/mm/yyyy',
+                            orientation: 'top'
                         }).on('changeDate', function (e) {
                             if (e.date) {
                                 var time = e.date.getTime();
