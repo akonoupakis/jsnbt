@@ -13,6 +13,7 @@
     modules.push('infinite-scroll');
     modules.push('flow');
     modules.push('angular-redactor');
+    modules.push('ngTagsInput');
 
     for (var moduleDomain in jsnbt.modules) {
         if (jsnbt.modules[moduleDomain].domain !== 'public' && jsnbt.modules[moduleDomain].name)

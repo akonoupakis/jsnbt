@@ -123,7 +123,7 @@
                 <ctrl-text-area class="col-sm-12" ng-rows="4" ng-model="node.meta[language].description" ng-required="false" ng-validating="node.active[language]" ng-disabled="!entity.properties.meta" ng-label="meta description"></ctrl-text-area>
             </div>
             <div id="page-meta-keywords" class="row" data-scrollspy="keywords">
-                <ctrl-text-area class="col-sm-12" ng-rows="4" ng-model="node.meta[language].keywords" ng-required="false" ng-validating="node.active[language]" ng-disabled="!entity.properties.meta" ng-label="meta keywords"></ctrl-text-area>
+                <ctrl-tags class="col-sm-10" ng-model="node.meta[language].keywords" ng-placeholder="add a keyword" ng-required="false" ng-validating="node.active[language]" ng-disabled="!entity.properties.meta" ng-label="meta keywords"></ctrl-tags>
             </div>
 
             <hr />

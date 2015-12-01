@@ -26,7 +26,8 @@ module.exports = [{
         '/admin/js/core/lib/moment.js',
         '/admin/js/core/lib/moment-timezone.js',
         '/admin/js/core/lib/bootstrap-datetimepicker.js',
-        '/admin/js/core/lib/gmaps.js'
+        '/admin/js/core/lib/gmaps.js',
+        '/admin/js/core/lib/ng-tags-input.js'
     ]
 }, {
     name: 'admin-app',
@@ -112,15 +113,16 @@ module.exports = [{
         '/admin/js/core/cms/controls/form/ctrlHtml.js',
         '/admin/js/core/cms/controls/form/ctrlImage.js',    
         '/admin/js/core/cms/controls/form/ctrlImageList.js',
+        '/admin/js/core/cms/controls/form/ctrlMap.js',
         '/admin/js/core/cms/controls/form/ctrlNode.js',
         '/admin/js/core/cms/controls/form/ctrlNodeList.js',
         '/admin/js/core/cms/controls/form/ctrlNumeric.js',
         '/admin/js/core/cms/controls/form/ctrlPassword.js',
         '/admin/js/core/cms/controls/form/ctrlSelect.js',
         '/admin/js/core/cms/controls/form/ctrlSelectList.js',
+        '/admin/js/core/cms/controls/form/ctrlTags.js',
         '/admin/js/core/cms/controls/form/ctrlText.js',
         '/admin/js/core/cms/controls/form/ctrlTextArea.js',
-        '/admin/js/core/cms/controls/form/ctrlMap.js',
 
         '/admin/js/core/cms/controls/list/ctrlGrid.js',
         '/admin/js/core/cms/controls/list/ctrlTree.js',

@@ -11,7 +11,7 @@
                 <span ng-show="!ngDisabled && !valid && coordinates.latitude === ''" class="glyphicon glyphicon-remove form-control-feedback"></span>
             </div>
         </div>
-        <div class="map-container">
+        <div class="map-container" ng-class="{ 'map-disabled': ngDisabled }">
             <div id="map{{id}}" class="form-map" ng-style="{ 'height': height }"></div>
         </div>
     </div>
