@@ -17,23 +17,24 @@
                 
                 scope.model = [];
 
-                var incomingChange = false;
+                var initiated = false;
+                var changing = false;
 
                 scope.$watch('ngModel', function (newValue) {                    
                     if (!_.isEqual(scope.model, _.map(newValue, function (x) { return { text: x }; }))) {
-                        incomingChange = true;
+                        changing = true;
                         scope.model = _.map(newValue, function (x) { return { text: x }; });
                         setTimeout(function () {
-                            incomingChange = false;
-                        }, 50);
+                            changing = false;
+                        }, 300);
                     }
                 }, true);
 
-                scope.$watch('model', function (newValue) {                    
-                    if (!_.isEqual(scope.ngModel, _.map(newValue, function (x) { return x.text; }))) {
+                scope.$watch('model', function (newValue) {
+                    if (initiated && !_.isEqual(scope.ngModel, _.map(newValue, function (x) { return x.text; }))) {
                         scope.ngModel = _.map(newValue, function (x) { return x.text; });
 
-                        if (!incomingChange) {
+                        if (!changing) {
                             scope.changed();
                             self.validate();
                         }
@@ -41,6 +42,10 @@
                 }, true);
 
                 this.init().then(function () {
+                    setTimeout(function () {
+                        initiated = true;
+                    }, 100);
+
                     if (scope.ngAutoFocus === true) {
                         setTimeout(function () {
                             element.find('tags input').focus();
