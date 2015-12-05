@@ -71,6 +71,7 @@
                     scope.changed();
                 };
 
+                var currentModel = null;
                 scope.sortableOptions = {
                     axis: 'v',
 
@@ -78,11 +79,16 @@
                     cancel: '',
                     containment: "parent",
 
+                    start: function () {
+                        currentModel = _.clone(scope.ngModel);
+                    },
                     stop: function (e, ui) {
-                        scope.ngModel = scope.ngModel.map(function (x) {
-                            return x;
-                        });
-                        scope.changed();
+                        if (!_.isEqual(scope.ngModel, currentModel)) {
+                            scope.ngModel = scope.ngModel.map(function (x) {
+                                return x;
+                            });
+                            scope.changed();
+                        }
                     }
                 };
 

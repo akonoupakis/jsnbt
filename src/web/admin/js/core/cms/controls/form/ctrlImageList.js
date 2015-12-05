@@ -157,8 +157,10 @@
                         }
                     });
 
-                    scope.ngModel = newValue;
-                    scope.changed();
+                    if (!_.isEqual(newValue, scope.ngModel)) {
+                        scope.ngModel = newValue;
+                        scope.changed();
+                    }
                 };
 
                 scope.sortableOptions = {

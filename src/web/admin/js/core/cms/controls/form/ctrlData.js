@@ -7,7 +7,7 @@
     angular.module('jsnbt')
         .directive('ctrlData', ['$rootScope', '$timeout', '$data', '$jsnbt', '$q', 'ModalService', 'CONTROL_EVENTS', function ($rootScope, $timeout, $data, $jsnbt, $q, ModalService, CONTROL_EVENTS) {
 
-            var DataControl = function (scope, element, attrs) {
+            var DataControl = function (scope, element, attrs, ctrl, transclude) {
                 jsnbt.controls.FormControlBase.apply(this, $rootScope.getBaseArguments(scope, element, attrs));
 
                 var self = this;
@@ -15,7 +15,7 @@
                 element.addClass('ctrl');
                 element.addClass('ctrl-data');
 
-                scope.value = '';
+                scope.value = {};
                 scope.wrong = false;
                 scope.missing = false;
                 
@@ -28,7 +28,7 @@
                                     list: scope.ngListId,
                                     id: newValue
                                 }).then(function (response) {
-                                    scope.value = response.title[scope.ngLanguage];
+                                    scope.value = response;
                                     scope.wrong = false;
                                     scope.missing = false;
 
@@ -43,7 +43,7 @@
                             }
                         }
                         else {
-                            scope.value = '';
+                            scope.value = {};
                             scope.wrong = true;
                             scope.missing = false;
 
@@ -51,7 +51,7 @@
                         }
                     }
                     else {
-                        scope.value = '';
+                        scope.value = {};
                         scope.wrong = false;
                         scope.missing = false;
 
@@ -82,6 +82,15 @@
                     scope.ngModel = '';
                     scope.changed();
                 };
+
+                var childScope = $rootScope.$new();
+                this.copy(scope, 'value', childScope, 'row');
+                this.copy(scope, 'ngLanguage', childScope, 'language');
+
+                transclude(childScope, function (clone, innerScope) {
+                    element.find('.transcluded').empty();
+                    element.find('.transcluded').append(clone);
+                });
 
                 this.init();
             };
@@ -120,13 +129,14 @@
             return {
                 restrict: 'E',
                 replace: true,
+                transclude: true,
                 scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
                     ngLanguage: '=',
                     ngDomain: '=',
                     ngListId: '='
                 }),
-                link: function (scope, element, attrs) {
-                    return new DataControl(scope, element, attrs);
+                link: function (scope, element, attrs, ctrl, transclude) {
+                    return new DataControl(scope, element, attrs, ctrl, transclude);
                 },
                 templateUrl: 'tmpl/core/controls/form/ctrlData.html'
             };

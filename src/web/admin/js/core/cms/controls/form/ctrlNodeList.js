@@ -51,20 +51,14 @@
                                 $(newValue).each(function (nv, nValue) {
                                     var result = _.first(_.filter(results, function (x) { return x.id === nValue; }));
                                     if (result) {
-                                        scopeValues.push({
-                                            id: result.id,
-                                            name: result.title[scope.ngLanguage]
-                                        });
-
+                                        scopeValues.push(result);
                                         scope.wrong[nv] = false;
                                         scope.missing[nv] = false;
                                     }
                                     else {
                                         scopeValues.push({
-                                            id: nValue,
-                                            name: nValue
+                                            id: nValue
                                         });
-
                                         scope.wrong[nv] = true;
 
                                         if (!invalids[nv])
@@ -336,10 +330,14 @@
                             return x.id;
                         });
 
-                        scope.ngModel = nodeIds;
-                        scope.changed();
+                        if (!_.isEqual(nodeIds, scope.ngModel)) {
+                            scope.ngModel = nodeIds;
+                            scope.changed();
+                        }
                     }
                 };
+
+                this.copy(scope, 'ngLanguage', scope, 'language');
 
                 this.init();
             };
@@ -403,6 +401,7 @@
             return {
                 restrict: 'E',
                 replace: true,
+                transclude: true,
                 scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
                     ngLanguage: '=',
                     ngDomain: '=',

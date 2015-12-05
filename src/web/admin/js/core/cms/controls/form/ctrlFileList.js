@@ -129,8 +129,10 @@
                             return x;
                         });
 
-                        scope.ngModel = files;
-                        scope.changed();
+                        if (!_.isEqual(files, scope.ngModel)) {
+                            scope.ngModel = files;
+                            scope.changed();
+                        }
                     }
                 };
 

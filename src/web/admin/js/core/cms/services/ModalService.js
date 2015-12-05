@@ -206,7 +206,6 @@
                     opts(optionMethods);
 
                 var options = optionMethods.get();
-
                 openModal(options).then(function (result) {
                     deferred.resolve(result);
                 }).catch(function (ex) {

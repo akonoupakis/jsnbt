@@ -96,10 +96,7 @@ module.exports = function(scope) {
         getKeys: function (key, cb) { 
             
             var obj = getCacheObject(key);
-
-            console.log('getting keys');
             var keys = _.keys(obj);
-            console.log('got keys', keys);
 
             if (typeof (cb) === 'function')
                 cb(keys);

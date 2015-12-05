@@ -42,6 +42,13 @@
 
                 ControlBase.prototype.properties = {};
 
+                ControlBase.prototype.copy = function (sourceScope, sourceKey, targetScope, targetKey) {
+                    sourceScope.$watch(sourceKey, function (newValue) {
+                        if (!_.isEqual(targetScope[targetKey], newValue))
+                            targetScope[targetKey] = newValue;
+                    }, true);
+                };
+
                 return ControlBase;
 
             })(controls.ControlBase || {});

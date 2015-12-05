@@ -7,15 +7,15 @@
     angular.module('jsnbt')
         .directive('ctrlNode', ['$rootScope', '$timeout', '$data', '$jsnbt', '$q', 'ModalService', 'CONTROL_EVENTS', function ($rootScope, $timeout, $data, $jsnbt, $q, ModalService, CONTROL_EVENTS) {
 
-            var NodeControl = function (scope, element, attrs) {
+            var NodeControl = function (scope, element, attrs, ctrl, transclude) {
                 jsnbt.controls.FormControlBase.apply(this, $rootScope.getBaseArguments(scope, element, attrs));
-                
+
                 var self = this;
-                
+
                 element.addClass('ctrl');
                 element.addClass('ctrl-node');
-                
-                scope.value = '';
+
+                scope.value = {};
 
                 scope.wrong = false;
                 scope.missing = false;
@@ -28,7 +28,7 @@
                                     id: newValue,
                                     domain: scope.ngDomain
                                 }).then(function (response) {
-                                    scope.value = response.title[scope.ngLanguage];
+                                    scope.value = response;
                                     scope.wrong = false;
                                     scope.missing = false;
 
@@ -42,7 +42,7 @@
                                 });
                             }
                             else {
-                                scope.value = '';
+                                scope.value = {};
                                 scope.wrong = false;
                                 scope.missing = false;
 
@@ -50,7 +50,7 @@
                             }
                         }
                         else {
-                            scope.value = '';
+                            scope.value = {};
                             scope.wrong = true;
                             scope.missing = false;
 
@@ -58,7 +58,7 @@
                         }
                     }
                     else {
-                        scope.value = '';
+                        scope.value = {};
                         scope.wrong = false;
                         scope.missing = false;
 
@@ -98,7 +98,7 @@
                         var opts = $.extend({
                             entities: [entity]
                         }, scope.ngOptions);
-                                                
+
                         ModalService.select(function (x) {
                             x.title('select a content node');
                             x.controller('NodeSelectorController');
@@ -130,7 +130,7 @@
 
                     if (_.isArray(scope.ngEntities) && scope.ngEntities.length > 0) {
                         if (scope.ngEntities.length === 1) {
-                            
+
                             var entity = _.first(scope.ngEntities);
                             entityLookup(entity).then(function (selectedNodeId) {
                                 scope.ngModel = selectedNodeId || '';
@@ -156,6 +156,15 @@
                     scope.ngModel = '';
                     scope.changed();
                 };
+
+                var childScope = $rootScope.$new();
+                this.copy(scope, 'value', childScope, 'row');
+                this.copy(scope, 'ngLanguage', childScope, 'language');
+
+                transclude(childScope, function (clone, innerScope) {
+                    element.find('.transcluded').empty();
+                    element.find('.transcluded').append(clone);
+                });
 
                 this.init();
 
@@ -198,14 +207,15 @@
             return {
                 restrict: 'E',
                 replace: true,
+                transclude: true,
                 scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
                     ngLanguage: '=',
                     ngDomain: '=',
                     ngEntities: '=',
                     ngOptions: '='
                 }),
-                link: function (scope, element, attrs) {
-                    return new NodeControl(scope, element, attrs);
+                link: function (scope, element, attrs, ctrl, transclude) {
+                    return new NodeControl(scope, element, attrs, ctrl, transclude);
                 },
                 templateUrl: 'tmpl/core/controls/form/ctrlNode.html'
             };

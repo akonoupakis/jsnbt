@@ -155,8 +155,10 @@
                             return x.id;
                         });
 
-                        scope.ngModel = nodeIds;
-                        scope.changed();
+                        if (!_.isEqual(nodeIds, scope.ngModel)) {
+                            scope.ngModel = nodeIds;
+                            scope.changed();
+                        }
                     }
                 };
 

@@ -152,6 +152,7 @@ module.exports = [{
         '/admin/js/core/cms/utils/date.js',
         '/admin/js/core/cms/utils/errSrc.js',
         '/admin/js/core/cms/utils/lkRepeat.js',
+        '/admin/js/core/cms/utils/ngModelTransclude.js',
 
         '/admin/js/init.js'
     ]
