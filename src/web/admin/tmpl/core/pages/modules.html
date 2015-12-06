@@ -17,13 +17,13 @@
             </ctrl-grid-footer>
             <ctrl-grid-body>
                 <ctrl-grid-column>
-                    {{ row.domain }}
+                    {{ model.domain }}
                 </ctrl-grid-column>
                 <ctrl-grid-column>
-                    {{ row.version }}
+                    {{ model.version }}
                 </ctrl-grid-column>
                 <ctrl-grid-buttons-column>
-                    <button title="open" class="btn btn-default btn-sm glyphicon glyphicon-th" ng-disabled="!fn.canOpen(row)" ng-click="fn.open(row)" />
+                    <button title="open" class="btn btn-default btn-sm glyphicon glyphicon-th" ng-disabled="!fn.canOpen(model)" ng-click="fn.open(model)" />
                 </ctrl-grid-buttons-column>
             </ctrl-grid-body>
         </ctrl-grid>

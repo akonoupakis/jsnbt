@@ -24,20 +24,20 @@
             </ctrl-grid-footer>
             <ctrl-grid-body>
                 <ctrl-grid-column>
-                    {{ row.code }}
+                    {{ model.code }}
                 </ctrl-grid-column>
                 <ctrl-grid-column>
-                    {{ row.name }}
+                    {{ model.name }}
                 </ctrl-grid-column>
                 <ctrl-grid-column>
-                    <input type="checkbox" ng-disabled="true" ng-checked="row.active" />
+                    <input type="checkbox" ng-disabled="true" ng-checked="model.active" />
                 </ctrl-grid-column>
                 <ctrl-grid-column>
-                    <input type="checkbox" ng-disabled="row.default || !row.active" ng-checked="row.default" ng-click="fn.setDefault(row)" />
+                    <input type="checkbox" ng-disabled="model.default || !model.active" ng-checked="model.default" ng-click="fn.setDefault(model)" />
                 </ctrl-grid-column>
                 <ctrl-grid-buttons-column>
-                    <button title="edit" class="btn btn-default glyphicon glyphicon-edit btn-sm" ng-disabled="!fn.canEdit(row)" ng-click="fn.edit(row)" />
-                    <button title="delete" class="btn btn-default glyphicon glyphicon-remove btn-sm" ng-disabled="row.default || !fn.canDelete(row)" ng-click="fn.delete(row)" />
+                    <button title="edit" class="btn btn-default glyphicon glyphicon-edit btn-sm" ng-disabled="!fn.canEdit(model)" ng-click="fn.edit(model)" />
+                    <button title="delete" class="btn btn-default glyphicon glyphicon-remove btn-sm" ng-disabled="model.default || !fn.canDelete(model)" ng-click="fn.delete(model)" />
                 </ctrl-grid-buttons-column>
             </ctrl-grid-body>
         </ctrl-grid>

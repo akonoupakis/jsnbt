@@ -43,7 +43,7 @@
         <div id="page-parent" data-scrollspy="parent" ng-show="entity.properties.parent">
             <div class="row">
                 <ctrl-node class="col-sm-12" ng-language="defaults.language" ng-model="node.parent" ng-domain="node.domain" ng-entities="parentOptions.entities" ng-disabled="!entity.properties.parent" ng-required="false" ng-options="parentOptions" ng-label="parent" ng-tip="leave blank for root">
-                    {{row.title[language]}}
+                    {{model.title[language]}}
                 </ctrl-node>
             </div>
 
@@ -79,7 +79,7 @@
             <div class="row">
                 <ctrl-select class="col-sm-6" ng-model="node.pointer.domain" ng-required="true" ng-disabled="node.entity !== 'pointer'" ng-label="addon" ng-default="true" ng-options="modules" ng-name-field="name" ng-value-field="domain"></ctrl-select>
                 <ctrl-node class="col-sm-5" ng-language="defaults.language" ng-model="node.pointer.nodeId" ng-domain="node.pointer.domain" ng-required="node.pointer.domain && node.entity === 'pointer'" ng-disabled="node.entity !== 'pointer'" ng-options="{ pointee: true }" ng-label="pointee">
-                    {{row.title[language]}}
+                    {{model.title[language]}}
                 </ctrl-node>
                 <div class="col-sm-1">
                     <button type="button" ng-disabled="!node.pointer.domain || !node.pointer.nodeId" class="btn" ng-click="editPointee()" style="position: relative; top: 25px">edit</button>

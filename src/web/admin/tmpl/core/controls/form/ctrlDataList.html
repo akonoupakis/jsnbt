@@ -3,13 +3,13 @@
         <label ng-show="ngLabel" class="control-label">{{ngLabel}}<small ng-show="ngTip">({{ngTip}})</small></label>
 
         <ul class="ctrl-data-list-contents sortable-group" ui-sortable="sortableOptions" ng-model="value">
-            <li ng-repeat="row in value track by $index" ng-class="{ 'has-error': !ngDisabled && !valid && invalid[$index], 'has-feedback': !ngDisabled && !valid && invalid[$index] }" class="form-control-feedback-container">
+            <li ng-repeat="model in value track by $index" ng-class="{ 'has-error': !ngDisabled && !valid && invalid[$index], 'has-feedback': !ngDisabled && !valid && invalid[$index] }" class="form-control-feedback-container">
                 <div class="input-group">
                     <span class="input-group-btn">
                         <button class="btn btn-default glyphicon glyphicon-move" type="button" ng-disabled="ngDisabled"></button>
                     </span>
                     <span class="form-control" id="node{{id}}" disabled="disabled">
-                        {{ wrong[$index] ? (missing[$index] ? '-- not found -- (' + row.id + ')' : '-- invalid value --') : '' }}
+                        {{ wrong[$index] ? (missing[$index] ? '-- not found -- (' + model.id + ')' : '-- invalid value --') : '' }}
                         <span ng-show="!wrong[$index] && !missing[$index]" class="transcluded" ng-model-transclude></span>
                     </span>
                     <span ng-show="!ngDisabled && !valid && invalid[$index]" class="glyphicon glyphicon-remove form-control-feedback"></span>

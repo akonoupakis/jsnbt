@@ -84,7 +84,7 @@
                 };
 
                 var childScope = $rootScope.$new();
-                this.copy(scope, 'value', childScope, 'row');
+                this.copy(scope, 'value', childScope, 'model');
                 this.copy(scope, 'ngLanguage', childScope, 'language');
 
                 transclude(childScope, function (clone, innerScope) {

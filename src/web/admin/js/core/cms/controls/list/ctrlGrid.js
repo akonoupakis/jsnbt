@@ -95,7 +95,7 @@
                 restrict: 'E',
                 replace: true,
                 transclude: true,
-                template: '<tbody><tr ng-class="{\'ng-selected\': row.selected}" ng-repeat="row in data.items" ng-model-transclude></tr></tbody>',
+                template: '<tbody><tr ng-class="{\'ng-selected\': model.selected}" ng-repeat="model in data.items" ng-model-transclude></tr></tbody>',
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl-grid-body');
                 }
@@ -109,7 +109,7 @@
                 restrict: 'E',
                 replace: true,
                 transclude: true,
-                template: '<td ng-click="select(row, false)" ng-dblclick="select(row, true)" ng-transclude></td>',
+                template: '<td ng-click="select(model, false)" ng-dblclick="select(model, true)" ng-transclude></td>',
                 link: function (scope, element, attrs, ctrlGrid) {
                     element.addClass('ctrl-grid-column');
 

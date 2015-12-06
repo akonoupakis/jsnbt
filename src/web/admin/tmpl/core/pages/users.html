@@ -22,16 +22,16 @@
             </ctrl-grid-footer>
             <ctrl-grid-body>
                 <ctrl-grid-column>
-                    {{ row.lastName }}
+                    {{ model.lastName }}
                 </ctrl-grid-column>
                 <ctrl-grid-column>
-                    {{ row.firstName }}
+                    {{ model.firstName }}
                 </ctrl-grid-column>
                 <ctrl-grid-column>
-                    {{ row.username }}
+                    {{ model.username }}
                 </ctrl-grid-column>
                 <ctrl-grid-buttons-column>
-                    <button title="edit" class="btn btn-default glyphicon glyphicon-edit" ng-disabled="!fn.canEdit(row)" ng-click="fn.edit(row)" />
+                    <button title="edit" class="btn btn-default glyphicon glyphicon-edit" ng-disabled="!fn.canEdit(model)" ng-click="fn.edit(model)" />
                 </ctrl-grid-buttons-column>
             </ctrl-grid-body>
         </ctrl-grid>
