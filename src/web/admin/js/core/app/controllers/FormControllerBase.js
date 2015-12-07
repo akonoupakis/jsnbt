@@ -131,13 +131,6 @@
                         $scope.published = false;
                     });
 
-                    $scope.$on(CONTROL_EVENTS.valueIsValid, function (sender, value) {
-                        sender.stopPropagation();
-
-                        if (!value)
-                            $scope.valid = false;
-                    });
-
                     $scope.scroll2error = function () {
                         setTimeout(function () {
                             var firstInvalidControl = $('.ctrl.invalid:visible:first');
@@ -203,61 +196,76 @@
                     var deferred = this.ctor.$q.defer();
 
                     var self = this;
-
+                    
                     self.setValid(true);
-                    self.scope.$broadcast(self.ctor.CONTROL_EVENTS.initiateValidation);
 
-                    var initialLanguage = self.scope.language;
+                    _.each(self.controls, function (c) {
+                        if (typeof (c.initValidation) === 'function')
+                            c.initValidation();
+                    });
+                    
+                    this.ctor.$q.all(_.map(_.filter(self.controls, function (f) { return typeof (f.isValid) === 'function'; }), function (x) { return x.isValid(); })).then(function (result) {
+                        
+                        self.setValid(_.all(result, function (x) { return x === true; }));
+                        
+                        var initialLanguage = self.scope.language;
 
-                    if (self.isValid()) {
-                        if (self.scope.localized) {
-                            var checkLanguage = function (lang, next) {
-                                self.scope.language = lang.code;
+                        if (self.isValid()) {
+                            if (self.scope.localized) {
+                                var checkLanguage = function (lang, next) {
+                                    self.scope.language = lang.code;
 
-                                self.ctor.$timeout(function () {
-                                    self.scope.$broadcast(self.ctor.CONTROL_EVENTS.initiateValidation);
+                                    self.ctor.$timeout(function () {
 
-                                    if (!self.scope.valid) {
-                                        deferred.resolve(false);
-                                    }
-                                    else {
-                                        next();
-                                    }
-                                }, 50);
-                            };
+                                        self.ctor.$q.all(_.map(_.filter(self.controls, function (f) { return typeof (f.isValid) === 'function'; }), function (x) { return x.isValid(); })).then(function (langResult) {
+                                            self.setValid(_.all(langResult, function (x) { return x === true; }));
 
-                            var currentLanguage = self.scope.language;
-                            var restLanguages = _.filter(self.scope.languages, function (x) { return x.code !== currentLanguage; });
-                            if (restLanguages.length > 0) {
-                                var nextIndex = 0;
-                                var next = function () {
-                                    nextIndex++;
+                                            if (!self.scope.valid) {
+                                                deferred.resolve(false);
+                                            }
+                                            else {
+                                                next();
+                                            }
 
-                                    var lang = restLanguages[nextIndex];
-                                    if (lang) {
-                                        checkLanguage(lang, next);
-                                    }
-                                    else {
-                                        self.scope.language = initialLanguage;
-                                        deferred.resolve(true);
-                                    }
+                                        });
+                                        
+                                    }, 50);
                                 };
 
-                                var first = _.first(restLanguages);
-                                checkLanguage(first, next);
+                                var currentLanguage = self.scope.language;
+                                var restLanguages = _.filter(self.scope.languages, function (x) { return x.code !== currentLanguage; });
+                                if (restLanguages.length > 0) {
+                                    var nextIndex = 0;
+                                    var next = function () {
+                                        nextIndex++;
+
+                                        var lang = restLanguages[nextIndex];
+                                        if (lang) {
+                                            checkLanguage(lang, next);
+                                        }
+                                        else {
+                                            self.scope.language = initialLanguage;
+                                            deferred.resolve(true);
+                                        }
+                                    };
+
+                                    var first = _.first(restLanguages);
+                                    checkLanguage(first, next);
+                                }
+                                else {
+                                    self.scope.language = initialLanguage;
+                                    deferred.resolve(true);
+                                }
                             }
                             else {
-                                self.scope.language = initialLanguage;
                                 deferred.resolve(true);
                             }
                         }
                         else {
-                            deferred.resolve(true);
+                            deferred.resolve(false);
                         }
-                    }
-                    else {
-                        deferred.resolve(false);
-                    }
+
+                    });
 
                     return deferred.promise;
                 };
@@ -274,7 +282,11 @@
                                     self.set(response).then(function (setted) {
                                         self.run('set', [response]).then(function () {
                                             self.setValid(true);
-                                            self.scope.$broadcast(self.ctor.CONTROL_EVENTS.clearValidation);
+
+                                            _.each(self.controls, function (c) {
+                                                if (typeof (c.clearValidation) === 'function')
+                                                    c.clearValidation();
+                                            })
 
                                             self.setSpy(200);
 

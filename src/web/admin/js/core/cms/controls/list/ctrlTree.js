@@ -62,7 +62,9 @@
              template: '<ol class="dd-list" ng-class="{ \'dd-list-root\': root, \'dd-selectable\': root && ngSelectable }"></ol>',
              compile: function (elem, attrs, transclude) {
                  return function (scope, lElem, lAttrs) {
-                     return new TreeControl(scope, lElem, lAttrs, transclude);
+                     var control = new TreeControl(scope, lElem, lAttrs, transclude);
+                     $rootScope.controller.register(control);
+                     return control;
                  }
              }
          };

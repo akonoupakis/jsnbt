@@ -15,6 +15,8 @@
 
                     this.scope = $scope;
 
+                    this.controls = [];
+
                     this.ctor = {
                         $rootScope: $rootScope,
                         $route: $route,
@@ -74,6 +76,10 @@
                     
                 };
 
+                ControllerBase.prototype.register = function (control) {
+                    this.controls.push(control);
+                };
+
                 ControllerBase.prototype.enqueue = function (queue, key, fn) {
 
                     if (!this.queue[queue])
@@ -83,23 +89,12 @@
                         key: key,
                         fn: fn
                     });
-
-
-                    //if (!this.queue[key])
-                    //    this.queue[key] = [];
-
-                    //this.queue[key].push(fn);
                 };
 
                 ControllerBase.prototype.dequeue = function (queue, key) {
                     if (this.queue[queue]) {
                         this.queue[queue] = _.filter(this.queue[queue], function (x) { return x.key !== key });
                     }
-
-                    //if (!this.queue[key])
-                    //    this.queue[key] = [];
-
-                    //this.queue[key].push(fn);
                 };
 
                 ControllerBase.prototype.getBreadcrumb = function () {
@@ -148,6 +143,8 @@
                     var self = this;
 
                     var proceed = function () {
+
+                        self.ctor.$rootScope.controller = self;
 
                         self.scope.languages = _.map(self.scope.application.languages, function (x) {
                             x.image = 'img/core/flags/' + x.code + '.png';

@@ -59,7 +59,9 @@
                 scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
                 }),
                 link: function (scope, element, attrs) {
-                    return new CheckControl(scope, element, attrs);
+                    var control = new CheckControl(scope, element, attrs);
+                    $rootScope.controller.register(control);
+                    return control;
                 },
                 templateUrl: 'tmpl/core/controls/form/ctrlCheck.html'
             };

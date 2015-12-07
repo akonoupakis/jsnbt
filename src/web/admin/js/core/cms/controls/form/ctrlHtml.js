@@ -89,6 +89,7 @@
 
                     }
 
+                    self.scope.valid = valid;
                     deferred.resolve(valid);
                 });
 
@@ -104,7 +105,9 @@
                     ngMaxHeight: '='
                 }),
                 link: function (scope, element, attrs) {
-                    return new HtmlControl(scope, element, attrs);
+                    var control = new HtmlControl(scope, element, attrs);
+                    $rootScope.controller.register(control);
+                    return control;
                 },
                 templateUrl: 'tmpl/core/controls/form/ctrlHtml.html'
             };

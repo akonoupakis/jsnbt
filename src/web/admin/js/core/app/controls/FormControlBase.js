@@ -64,28 +64,6 @@
                         self.validate();
                     }, true);
 
-                    scope.$on(CONTROL_EVENTS.initiateValidation, function (sender) {
-                        if (!self.initiated) {
-                            scope.$emit(CONTROL_EVENTS.valueIsValid, false);
-                        }
-                        else {
-                            self.validated = true;
-
-                            self.validate();
-
-                            scope.$emit(CONTROL_EVENTS.valueIsValid, scope.valid);
-                        }
-                    });
-
-                    scope.$on(CONTROL_EVENTS.validate, function (sender) {
-                        self.validate();
-
-                        scope.$emit(CONTROL_EVENTS.valueIsValid, scope.valid);
-                    });
-
-                    scope.$on(CONTROL_EVENTS.clearValidation, function (sender) {
-                        self.clear();
-                    });
                 };
                 FormControlBase.prototype = Object.create(controls.ControlBase.prototype);
                 
@@ -137,6 +115,7 @@
 
                     var valid = true;
 
+                    this.scope.valid = valid;
                     deferred.resolve(valid);
 
                     return deferred.promise;
@@ -144,6 +123,10 @@
 
                 FormControlBase.prototype.setValid = function (value) {
                     this.scope.valid = value;
+                };
+
+                FormControlBase.prototype.initValidation = function () {
+                    this.validated = true;
                 };
 
                 FormControlBase.prototype.validate = function () {
@@ -174,7 +157,7 @@
                     }
                 };
 
-                FormControlBase.prototype.clear = function () {
+                FormControlBase.prototype.clearValidation = function () {
                     this.validated = false;
                     this.setValid(true);
                 };

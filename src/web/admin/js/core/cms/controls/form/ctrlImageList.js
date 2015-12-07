@@ -249,6 +249,7 @@
 
                     }
 
+                    self.scope.valid = valid;
                     deferred.resolve(valid);
                 });
 
@@ -265,7 +266,9 @@
                     ngWidth: '='
                 }),
                 link: function (scope, element, attrs) {
-                    return new ImageListControl(scope, element, attrs);
+                    var control = new ImageListControl(scope, element, attrs);
+                    $rootScope.controller.register(control);
+                    return control;
                 },
                 templateUrl: 'tmpl/core/controls/form/ctrlImageList.html'
             };

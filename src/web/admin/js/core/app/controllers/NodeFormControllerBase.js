@@ -1153,33 +1153,41 @@
                     self.setValid(true);
                     self.scope.validation.seo = true;
 
-                    self.scope.$broadcast(self.ctor.CONTROL_EVENTS.initiateValidation);
+                    _.each(self.controls, function (c) {
+                        if (typeof (c.initValidation) === 'function')
+                            c.initValidation();
+                    })
+                    
+                    this.ctor.$q.all(_.map(_.filter(self.controls, function (f) { return typeof (f.isValid) === 'function'; }), function (x) { return x.isValid(); })).then(function (result) {
 
-                    if (!self.scope.valid) {
-                        deferred.resolve(false);
-                    }
-                    else {
+                        self.setValid(_.all(result, function (x) { return x === true; }));
 
-                        checkExtras(self.scope.language).then(function (validationResults) {
+                        if (!self.isValid()) {
+                            deferred.resolve(false);
+                        }
+                        else {
 
-                            if (!validationResults) {
-                                deferred.resolve(false);
-                            }
-                            else {
+                            checkExtras(self.scope.language).then(function (validationResults) {
 
-                                jsnbt.controllers.FormControllerBase.prototype.validate.apply(self, arguments).then(function (valResults) {
-                                    deferred.resolve(valResults);
-                                }).catch(function (valError) {
-                                    deferred.reject(valError);
-                                });
+                                if (!validationResults) {
+                                    deferred.resolve(false);
+                                }
+                                else {
 
-                            }
+                                    jsnbt.controllers.FormControllerBase.prototype.validate.apply(self, arguments).then(function (valResults) {
+                                        deferred.resolve(valResults);
+                                    }).catch(function (valError) {
+                                        deferred.reject(valError);
+                                    });
 
-                        }, function (validationError) {
-                            deferred.reject(validationError);
-                        });
+                                }
 
-                    }
+                            }, function (validationError) {
+                                deferred.reject(validationError);
+                            });
+
+                        }
+                    });
 
                     return deferred.promise;
                 };

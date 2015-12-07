@@ -135,6 +135,7 @@
 
                     }
 
+                    self.scope.valid = valid;
                     deferred.resolve(valid);
                 });
 
@@ -151,7 +152,9 @@
                     ngWidth: '='
                 }),
                 link: function (scope, element, attrs) {
-                    return new ImageControl(scope, element, attrs);
+                    var control = new ImageControl(scope, element, attrs);
+                    $rootScope.controller.register(control);
+                    return control;
                 },
                 templateUrl: 'tmpl/core/controls/form/ctrlImage.html'
             };

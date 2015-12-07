@@ -39,6 +39,7 @@
 
                     }
 
+                    self.scope.valid = valid;
                     deferred.resolve(valid);
                 });
 
@@ -52,7 +53,9 @@
                     ngAutoFocus: '='
                 }),
                 link: function (scope, element, attrs) {
-                    return new PasswordControl(scope, element, attrs);
+                    var control = new PasswordControl(scope, element, attrs);
+                    $rootScope.controller.register(control);
+                    return control;
                 },
                 templateUrl: 'tmpl/core/controls/form/ctrlPassword.html'
             };

@@ -152,6 +152,7 @@
                         }
                     }
 
+                    self.scope.valid = valid;
                     deferred.resolve(valid);
                 });
 
@@ -165,7 +166,9 @@
                     ngHeight: '='
                 }),
                 link: function (scope, element, attrs) {
-                    return new MapControl(scope, element, attrs);
+                    var control = new MapControl(scope, element, attrs);
+                    $rootScope.controller.register(control);
+                    return control;
                 },
                 templateUrl: 'tmpl/core/controls/form/ctrlMap.html'
             };

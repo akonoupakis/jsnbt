@@ -120,6 +120,7 @@
                         }
                     }
 
+                    self.scope.valid = valid;
                     deferred.resolve(valid);
                 });
 
@@ -136,7 +137,9 @@
                     ngListId: '='
                 }),
                 link: function (scope, element, attrs, ctrl, transclude) {
-                    return new DataControl(scope, element, attrs, ctrl, transclude);
+                    var control = new DataControl(scope, element, attrs, ctrl, transclude);
+                    $rootScope.controller.register(control);
+                    return control;
                 },
                 templateUrl: 'tmpl/core/controls/form/ctrlData.html'
             };

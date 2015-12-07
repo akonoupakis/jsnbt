@@ -198,6 +198,7 @@
                         }
                     }
 
+                    self.scope.valid = valid;
                     deferred.resolve(valid);
                 });
 
@@ -215,7 +216,9 @@
                     ngOptions: '='
                 }),
                 link: function (scope, element, attrs, ctrl, transclude) {
-                    return new NodeControl(scope, element, attrs, ctrl, transclude);
+                    var control = new NodeControl(scope, element, attrs, ctrl, transclude);
+                    $rootScope.controller.register(control);
+                    return control;
                 },
                 templateUrl: 'tmpl/core/controls/form/ctrlNode.html'
             };

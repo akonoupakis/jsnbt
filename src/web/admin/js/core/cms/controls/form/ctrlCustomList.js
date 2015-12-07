@@ -93,6 +93,7 @@
                         }
                     }
 
+                    self.scope.valid = valid;
                     deferred.resolve(valid);
                 });
 
@@ -107,7 +108,9 @@
                     ngScope: '='
                 }),
                 link: function (scope, element, attrs) {
-                    return new CustomListControl(scope, element, attrs);
+                    var control = new CustomListControl(scope, element, attrs);
+                    $rootScope.controller.register(control);
+                    return control;
                 },
                 templateUrl: 'tmpl/core/controls/form/ctrlCustomList.html'
             };

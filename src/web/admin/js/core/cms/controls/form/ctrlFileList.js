@@ -192,6 +192,7 @@
 
                     }
 
+                    self.scope.valid = valid;
                     deferred.resolve(valid);
                 });
 
@@ -206,7 +207,9 @@
                     ngExtensions: '='
                 }),
                 link: function (scope, element, attrs) {
-                    return new FileListControl(scope, element, attrs);
+                    var control = new FileListControl(scope, element, attrs);
+                    $rootScope.controller.register(control);
+                    return control;
                 },
                 templateUrl: 'tmpl/core/controls/form/ctrlFileList.html'
             };

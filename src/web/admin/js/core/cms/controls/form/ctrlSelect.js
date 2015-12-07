@@ -51,6 +51,7 @@
 
                     }
 
+                    self.scope.valid = valid;
                     deferred.resolve(valid);
                 });
 
@@ -68,7 +69,9 @@
                     ngAutoFocus: '='
                 }),
                 link: function (scope, element, attrs) {
-                    return new SelectControl(scope, element, attrs);
+                    var control = new SelectControl(scope, element, attrs);
+                    $rootScope.controller.register(control);
+                    return control;
                 },
                 templateUrl: 'tmpl/core/controls/form/ctrlSelect.html'
             };

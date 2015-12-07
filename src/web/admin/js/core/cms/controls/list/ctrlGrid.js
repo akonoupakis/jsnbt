@@ -47,7 +47,9 @@
                     });
                 },
                 link: function (scope, element, attrs) {
-                    return new GridControl(scope, element, attrs);
+                    var control = new GridControl(scope, element, attrs);
+                    $rootScope.controller.register(control);
+                    return control;
                 },
                 template: '<table class="table table-condensed" ng-class="{\'ctrl-grid-loading\': loading}" ng-transclude></table>'
             };

@@ -56,7 +56,9 @@
                     ngScope: '='
                 }),
                 link: function (scope, element, attrs) {
-                    return new CustomControl(scope, element, attrs);
+                    var control = new CustomControl(scope, element, attrs);
+                    $rootScope.controller.register(control);
+                    return control;
                 },
                 templateUrl: 'tmpl/core/controls/form/ctrlCustom.html'
             };

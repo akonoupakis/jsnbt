@@ -42,6 +42,7 @@
                         }
                     }
 
+                    self.scope.valid = valid;
                     deferred.resolve(valid);
                 });
                 
@@ -57,7 +58,9 @@
                     ngMaxLength: '='
                 }),
                 link: function (scope, element, attrs) {
-                    return new TextControl(scope, element, attrs);
+                    var control = new TextControl(scope, element, attrs);
+                    $rootScope.controller.register(control);
+                    return control;
                 },
                 templateUrl: 'tmpl/core/controls/form/ctrlText.html'
             };

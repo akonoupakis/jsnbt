@@ -214,6 +214,7 @@
                         }
                     }
 
+                    self.scope.valid = valid;
                     deferred.resolve(valid);
                 });
 
@@ -226,7 +227,9 @@
                 scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
                 }),
                 link: function (scope, element, attrs) {
-                    return new ContainerListControl(scope, element, attrs);
+                    var control = new ContainerListControl(scope, element, attrs);
+                    $rootScope.controller.register(control);
+                    return control;
                 },
                 templateUrl: 'tmpl/core/controls/form/ctrlContainerList.html'
             };
