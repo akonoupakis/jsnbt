@@ -21,6 +21,8 @@
                     this.id = $routeParams.id;
                     $scope.id = $routeParams.id;
 
+                    $scope.found = undefined;
+
                     this.new = $scope.id === 'new' || _.str.startsWith($scope.id, 'new-');
                     $scope.model = undefined;
 
@@ -341,6 +343,7 @@
                                 self.run('preloaded').then(function () {
                                     self.run('loading').then(function () {
                                         self.load().then(function (response) {
+                                            self.scope.found = true;
                                             self.run('loaded', [response]).then(function () {
                                                 self.run('setting', [response]).then(function () {
                                                     self.set(response).then(function (setted) {
@@ -372,7 +375,14 @@
                                                 deferred.reject(loadedError);
                                             });
                                         }).catch(function (loadError) {
-                                            deferred.reject(loadError);
+                                            var parsedLoadError = _.isString(loadError) ? JSON.parse(loadError) : loadError;
+                                            if (_.isObject(parsedLoadError) && parsedLoadError.statusCode === 404) {
+                                                self.scope.found = false;
+                                                deferred.resolve();
+                                            }
+                                            else {
+                                                deferred.reject(loadError);
+                                            }
                                         });
                                     }).catch(function (loadingError) {
                                         deferred.reject(loadingError);

@@ -1,4 +1,4 @@
-﻿<div class="container-fluid affix-area form-buttons-container">
+﻿<div ng-show="found === true" class="container-fluid affix-area form-buttons-container">
     <div class="container">
         <div class="row ">
             <div class="col-md-10">
@@ -16,7 +16,7 @@
     </div>
 </div>
 
-<div class="container">
+<div ng-show="found === true" class="container">
 
     <section class="col-md-10 scrollspy-container" data-scrollspy>
 
@@ -32,3 +32,4 @@
 
 </div>
 
+<div ng-if="found === false" class="container error-page" ng-include="'tmpl/core/common/404.html'"></div>
