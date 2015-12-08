@@ -1,8 +1,8 @@
 ﻿<div class="node-select">
-    <ctrl-tree ng-model="nodes" ng-selectable="true" ng-domain="domain" ng-select-mode="mode" ng-select-pointee="options.pointee" ng-language="defaults.language">
+    <ctrl-tree ng-model="model" ng-selectable="true" ng-domain="domain" ng-select-mode="mode" ng-select-pointee="options.pointee" ng-language="defaults.language">
         <ctrl-tree-node>
             <ctrl-tree-node-content>{{ model.title[language] }}</ctrl-tree-node-content>
         </ctrl-tree-node>
     </ctrl-tree>
-    <ctrl-tree-empty ng-model="nodes" ng-domain="domain">no nodes</ctrl-tree-empty>
+    <ctrl-tree-empty ng-model="model" ng-domain="domain">no nodes</ctrl-tree-empty>
 </div>

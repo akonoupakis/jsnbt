@@ -19,8 +19,7 @@
                     $scope.localization = true;
 
                     $scope.list = undefined;
-                    $scope.item = undefined;
-
+                    
                     this.enqueue('preloading', '', function () {
                         var deferred = $q.defer();
 
@@ -58,7 +57,7 @@
                 };
 
                 DataFormControllerBase.prototype.get = function () {
-                    return this.scope.item;
+                    return this.scope.model;
                 };
 
                 DataFormControllerBase.prototype.set = function (data) {
@@ -67,7 +66,7 @@
                     if (this.isNew()) {
                         this.setTitle('');
 
-                        this.scope.item = this.ctor.$data.create('data', {
+                        this.scope.model = this.ctor.$data.create('data', {
                             domain: this.scope.domain,
                             list: this.scope.list.id
                         })
@@ -75,17 +74,17 @@
                         this.setValid(true);
                         this.setPublished(false);
 
-                        deferred.resolve(this.scope.item);
+                        deferred.resolve(this.scope.model);
                     }
                     else {
                         if (data) {
                             this.setTitle(data.title[this.scope.defaults.language]);
-                            this.scope.item = data;
+                            this.scope.model = data;
 
                             this.setValid(true);
                             this.setPublished(true);
 
-                            deferred.resolve(this.scope.item);
+                            deferred.resolve(this.scope.model);
                         }
                         else {
                             deferred.reject(new Error('data is not defined for setting into scope'));
@@ -118,14 +117,14 @@
                     var deferred = this.ctor.$q.defer();
 
                     if (this.isNew()) {
-                        this.ctor.$data.data.post(this.scope.item).then(function (result) {
+                        this.ctor.$data.data.post(this.scope.model).then(function (result) {
                             deferred.resolve(result);
                         }).catch(function (error) {
                             deferred.reject(error);
                         });
                     }
                     else {
-                        this.ctor.$data.data.put(this.scope.id, this.scope.item).then(function (result) {
+                        this.ctor.$data.data.put(this.scope.id, this.scope.model).then(function (result) {
                             deferred.resolve(result);
                         }).catch(function (error) {
                             deferred.reject(error);

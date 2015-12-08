@@ -17,7 +17,7 @@
                     $scope.localization = true;
 
                     $scope.title = undefined;
-                    $scope.data = {};
+                    $scope.model = {};
 
                     this.enqueue('watch', '', function () {
                         var deferred = $q.defer();
@@ -57,16 +57,16 @@
                 ListControllerBase.prototype.set = function (data) {
                     var deferred = this.ctor.$q.defer();
 
-                    this.scope.data = data;
+                    this.scope.model = data;
 
-                    deferred.resolve(this.scope.data);
+                    deferred.resolve(this.scope.model);
 
                     return deferred.promise;
                 };
 
                 ListControllerBase.prototype.get = function () {
                     
-                    return this.scope.data;
+                    return this.scope.model;
 
                 };
 
@@ -75,7 +75,7 @@
                 };
 
                 ListControllerBase.prototype.remove = function (item) {
-                    this.scope.data.items = _.filter(this.scope.data.items, function (x) { return x.id !== item.id; });
+                    this.scope.model.items = _.filter(this.scope.model.items, function (x) { return x.id !== item.id; });
                 };
 
                 ListControllerBase.prototype.init = function () {

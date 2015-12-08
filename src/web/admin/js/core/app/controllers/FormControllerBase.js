@@ -22,6 +22,7 @@
                     $scope.id = $routeParams.id;
 
                     this.new = $scope.id === 'new' || _.str.startsWith($scope.id, 'new-');
+                    $scope.model = undefined;
 
                     $scope.title = undefined;
 
@@ -83,25 +84,27 @@
                                         var item = self.get();
                                         self.run('publishing', [item]).then(function () {
                                             self.push(item).then(function (pushed) {
-                                                self.run('published', [pushed]).then(function () {
-                                                    if (pushed) {
-                                                        if (self.isNew()) {
-                                                            var currentUrlParts = $location.$$path.split('/');
-                                                            currentUrlParts.pop();
-                                                            var currentUrl = currentUrlParts.join('/');
-                                                            var targetUrl = currentUrl + '/' + pushed.id;
-                                                            $location.goto(targetUrl);
-                                                        }
-                                                        else {
-                                                            self.set(pushed);
-                                                        }
+                                                if (pushed) {
+                                                    if (self.isNew()) {
+                                                        var currentUrlParts = $location.$$path.split('/');
+                                                        currentUrlParts.pop();
+                                                        var currentUrl = currentUrlParts.join('/');
+                                                        var targetUrl = currentUrl + '/' + pushed.id;
+                                                        $location.goto(targetUrl);
                                                     }
                                                     else {
-                                                        logger.error(new Error('save unsuccessful'));
+                                                        self.set(pushed).then(function(){
+                                                            self.run('published', [pushed]).catch(function (publishedError) {
+                                                                logger.error(publishedError);
+                                                            });
+                                                        }).catch(function (settedError) {
+                                                            logger.error(settedError);
+                                                        });
                                                     }
-                                                }).catch(function (publishedError) {
-                                                    logger.error(publishedError);
-                                                });
+                                                }
+                                                else {
+                                                    logger.error(new Error('save unsuccessful'));
+                                                }
                                             }).catch(function (pushError) {
                                                 logger.error(pushError);
                                             });

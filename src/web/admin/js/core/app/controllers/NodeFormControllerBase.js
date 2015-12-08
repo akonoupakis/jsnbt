@@ -20,7 +20,6 @@
 
                     $scope.offset = $scope.prefix ? _.str.trim($scope.prefix || '', '/').split('/').length : 0;
 
-                    $scope.node = undefined;
                     $scope.parent = undefined;
                     $scope.nodes = [];
                     $scope.entity = $scope.entity || 'page';
@@ -80,7 +79,7 @@
                     };
 
                     $scope.editPointee = function () {
-                        $data.nodes.get($scope.node.pointer.nodeId).then(function (targetNode) {
+                        $data.nodes.get($scope.model.pointer.nodeId).then(function (targetNode) {
                             $location.next($jsnbt.entities[targetNode.entity].getEditUrl(targetNode, '/content/nodes'));
                         }, function (ex) {
                             throw ex;
@@ -329,7 +328,7 @@
                     this.enqueue('watch', '', function () {
                         var deferred = $q.defer();
 
-                        $scope.$watch('node.entity', function (newValue, prevValue) {
+                        $scope.$watch('model.entity', function (newValue, prevValue) {
                             if (newValue && newValue !== prevValue) {
                                 self.setParentEntities().then(function () {
                                     self.setTemplateForm().then(function () {
@@ -361,7 +360,7 @@
                     this.enqueue('watch', '', function () {
                         var deferred = $q.defer();
 
-                        $scope.$watch('node.template', function (newValue, prevValue) {
+                        $scope.$watch('model.template', function (newValue, prevValue) {
                             if (newValue !== prevValue) {
                                 self.setTemplateForm().then(function () {
                                     self.setSpy(200);
@@ -379,7 +378,7 @@
                     this.enqueue('watch', '', function () {
                         var deferred = $q.defer();
 
-                        $scope.$watch('node.parent', function (newValue, prevValue) {
+                        $scope.$watch('model.parent', function (newValue, prevValue) {
                             if (newValue && newValue !== prevValue) {
                                 if (newValue !== '') {
                                     var existing = _.find($scope.nodes, function (x) {
@@ -428,9 +427,9 @@
                     this.enqueue('watch', '', function () {
                         var deferred = $q.defer();
 
-                        $scope.$watch('node.pointer.domain', function (newValue, prevValue) {
+                        $scope.$watch('model.pointer.domain', function (newValue, prevValue) {
                             if (newValue !== undefined && prevValue !== undefined && newValue !== prevValue) {
-                                $scope.node.pointer.nodeId = '';
+                                $scope.model.pointer.nodeId = '';
                             }
                         });
 
@@ -442,10 +441,10 @@
                     this.enqueue('watch', '', function () {
                         var deferred = $q.defer();
 
-                        $scope.$watch('node.layouts.inherits', function (newValue, prevValue) {
+                        $scope.$watch('model.layouts.inherits', function (newValue, prevValue) {
                             if (newValue !== undefined && prevValue !== undefined) {
                                 if (newValue === true) {
-                                    self.setHierarchyNodes($scope.node).then(function () {
+                                    self.setHierarchyNodes($scope.model).then(function () {
                                         self.setSelectedLayout().catch(function (setEx) {
                                             logger.error(setEx);
                                         });
@@ -469,10 +468,10 @@
                     this.enqueue('watch', '', function () {
                         var deferred = $q.defer();
 
-                        $scope.$watch('node.secure.inherits', function (newValue, prevValue) {
+                        $scope.$watch('model.secure.inherits', function (newValue, prevValue) {
                             if (newValue !== undefined && prevValue !== undefined) {
                                 if (newValue === true) {
-                                    self.setHierarchyNodes($scope.node).then(function () {
+                                    self.setHierarchyNodes($scope.model).then(function () {
                                         self.setSelectedSSL().catch(function (setEx) {
                                             logger.error(setEx);
                                         });
@@ -496,10 +495,10 @@
                     this.enqueue('watch', '', function () {
                         var deferred = $q.defer();
 
-                        $scope.$watch('node.roles.inherits', function (newValue, prevValue) {
+                        $scope.$watch('model.roles.inherits', function (newValue, prevValue) {
                             if (newValue !== undefined && prevValue !== undefined) {
                                 if (newValue === true) {
-                                    self.setHierarchyNodes($scope.node).then(function () {
+                                    self.setHierarchyNodes($scope.model).then(function () {
                                         self.setSelectedRoles().catch(function (setEx) {
                                             logger.error(setEx);
                                         });
@@ -523,10 +522,10 @@
                     this.enqueue('watch', '', function () {
                         var deferred = $q.defer();
 
-                        $scope.$watch('node.robots.inherits', function (newValue, prevValue) {
+                        $scope.$watch('model.robots.inherits', function (newValue, prevValue) {
                             if (newValue !== undefined && prevValue !== undefined) {
                                 if (newValue === true) {
-                                    self.setHierarchyNodes($scope.node).then(function () {
+                                    self.setHierarchyNodes($scope.model).then(function () {
                                         self.setSelectedRobots().catch(function (setEx) {
                                             logger.error(setEx);
                                         });
@@ -617,12 +616,12 @@
 
                     var self = this;
 
-                    if (this.scope.node.layouts && this.scope.node.layouts.inherits) {
+                    if (this.scope.model.layouts && this.scope.model.layouts.inherits) {
                         this.scope.draftValues.layouts = this.scope.values.layouts;
 
                         var layouts = [];
 
-                        $(self.scope.node.hierarchy).each(function (i, item) {
+                        $(self.scope.model.hierarchy).each(function (i, item) {
                             var matchedNode = _.first(_.filter(self.scope.nodes, function (x) { return x.id === item; }));
                             if (matchedNode) {
                                 if (!matchedNode.layouts.inherits) {
@@ -651,12 +650,12 @@
 
                     var self = this;
 
-                    if (this.scope.node.secure && this.scope.node.secure.inherits) {
+                    if (this.scope.model.secure && this.scope.model.secure.inherits) {
                         this.scope.draftValues.secure = this.scope.values.secure;
 
                         var ssl = false;
 
-                        $(self.scope.node.hierarchy).each(function (i, item) {
+                        $(self.scope.model.hierarchy).each(function (i, item) {
                             var matchedNode = _.first(_.filter(self.scope.nodes, function (x) { return x.id === item; }));
                             if (matchedNode) {
                                 if (!matchedNode.secure.inherits) {
@@ -683,12 +682,12 @@
 
                     var self = this;
 
-                    if (this.scope.node.roles && this.scope.node.roles.inherits) {
+                    if (this.scope.model.roles && this.scope.model.roles.inherits) {
                         this.scope.draftValues.roles = this.scope.values.roles.slice(0);
 
                         var roles = [];
 
-                        $(self.scope.node.hierarchy).each(function (i, item) {
+                        $(self.scope.model.hierarchy).each(function (i, item) {
                             var matchedNode = _.first(_.filter(self.scope.nodes, function (x) { return x.id === item; }));
                             if (matchedNode) {
                                 if (!matchedNode.roles.inherits) {
@@ -717,12 +716,12 @@
 
                     var self = this;
                     
-                    if (this.scope.node.robots && this.scope.node.robots.inherits) {
+                    if (this.scope.model.robots && this.scope.model.robots.inherits) {
                         this.scope.draftValues.robots = this.scope.values.robots.slice(0);
 
                         var robots = [];
 
-                        $(self.scope.node.hierarchy).each(function (i, item) {
+                        $(self.scope.model.hierarchy).each(function (i, item) {
                             var matchedNode = _.first(_.filter(self.scope.nodes, function (x) { return x.id === item; }));
                             if (matchedNode) {
                                 if (!matchedNode.robots.inherits) {
@@ -754,7 +753,7 @@
                     for (var entityName in this.ctor.$jsnbt.entities) {
                         var entity = this.ctor.$jsnbt.entities[entityName];
                         if (_.isArray(entity.allowed)) {
-                            if (entity.allowed.indexOf(this.scope.node.entity) !== -1) {
+                            if (entity.allowed.indexOf(this.scope.model.entity) !== -1) {
                                 parentEntities.push(entity.name);
                             }
                         }
@@ -770,8 +769,8 @@
                 NodeFormControllerBase.prototype.setTemplateForm = function () {
                     var deferred = this.ctor.$q.defer();
 
-                    if (this.scope.node && this.scope.node.entity !== 'pointer') {
-                        var jtmpl = this.ctor.$jsnbt.templates[this.scope.node.template];
+                    if (this.scope.model && this.scope.model.entity !== 'pointer') {
+                        var jtmpl = this.ctor.$jsnbt.templates[this.scope.model.template];
                         if (jtmpl) {
                             this.scope.form = jtmpl.form;
                         }
@@ -793,8 +792,8 @@
 
                     var self = this;
 
-                    if (this.scope.node && this.scope.node.parent && this.scope.node.parent !== '') {
-                        this.ctor.$data.nodes.get({ id: this.scope.node.parent }).then(function (parentResult) {
+                    if (this.scope.model && this.scope.model.parent && this.scope.model.parent !== '') {
+                        this.ctor.$data.nodes.get({ id: this.scope.model.parent }).then(function (parentResult) {
                             var nodeIds = parentResult.hierarchy;
 
                             if (nodeIds.length > 0) {
@@ -1069,7 +1068,7 @@
                             if (this.scope.parent)
                                 entity = this.scope.parent.entity;
 
-                        this.scope.node = this.ctor.$data.create('nodes', {
+                        this.scope.model = this.ctor.$data.create('nodes', {
                             domain: this.scope.domain,
                             entity: entity,
                             parent: this.scope.parent ? this.scope.parent.id : '',
@@ -1081,12 +1080,12 @@
                         this.setValid(true);
                         this.setPublished(false);
 
-                        deferred.resolve(this.scope.node);
+                        deferred.resolve(this.scope.model);
                     }
                     else {
                         if (data) {
                             this.setTitle(data.title[this.scope.defaults.language]);
-                            this.scope.node = data;
+                            this.scope.model = data;
 
                             var matchedEntity = this.ctor.$jsnbt.entities[data.entity] || {};
                             this.scope.localized = this.scope.application.localization.enabled && (matchedEntity.localized === undefined || matchedEntity.localized === true);
@@ -1098,7 +1097,7 @@
                             this.setValid(true);
                             this.setPublished(true);
 
-                            deferred.resolve(this.scope.node);
+                            deferred.resolve(this.scope.model);
                         }
                         else {
                             deferred.reject(new Error('data is not defined for setting into scope'));
@@ -1109,7 +1108,7 @@
                 };
                 
                 NodeFormControllerBase.prototype.get = function () {
-                    return this.scope.node;
+                    return this.scope.model;
                 };
 
                 NodeFormControllerBase.prototype.validate = function () {
@@ -1121,14 +1120,14 @@
                     var checkExtras = function (lang) {
                         var deferredInternal = self.ctor.$q.defer();
 
-                        if (self.scope.node.active[lang]) {
+                        if (self.scope.model.active[lang]) {
                             if (self.scope.entity.properties.seo) {
-                                self.ctor.$data.nodes.get({ parent: self.scope.node.parent, domain: self.scope.node.domain, id: { $nin: [self.scope.node.id] } }).then(function (siblingsResponse) {
+                                self.ctor.$data.nodes.get({ parent: self.scope.model.parent, domain: self.scope.model.domain, id: { $nin: [self.scope.model.id] } }).then(function (siblingsResponse) {
                                     self.scope.siblings = siblingsResponse;
 
                                     var siblingSeoNames = _.pluck(_.pluck(_.filter(siblingsResponse, function (x) { return x.seo[lang]; }), 'seo'), lang);
 
-                                    self.scope.validation.seo = self.scope.node.seo[lang] && siblingSeoNames.indexOf(self.scope.node.seo[lang]) === -1;
+                                    self.scope.validation.seo = self.scope.model.seo[lang] && siblingSeoNames.indexOf(self.scope.model.seo[lang]) === -1;
 
                                     if (!self.scope.validation.seo)
                                         self.scope.valid = false;

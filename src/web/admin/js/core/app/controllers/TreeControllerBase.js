@@ -14,7 +14,7 @@
 
                     $scope.localization = true;
 
-                    $scope.nodes = [];
+                    $scope.model = [];
 
                 };
                 TreeControllerBase.prototype = Object.create(controllers.ControllerBase.prototype);
@@ -48,17 +48,17 @@
                 TreeControllerBase.prototype.set = function (data) {
                     var deferred = this.ctor.$q.defer();
 
-                    this.scope.nodes = data;
+                    this.scope.model = data;
 
-                    deferred.resolve(this.scope.nodes);
+                    deferred.resolve(this.scope.model);
 
                     return deferred.promise;
                 };
 
                 TreeControllerBase.prototype.remove = function (node) {
                     if (node.parent.id === '') {
-                        this.scope.nodes[0].children = _.filter(this.scope.nodes[0].children, function (x) { return x.id !== node.id; });
-                        this.scope.nodes[0].childCount = this.scope.nodes[0].children.length;
+                        this.scope.model[0].children = _.filter(this.scope.model[0].children, function (x) { return x.id !== node.id; });
+                        this.scope.model[0].childCount = this.scope.model[0].children.length;
                     }
                     else {
                         node.parent.children = _.filter(node.parent.children, function (x) { return x.id !== node.id; });

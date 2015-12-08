@@ -10,7 +10,7 @@
 
 <div class="row">
     <div class="col-sm-12">
-        <ctrl-tree ng-model="nodes[0].children" ng-domain="domain" ng-fn="treeFn" ng-language="defaults.language">
+        <ctrl-tree ng-model="model[0].children" ng-domain="domain" ng-fn="treeFn" ng-language="defaults.language">
             <ctrl-tree-node>
                 <ctrl-tree-node-content>{{ model.title[language] }}</ctrl-tree-node-content>
                 <ctrl-tree-node-buttons>
@@ -21,6 +21,6 @@
                 </ctrl-tree-node-buttons>
             </ctrl-tree-node>
         </ctrl-tree>
-        <ctrl-tree-empty ng-model="nodes[0].children" ng-domain="domain">no nodes</ctrl-tree-empty>
+        <ctrl-tree-empty ng-model="model[0].children" ng-domain="domain">no nodes</ctrl-tree-empty>
     </div>
 </div> 
