@@ -31,7 +31,7 @@
                     };
 
                     var options = {
-                        minHeight: scope.ngHeight,
+                        minHeight: scope.ngHeight || 60,
                         maxHeight: scope.ngMaxHeight || scope.ngHeight,
                         buttons: scope.ngToolbar
                     };
@@ -39,8 +39,14 @@
                     $.extend(opts, options, {
                         changeCallback: function () {
                             if (!updating) {
-                                scope.ngModel = this.code.get();
-                                scope.changed();
+                                var editorCode = this.code.get();
+                                if (scope.ngModel === undefined)
+                                    scope.ngModel = '';
+
+                                if (!_.isEqual(editorCode, scope.ngModel)) {
+                                    scope.ngModel = this.code.get();
+                                    scope.changed();
+                                }
                             }
                         }
                     })
@@ -55,7 +61,6 @@
                     });
                     
                     scope.$watch('ngModel', function (value) {
-
                         if (value !== $editor.redactor('code.get')) {
                             updating = true;
                             $editor.redactor('code.set', (value || ''));
