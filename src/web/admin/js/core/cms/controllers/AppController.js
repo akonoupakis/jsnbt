@@ -8,6 +8,9 @@
 
         var logger = $logger.create('AppController');
        
+        this.test1 = 'test1';
+        $scope.test2 = 'test2';
+
         $scope.current.users = false;
         $scope.current.denied = false;
         $scope.current.initiated = false;

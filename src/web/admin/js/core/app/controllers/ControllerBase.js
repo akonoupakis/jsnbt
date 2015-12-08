@@ -13,6 +13,8 @@
 
                     var logger = $logger.create('ControllerBase');
 
+                    var self = this;
+
                     this.scope = $scope;
 
                     this.controls = [];
@@ -42,7 +44,7 @@
 
                     this.queue = {};
 
-                    if (_.isObject($route.current.$$route.scope))
+                    if ($route.current && _.isObject($route.current.$$route.scope))
                         for (var scopeProperty in $route.current.$$route.scope)
                             $scope[scopeProperty] = $route.current.$$route.scope[scopeProperty];
                     
@@ -73,11 +75,13 @@
                     $scope.next = function (path) {
                         $location.next(path);
                     };
-                    
-                };
 
-                ControllerBase.prototype.register = function (control) {
-                    this.controls.push(control);
+                    $scope.$on(CONTROL_EVENTS.register, function (sender, control) {
+                        sender.stopPropagation();
+
+                        self.controls.push(control);
+                    });
+                    
                 };
 
                 ControllerBase.prototype.enqueue = function (queue, key, fn) {
@@ -143,14 +147,6 @@
                     var self = this;
 
                     var proceed = function () {
-
-                        self.ctor.$rootScope.controller = self;
-
-                        self.scope.languages = _.map(self.scope.application.languages, function (x) {
-                            x.image = 'img/core/flags/' + x.code + '.png';
-                            return x;
-                        });
-
                         self.getBreadcrumb().then(function (breadcrumb) {
                             self.setBreadcrumb(breadcrumb).then(function () {
                                 deferred.resolve();
@@ -160,7 +156,14 @@
                         });
                     };
 
+                    self.scope.languages = _.map(self.scope.application.languages, function (x) {
+                        x.image = 'img/core/flags/' + x.code + '.png';
+                        return x;
+                    });
+
                     if (self.scope.$parent && self.scope.root && typeof (self.scope.$parent.init) === 'function') {
+                        self.ctor.$rootScope.controller = self;
+
                         self.scope.$parent.init().then(function () {
                             proceed();
                         }).catch(function (ex) {

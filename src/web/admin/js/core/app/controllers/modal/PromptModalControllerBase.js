@@ -24,6 +24,20 @@
                 };
                 PromptModalControllerBase.prototype = Object.create(controllers.ControllerBase.prototype);
 
+                PromptModalControllerBase.prototype.init = function () {
+                    var deferred = this.ctor.$q.defer();
+
+                    this.ctor.$rootScope.controller = this;
+
+                    controllers.ControllerBase.prototype.init.apply(this, arguments).then(function () {
+                        deferred.resolve();
+                    }).catch(function (ex) {
+                        deferred.reject(ex);
+                    });
+
+                    return deferred.promise;
+                };
+
                 return PromptModalControllerBase;
 
             })(controllers.PromptModalControllerBase || {});

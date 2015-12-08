@@ -72,6 +72,20 @@
 
                 };
 
+                TreeSelectorModalControllerBase.prototype.init = function () {
+                    var deferred = this.ctor.$q.defer();
+
+                    this.ctor.$rootScope.controller = this;
+
+                    controllers.TreeControllerBase.prototype.init.apply(this, arguments).then(function () {
+                        deferred.resolve();
+                    }).catch(function (ex) {
+                        deferred.reject(ex);
+                    });
+
+                    return deferred.promise;
+                };
+
                 return TreeSelectorModalControllerBase;
 
             })(controllers.TreeSelectorModalControllerBase || {});

@@ -1,6 +1,6 @@
 ﻿<form name="registrationForm" method="post" ng-submit="register()" class="col-md-12">
     <div class="row username">
-        <ctrl-text ng-model="username" ng-required="true" ng-valid="validEmail" ng-label="email"></ctrl-text>
+        <ctrl-text ng-model="username" ng-required="true" ng-validate="validateEmail" ng-label="email"></ctrl-text>
     </div>
     <div class="row password">
         <ctrl-password ng-model="password" ng-required="true" ng-label="password"></ctrl-password>

@@ -54,7 +54,7 @@
                 }),
                 link: function (scope, element, attrs) {
                     var control = new PasswordControl(scope, element, attrs);
-                    $rootScope.controller.register(control);
+                    scope.$emit(CONTROL_EVENTS.register, control);
                     return control;
                 },
                 templateUrl: 'tmpl/core/controls/form/ctrlPassword.html'

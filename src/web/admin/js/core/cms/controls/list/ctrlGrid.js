@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlGrid', ['$rootScope', function ($rootScope) {
+        .directive('ctrlGrid', ['$rootScope', 'CONTROL_EVENTS', function ($rootScope, CONTROL_EVENTS) {
 
             var GridControl = function (scope, element, attrs) {
                 jsnbt.controls.ListControlBase.apply(this, $rootScope.getBaseArguments(scope, element, attrs));
@@ -48,7 +48,7 @@
                 },
                 link: function (scope, element, attrs) {
                     var control = new GridControl(scope, element, attrs);
-                    $rootScope.controller.register(control);
+                    scope.$emit(CONTROL_EVENTS.register, control);
                     return control;
                 },
                 template: '<table class="table table-condensed" ng-class="{\'ctrl-grid-loading\': loading}" ng-transclude></table>'

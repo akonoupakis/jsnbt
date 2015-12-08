@@ -217,7 +217,7 @@
                 }),
                 link: function (scope, element, attrs, ctrl, transclude) {
                     var control = new NodeControl(scope, element, attrs, ctrl, transclude);
-                    $rootScope.controller.register(control);
+                    scope.$emit(CONTROL_EVENTS.register, control);
                     return control;
                 },
                 templateUrl: 'tmpl/core/controls/form/ctrlNode.html'

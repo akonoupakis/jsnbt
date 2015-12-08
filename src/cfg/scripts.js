@@ -68,6 +68,9 @@ module.exports = [{
         '/admin/js/core/cms/constants/ROUTE_EVENTS.js',
 
         '/admin/js/core/cms/controllers/AppController.js',
+        '/admin/js/core/cms/controllers/LoginController.js',
+        '/admin/js/core/cms/controllers/RegistrationController.js',
+        '/admin/js/core/cms/controllers/DeniedController.js',
         '/admin/js/core/cms/controllers/DashboardController.js',
         '/admin/js/core/cms/controllers/ContentController.js',
         '/admin/js/core/cms/controllers/LanguagesController.js',

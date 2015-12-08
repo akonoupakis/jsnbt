@@ -57,7 +57,7 @@
                 }),
                 link: function (scope, element, attrs) {
                     var control = new CustomControl(scope, element, attrs);
-                    $rootScope.controller.register(control);
+                    scope.$emit(CONTROL_EVENTS.register, control);
                     return control;
                 },
                 templateUrl: 'tmpl/core/controls/form/ctrlCustom.html'

@@ -5,6 +5,7 @@
 
     angular.module("jsnbt")
         .constant('CONTROL_EVENTS', {
+            register: 'control-register',
             valueChanged: 'control-value-changed',
             initiateValidation: 'control-initiate-validation',
             validate: 'control-validate',

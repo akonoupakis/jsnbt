@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-     .directive('ctrlTree', ['$rootScope', function ($rootScope) {
+     .directive('ctrlTree', ['$rootScope', 'CONTROL_EVENTS', function ($rootScope, CONTROL_EVENTS) {
 
          var TreeControl = function (scope, element, attrs, transclude) {
              jsnbt.controls.ListControlBase.apply(this, $rootScope.getBaseArguments(scope, element, attrs));
@@ -63,7 +63,7 @@
              compile: function (elem, attrs, transclude) {
                  return function (scope, lElem, lAttrs) {
                      var control = new TreeControl(scope, lElem, lAttrs, transclude);
-                     $rootScope.controller.register(control);
+                     scope.$emit(CONTROL_EVENTS.register, control);
                      return control;
                  }
              }
