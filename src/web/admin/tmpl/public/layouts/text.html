@@ -1,0 +1,21 @@
+﻿<div class="row" id="layout-text" data-scrollspy="text">
+    <ctrl-text class="col-sm-6" ng-model="layout.content.text" ng-required="false" ng-max-length="10" ng-label="text"></ctrl-text>
+    <ctrl-text class="col-sm-6" ng-model="layout.content.textR" ng-required="true" ng-max-length="10" ng-label="text required"></ctrl-text>
+</div>
+<div class="row" id="layout-textL" data-scrollspy="text limited">
+    <ctrl-text class="col-sm-12" ng-model="layout.content.textL" ng-required="false" ng-max-length="10" ng-characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_" ng-label="text limited (abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_)"></ctrl-text>
+</div>
+<div class="row" id="layout-textArea" data-scrollspy="text area">
+    <ctrl-text-area class="col-sm-12" ng-model="layout.content.textArea" ng-required="false" ng-max-length="20" ng-label="text area"></ctrl-text-area>
+</div>
+<div class="row" id="layout-textAreaR" data-scrollspy="text area required">
+    <ctrl-text-area class="col-sm-12" ng-model="layout.content.textAreaR" ng-required="true" ng-max-length="20" ng-rows="5" ng-label="text area required"></ctrl-text-area>
+</div>
+<div class="row" id="layout-numeric" data-scrollspy="numeric">
+    <ctrl-numeric class="col-sm-6" ng-model="layout.content.numeric" ng-required="false" ng-min="1" ng-max="10" ng-label="numeric (1-10)"></ctrl-numeric>
+    <ctrl-numeric class="col-sm-6" ng-model="layout.content.numericR" ng-required="true" ng-min="1" ng-max="10" ng-label="numeric required (1-10)"></ctrl-numeric>
+</div>
+<div class="row" id="layout-password" data-scrollspy="password">
+    <ctrl-password class="col-sm-6" ng-model="layout.content.password" ng-required="false" ng-label="password"></ctrl-password>
+    <ctrl-password class="col-sm-6" ng-model="layout.content.passwordR" ng-required="true" ng-label="password required"></ctrl-password>
+</div>
