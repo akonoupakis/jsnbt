@@ -86,7 +86,7 @@
                                                 self.run('published', [pushed]).then(function () {
                                                     if (pushed) {
                                                         if (self.isNew()) {
-                                                            var currentUrlParts = $route.current.$$route.originalPath.split('/');
+                                                            var currentUrlParts = $location.$$path.split('/');
                                                             currentUrlParts.pop();
                                                             var currentUrl = currentUrlParts.join('/');
                                                             var targetUrl = currentUrl + '/' + pushed.id;

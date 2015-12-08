@@ -17,6 +17,14 @@
 		"collection": {
             "type": "string",
             "required": true
+        },
+		"objectId": {
+            "type": "string",
+            "required": true
+        },
+		"objectData": {
+            "type": "object",
+            "required": true
         }
     }
 }

@@ -2,8 +2,6 @@ var _ = require('underscore');
 
 var self = this;
 
-var self = this;
-
 var languageProperties = {};
 var languageStringProperties = {};
 var languageBooleanProperties = {};

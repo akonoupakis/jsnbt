@@ -4,6 +4,7 @@ var db = require('../database');
 var EventEmitter = require('events').EventEmitter;
 var extend = require('extend');
 var jsonValidation = require('json-validation');
+var _ = require('underscore');
 
 function Collection(server, config) {
   Resource.apply(this, arguments);
@@ -31,9 +32,16 @@ Collection.prototype.validate = function (body, create) {
     if (!validationResult.ok) {
         errors['schema'] = validationResult.path + ': ' + validationResult.errors.join(' - ');
     }
+    
+    if (this.config.schema && this.config.schema.properties && _.isObject(this.config.schema.properties)) {
+        var allowedKeys = _.union('id', _.keys(this.config.schema.properties));
+        var bodyKeys = _.keys(body || {});
+        var spareKeys = _.filter(bodyKeys, function (x) { return allowedKeys.indexOf(x) === -1; });
+        if (spareKeys.length > 0)
+            errors['invalidKeys'] = spareKeys.join(',');
+    }
 
     if (Object.keys(errors).length) return errors;
-
 };
 
 Collection.prototype.sanitize = function (body) {
@@ -557,10 +565,6 @@ Collection.prototype.save = function (ctx, fn) {
 
             collection.execCommands('update', item, commands);
 
-            var errs = collection.validate(item);
-
-            if (errs) return done({ errors: errs });
-
             function runPutEvent(err) {
                 if (err) {
                     return done(err);
@@ -578,22 +582,29 @@ Collection.prototype.save = function (ctx, fn) {
                     return done(err || errors);
                 }
 
-                delete item.id;
-                store.update({ id: query.id }, item, function (err) {
-                    if (err) return done(err);
-                    item.id = id;
+                var errs = collection.validate(item);
 
-                    runPostEvent(collection.server, ctx, 'Update', createScriptContext(ctx), collection.name, item, function (err, res) {
-                        if (err) {
-                            done(err, null);
-                        }
-                        else {
-                            if (session && session.emitToAll) session.emitToAll(collection.name + ':changed');
-                            done(null, item);
-                        }
+                if (errs) {
+                    return done({ errors: errs });
+                }
+                else {
+                    delete item.id;
+                    store.update({ id: query.id }, item, function (err) {
+                        if (err) return done(err);
+                        item.id = id;
+
+                        runPostEvent(collection.server, ctx, 'Update', createScriptContext(ctx), collection.name, item, function (err, res) {
+                            if (err) {
+                                done(err, null);
+                            }
+                            else {
+                                if (session && session.emitToAll) session.emitToAll(collection.name + ':changed');
+                                done(null, item);
+                            }
+                        });
+
                     });
-
-                });
+                }
             }
 
             runPreEvent(collection.server, ctx, 'Update', createScriptContext(ctx), collection.name, item, function (preErr) {
@@ -601,6 +612,7 @@ Collection.prototype.save = function (ctx, fn) {
                     done(preErr);
                 }
                 else {
+
                     if (collection.shouldRunEvent(collection.events.Validate, ctx)) {
                         collection.events.Validate.run(ctx, domain, function (err) {
                             if (err || domain.hasErrors()) return done(err || errors);
@@ -609,6 +621,7 @@ Collection.prototype.save = function (ctx, fn) {
                     } else {
                         runPutEvent();
                     }
+
                 }
             });
         });
