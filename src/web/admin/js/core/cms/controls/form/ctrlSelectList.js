@@ -18,7 +18,10 @@
                 scope.valueField = scope.ngValueField ? scope.ngValueField : 'value';
                 scope.nameField = scope.ngNameField ? scope.ngNameField : 'name';
 
-                scope.empty = false;
+                scope.faulty = false;
+
+                scope.faults.empty = false;
+                scope.faults.exceeded = false;
 
                 scope.invalid = {};
                 scope.wrong = {};
@@ -59,6 +62,9 @@
                 }, true);
 
                 scope.add = function () {
+                    if (!scope.ngModel)
+                        scope.ngModel = [];
+
                     scope.ngModel.push('');
 
                     self.validate();
@@ -101,55 +107,66 @@
 
                 var self = this;
 
-                self.scope.empty = false;
+                this.scope.faulty = false;
+                this.scope.faults.empty = false;
+                this.scope.faults.exceeded = false;
 
                 jsnbt.controls.FormControlBase.prototype.isValid.apply(this, arguments).then(function (valid) {
                     if (valid && self.isValidating()) {
                         
                         if (self.scope.ngRequired) {
                             if (!self.scope.ngModel) {
-                                valid = false;
-                                self.scope.empty = true;
+                                self.scope.valid = false;
+                                self.scope.faults.empty = true;
                             }
                             else if (!_.isArray(self.scope.ngModel)) {
-                                valid = false;
+                                self.scope.valid = false;
                             }
                             else if (self.scope.ngModel.length === 0) {
-                                valid = false;
-                                self.scope.empty = true;
+                                self.scope.valid = false;
+                                self.scope.faults.empty = true;
                             }
                         }
 
                         if (self.scope.ngModel) {
                             if (!_.isArray(self.scope.ngModel))
-                                valid = false;
+                                self.scope.valid = false;
                             else {
 
                                 $(self.scope.ngModel).each(function (i, item) {
                                     self.scope.invalid[i] = false;
                                     if (!item) {
-                                        valid = false;
+                                        self.scope.valid = false;
                                         self.scope.invalid[i] = true;
                                     }
                                     else if (!_.isString(item)) {
-                                        valid = false;
+                                        self.scope.valid = false;
                                         self.scope.invalid[i] = true;
                                     }
                                     else if (!_.any(self.scope.ngOptions, function (x) {
                                            return x[self.scope.valueField] === item;
                                     })) {
-                                        valid = false;
+                                        self.scope.valid = false;
                                         self.scope.invalid[i] = true;
                                     }
                                 });
 
+                                if (self.scope.ngMaxLength !== undefined) {
+                                    var maxLength = parseInt(self.scope.ngMaxLength);
+                                    if (!isNaN(maxLength) && self.scope.ngModel.length > maxLength) {
+                                        self.scope.valid = false;
+                                        self.scope.faults.exceeded = true;
+                                    }
+                                }
                             }
                         }
 
                     }
 
-                    self.scope.valid = valid;
-                    deferred.resolve(valid);
+                    if (self.scope.faults.empty || self.scope.faults.exceeded)
+                        self.scope.faulty = true;
+
+                    deferred.resolve(self.scope.valid);
                 });
 
                 return deferred.promise;
@@ -162,7 +179,8 @@
                     ngOptions: '=',
                     ngDefault: '=',
                     ngValueField: '@',
-                    ngNameField: '@'
+                    ngNameField: '@',
+                    ngMaxLength: '='
                 }),
                 link: function (scope, element, attrs) {
                     var control = new SelectListControl(scope, element, attrs);

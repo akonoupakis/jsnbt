@@ -15,6 +15,8 @@
                 element.addClass('ctrl');
                 element.addClass('ctrl-select');
 
+                scope.faults.invalid = false;
+
                 scope.valueField = scope.ngValueField ? scope.ngValueField : 'value';
                 scope.nameField = scope.ngNameField ? scope.ngNameField : 'name';
                 
@@ -33,26 +35,26 @@
 
                 var self = this;
 
+                self.scope.faults.invalid = false;
+
                 jsnbt.controls.FormControlBase.prototype.isValid.apply(this, arguments).then(function (valid) {
                     if (valid && self.isValidating()) {
 
                         if (self.scope.ngRequired) {
-                            valid = !!self.scope.ngModel && self.scope.ngModel !== '';
+                            self.scope.valid = !!self.scope.ngModel && self.scope.ngModel !== '';
                         }
 
-                        self.scope.notFound = false;
-                        if (valid && self.scope.ngModel !== undefined) {
-                            var option = _.first(_.filter(self.scope.ngOptions, function (x) { return x[self.scope.valueField] === self.scope.ngModel; }));
+                        if (self.scope.valid && self.scope.ngModel !== undefined && self.scope.ngModel !== '') {
+                            var option = _.find(self.scope.ngOptions, function (x) { return x[self.scope.valueField] === self.scope.ngModel; });
                             if (!option) {
-                                valid = false;
-                                scope.notFound = true;
+                                self.scope.valid = false;
+                                self.scope.faults.invalid = true;
                             }
                         }
 
                     }
 
-                    self.scope.valid = valid;
-                    deferred.resolve(valid);
+                    deferred.resolve(self.scope.valid);
                 });
 
                 return deferred.promise;

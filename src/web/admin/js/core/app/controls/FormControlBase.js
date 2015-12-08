@@ -19,6 +19,8 @@
                     scope.id = Math.random().toString().replace('.', '');                    
                     scope.valid = true;
 
+                    scope.faults = {};
+
                     this.initiated = false;
                     this.validated = false;
 
@@ -29,9 +31,11 @@
                             }
                         }
                         else {
-                            $timeout(function () {
-                                scope.$emit(CONTROL_EVENTS.valueChanged, scope.ngModel);
-                            }, 50);
+                            if (scope.ngChangeFn !== null) {
+                                $timeout(function () {
+                                    scope.$emit(CONTROL_EVENTS.valueChanged, scope.ngModel);
+                                }, 50);
+                            }
                         }
                     };
 

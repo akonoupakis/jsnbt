@@ -19,6 +19,17 @@
 
                 scope.model = undefined;
                 
+                scope.leftInput = function (e) {
+                    $timeout(function () {
+                        if ($(e.currentTarget).val() === '') {
+                            scope.ngModel = undefined;
+                            scope.changed();
+
+                            self.validate();
+                        }
+                    }, 200);
+                }
+
                 $timeout(function () {
 
                     if (scope.ngTime) {
@@ -34,11 +45,16 @@
                                 if (scope.ngModel !== time) {
                                     scope.ngModel = time;
                                     scope.changed();
+
+                                    self.validate();
                                 }
                             }
                             else {
+                               
                                 scope.ngModel = undefined;
                                 scope.changed();
+
+                                self.validate();
                             }
                         });
 
@@ -55,11 +71,15 @@
                                 if (scope.ngModel !== time) {
                                     scope.ngModel = time;
                                     scope.changed();
+
+                                    self.validate();
                                 }
                             }
                             else {
                                 scope.ngModel = undefined;
                                 scope.changed();
+
+                                self.validate();
                             }
                         });;
                     }

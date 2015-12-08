@@ -11,10 +11,14 @@
                 jsnbt.controls.FormControlBase.apply(this, $rootScope.getBaseArguments(scope, element, attrs));
 
                 var self = this;
-
+                
                 element.addClass('ctrl');
                 element.addClass('ctrl-numeric');
                 
+                self.input = element.find('input.form-control');
+
+                scope.faults.exceeded = false;
+
                 this.init().then(function () {
                     if (scope.ngAutoFocus === true) {
                         setTimeout(function () {
@@ -30,17 +34,27 @@
 
                 var self = this;
 
+                self.scope.faults.exceeded = false;
+
                 jsnbt.controls.FormControlBase.prototype.isValid.apply(this, arguments).then(function (valid) {
                     if (valid && self.isValidating()) {
 
-
                         if (self.scope.ngRequired) {
-                            valid = !!self.scope.ngModel && self.scope.ngModel !== '';
+                            if (!self.scope.ngModel)
+                                self.scope.valid = false;
+                        }
+
+                        var inputValue = parseInt(self.input.val());
+                        if (!isNaN(inputValue)) {
+                            if (_.isNumber(self.scope.ngMin) && inputValue < self.scope.ngMin ||
+                                _.isNumber(self.scope.ngMax) && inputValue > self.scope.ngMax) {
+                                self.scope.faults.exceeded = true;
+                                self.scope.valid = false;
+                            }
                         }
                     }
 
-                    self.scope.valid = valid;
-                    deferred.resolve(valid);
+                    deferred.resolve(self.scope.valid);
                 });
 
                 return deferred.promise;

@@ -1,4 +1,4 @@
-﻿<div ng-class="{ 'ng-required': ngRequired, invalid: !ngDisabled && !valid, empty: empty }">
+﻿<div ng-class="{ 'ng-required': ngRequired, invalid: !ngDisabled && !valid, faulty: faulty }">
     <div class="form-group">
         <label ng-show="ngLabel" class="control-label">{{ngLabel}}<small ng-show="ngTip">({{ngTip}})</small></label>
 
@@ -12,7 +12,7 @@
                         {{ wrong[$index] ? (missing[$index] ? '-- not found -- (' + model.id + ')' : '-- invalid value --') : '' }}
                         <span ng-show="!wrong[$index] && !missing[$index]" class="transcluded" ng-model-transclude></span>
                     </span>
-                    <span ng-show="!ngDisabled && !valid && invalid[$index]" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                    <span ng-show="!ngDisabled && !valid && invalid[$index]" class="glyphicon glyphicon-ban-circle form-control-feedback" tooltip="{{ wrong[$index] ? (missing[$index] ? 'not found' : 'invalid value') : '' }}"></span>
                     <span class="input-group-btn">
                         <button title="select" class="btn btn-default glyphicon glyphicon-th" type="button" ng-click="edit($index)" ng-disabled="ngDisabled"></button>
                         <button title="delete" class="btn btn-default glyphicon glyphicon-remove" type="button" ng-click="clear($index)" ng-disabled="ngDisabled"></button>
@@ -21,11 +21,11 @@
             </li>
         </ul>
 
-        <div class="input-group insert-form-control form-control-feedback-container" ng-class="{ 'has-error': !ngDisabled && !valid && empty, 'has-feedback': !ngDisabled && !valid && empty }">
+        <div class="input-group insert-form-control form-control-feedback-container" ng-class="{ 'has-error': !ngDisabled && !valid && faulty, 'has-feedback': !ngDisabled && !valid && faulty }">
             <input type="text" class="form-control" disabled="disabled" />
-            <span ng-show="!ngDisabled && !valid && empty" class="glyphicon glyphicon-remove form-control-feedback"></span>
+            <span ng-show="!ngDisabled && !valid && faulty" class="glyphicon glyphicon-ban-circle form-control-feedback" tooltip="{{ faults.exceeded ? 'maximum length: ' + ngMaxLength : (faults.empty ? 'value is required' : '') }}"></span>
             <span class="input-group-btn">
-                <button class="btn btn-default glyphicon glyphicon-plus-sign" type="button" ng-click="add()" ng-disabled="ngDisabled || !ngDomain || !ngListId"></button>
+                <button class="btn btn-default glyphicon glyphicon-plus-sign" type="button" ng-click="add()" ng-disabled="ngDisabled || !ngDomain || !ngListId || value.length &gt;= ngMaxLength"></button>
             </span>
         </div>
     </div>

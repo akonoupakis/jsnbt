@@ -9,7 +9,7 @@
             return {
                 restrict: 'EA',
                 link: function (scope, element, attrs) {
-                    attrs.tooltipPlacement = attrs.tooltipPlacement || 'bottom';
+                    attrs.tooltipPlacement = attrs.tooltipPlacement || 'left';
                     attrs.tooltipAnimation = 'false';
                     attrs.tooltipPopupDelay = attrs.tooltipPopupDelay || 0;
                     attrs.tooltipTrigger = attrs.tooltipTrigger || '';

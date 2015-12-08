@@ -3,7 +3,7 @@
         <label ng-show="ngLabel" class="control-label" for="txt{{id}}">{{ngLabel}}<small ng-show="ngTip">({{ngTip}})</small></label>
         <div class="form-control-feedback-container">
             <input type="text" class="form-control" id="txt{{id}}" maxlength="{{ngMaxLength}}" ng-model="ngModel" ng-disabled="ngDisabled" ng-change="changed()" ctrl-text-allowed />
-            <span ng-show="!ngDisabled && !valid" class="glyphicon glyphicon-remove form-control-feedback"></span>
+            <span ng-show="!ngDisabled && !valid" class="glyphicon glyphicon-ban-circle form-control-feedback" tooltip="value is required"></span>
         </div>
     </div>
 </div> 

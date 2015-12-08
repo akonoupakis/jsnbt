@@ -38,11 +38,15 @@
                                 chkField.on('switchChange.bootstrapSwitch', function (event, state) {
                                     if (!initiating && initiated) {
                                         if (state === true) {
-                                            if (scope.ngModel.indexOf(option[scope.valueField]) === -1)
+                                            if ((scope.ngModel || []).indexOf(option[scope.valueField]) === -1) {
+                                                if (!scope.ngModel)
+                                                    scope.ngModel = [];
+
                                                 scope.ngModel.push(option[scope.valueField]);
+                                            }
                                         }
                                         else {
-                                            scope.ngModel = _.filter(scope.ngModel, function (x) { return x !== option[scope.valueField]; });
+                                            scope.ngModel = scope.ngModel ? _.filter(scope.ngModel, function (x) { return x !== option[scope.valueField]; }) : [];
                                         }
 
                                         scope.$apply();
@@ -90,6 +94,24 @@
                         });
 
                         self.validate();
+                    }
+                    else {
+                        $(scope.ngOptions).each(function (o, option) {
+                            var chkFieldWrapper = $('.bootstrap-switch-id-chk' + scope.id + option[scope.valueField]);
+                            if (chkFieldWrapper.length > 0) {
+                                var chkField = element.find('#chk' + scope.id + option[scope.valueField]);
+
+                                var wasDisabled = chkFieldWrapper.hasClass('bootstrap-switch-disabled');
+
+                                if (wasDisabled)
+                                    chkField.bootstrapSwitch('disabled', false);
+
+                                chkField.bootstrapSwitch('state', false);
+
+                                if (wasDisabled)
+                                    chkField.bootstrapSwitch('disabled', true);
+                            }
+                        });
                     }
 
                     initiated = true;

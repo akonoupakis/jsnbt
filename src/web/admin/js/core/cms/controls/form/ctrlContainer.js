@@ -90,23 +90,22 @@
                     if (valid && self.isValidating()) {
                         if (self.scope.ngRequired) {
                             if (!self.scope.ngModel)
-                                valid = false;
+                                self.scope.valid = false;
                             else if (!_.isString(self.scope.ngModel))
-                                valid = false;
+                                self.scope.valid = false;
                             else if (self.scope.ngModel === '')
-                                valid = false;
+                                self.scope.valid = false;
                         }
 
                         if (self.scope.ngModel) {
                             if (!_.isString(self.scope.ngModel))
-                                valid = false;
+                                self.scope.valid = false;
                             else if (self.scope.wrong && self.scope.missing)
-                                valid = false;
+                                self.scope.valid = false;
                         }
                     }
 
-                    self.scope.valid = valid;
-                    deferred.resolve(valid);
+                    deferred.resolve(self.scope.valid);
                 });
 
                 return deferred.promise;

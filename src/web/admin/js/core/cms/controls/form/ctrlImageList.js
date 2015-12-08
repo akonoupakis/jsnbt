@@ -16,26 +16,18 @@
                 element.addClass('ctrl-image-list');
 
                 scope.value = [];
-                scope.empty = false;
+
+                scope.faulty = false;
+
+                scope.faults.empty = false;
+                scope.faults.exceeded = false;
+
                 scope.extensions = scope.ngExtensions ? scope.ngExtensions : ['.png', '.jpg', '.jpeg', '.gif', '.tiff'];
 
                 scope.invalid = {};
                 scope.wrong = {};
 
                 var fileGroup = scope.ngFileGroup ? scope.ngFileGroup : 'public';
-
-                var isValid = function () {
-                    var valid = true;
-                    scope.empty = false;
-
-                    var validating = scope.ngValidating !== false;
-                    if (validating && !scope.ngDisabled && element.is(':visible')) {
-
-                        
-                    }
-
-                    return valid;
-                };
 
                 scope.$watch('ngModel', function (newValue, prevValue) {
                     if (newValue) {
@@ -51,8 +43,10 @@
                                 else if (!_.isArray(item.gen)) {
                                     scope.wrong[i] = true;
                                 }
-                                else if (item.gen.length !== 2) {
-                                    scope.wrong[i] = true;
+                                else if (self.scope.ngHeight && self.scope.ngWidth) {
+                                    if (item.gen.length !== 2) {
+                                        scope.wrong[i] = true;
+                                    }
                                 }
                             });
                         }
@@ -172,11 +166,13 @@
 
                     stop: function (e, ui) {
                         var files = scope.value.map(function (x) {
-                            return x;
+                            return x.id;
                         });
 
-                        scope.ngModel = files;
-                        scope.changed();
+                        if (!_.isEqual(files, scope.ngModel)) {
+                            scope.ngModel = files;
+                            scope.changed();
+                        }
                     }
                 };
 
@@ -189,54 +185,56 @@
 
                 var self = this;
 
-                self.scope.empty = false;
+                this.scope.faulty = false;
+                this.scope.faults.empty = false;
+                this.scope.faults.exceeded = false;
 
                 jsnbt.controls.FormControlBase.prototype.isValid.apply(this, arguments).then(function (valid) {
                     if (valid && self.isValidating()) {
 
                         if (self.scope.ngRequired) {
                             if (!self.scope.ngModel) {
-                                valid = false;
-                                scope.empty = true;
+                                self.scope.valid = false;
+                                self.scope.faults.empty = true;
                             }
                             else if (!_.isArray(self.scope.ngModel)) {
-                                valid = false;
+                                self.scope.valid = false;
                             }
                             else if (self.scope.ngModel.length === 0) {
-                                valid = false;
-                                self.scope.empty = true;
+                                self.scope.valid = false;
+                                self.scope.faults.empty = true;
                             }
                         }
 
                         if (self.scope.ngModel) {
                             if (!_.isArray(self.scope.ngModel))
-                                valid = false;
+                                self.scope.valid = false;
                             else {
 
                                 $(self.scope.ngModel).each(function (i, item) {
                                     self.scope.invalid[i] = false;
                                     if (!item.src) {
-                                        valid = false;
+                                        self.scope.valid = false;
                                         self.scope.invalid[i] = true;
                                     }
                                     else if (!_.isArray(item.gen)) {
-                                        valid = false;
+                                        self.scope.valid = false;
                                         self.scope.invalid[i] = true;
                                     }
                                     else if (item.gen.length !== 2) {
-                                        valid = false;
+                                        self.scope.valid = false;
                                         self.scope.invalid[i] = true;
                                     }
                                     else {
                                         if (self.scope.ngHeight) {
                                             if (item.gen[1].options.height !== self.scope.ngHeight) {
-                                                valid = false;
+                                                self.scope.valid = false;
                                                 self.scope.invalid[i] = true;
                                             }
                                         }
                                         if (self.scope.ngWidth) {
                                             if (item.gen[1].options.width !== self.scope.ngWidth) {
-                                                valid = false;
+                                                self.scope.valid = false;
                                                 self.scope.invalid[i] = true;
                                             }
                                         }
@@ -244,13 +242,22 @@
 
                                 });
 
+                                if (self.scope.ngMaxLength !== undefined) {
+                                    var maxLength = parseInt(self.scope.ngMaxLength);
+                                    if (!isNaN(maxLength) && self.scope.ngModel.length > maxLength) {
+                                        self.scope.valid = false;
+                                        self.scope.faults.exceeded = true;
+                                    }
+                                }
                             }
                         }
 
                     }
 
-                    self.scope.valid = valid;
-                    deferred.resolve(valid);
+                    if (self.scope.faults.empty || self.scope.faults.exceeded)
+                        self.scope.faulty = true;
+
+                    deferred.resolve(self.scope.valid);
                 });
 
                 return deferred.promise;
@@ -263,7 +270,8 @@
                     ngFileGroup: '@',
                     ngExtensions: '=',
                     ngHeight: '=',
-                    ngWidth: '='
+                    ngWidth: '=',
+                    ngMaxLength: '='
                 }),
                 link: function (scope, element, attrs) {
                     var control = new ImageListControl(scope, element, attrs);

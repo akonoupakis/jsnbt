@@ -6,7 +6,7 @@
                 <img err-src="../admin/img/core/noimage.jpg" ng-src="../{{value != '' ? value : 'admin/img/core/noimage.jpg' }}?type=admin-image-thumb" />
                 <span>{{ wrong ? '-- invalid value --' : value }}</span>
             </div>
-            <span ng-show="!ngDisabled && !valid" class="glyphicon glyphicon-remove form-control-feedback"></span>
+            <span ng-show="!ngDisabled && !valid" class="glyphicon glyphicon-ban-circle form-control-feedback" tooltip="{{ wrong ? 'invalid value' : 'value is required' }}"></span>
             <div class="input-group-btn">
                 <button class="btn btn-default glyphicon glyphicon-th" type="button" ng-click="edit()" ng-disabled="ngDisabled"></button>
                 <button class="btn btn-default glyphicon glyphicon-picture" type="button" ng-click="crop()" ng-disabled="ngDisabled || wrong || !ngModel.src"></button>

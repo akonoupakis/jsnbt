@@ -19,10 +19,9 @@
                 
                 scope.faulty = false;
 
-                scope.faults = {
-                    empty: false,
-                    exceeded: false
-                };
+                scope.faults.empty = false;
+                scope.faults.exceeded = false;
+
                 scope.invalid = {};
                 scope.wrong = {};
                 scope.missing = {};

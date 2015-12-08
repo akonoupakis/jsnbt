@@ -1,4 +1,4 @@
-﻿<div ng-class="{ 'ng-required': ngRequired, invalid: !ngDisabled && !valid, empty: empty }">
+﻿<div ng-class="{ 'ng-required': ngRequired, invalid: !ngDisabled && !valid, faulty: faulty }">
     <div class="form-group">
         <label ng-show="ngLabel" class="control-label">{{ngLabel}}<small ng-show="ngTip">({{ngTip}})</small></label>
 
@@ -19,13 +19,12 @@
 
         </ul>
 
-        <div class="input-group insert-form-control form-control-feedback-container" ng-class="{ 'has-error': !ngDisabled && !valid && empty, 'has-feedback': !ngDisabled && !valid && empty }">
+        <div class="input-group insert-form-control form-control-feedback-container" ng-class="{ 'has-error': !ngDisabled && !valid && faulty, 'has-feedback': !ngDisabled && !valid && faulty }">
 
-            <div class="form-control" id="cstm{{id}}new"></div>
-
-            <span ng-show="!ngDisabled && !valid && empty" class="glyphicon glyphicon-remove form-control-feedback"></span>
+            <div class="form-control" id="cstm{{id}}new" disabled="disabled"></div>
+            <span ng-show="!ngDisabled && !valid && faulty" class="glyphicon glyphicon-ban-circle form-control-feedback" tooltip="{{ faults.exceeded ? 'maximum length: ' + ngMaxLength : (faults.empty ? 'value is required' : '') }}"></span>
             <span class="input-group-btn">
-                <button class="btn btn-default glyphicon glyphicon-plus-sign" type="button" ng-click="add()" ng-disabled="ngDisabled"></button>
+                <button class="btn btn-default glyphicon glyphicon-plus-sign" type="button" ng-click="add()" ng-disabled="ngDisabled || ngModel.length &gt;= ngMaxLength"></button>
             </span>
         </div>
     </div>
