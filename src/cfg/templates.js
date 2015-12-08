@@ -4,7 +4,7 @@ module.exports = [{
     html: '/admin/index.html',
     restricted: [],
     scripts: [
-        'admin-inline', ['admin-lib', 'admin-app']
+        'admin-inline', ['admin-lib', 'admin-gmaps', 'admin-app']
     ],
     styles: [
         ['admin-lib', 'admin-app']

@@ -7,6 +7,10 @@
         jsnbt.controllers.ControllerBase.apply(this, $rootScope.getBaseArguments($scope));
         
         var logger = $logger.create('RegistrationController');
+
+        this.init().catch(function (ex) {
+            logger.error(ex);
+        });
     };
     RegistrationController.prototype = Object.create(jsnbt.controllers.ControllerBase.prototype);
     

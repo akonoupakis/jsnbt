@@ -8,6 +8,9 @@
 
         $jsnbtProvider.setSettings(jsnbt);
 
+        if ($('.error-page').length === 1)
+            return;
+
         var router = new jsnbt.ViewRouter('core', $routeProvider);
 
         var TEMPLATE_BASE = jsnbt.constants.TEMPLATE_BASE;
@@ -142,7 +145,8 @@
         });
 
         router.otherwise(function (x) {
-            x.redirect('/');
+            x.template('tmpl/core/common/404.html');
+            x.controller('NotFoundController');
         });
 
     }])
@@ -161,9 +165,30 @@
 
             $rootScope.location = $rootScope.location || {};
 
+            $location.goto = function (path) {
+                $rootScope.location.direction = undefined;
+                $rootScope.location.coming = false;
+                $rootScope.location.leaving = false;
+                $location.path(path);
+            };
+
+            $location.next = function (path) {
+                $rootScope.location.direction = 'ltr';
+                $rootScope.location.coming = false;
+                $rootScope.location.leaving = true;
+                $location.path(path);
+            };
+
+            $location.previous = function (path) {
+                $rootScope.location.direction = 'rtl';
+                $rootScope.location.coming = false;
+                $rootScope.location.leaving = true;
+                $location.path(path);
+            };
+
             $rootScope.$on('$locationChangeStart', function (event, next) {
                 $rootScope.$broadcast(ROUTE_EVENTS.routeStarted);
-                
+
                 AuthService.get().then(function (user) {
                     $rootScope.$broadcast(ROUTE_EVENTS.routeCompleted);
                     if (!AuthService.isInRole(user, 'admin')) {
@@ -173,7 +198,7 @@
                     }
                     else {
                         $rootScope.$broadcast(AUTH_EVENTS.authenticated, user);
-                        var currentSection = $route.current.$$route && $route.current.$$route.section;
+                        var currentSection = $route.current && $route.current.$$route && $route.current.$$route.section;
                         if (currentSection) {
                             if (!AuthService.isAuthorized(user, currentSection)) {
                                 $rootScope.$broadcast(AUTH_EVENTS.accessDenied);
@@ -184,10 +209,10 @@
                     event.preventDefault();
 
                     if (!$rootScope.initiated) {
-                        
+
                         AuthService.count().then(function (count) {
                             $rootScope.$broadcast(ROUTE_EVENTS.routeCompleted);
-                            
+
                             if (count === 0) {
                                 $rootScope.$broadcast(AUTH_EVENTS.noUsers, function () {
                                     $route.reload();
@@ -247,27 +272,6 @@
                     }
                 }, 1000);
             });
-
-            $location.goto = function (path) {
-                $rootScope.location.direction = undefined;
-                $rootScope.location.coming = false;
-                $rootScope.location.leaving = false;
-                $location.path(path);
-            };
-
-            $location.next = function (path) {
-                $rootScope.location.direction = 'ltr';
-                $rootScope.location.coming = false;
-                $rootScope.location.leaving = true;
-                $location.path(path);
-            };
-
-            $location.previous = function (path) {
-                $rootScope.location.direction = 'rtl';
-                $rootScope.location.coming = false;
-                $rootScope.location.leaving = true;
-                $location.path(path);
-            };
-
+       
         }]);
 })();

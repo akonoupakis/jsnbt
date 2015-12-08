@@ -8,14 +8,15 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title><%= meta.title %></title>
+    <meta name="keywords" content="<%= meta.keywords %>" />
+    <meta name="description" content="<%= meta.description %>" />
+
     <% _.each(styles, function(file) { %>
     <link rel="stylesheet" href="<%= file %>" /><% }); %>
 </head>
-<body>fr
-    <h1><b><%= error %></b> <%= text %></h1>
-    <!-- @if NODE_ENV='DEVELOPMENT' -->
-    <p><%= stack %></p>
-    <!-- @endif -->
+<body ng-controller="AppController">
+    <div class="error-page" ng-include="'tmpl/core/common/404.html'"></div>
 
     <% _.each(scripts, function(file) { %>
     <script type="text/javascript" src="<%= file %>"></script><% }); %>

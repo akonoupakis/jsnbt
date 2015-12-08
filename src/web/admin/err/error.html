@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="<%= language %>" ng-controller="AppController">
+<html lang="<%= language %>">
 <head>
     <base href="<%= baseHref %>" />
     <meta charset="utf-8" />
@@ -16,11 +16,14 @@
     <% _.each(styles, function(file) { %>
     <link rel="stylesheet" href="<%= file %>" /><% }); %>
 </head>
-<body>
-    <h1><b><%= error %></b> <%= text %></h1>
-    <!-- @if NODE_ENV='DEVELOPMENT' -->
-    <p><%= stack %></p>
-    <!-- @endif -->
+<body ng-controller="AppController">
+
+    <div class="error-dialog">
+        <div class="container">
+            <h3 class="error-text-title text-danger"><b><%= error %></b> <%= text %></h3>
+            <span class="error-text-subtitle text-error"><%= stack %></span>
+        </div>
+    </div>
 
     <% _.each(scripts, function(file) { %>
     <script type="text/javascript" src="<%= file %>"></script><% }); %>

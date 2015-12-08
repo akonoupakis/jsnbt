@@ -26,7 +26,6 @@ module.exports = [{
         '/admin/js/core/lib/moment.js',
         '/admin/js/core/lib/moment-timezone.js',
         '/admin/js/core/lib/bootstrap-datetimepicker.js',
-        '/admin/js/core/lib/gmaps.js',
         '/admin/js/core/lib/ng-tags-input.js'
     ]
 }, {
@@ -71,6 +70,7 @@ module.exports = [{
         '/admin/js/core/cms/controllers/LoginController.js',
         '/admin/js/core/cms/controllers/RegistrationController.js',
         '/admin/js/core/cms/controllers/DeniedController.js',
+        '/admin/js/core/cms/controllers/NotFoundController.js',
         '/admin/js/core/cms/controllers/DashboardController.js',
         '/admin/js/core/cms/controllers/ContentController.js',
         '/admin/js/core/cms/controllers/LanguagesController.js',
@@ -159,6 +159,11 @@ module.exports = [{
         '/admin/js/core/cms/utils/ngModelTransclude.js',
 
         '/admin/js/init.js'
+    ]
+}, {
+    name: 'admin-gmaps',
+    items: [
+        '/admin/js/core/lib/gmaps.js',
     ]
 }, {
     name: 'admin-inline',

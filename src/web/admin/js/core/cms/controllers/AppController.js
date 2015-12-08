@@ -79,7 +79,7 @@
         $scope.$on(AUTH_EVENTS.loginSuccess, function (sender, user) {
             $scope.current.setUser(user);
 
-            if ($route.current.$$route.section && !AuthService.isAuthorized(user, $route.current.$$route.section)) {
+            if ($route.current.$$route && $route.current.$$route.section && !AuthService.isAuthorized(user, $route.current.$$route.section)) {
                 $scope.current.denied = true;
             }
             else {

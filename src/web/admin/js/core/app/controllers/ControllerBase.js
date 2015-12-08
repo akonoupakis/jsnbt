@@ -44,7 +44,7 @@
 
                     this.queue = {};
 
-                    if ($route.current && _.isObject($route.current.$$route.scope))
+                    if (_.isObject($route.current) && _.isObject($route.current.$$route) && _.isObject($route.current.$$route.scope))
                         for (var scopeProperty in $route.current.$$route.scope)
                             $scope[scopeProperty] = $route.current.$$route.scope[scopeProperty];
                     
