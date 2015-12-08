@@ -21,7 +21,7 @@
 
         jsnbt.controllers.NodeFormControllerBase.prototype.getBreadcrumb.apply(this, arguments).then(function (breadcrumb) {
 
-            self.scope.getNodeBreadcrumb(self.isNew() ? { id: 'new', parent: self.scope.parent ? self.scope.parent.id : '' } : self.scope.node, self.scope.prefix).then(function (bc) {
+            self.scope.getNodeBreadcrumb(self.isNew() ? { id: 'new', parent: self.scope.parent ? self.scope.parent.id : '' } : self.scope.model, self.scope.prefix).then(function (bc) {
 
                 breadcrumb.splice(self.scope.offset);
 

@@ -1085,6 +1085,7 @@
                     else {
                         if (data) {
                             this.setTitle(data.title[this.scope.defaults.language]);
+
                             this.scope.model = data;
 
                             var matchedEntity = this.ctor.$jsnbt.entities[data.entity] || {};
