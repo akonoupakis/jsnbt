@@ -88,7 +88,10 @@
 
                             var languages = _.sortBy(results, 'name');
 
-                            $scope.application.languages = languages;
+                            $scope.application.languages = _.map(languages, function (x) {
+                                x.image = 'img/core/flags/' + x.code + '.png';
+                                return x;
+                            });
 
                             deferred.resolve(languages);
 

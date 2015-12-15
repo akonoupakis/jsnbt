@@ -156,11 +156,8 @@
                         });
                     };
 
-                    self.scope.languages = _.map(self.scope.application.languages, function (x) {
-                        x.image = 'img/core/flags/' + x.code + '.png';
-                        return x;
-                    });
-
+                    self.scope.languages = self.scope.application.languages;
+              
                     if (self.scope.$parent && self.scope.root && typeof (self.scope.$parent.init) === 'function') {
                         self.ctor.$rootScope.controller = self;
 

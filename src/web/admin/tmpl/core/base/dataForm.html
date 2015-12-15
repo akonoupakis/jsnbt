@@ -9,7 +9,7 @@
                         <button type="button" ng-disabled="published && !draft" class="btn btn-success" ng-click="publish()">publish</button>
                     </div>
 
-                    <ctrl-language-selector class="language-selector" ng-model="language" ng-options="languages" ng-show="localized && localization"></ctrl-language-selector>
+                    <ctrl-language-selector class="language-selector" ng-model="language" ng-options="application.languages" ng-show="localized && localization"></ctrl-language-selector>
                 </div>
             </div>
         </div>
