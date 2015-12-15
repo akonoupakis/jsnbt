@@ -25,7 +25,9 @@
 	"moment-timezone": "0.4.0",
 	"eonasdan-bootstrap-datetimepicker": "4.17.37",
 	"gmaps": "0.4.21",
-	"ng-tags-input": "3.0.0"
+	"ng-tags-input": "3.0.0",
+	"jshashes": "1.0.5",
+	"webui-popover": "1.2.3"
   },
   "deploy": {
     "jquery": {
@@ -351,6 +353,32 @@
           ]
         }
       ]
-    }
+    },
+	"jshashes": {
+	   "files": [
+        {
+          "src": "jshashes-1.0.5/hashes.js",
+          "dest": [
+            "admin/js/core/lib/jshashes.js"
+          ]
+        }
+      ]
+	},
+	"webui-popover": {
+	   "files": [
+        {
+          "src": "webui-popover-1.2.3/dist/jquery.webui-popover.js",
+          "dest": [
+            "admin/js/core/lib/jquery.webui-popover.js"
+          ]
+        },
+		{
+          "src": "webui-popover-1.2.3/dist/jquery.webui-popover.css",
+          "dest": [
+            "admin/css/core/lib/jquery.webui-popover.css"
+          ]
+        }
+      ]
+	}
   }
 }

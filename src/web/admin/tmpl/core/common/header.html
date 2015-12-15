@@ -3,12 +3,19 @@
         <div class="pull-left">
             <h1 class="head-line"><img ng-if="application.name.image" ng-src="{{application.name.image}}" /><small ng-if="application.name.title">{{application.name.title}}</small></h1>
         </div>
-        <div class="pull-right">
-            <div class="user-info-box">
-                <span class="user-name">{{ current.user.firstName }} {{ current.user.lastName }}</span>
-                <span class="user-username">{{ current.user.username }}</span>
-                <a class="user-logout" href="javascript:;" ng-click="current.logout()">logout</a>
-            </div>
+        <div class="pull-right account-options">
+            <popover class="user-button glyphicon glyphicon-user">
+                <div class="user-info-box">
+                    <img class="gravatar" ng-src="{{ 'http://www.gravatar.com/avatar/' + (current.user.username | gravatar) }}" />
+                    <div class="account-info">
+                        <span class="user-name">{{ current.user.firstName }} {{ current.user.lastName }}</span>
+                        <span class="user-username">{{ current.user.username }}</span>
+                        
+                        <button class="btn btn-primary account-button" ng-click="goto('/account')">account</button>                        
+                    </div>
+                </div>
+            </popover>
+            <span class="user-button glyphicon glyphicon-off" ng-click="current.logout()"></span>
         </div>
     </div>
     <nav class="navbar navbar-default" role="navigation">

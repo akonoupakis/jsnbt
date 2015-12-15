@@ -26,7 +26,9 @@ module.exports = [{
         '/admin/js/core/lib/moment.js',
         '/admin/js/core/lib/moment-timezone.js',
         '/admin/js/core/lib/bootstrap-datetimepicker.js',
-        '/admin/js/core/lib/ng-tags-input.js'
+        '/admin/js/core/lib/ng-tags-input.js',
+        '/admin/js/core/lib/jshashes.js',
+        '/admin/js/core/lib/jquery.webui-popover.js'
     ]
 }, {
     name: 'admin-app',
@@ -154,6 +156,7 @@ module.exports = [{
 
         '/admin/js/core/cms/utils/date.js',
         '/admin/js/core/cms/utils/tooltip.js',
+        '/admin/js/core/cms/utils/popover.js',
         '/admin/js/core/cms/utils/errSrc.js',
         '/admin/js/core/cms/utils/lkRepeat.js',
         '/admin/js/core/cms/utils/ngModelTransclude.js',
