@@ -104,9 +104,9 @@ module.exports = function (grunt) {
             var module = getModule(server.getPath(mainPackInfo.main));
             if (module) {
                 if (module.domain === 'core') {
-                    var dbgModule = getModule(server.getPath('src/dbg/index.js'));
+                    var dbgModule = getModule(server.getPath('dbg/app/index.js'));
                     if (dbgModule) {
-                        self.modulePaths.push('src/dbg/index.js');
+                        self.modulePaths.push('dbg/app/index.js');
                         self.app.register(dbgModule);
                     }
                 }
@@ -164,6 +164,23 @@ module.exports = function (grunt) {
 		{
 		    expand: true,
 		    cwd: 'src/web/admin/',
+		    src: ['img/**', 'js/**', 'font/**', 'css/**', 'tmpl/**', 'err/**'],
+		    dest: folder + '/public/admin/'
+		}, {
+		    expand: true,
+		    cwd: 'dbg/dat/',
+		    src: ['**'],
+		    dest: folder + '/migrations/' + mainPackInfo.name
+		},
+		{
+		    expand: true,
+		    cwd: 'dbg/web/public/',
+		    src: publicCopyfiles,
+		    dest: folder + '/public/'
+		},
+		{
+		    expand: true,
+		    cwd: 'dbg/web/admin/',
 		    src: ['img/**', 'js/**', 'font/**', 'css/**', 'tmpl/**', 'err/**'],
 		    dest: folder + '/public/admin/'
 		}];

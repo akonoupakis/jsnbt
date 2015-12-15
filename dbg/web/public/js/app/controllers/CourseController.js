@@ -14,7 +14,7 @@
 
             $data.nodes.get({
                 id: {
-                    $in: [
+                    $in: [ 
                         pageId,
                         pointerId
                     ] 

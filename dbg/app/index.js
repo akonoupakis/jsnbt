@@ -9,7 +9,7 @@ module.exports = {
     },
 
     getConfig: function () {
-        return require('./cfg/config.js');
+        return require('../cfg/config.js');
     },
 
     getVersion: function () {
@@ -17,7 +17,7 @@ module.exports = {
     },
 
     getBower: function () {
-        return require('./bower.json');
+        return require('../web/bower.json');
     },
 
     route: function (server, ctx, next) {
