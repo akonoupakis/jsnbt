@@ -1,7 +1,7 @@
 ﻿<div class="navbar navbar-fixed-top">
     <div class="container">
         <div class="pull-left">
-            <h1 class="head-line">jsnbt admin <small>v{{ application.version }}</small></h1>
+            <h1 class="head-line"><img ng-if="application.name.image" ng-src="{{application.name.image}}" /><small ng-if="application.name.title">{{application.name.title}}</small></h1>
         </div>
         <div class="pull-right">
             <div class="user-info-box">

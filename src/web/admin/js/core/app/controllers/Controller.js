@@ -19,8 +19,11 @@
                         languages: [],
                         localization: $jsnbt.localization,
                         ssl: $jsnbt.ssl,
-                        navigationSpec: []
-
+                        navigationSpec: [],
+                        name: $jsnbt.name ? $jsnbt.name : {
+                            image: 'img/core/logo.jpg',
+                            title: 'v' + $jsnbt.version
+                        }
                     };
 
                     $scope.current = {

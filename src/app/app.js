@@ -45,6 +45,8 @@ exports.modules = {
 
 exports.config = {
     
+    name: undefined,
+
     fileGroups: [],
 
     images: [],
@@ -328,6 +330,8 @@ exports.register = function (module) {
 
     if (module.domain === 'public') {
         module.browsable = false;
+
+        self.config.name = moduleConfig.name;
 
         if (moduleConfig.ssl !== undefined) {
             self.ssl = moduleConfig.ssl === true;

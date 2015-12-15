@@ -33,6 +33,7 @@ var Script = function (app) {
     var getJsnbtObject = function () {
 
         var result = {
+            name: app.config.name,
             version: app.version,
             localization: app.localization,
             ssl: app.ssl

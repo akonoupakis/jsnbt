@@ -1,5 +1,10 @@
 module.exports = {
     
+    //name: {
+    //    image: 'img/public/logo.jpg',
+    //    title: 'site name'
+    //},
+
     ssl: false,
 
     // locale: 'el',
