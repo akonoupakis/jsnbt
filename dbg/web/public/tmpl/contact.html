@@ -31,7 +31,12 @@
             country el translated text: {{ text.country.GR }}
         </div>
     </section>
+
     <% _.each(scripts, function(file) { %>
     <script type="text/javascript" src="<%= file %>"></script><% }); %>
+
+    <!-- @if NODE_ENV='PRODUCTION' -->
+    <script type="text/javascript" src="tmpl.js"></script>
+    <!-- @endif -->
 </body>
 </html>

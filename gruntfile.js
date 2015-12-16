@@ -896,6 +896,45 @@ module.exports = function (grunt) {
         }
     };
 
+    gruntConfig.ngtemplates = {
+        site: {
+            cwd: 'www/public',
+            src: 'tmpl/partial/**/**.html',
+            dest: './www/public/tmpl.js',
+            options: {
+                module: 'jsnbt',
+                htmlmin: {
+                    collapseBooleanAttributes: true,
+                    collapseWhitespace: true,
+                    removeAttributeQuotes: true,
+                    removeComments: true,
+                    removeEmptyAttributes: true,
+                    removeRedundantAttributes: true,
+                    removeScriptTypeAttributes: true,
+                    removeStyleLinkTypeAttributes: true
+                }
+            }
+        },
+        admin: {
+            cwd: 'www/public/admin',
+            src: 'tmpl/**/**.html',
+            dest: './www/public/admin/tmpl.js',
+            options: {
+                module: 'jsnbt',
+                htmlmin: {
+                    collapseBooleanAttributes: true,
+                    collapseWhitespace: true,
+                    removeAttributeQuotes: true,
+                    removeComments: true,
+                    removeEmptyAttributes: true,
+                    removeRedundantAttributes: true,
+                    removeScriptTypeAttributes: true,
+                    removeStyleLinkTypeAttributes: true
+                }
+            }
+        }
+    };
+
     gruntConfig.cleanempty = {
         dev: {
             src: [
@@ -999,6 +1038,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-preprocess');
+    grunt.loadNpmTasks('grunt-angular-templates');
 
 
     grunt.registerTask('default', ['jshint']);
@@ -1006,7 +1046,7 @@ module.exports = function (grunt) {
 
     // 'jshint'
     grunt.registerTask('dev', ['mod:bower', 'mod:npm', 'bower:dev', 'env:dev', 'clean:dev', 'setenv:dev', 'setmod:dev', 'copy:dev', 'script:dev', 'patch:dev', 'deploybower:dev', 'less:dev', 'preprocess:dev']);
-    grunt.registerTask('prod', ['mod:bower', 'mod:npm', 'bower:prod', 'env:prod', 'clean:prod', 'setenv:prod', 'setmod:prod', 'copy:prod', 'script:prod', 'patch:prod', 'deploybower:prod', 'less:prod', 'preprocess:prod', 'clean:prodLess', 'cssmin:prod', 'clean:prodMinified', 'uglify:prod', 'cleanempty:prod']);
+    grunt.registerTask('prod', ['mod:bower', 'mod:npm', 'bower:prod', 'env:prod', 'clean:prod', 'setenv:prod', 'setmod:prod', 'copy:prod', 'script:prod', 'patch:prod', 'deploybower:prod', 'less:prod', 'preprocess:prod', 'clean:prodLess', 'cssmin:prod', 'clean:prodMinified', 'uglify:prod', 'ngtemplates', 'cleanempty:prod']);
 
     grunt.registerTask('watch-public-css', ['watch:publicCss']);
     grunt.registerTask('watch-public-js', ['watch:publicJs']);

@@ -69,6 +69,16 @@
   },
   "devDependencies": {
     "less": "*",
+	"coffee-script": "*",
+	"eventemitter2": "*",
+	"dateformat": "*",
+	"minimatch": "*",
+	"glob": "*",
+	"findup-sync": "*",
+	"js-yaml": "*",
+	"rimraf": "*",
+	"iconv-lite": "*",
+	"nopt": "*",
     "grunt": "*",
     "grunt-contrib-clean": "*",
     "grunt-contrib-copy": "*",
@@ -79,6 +89,9 @@
     "grunt-contrib-watch": "*",
     "grunt-env": "*",
     "grunt-preprocess": "*",
+	"grunt-legacy-util": "*",
+	"grunt-legacy-log": "*",
+	"grunt-angular-templates": "*",
     "jsnbt-docs": "*"
   }
 }
