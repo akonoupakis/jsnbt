@@ -5,5 +5,5 @@ module.exports = [{
 }, {
     id: 'sampleContainer2',
     name: 'sample container B',
-    html: '/tmpl/partial/containers/sampleContainerB.html'
-}];
+    html: '/tmpl/partial/containers/sampleContainerB.html' 
+}];   

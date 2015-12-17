@@ -17,7 +17,7 @@
 </head>
 <body ng-controller="AppController">
     <div class="error-page" ng-include="'tmpl/core/common/404.html'"></div>
-
+    
     <% _.each(scripts, function(file) { %>
     <script type="text/javascript" src="<%= file %>"></script><% }); %>
 

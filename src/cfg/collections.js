@@ -8,7 +8,7 @@ module.exports = [{
         validate: fs.readFileSync(__dirname + "/collections/actions/events/validate.js", "utf8")        
     }
 }, {
-    name: "data",
+    name: "data", 
     schema: require("./collections/data/schema.json"),
     permissions: require("./collections/data/permissions.json"),
     logging: true,

@@ -6,7 +6,8 @@ var rename = require("gulp-rename");
 var minifyCSS = require('gulp-minify-css');
 var gutil = require('gulp-util');
 var concat = require('gulp-concat');
-var runSequence = require('run-sequence');
+var runSequence = require('run-sequence').use(gulp);
+var eventStream = require('event-stream');
 
 var fs = require('fs-extra');
 var path = require('path');
@@ -17,15 +18,25 @@ _.str = require('underscore.string');
 
 var TARGET_FOLDER = 'www';
 
-var app = require('./src/app/app.js');
+var app = new require('./src/app/app.js')();
 var appMode = 'DEVELOPMENT';
 
 var modulePaths = [];
 var moduleNames = [];
 
+var getModuleFolderPath = function (installedPath) {
+    var modulePath = installedPath.split('/')
+    modulePath.pop();
+    modulePath.pop();
+    modulePath = modulePath.join('/');
+    return modulePath;
+}
+
 gulp.task('copyLocalBowerComponents', function () {
-    gulp.src('./bower/**')
-        .pipe(gulp.dest('./bower_components'));
+    // read from /bower and copy under /bower_components with their version number
+
+    //gulp.src('./bower/**')
+    //    .pipe(gulp.dest('./bower_components'));
 });
 
 gulp.task('copyLocalNodeModules', function () {
@@ -34,6 +45,23 @@ gulp.task('copyLocalNodeModules', function () {
 });
 
 gulp.task('loadModules', function () {
+  
+    var paths = [];
+    _.each(modulePaths, function (modulePath) {
+        var mPath = getModuleFolderPath(modulePath);
+        mPath = mPath.replace(/\//g, '\\') + '\\';
+        paths.push(mPath);
+    });
+
+    Object.keys(require.cache).forEach(function (key) {
+        var strippedKey = key.substring(__dirname.length + 1);
+        if (_.any(paths, function (x) {
+            return strippedKey.indexOf(x) === 0;
+        }))
+            delete require.cache[key];
+    });
+
+    app = new require('./src/app/app.js')();
     
     modulePaths = [];
 
@@ -239,102 +267,123 @@ gulp.task('setModules', function () {
 
 gulp.task('copyMigrations', function () {
 
-    _.each(moduleNames, function (moduleName, i) {
-        var modulePath = modulePaths[i].split('/')
-        modulePath.pop();
-        modulePath.pop()
-        modulePath = modulePath.join('/');
+    var gulps = [];
 
-        gulp.src('./' + modulePath + '/dat/**')
-            .pipe(gulp.dest('./' + TARGET_FOLDER + '/migrations/' + moduleName));
+    _.each(moduleNames, function (moduleName, i) {
+        var modulePath = getModuleFolderPath(modulePaths[i]);
+
+        gulps.push(gulp.src('./' + modulePath + '/dat/**')
+            .pipe(gulp.dest('./' + TARGET_FOLDER + '/migrations/' + moduleName)));
     });
 
+    return eventStream.merge(gulps);
 });
 
-gulp.task('copyFiles', function () {
-    _.each(moduleNames, function (moduleName, i) {
+var getFileCopyPublicPaths = function (module, modulePath) {
+    var templatePaths = [];
 
-        var module = require('./' + modulePaths[i]);
+    if (typeof (module.getConfig) === 'function') {
+        var templates = module.getConfig().templates || [];
 
-        var modulePath = modulePaths[i].split('/')
-        modulePath.pop();
-        modulePath.pop()
-        modulePath = modulePath.join('/');
-
-        var templatePaths = [];
-        var adminTemplatePaths = [];
-
-        if (typeof (module.getConfig) === 'function') {
-            var templates = module.getConfig().templates || [];
-
-            templatePaths = _.filter(_.map(templates, function (x) {
+        templatePaths = _.union(templatePaths, ['./' + modulePath + '/web/public/**',
+            '!./' + modulePath + '/web/public/files/**',
+            '!./' + modulePath + '/web/public/tmp/**',
+            '!./' + modulePath + '/web/public/err/**'],
+            _.filter(_.map(templates, function (x) {
                 if (!_.str.startsWith(x.html, '/admin/') || !_.str.startsWith(x.html, 'admin/'))
                     return '!./' + modulePath + '/web/public/' + _.str.ltrim(x.html, '/');
                 else
                     '';
             }), function (f) {
                 return f !== '';
-            });
-        
-            adminTemplatePaths = _.filter(_.map(templates, function (x) {
+            }));
+    }
+
+    return templatePaths;
+}
+
+var getFileCopyAdminPaths = function (module, modulePath) {
+    var adminTemplatePaths = [];
+
+    if (typeof (module.getConfig) === 'function') {
+        var templates = module.getConfig().templates || [];
+
+        adminTemplatePaths = _.union(adminTemplatePaths, ['./' + modulePath + '/web/admin/**',
+            '!./' + modulePath + '/web/admin/err/**',
+            '!./' + modulePath + '/web/admin/index.html'], _.filter(_.map(templates, function (x) {
                 if (_.str.startsWith(x.html, '/admin/') || _.str.startsWith(x.html, 'admin/'))
                     return '!./' + modulePath + '/web/admin/' + _.str.ltrim(x.html, '/');
                 else
                     return '';
             }), function (f) {
                 return f !== '';
-            });
-        }
-        
-        gulp.src(_.union(['./' + modulePath + '/web/public/**',
-            '!./' + modulePath + '/web/public/files/**',
-            '!./' + modulePath + '/web/public/tmp/**',
-            '!./' + modulePath + '/web/public/err/**'], templatePaths))
-            .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/'));
+            }));
+    }
 
-        gulp.src(_.union(['./' + modulePath + '/web/admin/**',
-            '!./' + modulePath + '/web/admin/err/**',
-            '!./' + modulePath + '/web/admin/index.html'], adminTemplatePaths))
-            .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/admin/'));
+    return adminTemplatePaths;
+}
+
+gulp.task('copyFiles', function () {
+
+    var gulps = [];
+    
+    var templatePaths = [];
+    var adminTemplatePaths = [];
+
+    _.each(moduleNames, function (moduleName, i) {
+
+        var module = require('./' + modulePaths[i]);
+
+        var modulePath = getModuleFolderPath(modulePaths[i]);
+
+        templatePaths = _.union(templatePaths, getFileCopyPublicPaths(module, modulePath));
+        adminTemplatePaths = _.union(adminTemplatePaths, getFileCopyAdminPaths(module, modulePath));
 
     });
+
+    gulps = [
+        gulp.src(templatePaths)
+            .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/')),
+
+        gulp.src(adminTemplatePaths)
+           .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/admin/'))];
+
+    return eventStream.merge(gulps);
+
 });
 
 gulp.task('parseTemplates', function () {
+
+    var gulps = [];
 
     _.each(moduleNames, function (moduleName, i) {
         
         var module = require('./' + modulePaths[i]);
 
-        var modulePath = modulePaths[i].split('/')
-        modulePath.pop();
-        modulePath.pop()
-        modulePath = modulePath.join('/');
-
-        var templatePaths = [];
-        var adminTemplatePaths = [];
+        var modulePath = getModuleFolderPath(modulePaths[i]);
 
         if (typeof (module.getConfig) === 'function') {
             var templates = module.getConfig().templates || [];
             
             _.each(templates, function (template) {
-                gulp.src('./' + modulePath + '/web/' + (!_.str.startsWith(template.html, '/admin/') && !_.str.startsWith(template.html, 'admin/') ? 'public/' : '') + _.str.ltrim(template.html, '/'))
+                gulps.push(gulp.src('./' + modulePath + '/web/' + (!_.str.startsWith(template.html, '/admin/') && !_.str.startsWith(template.html, 'admin/') ? 'public/' : '') + _.str.ltrim(template.html, '/'))
                     .pipe(preprocess({ context: { NODE_ENV: appMode, DEBUG: false } }))
-                    .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/' + _.str.ltrim(path.dirname(template.html), '/') + '/'));
+                    .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/' + _.str.ltrim(path.dirname(template.html), '/') + '/')));
             });
             
         }
 
-        gulp.src('./' + modulePath + '/web/public/err/*')
+        gulps.push(gulp.src('./' + modulePath + '/web/public/err/*')
             .pipe(preprocess())
-            .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/err/'));
+            .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/err/')));
 
-        gulp.src('./' + modulePath + '/web/admin/err/*')
+        gulps.push(gulp.src('./' + modulePath + '/web/admin/err/*')
             .pipe(preprocess())
-            .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/admin/err/'));
+            .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/admin/err/')));
         
     });
 
+    return eventStream.merge(gulps);
 });
 
 gulp.task('generateJsnbtScript', function () {
@@ -349,6 +398,9 @@ gulp.task('generateJsnbtScript', function () {
 });
 
 gulp.task('deployBowerComponents', function () {
+
+    var gulps = [];
+
     var bowerConfigs = [];
 
     _.each(app.modules.all, function (module) {
@@ -379,8 +431,8 @@ gulp.task('deployBowerComponents', function () {
                                             var sourceDir = server.getPath(bowerComponents + '/' + folderSpecsSrc);
                                             var targetDir = server.getPath(TARGET_FOLDER + '/public/' + folderSpecsDest);
 
-                                            gulp.src('./' + bowerComponents + '/' + folderSpecsSrc + '/**')
-                                              .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/' + folderSpecsDest));
+                                            gulps.push(gulp.src('./' + bowerComponents + '/' + folderSpecsSrc + '/**')
+                                              .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/' + folderSpecsDest)));
                                         });
                                     });
                                 }
@@ -397,9 +449,9 @@ gulp.task('deployBowerComponents', function () {
                                             var sourceFile = server.getPath(bowerComponents + '/' + fileSpecsSrc);
                                             var targetFile = server.getPath(TARGET_FOLDER + '/public/' + fileSpecsDest);
 
-                                            gulp.src('./' + bowerComponents + '/' + fileSpecsSrc)
+                                            gulps.push(gulp.src('./' + bowerComponents + '/' + fileSpecsSrc)
                                               .pipe(rename(path.basename(fileSpecsDest)))
-                                              .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/' + path.dirname(fileSpecsDest)));
+                                              .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/' + path.dirname(fileSpecsDest))));
                                         });
                                     });
                                 }
@@ -410,53 +462,155 @@ gulp.task('deployBowerComponents', function () {
             }
         }
     });
+
+    return eventStream.merge(gulps);
+
 });
 
 gulp.task('generateStyles', function () {
     
-    var bundler = require('./src/app/tmpl/bundle.js')(app);
+    var gulps = [];
 
+    var bundler = require('./src/app/tmpl/bundle.js')(app);
+    _.each(app.config.templates, function (tmpl) {
+
+        if (tmpl.styles && _.isArray(tmpl.styles)) {
+            var styleBundle = bundler.getStyleBundle(tmpl.styles);
+            _.each(styleBundle.raw, function (r) {
+                if (r.items.length > 0) {
+                    gulps.push(gulp.src(_.map(r.items, function (x, i) {
+                        return './' + TARGET_FOLDER + '/public' + (_.str.startsWith(x, '/admin/') ? x : '' + x)
+                    }))
+                    .pipe(less({
+                            
+                    }))
+                    .pipe(concat('less-files.less'))
+                    .pipe(rename(path.basename(r.target)))
+                    .pipe(gulp.dest('./' + TARGET_FOLDER + '/public' + path.dirname(r.target))));
+                }
+            });
+        }
+
+    });
+
+    return eventStream.merge(gulps);
+});
+
+function watch() {
+    gutil.log('Watch enabled. Listening for file changes...');
+
+    // on local bowerComponents, copy to bower_components and perform deployBowerComponents
+
+    var localPackages = fs.readdirSync(server.getPath('npm'));
+    _.each(localPackages, function (localPackage) {
+        if (fs.lstatSync(server.getPath('npm/' + localPackage)).isDirectory()) {
+
+            var copyFile = function (event) {
+
+                var searchPrefix = '\\npm\\' + localPackage + '\\';
+                var targetPath = event.path.substring(event.path.indexOf(searchPrefix) + searchPrefix.length);
+                gutil.log('File ' + event.path + ' was ' + event.type);
+                gulp.src(event.path)
+                    .pipe(gulp.dest('./node_modules/' + localPackage + '/' + path.dirname(targetPath)));
+            };
+
+            var deleteFile = function (event) {
+                var searchPrefix = '\\npm\\' + localPackage + '\\';
+                var targetPath = event.path.substring(event.path.indexOf(searchPrefix) + searchPrefix.length);
+                gutil.log('File ' + event.path + ' was ' + event.type);
+                del.sync('./node_modules/' + localPackage + '/' + targetPath);
+            };
+
+            gulp.watch('./npm/' + localPackage + '/**', function (event) {
+                if (event.type === 'changed') {
+                    copyFile(event);
+                }
+                else if (event.type === 'deleted') {
+                    deleteFile(event);
+                }
+            });
+        }
+    });
+    
     _.each(moduleNames, function (moduleName, i) {
 
         var module = require('./' + modulePaths[i]);
 
-        var modulePath = modulePaths[i].split('/')
-        modulePath.pop();
-        modulePath.pop()
-        modulePath = modulePath.join('/');
+        var modulePath = getModuleFolderPath(modulePaths[i]);
 
-        var templatePaths = [];
-        var adminTemplatePaths = [];
+        var copyFile = function (event, admin) {
+            var searchPrefix = 'web\\' + admin ? 'admin' : 'public' + '\\';
+            var targetPath = event.path.substring(event.path.indexOf(searchPrefix) + searchPrefix.length);
+            gutil.log('File ' + event.path + ' was ' + event.type);
+            gulp.src(event.path)
+                .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/' + (admin ? 'admin/' : '') + path.dirname(targetPath)));
+        };
 
-        if (typeof (module.getConfig) === 'function') {
-            var templates = module.getConfig().templates || [];
+        var deleteFile = function (event, admin) {
+            var searchPrefix = 'web\\' + admin ? 'admin' : 'public' + '\\';
+            var targetPath = event.path.substring(event.path.indexOf(searchPrefix) + searchPrefix.length);
+            gutil.log('File ' + event.path + ' was ' + event.type);
+            del.sync('./' + TARGET_FOLDER + '/public/' + (admin ? 'admin/' : '') + targetPath);
+        };
+        
+        gulp.watch(getFileCopyAdminPaths(module, modulePath), function (event) {
+            if (event.type === 'changed') {
+                copyFile(event, true);
+            }
+            else if (event.type === 'deleted') {
+                deleteFile(event, true);
+            }
+        });
 
-            _.each(templates, function (tmpl) {
+        gulp.watch(getFileCopyPublicPaths(module, modulePath), function (event) {
+            if (event.type === 'changed') {
+                copyFile(event, false);
+            }
+            else if (event.type === 'deleted') {
+                deleteFile(event, false);
+            }
+        });
 
-                if (tmpl.styles && _.isArray(tmpl.styles)) {
-                    var styleBundle = bundler.getStyleBundle(tmpl.styles);
-                    _.each(styleBundle.raw, function (r) {
-                        if (r.items.length > 0) {
-                            gulp.src(_.map(r.items, function (x) { return './' + modulePath + '/web' + (_.str.startsWith(x, '/admin/') ? x : '/public' + x) }))
-                                .pipe(less({
-                                     
-                                }))
-                                .pipe(concat('less-files.less'))
-                                .pipe(rename(path.basename(r.target)))
-                                .pipe(gulp.dest('./' + TARGET_FOLDER + '/public' + path.dirname(r.target)));
-                        }
-                    });
-                }
+        gulp.watch('./' + modulePath + '/cfg/**', function (event) {
+            runSequence('loadModules', 'generateJsnbtScript');
+        });
 
+
+        var templates = module.getConfig().templates || [];
+
+        _.each(templates, function (template) {
+            gulp.watch('./' + modulePath + '/web/' + (!_.str.startsWith(template.html, '/admin/') && !_.str.startsWith(template.html, 'admin/') ? 'public/' : '') + _.str.ltrim(template.html, '/'), function (event) {
+                gutil.log('File ' + event.path + ' was ' + event.type);
+                gulp.src('./' + modulePath + '/web/' + (!_.str.startsWith(template.html, '/admin/') && !_.str.startsWith(template.html, 'admin/') ? 'public/' : '') + _.str.ltrim(template.html, '/'))
+                    .pipe(preprocess({ context: { NODE_ENV: appMode, DEBUG: false } }))
+                    .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/' + _.str.ltrim(path.dirname(template.html), '/') + '/'));
             });
+        });
 
-        }
+        gulp.watch('./' + modulePath + '/web/public/err/*', function (event) {
+            gutil.log('File ' + event.path + ' was ' + event.type);
+            gulp.src(event.path)
+                .pipe(preprocess())
+                .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/err/'));
+        });
+
+        gulp.watch('./' + modulePath + '/web/admin/err/*', function (event) {
+            gutil.log('File ' + event.path + ' was ' + event.type);
+            gulp.src(event.path)
+                .pipe(preprocess())
+                .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/admin/err/'));
+        });
         
     });
- 
-});
 
-gulp.task('dev', function (callback) { 
+    gulp.watch([
+        './' + TARGET_FOLDER + '/public/css/**',
+        './' + TARGET_FOLDER + '/public/admin/css/**'
+    ], ['generateStyles']);
+};
+
+gulp.task('dev', function (callback) {
+    
     runSequence(
         'copyLocalBowerComponents',
         'copyLocalNodeModules',
@@ -473,13 +627,49 @@ gulp.task('dev', function (callback) {
         'generateStyles',
         callback
     );
+
 }); 
 
-//gulp.task('default', ['clean', 'build', 'server'], function () {
-//    gutil.log('Server started on port', gutil.colors.magenta('8000'))
-//    gulp.watch('src/js/**', ['build-js'])
-//    gulp.watch('src/scss/**', ['build-sass'])
-//    gulp.watch('src/img/**', ['build-img'])
-//    gulp.watch('src/html/**', ['build-html'])
-//    //  gulp.watch(['*.html', 'view/**/*.html', 'widget/**/*.html', 'css/**/*.css', 'js/**/*.js'], {cwd: 'app'}, browserSync.reload)
-//})
+gulp.task('dev-update', function (callback) {
+
+    runSequence(
+        'copyLocalBowerComponents',
+        'copyLocalNodeModules',
+        'loadModules',
+        'installBowerComponents',
+        'cleanTarget',
+        'setMode:dev',
+        'setModules',
+        'copyMigrations',
+        'copyFiles',
+        'parseTemplates',
+        'generateJsnbtScript',
+        'deployBowerComponents',
+        'generateStyles',
+        function () {
+            watch();
+        }
+    );
+
+});
+
+gulp.task('prod', function (callback) {
+
+    runSequence(
+        'copyLocalBowerComponents',
+        'copyLocalNodeModules',
+        'loadModules',
+        'installBowerComponents',
+        'cleanTarget',
+        'setMode:dev',
+        'setModules',
+        'copyMigrations',
+        'copyFiles',
+        'parseTemplates',
+        'generateJsnbtScript',
+        'deployBowerComponents',
+        'generateStyles',
+        callback
+    );
+
+});

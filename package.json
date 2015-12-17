@@ -25,7 +25,7 @@
     }
   ],
   "config": {},
-  "main": "src/app/app.js",
+  "main": "src/app/index.js",
   "files": [
     "src/app/**",
     "src/cfg/**",
@@ -101,6 +101,7 @@
 	"gulp-concat": "*",
 	"run-sequence": "*",
 	"chalk": "*",
+	"event-stream": "*",
     "jsnbt-docs": "*"
   }
 }

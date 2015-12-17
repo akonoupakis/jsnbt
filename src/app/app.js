@@ -17,91 +17,93 @@ var configSchema = require('../cfg/schema.json');
 var languages = require('./data/store/languages.js');
 var countries = require('./data/store/countries.js');
 
-exports.domain = 'core';
-exports.browsable = false;
-exports.messager = true;
+var index = require('./index.js');
 
-exports.environment = Environment.Development;
-
-exports.path = null;
-
-exports.dbg = false;
-
-exports.title = 'jsnbt';
-
-exports.localization = {
-    enabled: true,
-    locale: 'en'
-};
-
-exports.ssl = false;
-
-exports.modules = {
-    core: undefined,
-    rest: [],
-    public: undefined,
-    all: []
-};
-
-exports.config = {
+var App = function () {
     
-    name: undefined,
+    this.environment = Environment.Development;
 
-    fileGroups: [],
+    this.path = null;
 
-    images: [],
+    this.dbg = false;
 
-    entities: [],
+    this.title = 'jsnbt';
 
-    roles: [],
+    this.localization = {
+        enabled: true,
+        locale: 'en'
+    };
 
-    sections: [],
+    this.ssl = false;
 
-    collections: {},
+    this.modules = {
+        core: undefined,
+        rest: [],
+        public: undefined,
+        all: []
+    };
 
-    lists: [],
+    this.config = {
 
-    injects: [],
+        name: undefined,
 
-    layouts: [],
+        fileGroups: [],
 
-    containers: [],
+        images: [],
 
-    scripts: { },
+        entities: [],
 
-    styles: { },
+        roles: [],
 
-    templates: [],
+        sections: [],
 
-    content: [],
+        collections: {},
 
-    routes: [],
+        lists: [],
 
-    messaging: {
-        mail: {
-            implementations: {},
-            templates: {}
-        },
-        sms: {
-            implementations: {},
-            templates: {}
+        injects: [],
+
+        layouts: [],
+
+        containers: [],
+
+        scripts: {},
+
+        styles: {},
+
+        templates: [],
+
+        content: [],
+
+        routes: [],
+
+        messaging: {
+            mail: {
+                implementations: {},
+                templates: {}
+            },
+            sms: {
+                implementations: {},
+                templates: {}
+            }
         }
-    }
+
+    };
+
+    var versionInfo = fs.existsSync(root.getPath('node_modules/jsnbt/package.json')) ?
+        require(root.getPath('node_modules/jsnbt/package.json')) :
+        require(root.getPath('package.json'));
+
+    this.version = versionInfo.version;
+
+    this.languages = require('./data/store/languages.js');
+    this.countries = require('./data/store/countries.js');
+
+    this.root = root;
 
 };
 
-var versionInfo = fs.existsSync(root.getPath('node_modules/jsnbt/package.json')) ?
-    require(root.getPath('node_modules/jsnbt/package.json')) :
-    require(root.getPath('package.json'));
-
-exports.version = versionInfo.version;
-
-exports.languages = require('./data/store/languages.js');
-exports.countries = require('./data/store/countries.js');
-
-exports.root = root;
-
-exports.register = function (module) {
+App.prototype.register = function (module) {
 
     var self = this;
 
@@ -346,7 +348,7 @@ exports.register = function (module) {
         applyArray('layouts', 'id');
 
         applyArray('containers', 'id');
-
+        
         applyArray('routes', 'id');
 
 
@@ -376,7 +378,7 @@ exports.register = function (module) {
     self.modules.all.push(module);
 };
 
-exports.init = function (options) {
+App.prototype.init = function (options) {
     var self = this;
     
     var defOpts = {
@@ -395,10 +397,10 @@ exports.init = function (options) {
         domain: 'core',
         browsable: false,
         messager: true,
-        getName: self.getName,
-        getVersion: self.getVersion,
-        getConfig: self.getConfig,
-        getBower: self.getBower
+        getName: index.getName,
+        getVersion: index.getVersion,
+        getConfig: index.getConfig,
+        getBower: index.getBower
     };
     
     this.register(coreModule);
@@ -443,7 +445,7 @@ exports.init = function (options) {
     delete this.init;
 }
 
-exports.createServer = function (options) {
+App.prototype.createServer = function (options) {
     if (!fs.existsSync(root.getPath('www')))
         throw new Error('deployment directory not found! run grunt!');
 
@@ -475,18 +477,6 @@ exports.createServer = function (options) {
     return server;
 };
 
-exports.getName = function () {
-    return require('../../package').name;
-};
-
-exports.getVersion = function () {
-    return require('../../package').version;
-};
-
-exports.getConfig = function () {
-    return require('../cfg/config.js');
-};
-
-exports.getBower = function () {
-    return require('../web/bower.json');
+module.exports = function () {
+    return new App();
 };
