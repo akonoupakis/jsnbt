@@ -92,6 +92,13 @@
 	"grunt-legacy-util": "*",
 	"grunt-legacy-log": "*",
 	"grunt-angular-templates": "*",
+	"gulp": "*",
+	"del": "*",
+	"gulp-preprocess": "*",
+	"gulp-less": "*",
+	"gulp-rename": "*",
+	"gulp-minify-css": "*",
+	"gulp-concat": "*",
     "jsnbt-docs": "*"
   }
 }

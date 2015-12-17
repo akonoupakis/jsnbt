@@ -168,12 +168,6 @@
         }
       ],
       "folders": [
-        {
-          "src": "bootstrap-3.3.5/dist/fonts",
-          "dest": [
-            "admin/css/core/lib/bootstrap/fonts"
-          ]
-        },
 		{
           "src": "bootstrap-3.3.5/dist/fonts",
           "dest": [
