@@ -99,6 +99,8 @@
 	"gulp-rename": "*",
 	"gulp-minify-css": "*",
 	"gulp-concat": "*",
+	"run-sequence": "*",
+	"chalk": "*",
     "jsnbt-docs": "*"
   }
 }

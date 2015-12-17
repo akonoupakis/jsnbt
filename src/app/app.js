@@ -107,9 +107,7 @@ exports.register = function (module) {
 
     if (!module.domain)
         return;
-
-    logger.debug('registering module: ' + module.domain);
-
+    
     var moduleConfig = typeof (module.getConfig) === 'function' ? module.getConfig() : {};
 
     var validator = new validation.JSONValidation();
