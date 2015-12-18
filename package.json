@@ -30,16 +30,9 @@
     "src/app/**",
     "src/cfg/**",
     "src/dat/**",
-    "src/web/admin/**",
-    "src/web/bower.json",
-    "scripts/**",
-    "installer.js",
-    "gruntfile.js"
+    "src/web/**",
+    "gulpfile.js"
   ],
-  "scripts": {
-    "install": "node scripts/install.js",
-    "postuninstall": "node scripts/uninstall.js"
-  },
   "dependencies": {
     "MD5": "1.2.1",
     "async": "0.8.0",
@@ -68,32 +61,10 @@
     "fs-extra": "0.22.1"
   },
   "devDependencies": {
-    "less": "*",
-	"coffee-script": "*",
-	"eventemitter2": "*",
-	"dateformat": "*",
-	"minimatch": "*",
-	"glob": "*",
-	"findup-sync": "*",
-	"js-yaml": "*",
-	"rimraf": "*",
-	"iconv-lite": "*",
-	"nopt": "*",
-    "grunt": "*",
-    "grunt-contrib-clean": "*",
-    "grunt-contrib-copy": "*",
-    "grunt-contrib-cssmin": "*",
-    "grunt-contrib-jshint": "*",
-    "grunt-contrib-less": "*",
-    "grunt-contrib-uglify": "*",
-    "grunt-contrib-watch": "*",
-    "grunt-env": "*",
-    "grunt-preprocess": "*",
-	"grunt-legacy-util": "*",
-	"grunt-legacy-log": "*",
-	"grunt-angular-templates": "*",
+    "chalk": "*",
 	"gulp": "*",
 	"del": "*",
+	"gulp-util": "*",
 	"gulp-preprocess": "*",
 	"gulp-less": "*",
 	"gulp-rename": "*",
@@ -103,7 +74,6 @@
 	"gulp-ng-templates": "*",
 	"gulp-htmlmin": "*",
 	"run-sequence": "*",
-	"chalk": "*",
 	"event-stream": "*",
     "jsnbt-docs": "*"
   }
