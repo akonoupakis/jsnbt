@@ -204,6 +204,131 @@ var jsnbt = (function (jsnbt) {
         return auth;
     })(jsnbt.auth || {});
     
+    jsnbt.image = (function (image) {
+
+        image.build = function (src, gen) {
+            if (!src)
+                return;
+
+            if (typeof (gen) === 'string') {
+                return src += '?type=' + gen;
+            }
+            else if (typeof (gen) === 'object') {
+                return src += '?type=custom&processors=' + encodeURIComponent(JSON.stringify(gen));
+            }
+            else {
+                return src;
+            }
+        };
+
+    })(jsnbt.image || {});
+
+    jsnbt.url = (function (url) {
+
+        url.build = function (language, page, pointer) {
+
+            if (page.entity === 'pointer') {
+                return page.enabled[language] ? page.url[language] : undefined;
+            }
+            else {
+
+                if (page.domain === 'core') {
+                    return page.enabled[language] ? page.url[language] : undefined;
+                }
+                else {
+                    if (pointer) {
+                        if (pointer.enabled[language] && page.enabled[language]) {
+                            var pointerNodeIndex = page.hierarchy.indexOf(pointer.pointer.nodeId);
+                            if (pointerNodeIndex !== -1) {
+                                var cropUrlIndex = pointerNodeIndex + 1;
+                                var pageUrlParts = (page.url[language] || '').split('/');
+                                if (pageUrlParts.length >= cropUrlIndex) {
+                                    var remainingUrl = _.str.ltrim(page.url[language], '/').split('/').slice(cropUrlIndex).join('/');
+                                    var resultUrl = pointer.url[language];
+                                    if (remainingUrl !== '')
+                                        resultUrl += '/' + remainingUrl;
+                                    return resultUrl;
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        if (page.enabled[language]) {
+                            return page.url[language];
+                        }
+                    }
+                }
+            }
+        };
+
+    })(jsnbt.url || {});
+    
+    jsnbt.text = (function (text) {
+
+        var getLocalizationObject = function (item, language) {
+            var keyParts = item.key.split('.');
+
+            var loopObject = {};
+            var finalObject = loopObject;
+            while (keyParts.length > 0) {
+                var keyPart = keyParts.shift();
+
+                var objValue = undefined;
+                if (keyParts.length > 0) {
+                    objValue = {};
+                }
+                else {
+                    objValue = item.value[language];
+                }
+
+                loopObject[keyPart] = objValue;
+
+                if (keyParts.length > 0) {
+                    loopObject = loopObject[[keyPart]];
+                }
+            }
+
+            return finalObject;
+        };
+
+        text.get = function (language, match, cb) {
+            var matches = typeof (match) === 'string' ? [match] : match;
+
+            jsnbt.db.texts.get({
+                $or: [{
+                    key: {
+                        $in: matches
+                    }
+                }, {
+                    group: {
+                        $in: matches
+                    }
+                }]
+            }, function (error, results) {
+                if (error) {
+                    cb(error, null);
+                }
+                else {
+                    var returnObj = {};
+
+                    $(results).each(function (i, item) {
+                        var localizationObject = getLocalizationObject(item, language);
+
+                        if (item.group && item.group !== '') {
+                            returnObj[item.group] = returnObj[item.group] || {};
+                            $.extend(true, returnObj[item.group], localizationObject);
+                        }
+                        else {
+                            $.extend(true, returnObj, localizationObject);
+                        }
+                    });
+
+                    cb(null, returnObj);
+                }
+            });
+        };
+
+    })(jsnbt.text || {});
 
     return jsnbt;
 })(jsnbt || {});

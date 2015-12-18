@@ -22,7 +22,7 @@ module.exports = [{
         '/js/app/providers/$data.js',
         '/js/app/providers/$image.js',
         '/js/app/providers/$jsnbt.js',
-        '/js/app/providers/$link.js',
+        '/js/app/providers/$url.js',
         '/js/app/providers/$text.js',
         '/js/init.js'
     ]

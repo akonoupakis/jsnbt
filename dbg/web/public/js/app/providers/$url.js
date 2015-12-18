@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .provider("$link", function () {
+        .provider("$url", function () {
 
             return {
 

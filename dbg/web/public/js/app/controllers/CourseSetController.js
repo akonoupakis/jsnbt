@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('CourseSetController', function ($scope, $data, $link) {
+        .controller('CourseSetController', function ($scope, $data, $url) {
 
             $scope.articles = [];
             console.log('courseSetController');
@@ -33,7 +33,7 @@
                     
                     $scope.items = _.map(data, function (x) { 
                         var c = $scope.flat(x);
-                        c.url = $link.build($scope.language, x, pointerResult);
+                        c.url = $url.build($scope.language, x, pointerResult);
                         //      console.log(12, c.url, x, x.url);
 
                         c.title = x.title[$scope.language];
