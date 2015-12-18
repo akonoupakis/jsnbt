@@ -4,10 +4,13 @@ var preprocess = require('gulp-preprocess');
 var less = require('gulp-less');
 var rename = require("gulp-rename");
 var minifyCSS = require('gulp-minify-css');
+var uglify = require('gulp-uglify');
 var gutil = require('gulp-util');
 var concat = require('gulp-concat');
 var runSequence = require('run-sequence').use(gulp);
 var eventStream = require('event-stream');
+var ngTemplates = require('gulp-ng-templates');
+var htmlmin = require('gulp-htmlmin');
 
 var fs = require('fs-extra');
 var path = require('path');
@@ -478,15 +481,21 @@ gulp.task('generateStyles', function () {
             var styleBundle = bundler.getStyleBundle(tmpl.styles);
             _.each(styleBundle.raw, function (r) {
                 if (r.items.length > 0) {
-                    gulps.push(gulp.src(_.map(r.items, function (x, i) {
+
+                    var g = gulp.src(_.map(r.items, function (x, i) {
                         return './' + TARGET_FOLDER + '/public' + (_.str.startsWith(x, '/admin/') ? x : '' + x)
-                    }))
-                    .pipe(less({
-                            
-                    }))
-                    .pipe(concat('less-files.less'))
-                    .pipe(rename(path.basename(r.target)))
-                    .pipe(gulp.dest('./' + TARGET_FOLDER + '/public' + path.dirname(r.target))));
+                    })).pipe(less({
+                    }));
+
+                    if (appMode === 'PRODUCTION') {
+                        g = g.pipe(minifyCSS());
+                    }
+
+                    g = g.pipe(concat('less-files.less'))
+                        .pipe(rename(path.basename(r.target)))
+                        .pipe(gulp.dest('./' + TARGET_FOLDER + '/public' + path.dirname(r.target)));
+
+                    gulps.push(g);
                 }
             });
         }
@@ -494,6 +503,90 @@ gulp.task('generateStyles', function () {
     });
 
     return eventStream.merge(gulps);
+});
+
+gulp.task('minifyScripts', function () {
+
+    var gulps = [];
+
+    var targets = [];
+
+    var bundler = require('./src/app/tmpl/bundle.js')(app);
+    _.each(app.config.templates, function (tmpl) {
+
+        if (tmpl.scripts && _.isArray(tmpl.scripts)) {
+            var scriptBundle = bundler.getScriptBundle(tmpl.scripts);
+            _.each(scriptBundle.raw, function (r) {
+                if (r.items.length > 0 && targets.indexOf(r.target === -1)) {
+
+                    var g = gulp.src(_.map(r.items, function (x, i) {
+                        return './' + TARGET_FOLDER + '/public' + x
+                    }))
+                        .pipe(uglify({
+                            preserveComments: false,
+                            mangle: false,
+                            compress: false,
+                            wrap: false
+                        }))
+                        .pipe(concat('js-files.js'))
+                        .pipe(rename(path.basename(r.target)))
+                        .pipe(gulp.dest('./' + TARGET_FOLDER + '/public' + path.dirname(r.target)));
+
+                    gulps.push(g);
+                    targets.push(r.target);
+                }
+            });
+        }
+
+    });
+
+    return eventStream.merge(gulps);
+});
+
+gulp.task('compressAngularTemplates', function () {
+    return eventStream.merge([
+        gulp.src(['./' + TARGET_FOLDER + '/public/admin/tmpl/**/*.html'])
+		    .pipe(htmlmin({
+		        collapseBooleanAttributes: true,
+		        collapseWhitespace: true,
+		        removeAttributeQuotes: true,
+		        removeComments: true,
+		        removeEmptyAttributes: true,
+		        removeRedundantAttributes: true,
+		        removeScriptTypeAttributes: true,
+		        removeStyleLinkTypeAttributes: true
+		    }))
+		    .pipe(ngTemplates({
+		        module: 'jsnbt',
+		        standalone: false,
+		        path: function (path, base) {
+		            return 'tmpl\\' + path.replace(base, '');
+		        }
+		    }))
+            .pipe(rename('tmpl.js'))
+		    .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/admin')),
+
+        gulp.src(['./' + TARGET_FOLDER + '/public/tmpl/partial/**/*.html'])
+		    .pipe(htmlmin({
+		        collapseBooleanAttributes: true,
+		        collapseWhitespace: true,
+		        removeAttributeQuotes: true,
+		        removeComments: true,
+		        removeEmptyAttributes: true,
+		        removeRedundantAttributes: true,
+		        removeScriptTypeAttributes: true,
+		        removeStyleLinkTypeAttributes: true
+		    }))
+		    .pipe(ngTemplates({
+		        module: 'jsnbt',
+		        standalone: false,
+		        path: function (path, base) {
+		            return 'tmpl\\partial\\' + path.replace(base, '');
+		        }
+		    }))
+            .pipe(rename('tmpl.js'))
+		    .pipe(gulp.dest('./' + TARGET_FOLDER + '/public'))
+    ]);
 });
 
 function watch() {
@@ -661,7 +754,7 @@ gulp.task('prod', function (callback) {
         'loadModules',
         'installBowerComponents',
         'cleanTarget',
-        'setMode:dev',
+        'setMode:prod',
         'setModules',
         'copyMigrations',
         'copyFiles',
@@ -669,6 +762,8 @@ gulp.task('prod', function (callback) {
         'generateJsnbtScript',
         'deployBowerComponents',
         'generateStyles',
+        'minifyScripts',
+        'compressAngularTemplates',
         callback
     );
 

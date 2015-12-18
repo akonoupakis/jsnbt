@@ -155,6 +155,7 @@ module.exports = [{
         '/admin/js/core/cms/services/TreeNodeService.js',
 
         '/admin/js/core/cms/utils/date.js',
+        '/admin/js/core/cms/utils/gravatar.js',
         '/admin/js/core/cms/utils/tooltip.js',
         '/admin/js/core/cms/utils/popover.js',
         '/admin/js/core/cms/utils/errSrc.js',
