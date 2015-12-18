@@ -48,7 +48,7 @@ gulp.task('copyLocalNodeModules', function () {
 });
 
 gulp.task('loadModules', function () {
-  
+
     var paths = [];
     _.each(modulePaths, function (modulePath) {
         var mPath = getModuleFolderPath(modulePath);
@@ -65,7 +65,7 @@ gulp.task('loadModules', function () {
     });
 
     app = new require('./src/app/app.js')();
-    
+
     modulePaths = [];
 
     var getModule = function (indexPath) {
@@ -154,9 +154,9 @@ gulp.task('loadModules', function () {
 
 gulp.task('installBowerComponents', function (done) {
     var exec = require('child_process').exec;
-    
+
     var tasks = [];
-    
+
     var runTasks = function () {
         var task = tasks.shift();
         if (task)
@@ -169,7 +169,7 @@ gulp.task('installBowerComponents', function (done) {
     var bowerPackages = [];
 
     var bowerConfigs = [];
-    
+
     _.each(app.modules.all, function (module) {
         if (typeof (module.getBower) === 'function') {
             var bowerConfig = module.getBower();
@@ -199,7 +199,7 @@ gulp.task('installBowerComponents', function (done) {
                     { cwd: './' }, function (err, stdout, stderr) {
                         if (err)
                             throw err;
-                        
+
                         del.sync('./bower_components/' + bowerPackage.name);
                         gutil.log('bower: installed ' + bowerPackage.name + '#' + bowerPackage.version);
 
@@ -231,7 +231,7 @@ gulp.task('cleanTarget', function () {
                 targets.push(TARGET_FOLDER + '/public/' + pf);
         });
     }
-    
+
     del.sync(targets);
 
     if (!fs.existsSync(server.getPath(TARGET_FOLDER))) {
@@ -329,13 +329,13 @@ var getFileCopyAdminPaths = function (module, modulePath) {
 gulp.task('copyFiles', function () {
 
     var gulps = [];
-    
+
     var templatePaths = [];
     var adminTemplatePaths = [];
 
     _.each(moduleNames, function (moduleName, i) {
 
-        var module = require('./' + modulePaths[i]);
+        var module = require(server.getPath(modulePaths[i]));
 
         var modulePath = getModuleFolderPath(modulePaths[i]);
 
@@ -360,20 +360,20 @@ gulp.task('parseTemplates', function () {
     var gulps = [];
 
     _.each(moduleNames, function (moduleName, i) {
-        
-        var module = require('./' + modulePaths[i]);
+
+        var module = require(server.getPath(modulePaths[i]));
 
         var modulePath = getModuleFolderPath(modulePaths[i]);
 
         if (typeof (module.getConfig) === 'function') {
             var templates = module.getConfig().templates || [];
-            
+
             _.each(templates, function (template) {
                 gulps.push(gulp.src('./' + modulePath + '/web/' + (!_.str.startsWith(template.html, '/admin/') && !_.str.startsWith(template.html, 'admin/') ? 'public/' : '') + _.str.ltrim(template.html, '/'))
                     .pipe(preprocess({ context: { NODE_ENV: appMode, DEBUG: false } }))
                     .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/' + _.str.ltrim(path.dirname(template.html), '/') + '/')));
             });
-            
+
         }
 
         gulps.push(gulp.src('./' + modulePath + '/web/public/err/*')
@@ -383,7 +383,7 @@ gulp.task('parseTemplates', function () {
         gulps.push(gulp.src('./' + modulePath + '/web/admin/err/*')
             .pipe(preprocess())
             .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/admin/err/')));
-        
+
     });
 
     return eventStream.merge(gulps);
@@ -471,7 +471,7 @@ gulp.task('deployBowerComponents', function () {
 });
 
 gulp.task('generateStyles', function () {
-    
+
     var gulps = [];
 
     var bundler = require('./src/app/tmpl/bundle.js')(app);
@@ -544,8 +544,13 @@ gulp.task('minifyScripts', function () {
 });
 
 gulp.task('compressAngularTemplates', function () {
+
+    var templateFiles = _.map(app.config.templates, function (x) {
+        return '!./' + TARGET_FOLDER + '/public' + x;
+    })
+
     return eventStream.merge([
-        gulp.src(['./' + TARGET_FOLDER + '/public/admin/tmpl/**/*.html'])
+        gulp.src(_.union(['./' + TARGET_FOLDER + '/public/admin/tmpl/**/*.html'], templateFiles))
 		    .pipe(htmlmin({
 		        collapseBooleanAttributes: true,
 		        collapseWhitespace: true,
@@ -566,7 +571,7 @@ gulp.task('compressAngularTemplates', function () {
             .pipe(rename('tmpl.js'))
 		    .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/admin')),
 
-        gulp.src(['./' + TARGET_FOLDER + '/public/tmpl/partial/**/*.html'])
+        gulp.src(_.union(['./' + TARGET_FOLDER + '/public/tmpl/**/*.html'], templateFiles))
 		    .pipe(htmlmin({
 		        collapseBooleanAttributes: true,
 		        collapseWhitespace: true,
@@ -581,7 +586,7 @@ gulp.task('compressAngularTemplates', function () {
 		        module: 'jsnbt',
 		        standalone: false,
 		        path: function (path, base) {
-		            return 'tmpl\\partial\\' + path.replace(base, '');
+		            return 'tmpl\\' + path.replace(base, '');
 		        }
 		    }))
             .pipe(rename('tmpl.js'))
@@ -594,40 +599,42 @@ function watch() {
 
     // on local bowerComponents, copy to bower_components and perform deployBowerComponents
 
-    var localPackages = fs.readdirSync(server.getPath('npm'));
-    _.each(localPackages, function (localPackage) {
-        if (fs.lstatSync(server.getPath('npm/' + localPackage)).isDirectory()) {
+    if (fs.existsSync(server.getPath('npm'))) {
+        var localPackages = fs.readdirSync(server.getPath('npm'));
+        _.each(localPackages, function (localPackage) {
+            if (fs.lstatSync(server.getPath('npm/' + localPackage)).isDirectory()) {
 
-            var copyFile = function (event) {
+                var copyFile = function (event) {
 
-                var searchPrefix = '\\npm\\' + localPackage + '\\';
-                var targetPath = event.path.substring(event.path.indexOf(searchPrefix) + searchPrefix.length);
-                gutil.log('File ' + event.path + ' was ' + event.type);
-                gulp.src(event.path)
-                    .pipe(gulp.dest('./node_modules/' + localPackage + '/' + path.dirname(targetPath)));
-            };
+                    var searchPrefix = '\\npm\\' + localPackage + '\\';
+                    var targetPath = event.path.substring(event.path.indexOf(searchPrefix) + searchPrefix.length);
+                    gutil.log('File ' + event.path + ' was ' + event.type);
+                    gulp.src(event.path)
+                        .pipe(gulp.dest('./node_modules/' + localPackage + '/' + path.dirname(targetPath)));
+                };
 
-            var deleteFile = function (event) {
-                var searchPrefix = '\\npm\\' + localPackage + '\\';
-                var targetPath = event.path.substring(event.path.indexOf(searchPrefix) + searchPrefix.length);
-                gutil.log('File ' + event.path + ' was ' + event.type);
-                del.sync('./node_modules/' + localPackage + '/' + targetPath);
-            };
+                var deleteFile = function (event) {
+                    var searchPrefix = '\\npm\\' + localPackage + '\\';
+                    var targetPath = event.path.substring(event.path.indexOf(searchPrefix) + searchPrefix.length);
+                    gutil.log('File ' + event.path + ' was ' + event.type);
+                    del.sync('./node_modules/' + localPackage + '/' + targetPath);
+                };
 
-            gulp.watch('./npm/' + localPackage + '/**', function (event) {
-                if (event.type === 'changed') {
-                    copyFile(event);
-                }
-                else if (event.type === 'deleted') {
-                    deleteFile(event);
-                }
-            });
-        }
-    });
-    
+                gulp.watch('./npm/' + localPackage + '/**', function (event) {
+                    if (event.type === 'changed') {
+                        copyFile(event);
+                    }
+                    else if (event.type === 'deleted') {
+                        deleteFile(event);
+                    }
+                });
+            }
+        });
+    }
+
     _.each(moduleNames, function (moduleName, i) {
 
-        var module = require('./' + modulePaths[i]);
+        var module = require(server.getPath(modulePaths[i]));
 
         var modulePath = getModuleFolderPath(modulePaths[i]);
 
@@ -645,7 +652,7 @@ function watch() {
             gutil.log('File ' + event.path + ' was ' + event.type);
             del.sync('./' + TARGET_FOLDER + '/public/' + (admin ? 'admin/' : '') + targetPath);
         };
-        
+
         gulp.watch(getFileCopyAdminPaths(module, modulePath), function (event) {
             if (event.type === 'changed') {
                 copyFile(event, true);
@@ -693,7 +700,7 @@ function watch() {
                 .pipe(preprocess())
                 .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/admin/err/'));
         });
-        
+
     });
 
     gulp.watch([
@@ -703,7 +710,7 @@ function watch() {
 };
 
 gulp.task('dev', function (callback) {
-    
+
     runSequence(
         'copyLocalBowerComponents',
         'copyLocalNodeModules',
@@ -721,7 +728,7 @@ gulp.task('dev', function (callback) {
         callback
     );
 
-}); 
+});
 
 gulp.task('dev-update', function (callback) {
 
