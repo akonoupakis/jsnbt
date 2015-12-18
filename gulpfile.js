@@ -36,10 +36,8 @@ var getModuleFolderPath = function (installedPath) {
 }
 
 gulp.task('copyLocalBowerComponents', function () {
-    // read from /bower and copy under /bower_components with their version number
-
-    //gulp.src('./bower/**')
-    //    .pipe(gulp.dest('./bower_components'));
+    gulp.src('./bower/**')
+        .pipe(gulp.dest('./bower_components'));
 });
 
 gulp.task('copyLocalNodeModules', function () {
@@ -191,7 +189,7 @@ gulp.task('installBowerComponents', function (done) {
 
     _.each(bowerPackages, function (bowerPackage) {
         tasks.push(function (cb) {
-            if (!fs.existsSync(server.getPath('bower_components/' + bowerPackage.name + '-' + bowerPackage.version))) {
+            if (!fs.existsSync(server.getPath('bower_components/' + bowerPackage.name + '-' + bowerPackage.version)) && !fs.existsSync(server.getPath('bower/' + bowerPackage.name))) {
                 gutil.log('bower: installing ' + bowerPackage.name + '#' + bowerPackage.version);
                 exec('bower install ' + bowerPackage.name + '-' + bowerPackage.version + '=' + bowerPackage.name + '#' + bowerPackage.version
                     + ' --config.analytics=false'
@@ -596,8 +594,42 @@ gulp.task('compressAngularTemplates', function () {
 
 function watch() {
     gutil.log('Watch enabled. Listening for file changes...');
+    
+    if (fs.existsSync(server.getPath('bower'))) {
+        var localPackages = fs.readdirSync(server.getPath('bower'));
+        _.each(localPackages, function (localPackage) {
+            if (fs.lstatSync(server.getPath('bower/' + localPackage)).isDirectory()) {
 
-    // on local bowerComponents, copy to bower_components and perform deployBowerComponents
+                var copyFile = function (event) {
+
+                    var searchPrefix = '\\bower\\' + localPackage + '\\';
+                    var targetPath = event.path.substring(event.path.indexOf(searchPrefix) + searchPrefix.length);
+                    gutil.log('File ' + event.path + ' was ' + event.type);
+                    gulp.src(event.path)
+                        .pipe(gulp.dest('./bower_components/' + localPackage + '/' + path.dirname(targetPath)));
+                };
+
+                var deleteFile = function (event) {
+                    var searchPrefix = '\\bower\\' + localPackage + '\\';
+                    var targetPath = event.path.substring(event.path.indexOf(searchPrefix) + searchPrefix.length);
+                    gutil.log('File ' + event.path + ' was ' + event.type);
+                    del.sync('./bower_components/' + localPackage + '/' + targetPath);
+                };
+
+                gulp.watch('./bower/' + localPackage + '/**', function (event) {
+                    if (event.type === 'changed') {
+                        copyFile(event);
+                    }
+                    else if (event.type === 'deleted') {
+                        deleteFile(event);
+                    }
+
+                    runSequence('deployBowerComponents', 'generateStyles');
+                });
+
+            }
+        });
+    }
 
     if (fs.existsSync(server.getPath('npm'))) {
         var localPackages = fs.readdirSync(server.getPath('npm'));
