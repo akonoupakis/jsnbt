@@ -381,11 +381,11 @@ gulp.task('parseTemplates', function () {
         }
 
         gulps.push(gulp.src('./' + modulePath + '/web/public/err/*')
-            .pipe(preprocess())
+            .pipe(preprocess({ context: { NODE_ENV: appMode, DEBUG: false } }))
             .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/err/')));
 
         gulps.push(gulp.src('./' + modulePath + '/web/admin/err/*')
-            .pipe(preprocess())
+            .pipe(preprocess({ context: { NODE_ENV: appMode, DEBUG: false } }))
             .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/admin/err/')));
 
     });

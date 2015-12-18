@@ -1,5 +1,5 @@
 var hosts = require('./hosts.json');
-var app = new require('./src/app/app.js');
+var app = new require('./app')();
 
 app.init();
 
