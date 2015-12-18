@@ -31,6 +31,7 @@
     "src/cfg/**",
     "src/dat/**",
     "src/web/**",
+    "app.js",
     "gulpfile.js"
   ],
   "dependencies": {
