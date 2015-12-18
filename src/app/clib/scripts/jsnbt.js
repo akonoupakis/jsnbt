@@ -202,6 +202,7 @@ var jsnbt = (function (jsnbt) {
         };
 
         return auth;
+
     })(jsnbt.auth || {});
     
     jsnbt.image = (function (image) {
@@ -220,6 +221,8 @@ var jsnbt = (function (jsnbt) {
                 return src;
             }
         };
+
+        return image;
 
     })(jsnbt.image || {});
 
@@ -260,6 +263,8 @@ var jsnbt = (function (jsnbt) {
                 }
             }
         };
+
+        return url;
 
     })(jsnbt.url || {});
     
@@ -327,6 +332,8 @@ var jsnbt = (function (jsnbt) {
                 }
             });
         };
+
+        return text;
 
     })(jsnbt.text || {});
 
