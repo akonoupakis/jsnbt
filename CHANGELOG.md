@@ -8,6 +8,10 @@
 	- ctrlCustom and ctrlCustomList controls
 	- node.name converted to localized object node.title ({ title: { en: "" } })
 	- data.name converted to localized object data.title ({ title: { en: "" } })
+	- changed grunt process to gulp. run gulp dev/prod or gulp dev-update instead
+	- compress angular templates in production mode
+	- renamed scope.node to scope.model (also on scope.item, scope.data etc)
+
 
 
 ## 1.0.113 (2015-07-26)
