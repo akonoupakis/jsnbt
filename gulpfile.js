@@ -36,7 +36,6 @@ var getModuleFolderPath = function (installedPath) {
 }
 
 gulp.task('setCurrentDirectory', function () {
-    //console.log(__dirname, server.getPath(''));
     process.chdir(server.getPath(''));
 });
 
@@ -603,7 +602,7 @@ function watch() {
 
     var processFile = function (event, prefix, destination) {
         var targetPath = event.path.substring(event.path.indexOf(prefix) + prefix.length);
-        gutil.log('File ' + event.path + ' was ' + event.type);
+        gutil.log('File ' + event.path + ' was ' + event.type, destination + '/' + path.dirname(targetPath));
         if (event.type === 'changed') {
             gulp.src(event.path)
                 .pipe(gulp.dest(destination + '/' + path.dirname(targetPath)));
@@ -645,11 +644,11 @@ function watch() {
         var modulePath = getModuleFolderPath(modulePaths[i]);
 
         gulp.watch(getFileCopyAdminPaths(module, modulePath), function (event) {
-            processFile(event, 'src\\web\\admin\\', './' + TARGET_FOLDER + '/public/admin/');
+            processFile(event, 'web\\admin\\', './' + TARGET_FOLDER + '/public/admin/');
         });
 
         gulp.watch(getFileCopyPublicPaths(module, modulePath), function (event) {
-            processFile(event, 'src\\web\\public\\', './' + TARGET_FOLDER + '/public/');
+            processFile(event, 'web\\public\\', './' + TARGET_FOLDER + '/public/');
         });
 
         gulp.watch('./' + modulePath + '/cfg/**', function (event) {

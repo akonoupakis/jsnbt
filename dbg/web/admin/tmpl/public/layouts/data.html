@@ -1,16 +1,16 @@
 ﻿<div class="row" id="layout-datum" data-scrollspy="datum">
-    <ctrl-data class="col-sm-6" ng-language="defaults.language" ng-model="layout.content.datum" ng-domain="'public'" ng-list-id="'telephones'" ng-label="datum">
+    <ctrl-data class="col-sm-6" ng-language="defaults.language" ng-model="model.content.datum" ng-domain="'public'" ng-list-id="'telephones'" ng-label="datum">
         {{model.title[language]}}
     </ctrl-data>
-    <ctrl-data class="col-sm-6" ng-language="defaults.language" ng-model="layout.content.datumR" ng-domain="'public'" ng-required="true" ng-list-id="'telephones'" ng-label="datum required">
+    <ctrl-data class="col-sm-6" ng-language="defaults.language" ng-model="model.content.datumR" ng-domain="'public'" ng-required="true" ng-list-id="'telephones'" ng-label="datum required">
         {{model.title[language]}}
     </ctrl-data>
 </div>
 <div class="row" id="layout-data" data-scrollspy="data">
-    <ctrl-data-list class="col-sm-12" ng-language="defaults.language" ng-model="layout.content.data" ng-domain="'public'" ng-list-id="'telephones'" ng-label="data">
+    <ctrl-data-list class="col-sm-12" ng-language="defaults.language" ng-model="model.content.data" ng-domain="'public'" ng-list-id="'telephones'" ng-label="data">
         {{model.title[language]}}
     </ctrl-data-list>
-    <ctrl-data-list class="col-sm-12" ng-language="defaults.language" ng-model="layout.content.dataR" ng-domain="'public'" ng-required="true" ng-list-id="'telephones'" ng-max-length="2" ng-label="data required (max length: 2)">
+    <ctrl-data-list class="col-sm-12" ng-language="defaults.language" ng-model="model.content.dataR" ng-domain="'public'" ng-required="true" ng-list-id="'telephones'" ng-max-length="2" ng-label="data required (max length: 2)">
         {{model.title[language]}}
     </ctrl-data-list>
 </div>

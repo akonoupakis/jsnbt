@@ -9,7 +9,7 @@
         var logger = $logger.create('LayoutController');
 
         $scope.layoutId = undefined;
-        $scope.layout = {};
+        $scope.model = {};
         
         $scope.tmpl = null;
         
@@ -32,7 +32,7 @@
 
             if (!$scope.layoutId) {
                 $scope.layoutId = data.id;
-                $scope.layout.id = data.id;
+                $scope.model.id = data.id;
             }
 
             deferred.resolve();
@@ -75,11 +75,11 @@
 
         if (data) {
             this.scope.layoutId = data.id;
-            this.scope.layout = data;
+            this.scope.model = data;
         }
         else {
             this.scope.layoutId = undefined;
-            this.scope.layout = this.ctor.$data.create('layouts', {
+            this.scope.model = this.ctor.$data.create('layouts', {
                 layout: this.scope.id
             });
         }
@@ -89,7 +89,7 @@
         this.setValid(true);
         this.setPublished(true);
 
-        deferred.resolve(this.scope.layout);
+        deferred.resolve(this.scope.model);
 
         return deferred.promise;
     };
@@ -103,7 +103,7 @@
     }
 
     LayoutController.prototype.get = function () {
-        return this.scope.layout;
+        return this.scope.model;
     };
 
     LayoutController.prototype.push = function (data) {

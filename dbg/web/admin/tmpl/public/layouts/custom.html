@@ -1,5 +1,5 @@
 ﻿<div class="row" id="layout-custom" data-scrollspy="custom">
-    <ctrl-custom class="col-sm-12" ng-model="layout.content.custom" ng-label="custom">
+    <ctrl-custom class="col-sm-12" ng-model="model.content.custom" ng-label="custom">
         <div class="row">
             <ctrl-text class="col-sm-6" ng-model="model.alpha"></ctrl-text>
             <ctrl-text class="col-sm-6" ng-model="model.vita"></ctrl-text>
@@ -7,7 +7,7 @@
     </ctrl-custom>
 </div>
 <div class="row" id="layout-customR" data-scrollspy="custom required">
-    <ctrl-custom class="col-sm-12" ng-model="layout.content.customR" ng-required="true" ng-label="custom required">
+    <ctrl-custom class="col-sm-12" ng-model="model.content.customR" ng-required="true" ng-label="custom required">
         <div class="row">
             <ctrl-text class="col-sm-6" ng-required="ngRequired" ng-model="model.alpha"></ctrl-text>
             <ctrl-text class="col-sm-6" ng-required="ngRequired" ng-model="model.vita"></ctrl-text>
@@ -15,7 +15,7 @@
     </ctrl-custom>
 </div>
 <div class="row" id="layout-customs" data-scrollspy="customs">
-    <ctrl-custom-list class="col-sm-12" ng-model="layout.content.customs" ng-label="customs">
+    <ctrl-custom-list class="col-sm-12" ng-model="model.content.customs" ng-label="customs">
         <div class="row">
             <ctrl-text class="col-sm-6" ng-model="model.alpha"></ctrl-text>
             <ctrl-text class="col-sm-6" ng-model="model.vita"></ctrl-text>
@@ -23,7 +23,7 @@
     </ctrl-custom-list>
 </div>
 <div class="row" id="layout-customsR" data-scrollspy="customs required">
-    <ctrl-custom-list class="col-sm-12" ng-model="layout.content.customsR" ng-required="true" ng-max-length="2" ng-label="customs required (max length: 2)">
+    <ctrl-custom-list class="col-sm-12" ng-model="model.content.customsR" ng-required="true" ng-max-length="2" ng-label="customs required (max length: 2)">
         <div class="row">
             <ctrl-text class="col-sm-6" ng-required="true" ng-model="model.alpha"></ctrl-text>
             <ctrl-text class="col-sm-6" ng-model="model.vita"></ctrl-text>
@@ -31,7 +31,7 @@
     </ctrl-custom-list>
 </div>
 <div class="row" id="layout-address" data-scrollspy="address">
-    <ctrl-custom class="col-sm-12" ng-model="layout.content.contact" ng-scope="{}" ng-label="contact">
+    <ctrl-custom class="col-sm-12" ng-model="model.content.contact" ng-scope="{}" ng-label="contact">
         <div class="row">
             <ctrl-text class="col-sm-6" ng-model="model.address" ng-required="true" ng-disabled="ngDisabled" ng-label="address"></ctrl-text>
             <ctrl-text class="col-sm-3" ng-model="model.postCode" ng-required="true" ng-disabled="ngDisabled" ng-label="post code"></ctrl-text>
