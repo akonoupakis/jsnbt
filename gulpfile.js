@@ -601,14 +601,19 @@ function watch() {
     gutil.log('Watch enabled. Listening for file changes...');
 
     var processFile = function (event, prefix, destination) {
+        var sourcePath = event.path.substring(event.path.indexOf(prefix));
         var targetPath = event.path.substring(event.path.indexOf(prefix) + prefix.length);
-        gutil.log('File ' + event.path + ' was ' + event.type, destination + '/' + path.dirname(targetPath));
+        gutil.log('File ' + sourcePath + ' was ' + event.type);
         if (event.type === 'changed') {
             gulp.src(event.path)
-                .pipe(gulp.dest(destination + '/' + path.dirname(targetPath)));
+                .pipe(gulp.dest(destination + '/' + path.dirname(targetPath)))
+                .on('end', function () {
+                    gutil.log('File updated on ' + path.join(destination + '/' + targetPath));
+                });
         }
         else if (event.type === 'deleted') {
             del.sync(destination + '/' + targetPath);
+            gutil.log('File deleted from ' + path.join(destination + '/' + targetPath));
         }
     };
 
@@ -663,7 +668,10 @@ function watch() {
                 gutil.log('File ' + event.path + ' was ' + event.type);
                 gulp.src('./' + modulePath + '/web/' + (!_.str.startsWith(template.html, '/admin/') && !_.str.startsWith(template.html, 'admin/') ? 'public/' : '') + _.str.ltrim(template.html, '/'))
                     .pipe(preprocess({ context: { NODE_ENV: appMode, DEBUG: false } }))
-                    .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/' + _.str.ltrim(path.dirname(template.html), '/') + '/'));
+                    .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/' + _.str.ltrim(path.dirname(template.html), '/') + '/'))
+                     .on('end', function () {
+                         gutil.log('File updated on ' + path.join(TARGET_FOLDER + '/public/' + _.str.ltrim(template.html, '/')));
+                     });
             });
         });
 
@@ -671,14 +679,20 @@ function watch() {
             gutil.log('File ' + event.path + ' was ' + event.type);
             gulp.src(event.path)
                 .pipe(preprocess())
-                .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/err/'));
+                .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/err/'))
+                 .on('end', function () {
+                     gutil.log('File updated on ' + path.join(TARGET_FOLDER + '/public/err/' + path.basename(event.path)));
+                 });
         });
 
         gulp.watch('./' + modulePath + '/web/admin/err/*', function (event) {
             gutil.log('File ' + event.path + ' was ' + event.type);
             gulp.src(event.path)
                 .pipe(preprocess())
-                .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/admin/err/'));
+                .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/admin/err/'))
+                 .on('end', function () {
+                     gutil.log('File updated on ' + path.join(TARGET_FOLDER + '/public/admin/err/' + path.basename(event.path)));
+                 });
         });
 
     });
