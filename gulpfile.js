@@ -158,16 +158,7 @@ gulp.task('installBowerComponents', function (done) {
     var exec = require('child_process').exec;
 
     var tasks = [];
-
-    var runTasks = function () {
-        var task = tasks.shift();
-        if (task)
-            task(runTasks);
-        else {
-            done();
-        }
-    };
-
+    
     var bowerPackages = [];
 
     var bowerConfigs = [];
@@ -191,6 +182,30 @@ gulp.task('installBowerComponents', function (done) {
         }
     });
 
+    var runTasks = function () {
+        var task = tasks.shift();
+        if (task)
+            task(runTasks);
+        else {
+
+            var folders = fs.readdirSync(server.getPath('bower_components'));
+
+            _.each(folders, function (folder) {
+                if (!fs.existsSync(server.getPath('bower/' + folder))) {
+                    if (!_.any(bowerPackages, function (x) {
+                        return (x.name + '-' + x.version) === folder;
+                    })) {
+                        gutil.log('bower: deleting obsolete ' + folder);
+                        del.sync('./bower_components/' + folder);
+                        gutil.log('bower: deleted obsolete ' + folder);
+                    }
+                }
+            });
+
+            done();
+        }
+    };
+
     _.each(bowerPackages, function (bowerPackage) {
         tasks.push(function (cb) {
             if (!fs.existsSync(server.getPath('bower_components/' + bowerPackage.name + '-' + bowerPackage.version)) && !fs.existsSync(server.getPath('bower/' + bowerPackage.name))) {
@@ -204,22 +219,7 @@ gulp.task('installBowerComponents', function (done) {
 
                         del.sync('./bower_components/' + bowerPackage.name);
                         gutil.log('bower: installed ' + bowerPackage.name + '#' + bowerPackage.version);
-
-                        var folders = _.filter(fs.readdirSync(server.getPath('bower_components')), function (x) {
-                            return _.str.startsWith(x, bowerPackage.name + '-');
-                        });
-
-                        _.each(folders, function (folder) {
-
-                            if (!_.any(bowerPackages, function (x) {
-                                return (x.name + '-' + x.version) === folder;
-                            })) {
-                                gutil.log('bower: deleting obsolete ' + folder);
-                                del.sync('./bower_components/' + folder);
-                                gutil.log('bower: deleted obsolete ' + folder);
-                            }
-                        });
-
+                        
                         cb();
                     });
             }
