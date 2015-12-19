@@ -212,6 +212,7 @@ gulp.task('installBowerComponents', function (done) {
                 gutil.log('bower: installing ' + bowerPackage.name + '#' + bowerPackage.version);
                 exec('bower install ' + bowerPackage.name + '-' + bowerPackage.version + '=' + bowerPackage.name + '#' + bowerPackage.version
                     + ' --config.analytics=false'
+                    + ' --allow-root'
                     + ' -f',
                     { cwd: './' }, function (err, stdout, stderr) {
                         if (err)
