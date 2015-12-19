@@ -30,7 +30,7 @@ anyUsers(function (anyUsersResult) {
     }
     else {
         if (!internal && !authMngr.isAuthorized(me, 'users', 'C'))
-            cancel('access denied', 500);
+            cancel('access denied', 401);
         else if (self.roles.length === 0) {
             error('roles', 'at least one role is required');
         }

@@ -1,0 +1,54 @@
+﻿<div ng-show="found === true" class="container-fluid affix-area form-buttons-container">
+    <div class="container">
+        <div class="row ">
+            <div class="col-md-10">
+                <div class="affix-container">
+                    <div class="buttons">
+                        <div ng-show="buttons" ng-include="buttons"></div>
+                        <button type="button" ng-show="!published && !draft" class="btn btn-danger" ng-click="discard()">discard</button>
+                        <button type="button" ng-disabled="published && !draft" class="btn btn-success" ng-click="publish()">publish</button>
+                    </div>
+
+                    <ctrl-language-selector class="language-selector" ng-model="language" ng-options="application.languages" ng-show="localized && localization"></ctrl-language-selector>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div ng-show="found === true" class="container">
+
+    <section class="col-md-10 scrollspy-container" data-scrollspy>
+
+        <ctrl-breadcrumb ng-show="breadcrumb" ng-model="current.breadcrumb.items" ng-title="current.breadcrumb.title"></ctrl-breadcrumb>
+
+        <div class="row title-container">
+            <div class="col-sm-12">
+                <span ng-click="back()" class="glyphicon glyphicon-arrow-left back-button"></span>
+                <h1 class="title">{{ title }}</h1>
+            </div>
+        </div>
+
+        <hr />
+
+        <div id="page-title" data-scrollspy="title" ng-show="list.properties.title">
+            <div class="row">
+                <ctrl-text class=" col-sm-12" ng-model="model.title[language]" ng-validating="active[language]" ng-disabled="!list.properties.title" ng-required="true" ng-label="title"></ctrl-text>
+            </div>
+
+            <hr />
+        </div>
+
+        <div ng-show="template" ng-include="template"></div>
+
+        <hr />
+
+    </section>
+
+    <div class="col-md-2">
+        <ctrl-scroll-spy ng-model="nav" />
+    </div>
+
+</div>
+
+<div ng-if="found === false" class="container error-page" ng-include="'tmpl/core/common/404.html'"></div>

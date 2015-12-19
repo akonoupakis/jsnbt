@@ -2,6 +2,7 @@ module.exports = {
     
     fileGroups: [
         'users',
+        'theme',
         'public'
     ],
 
@@ -23,6 +24,8 @@ module.exports = {
 
     messaging: require('./messaging.js'),
 
-    templates: require('./templates.js')
+    templates: require('./templates.js'),
+
+    content: require('./content.js')
 
 }

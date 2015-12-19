@@ -8,20 +8,30 @@
     <dcs-definition-title type="bool">ngRequired</dcs-definition-title>
     <dcs-definition-desc>indicates whether the value of this control is required or not</dcs-definition-desc>
 
-    <dcs-definition-title type="object">ngOptions</dcs-definition-title>
-    <dcs-definition-desc>options for the native configuration of the tinyMCE editor</dcs-definition-desc>
-
+    <dcs-definition-title type="bool">ngValidating</dcs-definition-title>
+    <dcs-definition-desc>indicated whether the value of this control is validated or not</dcs-definition-desc>
+    
     <dcs-definition-title type="text">ngLabel</dcs-definition-title>
     <dcs-definition-desc>the label for this control, viewed as header</dcs-definition-desc>
 
     <dcs-definition-title type="text">ngTip</dcs-definition-title>
     <dcs-definition-desc>the sublabel for this control, viewed as subheader</dcs-definition-desc>
 
+    <dcs-definition-title type="array">ngToolbar</dcs-definition-title>
+    <dcs-definition-desc>the toolbar buttons</dcs-definition-desc>
+
+    <dcs-definition-title type="number">ngHeight</dcs-definition-title>
+    <dcs-definition-desc>the editor height. if undefined, auth height is applied</dcs-definition-desc>
+
+    <dcs-definition-title type="number">ngMaxHeight</dcs-definition-title>
+    <dcs-definition-desc>the editor max height</dcs-definition-desc>
+
     <dcs-definition-sample>&lt;ctrl-html
     ng-model="sample.value"
     ng-disabled="false"
     ng-required="true"
-    ng-options="{ height: '450px' }"
     ng-label="sample label text"
-    ng-tip="sample tip text"&gt;&lt;/ctrl-html&gt;</dcs-definition-sample>
+    ng-tip="sample tip text"
+    ng-toolbar=['formatting', 'bold', 'italic', 'deleted', 'unorderedlist', 'orderedlist', 'outdent', 'indent', 'image', 'file', 'link', 'alignment', 'horizontalrule']
+    ng-height=200&gt;&lt;/ctrl-html&gt;</dcs-definition-sample>
 </dcs-definition>

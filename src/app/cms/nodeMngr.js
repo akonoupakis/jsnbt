@@ -79,51 +79,73 @@ module.exports = function(server, db) {
                     return x.domain === pointedNode.domain
                       && x.url && _.isObject(x.url) && _.isFunction(x.url.resolve);
                 });
+
+                var pointedLoopParentId = pointedNode.id;
+                var pointedFoundNodes = [pointedNode];
+                var pointedFoundAllMatches = true;
+
+                _.each(pointedSeoNames, function (pointedSeoName) {
+                    var matchedPointedSeoNode = _.first(_.filter(seoNodes, function (x) {
+                        return x.seo[server.app.localization.enabled ? returnObj.language : server.app.localization.locale].toLowerCase() === pointedSeoName.toLowerCase() &&
+                            x.parent === pointedLoopParentId &&
+                            x.domain === pointedNode.domain;
+                    }));
+                    if (matchedPointedSeoNode) {
+                        pointedFoundNodes.push(matchedPointedSeoNode);
+                        pointedLoopParentId = matchedPointedSeoNode.id;
+                    }
+                    else {
+                        pointedFoundAllMatches = false;
+                        return false;
+                    }
+                });
+
+                var targetMatchedNode = undefined;
+
+                if (pointedFoundAllMatches)
+                    targetMatchedNode = _.last(pointedFoundNodes);
+
                 if (pack) {
                     returnObj.seoNames = pointedSeoNames;
                     returnObj.pointed = pointedNode;
                     returnObj.db = db;
+
+                    if (pointedSeoNames.length === 0) {
+                        returnObj.nodes = seoNodes;
+                        returnObj.page = pointedNode;
+                        returnObj.template = pointedNode.template;
+                         _.each(pointedFoundNodes, function (pointedFoundNode) { 
+                                returnObj.nodes.push(pointedFoundNode);
+                            });
+                    }
+                    else {
+                        if (targetMatchedNode) {
+                            returnObj.page = targetMatchedNode;
+                            returnObj.template = targetMatchedNode.template;
+                            _.each(pointedFoundNodes, function (pointedFoundNode) { 
+                                returnObj.nodes.push(pointedFoundNode);
+                            });
+                        }
+                    }
                     pack.url.resolve(returnObj, cb);
                 }
                 else {
                     if (pointedSeoNames.length === 0) {
                         returnObj.page = pointedNode;
                         returnObj.template = pointedNode.template;
-                        returnObj.nodes = _.union(returnObj.nodes, pointedNode);
+                        returnObj.nodes.push(pointedNode);
                         cb(returnObj);
                     }
                     else {
-                        var pointedLoopParentId = pointedNode.id;
-                        var pointedFoundNodes = [pointedNode];
-                        var pointedFoundAllMatches = true;
 
-                        _.each(pointedSeoNames, function (pointedSeoName) {
-                            var matchedPointedSeoNode = _.first(_.filter(seoNodes, function (x) {
-                                return x.seo[server.app.localization.enabled ? returnObj.language : server.app.localization.locale].toLowerCase() === pointedSeoName.toLowerCase() &&
-                                    x.parent === pointedLoopParentId &&
-                                    x.domain === pointedNode.domain;
-                            }));
-                            if (matchedPointedSeoNode) {
-                                pointedFoundNodes.push(matchedPointedSeoNode);
-                                pointedLoopParentId = matchedPointedSeoNode.id;
-                            }
-                            else {
-                                pointedFoundAllMatches = false;
-                                return false;
-                            }
-                        });
+                        if (targetMatchedNode) {
+                            returnObj.page = targetMatchedNode;
+                            returnObj.template = targetMatchedNode.template;
+                            _.each(pointedFoundNodes, function (pointedFoundNode) {
+                                returnObj.nodes.push(pointedFoundNode);
+                            });
+                            cb(returnObj);
 
-                        if (pointedFoundAllMatches) {
-                            var targetMatchedNode = _.last(pointedFoundNodes);
-                            if (targetMatchedNode) {
-                                returnObj.page = targetMatchedNode;
-                                returnObj.template = targetMatchedNode.template;
-                                returnObj.nodes = _.union(returnObj.nodes, pointedFoundNodes);
-                                cb(returnObj);
-                            }
-                            else {
-                                cb();
-                            }
                         }
                         else {
                             cb();
@@ -177,6 +199,7 @@ module.exports = function(server, db) {
                         returnObj.language = language;
                         returnObj.nodes = foundNodes;
                         returnObj.pointer = matchedNode;
+                        returnObj.page = returnObj.pointed;
                         resolvePointerUrl(returnObj, urlSeoNodes, '/', '/' + query, cb);
                     }
                     else {
@@ -276,6 +299,9 @@ module.exports = function(server, db) {
                     var rSelf = this;
                     return _.every(rSelf.nodes, function (x) { return x.active[rSelf.language] === true; });
                 },
+                getHierarchy: function () {
+                    return _.map(_.filter(this.nodes, function (y) { return y.entity !== 'pointer'; }), function (x) { return x.id; });
+                },
                 getInheritedProperties: function () {
                     var rSelf = this;
 
@@ -342,7 +368,7 @@ module.exports = function(server, db) {
                                                     if (resolvedNode)
                                                         resolvedNodes.push(resolvedNode);
                                                 });
-
+                                                
                                                 returnObj.page = resolvedNode;
 
                                                 if (resolvedNode.entity == 'router') {
@@ -407,7 +433,7 @@ module.exports = function(server, db) {
                 parentHierarchy = node.hierarchy.slice(0);
                 parentHierarchy.pop();
             }
-
+            
             if (parentHierarchy.length > 0) {
                 var parentCacheKey = parentHierarchy.join('-');
 
@@ -415,20 +441,41 @@ module.exports = function(server, db) {
 
                 cache.get('node.url.' + parentCacheKey, function (parentCachedValue) {
 
-                    if (parentCachedValue) {
+                    if (parentCachedValue) {                        
                         var newUrl = {};
-                        extend(true, newUrl, node.seo);
-                        for (var langItem in node.seo) {
-                            var seoName = node.seo[langItem];
-                            if (parentCachedValue[langItem]) {
-                                newUrl[langItem] = parentCachedValue[langItem] + '/' + seoName
-                            }
-                            else {
-                                delete newUrl[langItem];
-                            }
-                        }
+                        extend(true, newUrl, parentCachedValue);
 
-                        cb(newUrl);
+                        var pack = _.find(server.app.modules.all, function (x) {
+                            return x.domain === node.domain
+                                  && _.isObject(x.url) && _.isFunction(x.url.build);
+                        });
+
+                        if (pack) {
+
+                            for (var item in node.seo) {
+                                if (!newUrl[item])
+                                    newUrl[item] = '';
+                            }
+                            
+                            pack.url.build({
+                                node: node,
+                                url: newUrl
+                            }, cb);
+                        }
+                        else {
+                          
+                            for (var langItem in node.seo) {
+                                var seoName = node.seo[langItem];
+                                if (parentCachedValue[langItem]) {
+                                    newUrl[langItem] = parentCachedValue[langItem] + '/' + seoName
+                                }
+                                else {
+                                    delete newUrl[langItem];
+                                }
+                            }
+
+                            cb(newUrl);
+                        }
                     }
                     else {
                         db.nodes.get({ id: { $in: parentHierarchy } }, function (error, results) {
@@ -494,14 +541,18 @@ module.exports = function(server, db) {
                                     cache.add('node.url.' + parentCacheKey, parentUrl, function (parentCachedValue) {
 
                                         var pack = _.find(server.app.modules.all, function (x) {
-                                            return x.domain === firstNode.domain
-                                                  && x.url && _.isObject(x.url) && _.isFunction(x.url.build);
+                                            return x.domain === node.domain
+                                                  && _.isObject(x.url) && _.isFunction(x.url.build);
                                         });
                                         if (pack) {
                                             extend(true, newUrl, parentUrl);
 
+                                            for (var item in node.seo) {
+                                                if (!newUrl[item])
+                                                    newUrl[item] = '';
+                                            }
+
                                             pack.url.build({
-                                                nodes: hierarchyNodes,
                                                 node: node,
                                                 url: newUrl
                                             }, cb);
@@ -530,13 +581,18 @@ module.exports = function(server, db) {
                 });
             }
             else {
-
-                var pack = _.find(server.app.modules.rest, function (x) { return x.domain === node.domain && typeof (x.build) === 'function'; });
+                var pack = _.find(server.app.modules.rest, function (x) { return x.domain === node.domain && _.isObject(x.url) && typeof (x.url.build) === 'function'; });
                 if (pack) {
-                    pack.build({
-                        nodes: [],
+
+                    var newUrl = {};
+                    for (var item in node.seo) {
+                        if (!newUrl[item])
+                            newUrl[item] = '';
+                    }
+
+                    pack.url.build({
                         node: node,
-                        url: {}
+                        url: newUrl
                     }, cb);
                 }
                 else {

@@ -2,8 +2,6 @@ var _ = require('underscore');
 
 var self = this;
 
-var self = this;
-
 var languageProperties = {};
 var languageStringProperties = {};
 var languageBooleanProperties = {};
@@ -42,9 +40,14 @@ else {
 validate({
     type: 'object',
     properties: {
+        title: {
+            type: "object",
+            required: true,
+            properties: languageStringProperties
+        },
         domain: {
             type: 'string',
-            enum: _.pluck(server.app.modules, 'domain')
+            enum: _.pluck(server.app.modules.all, 'domain')
         },
         entity: {
             type: 'string',
@@ -59,7 +62,7 @@ validate({
             properties: {
                 domain: {
                     type: 'string',
-                    enum: _.union(_.pluck(_.filter(server.app.modules, function (x) { return x.pointed; }), 'domain'), [''])
+                    enum: _.union(_.pluck(_.filter(server.app.modules.all, function (x) { return x.pointed; }), 'domain'), [''])
                 }
             }
         },
@@ -67,7 +70,7 @@ validate({
             type: 'string',
             enum: _.pluck(server.app.config.routes, 'id')
         },
-        layout: {
+        layouts: {
             type: 'object',
             properties: {
                 value: {

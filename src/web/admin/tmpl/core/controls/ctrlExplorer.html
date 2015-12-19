@@ -1,10 +1,13 @@
 ﻿<div>
-    <ol class="breadcrumb">
-        <li ng-repeat="item in breadcrumb"><a href="javascript:;" ng-click="open(item.url)" ng-class="{ active: item.active }">{{item.name}}</a></li>
-    </ol>
+    <div class="breadcrumb">
+        <span class="guide">path: </span>
+        <ul>
+            <li ng-repeat="item in breadcrumb"><a href="javascript:;" ng-click="open(item.url)" ng-class="{ active: item.active }">{{item.name}}</a></li>
+        </ul>
+    </div>
 
     <div class="row explorer-controls" ng-show="!ngSelectable">
-        <div class="col-md-6">
+        <div class="col-sm-6">
             <label class="control-label">new folder</label>
             <div class="input-group">
                 <input type="text" class="form-control" ng-model="new" data-input="create" data-allowed-chars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_ ()#$%">
@@ -13,7 +16,7 @@
                 </span>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-sm-6">
             <label class="control-label">new file</label>
             <div class="input-group">
                 <input type="text" class="form-control" disabled="disabled">

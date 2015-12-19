@@ -3,14 +3,14 @@ var _ = require('underscore');
 
 var self = this;
 
-if (me && me.id == self.id) {
+if (me && me.id === self.id) {
     if (changed('roles') && !_.isEmpty(_.difference(previous.roles, self.roles))) {
         error('roles', 'cannot assign own roles');
     }
 }
 else {
     if (!internal && !authMngr.isAuthorized(me, 'users', 'U'))
-        cancel('access denied', 500);
+        cancel('access denied', 401);
 
     if (changed('roles') && !_.isEmpty(_.difference(previous.roles, self.roles))) {
         if (self.roles.length === 0) {

@@ -1,6 +1,7 @@
 var path = require('path');
 var send = require('send');
 var url = require('url');
+var parseUri = require('parseUri');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
@@ -19,9 +20,10 @@ var PublicRouter = function (server) {
             ctx.node = resolved.page || {};
             ctx.pointer = resolved.pointer || {};
             ctx.inherited = inherited;
-            ctx.layout = ctx.inherited.layout || '';
+            ctx.layouts = ctx.inherited.layouts || [];
             ctx.language = server.app.localization.enabled ? resolved.language || server.app.localization.locale : server.app.localization.locale;
             ctx.template = resolved.template || '';
+            ctx.hierarchy = resolved.getHierarchy();
 
             ctx.meta = {};
             if (resolved.page.meta && resolved.page.meta[ctx.language])
@@ -42,7 +44,8 @@ var PublicRouter = function (server) {
             }
 
             if (resolved.pointer) {
-                var pointerRouter = require('./processors/router.js')(server, resolved.pointer.pointer.domain);
+                
+                var pointerRouter = require('./processors/pointer.js')(server, resolved.pointer.pointer.domain);
                 if (pointerRouter) {
                     ctx.debug('node ' + resolved.page.id + ' is pointing to ' + resolved.pointer.pointer.nodeId);
                     pointerRouter.route(ctx);
@@ -120,17 +123,15 @@ var PublicRouter = function (server) {
     return {
         route: function (ctx, next) {
             if (ctx.uri.path !== '/') {
-                send(ctx.req, url.parse(ctx.uri.path).pathname)                    
+                var parsedUri = new parseUri('http://' + server.host + ctx.req.url);
+                send(ctx.req, url.parse(parsedUri.path).pathname)
                     .root('public')
                     .on('error', function (err) {
                         try {
-                            var node = require('../cms/nodeMngr.js')(server, ctx.db);
-
+                            var node = require('../cms/nodeMngr.js')(server, ctx.db);                         
                             node.resolveUrl(ctx.uri.url, function (resolved) {
-
-                                if (resolved && resolved.page) {
+                                if (resolved) {
                                     ctx.debug('node resolved: ' + resolved.page.id);
-
                                     if (resolved.isActive()) {
 
                                         var inherited = resolved.getInheritedProperties();

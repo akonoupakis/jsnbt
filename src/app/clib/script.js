@@ -33,6 +33,7 @@ var Script = function (app) {
     var getJsnbtObject = function () {
 
         var result = {
+            name: app.config.name,
             version: app.version,
             localization: app.localization,
             ssl: app.ssl
@@ -49,7 +50,7 @@ var Script = function (app) {
 
         result.modules = {};
         _.each(app.modules.all, function (module) {
-
+            
             if (module.domain !== 'core') {
                 result.modules[module.domain] = {
                     name: typeof (module.getName) === 'function' ? module.getName() : undefined,
@@ -67,13 +68,7 @@ var Script = function (app) {
             }
         });
 
-        result.lists = [];
-        _.each(app.config.lists, function (list) {
-            var newList = {};
-            extend(true, newList, list);
-            delete newList.permissions;
-            result.lists.push(newList);
-        });
+        result.lists = app.config.lists;
 
         result.injects = app.config.injects;
 
@@ -94,6 +89,8 @@ var Script = function (app) {
         applyArrayInObject('languages', 'languages', 'code');
 
         applyArrayInObject('countries', 'countries', 'code');
+
+        result.content = app.config.content;
 
         result.messaging = {
             mail: {},
@@ -134,7 +131,9 @@ var Script = function (app) {
             result.collections[collection] = {};
             if (app.config.collections[collection].default) {
                 result.collections[collection].default = app.config.collections[collection].default;
-                
+            }
+            if (app.config.collections[collection].permissions) {
+                result.collections[collection].permissions = app.config.collections[collection].permissions;
             }
         });
         

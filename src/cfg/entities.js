@@ -1,6 +1,9 @@
 module.exports = [{
     name: 'page',
     allowed: ['page', 'pointer', 'router'],
+    properties: {
+
+    }
 }, {
     name: 'pointer',
     allowed: [],

@@ -144,7 +144,8 @@ Server.prototype.start = function (next) {
 Server.prototype.route = function route(req, res) {
     var server = this;
 
-    if (req.url.indexOf('/socket.io/') === 0) return;
+    if (req.url.indexOf('/socket.io/') === 0) 
+        return;
 
     var router = new require('./router.js')(server, req, res);
     router.process();

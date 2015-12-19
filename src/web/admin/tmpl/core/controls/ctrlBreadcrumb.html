@@ -1,7 +1,7 @@
 ﻿<div>
     <span ng-show="ngTitle" class="guide">{{ngTitle}} </span>
     <ol class="breadcrumb">
-        <li ng-repeat="item in ngModel">
+        <li ng-repeat="item in ngModel | filter:visible">
             <a ng-if="!item.active" data-url="{{item.url}}" href="javascript:;" ng-click="previousTo(item.url)">{{item.name}}</a>
             <span ng-if="item.active" data-url="{{item.url}}" class="active">{{item.name}}</span>
         </li>

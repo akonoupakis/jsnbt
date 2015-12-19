@@ -8,7 +8,7 @@ module.exports = [{
         validate: fs.readFileSync(__dirname + "/collections/actions/events/validate.js", "utf8")        
     }
 }, {
-    name: "data",
+    name: "data", 
     schema: require("./collections/data/schema.json"),
     permissions: require("./collections/data/permissions.json"),
     logging: true,
@@ -16,9 +16,10 @@ module.exports = [{
         get: fs.readFileSync(__dirname + "/collections/data/events/get.js", "utf8"),
         validate: fs.readFileSync(__dirname + "/collections/data/events/validate.js", "utf8"),
         post: fs.readFileSync(__dirname + "/collections/data/events/post.js", "utf8"),
-        put: fs.readFileSync(__dirname + "/collections/data/events/put.js", "utf8")
+        put: fs.readFileSync(__dirname + "/collections/data/events/put.js", "utf8"),
+        delete: fs.readFileSync(__dirname + "/collections/data/events/delete.js", "utf8")
     },
-    default: require('./collections/layouts/default.json')
+    default: require('./collections/data/default.json')
 }, {
     name: "languages",
     schema: require("./collections/languages/schema.json"),
@@ -30,7 +31,7 @@ module.exports = [{
         put: fs.readFileSync(__dirname + "/collections/languages/events/put.js", "utf8"),
         delete: fs.readFileSync(__dirname + "/collections/languages/events/delete.js", "utf8")
     },
-    default: require('./collections/layouts/default.json')
+    default: require('./collections/languages/default.json')
 }, {
     name: "layouts",
     schema: require("./collections/layouts/schema.json"),

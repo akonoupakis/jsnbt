@@ -1,9 +1,9 @@
 {
-	"name": "",
+	"title": {},
     "domain": "core",                
     "entity": "page",
     "parent": "",
-    "layout": {
+    "layouts": {
         "inherits": true,
         "value": ""
     },
@@ -21,11 +21,11 @@
     "modifiedOn": 0,
     "roles": {
         "inherits": true,
-        "values": []
+        "value": []
     },
     "robots": {
         "inherits": true,
-        "values": []
+        "value": []
     },                
     "hierarchy": []
 }

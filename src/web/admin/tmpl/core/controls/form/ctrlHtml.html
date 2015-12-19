@@ -1,0 +1,9 @@
+﻿<div ng-class="{ invalid: enabled && !valid, 'redactor-disabled': !enabled }">
+    <div class="form-group" ng-class="{ 'has-error': enabled && !valid, 'has-feedback': enabled && !valid }">
+        <label ng-show="ngLabel" class="control-label">{{ngLabel}}<small ng-show="ngTip">({{ngTip}})</small></label>
+        <div class="form-control-feedback-container">
+            <textarea id="editor_{{ id }}" class="form-control" cols="30" rows="10"></textarea>
+            <span ng-show="enabled && !valid" class="glyphicon glyphicon-ban-circle form-control-feedback" tooltip="value is required"></span>
+        </div>
+    </div>
+</div>

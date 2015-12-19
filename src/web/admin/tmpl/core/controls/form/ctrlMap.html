@@ -1,0 +1,18 @@
+﻿<div ng-class="{ invalid: !ngDisabled && !valid }">
+    <div class="form-group">
+        <label ng-show="ngLabel" class="control-label">{{ngLabel}}<small ng-show="ngTip">({{ngTip}})</small></label>
+        <div class="row coordinates-container">
+            <div class="col-sm-6 form-control-feedback-container" ng-class="{ 'has-error': !ngDisabled && !valid && coordinates.longitude === '', 'has-feedback': !ngDisabled && !valid && coordinates.longitude === '' }">
+                <input type="text" class="form-control" ng-disabled="ngDisabled" ng-class="{ 'coordinates-invalid': !ngDisabled && !valid && coordinates.longitude === '' }" ng-model="coordinates.longitude" ng-change="changed()" placeholder="longitude" ng-keypress="preventInvalidCharaters($event)" />
+                <span ng-show="!ngDisabled && !valid && coordinates.longitude === ''" tooltip="value is required" class="glyphicon glyphicon-ban-circle form-control-feedback"></span>
+            </div>
+            <div class="col-sm-6 form-control-feedback-container" ng-class="{ 'has-error': !ngDisabled && !valid && coordinates.latitude === '', 'has-feedback': !ngDisabled && !valid.latitude === '' }">
+                <input type="text" class="form-control" ng-disabled="ngDisabled" ng-class="{ 'coordinates-invalid': !ngDisabled && !valid && coordinates.latitude === '' }" ng-model="coordinates.latitude" ng-change="changed()" placeholder="latitude" ng-keypress="preventInvalidCharaters($event)" />
+                <span ng-show="!ngDisabled && !valid && coordinates.latitude === ''" tooltip="value is required" class="glyphicon glyphicon-ban-circle form-control-feedback"></span>
+            </div>
+        </div>
+        <div class="map-container" ng-class="{ 'map-disabled': ngDisabled }">
+            <div id="map{{id}}" class="form-map" ng-style="{ 'height': height }"></div>
+        </div>
+    </div>
+</div>

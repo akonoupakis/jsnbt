@@ -1,0 +1,15 @@
+﻿<div ng-class="{ 'ng-required': ngRequired, invalid: !ngDisabled && !valid }">
+    <div class="form-group" ng-class="{ 'has-error': !ngDisabled && !valid, 'has-feedback': !ngDisabled && !valid }">
+        <label ng-show="ngLabel" class="control-label" for="txt{{id}}">{{ngLabel}}<small ng-show="ngTip">({{ngTip}})</small></label>
+        <div class="form-control-feedback-container">
+            <div class="input-group">
+                <input type="text" class="form-control" ng-model="model" ng-blur="leftInput($event)" />
+                <div class="input-group-btn">
+                    <button class="btn btn-default glyphicon glyphicon-th" type="button" ng-click="select()" ng-disabled="ngDisabled"></button>
+                    <button class="btn btn-default glyphicon glyphicon-remove" type="button" ng-click="clear()" ng-show="!ngRequired" ng-disabled="ngDisabled || !model"></button>
+                </div>
+            </div>
+            <span ng-show="!ngDisabled && !valid" class="glyphicon glyphicon-ban-circle form-control-feedback" tooltip="value is required"></span>
+        </div>  
+    </div>
+</div> 

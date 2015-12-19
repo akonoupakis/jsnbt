@@ -511,43 +511,37 @@ function createResourceClient(server, resource, collection, baseMethods) {
 
            server.cache.get(cacheKey, function (cachedData) {
                if (!cachedData) {
-                   baseMethods.request('GET', settings, function (res, ex) {
-                       if (res) {
-                           server.cache.add(cacheKey, res, function (cachedRes) {
-                               settings.fn(res, ex);
-                           });
+                   baseMethods.request('GET', settings, function (ex, res) {
+                       if (ex) {
+                           settings.fn(ex, res);
                        }
                        else {
-                           settings.fn(res, ex);
+                           server.cache.add(cacheKey, res, function (cachedRes) {
+                               settings.fn(ex, res);
+                           });
                        }
                    });
                }
                else {
-                   settings.fn(cachedData, null);
+                   settings.fn(null, cachedData);
                }
            });
        }
       , post: function (p, query, body, fn) {
           var settings = parsePostSignature(arguments);
           settings.path = joinPath(resource.path, settings.path);
-
-          // cache invalidation could occur here, but at best its placed on script.js to grap also client post requests
-
+          
           return baseMethods.post(settings, settings.fn);
       }
       , put: function (p, query, body, fn) {
           var settings = parsePostSignature(arguments);
           settings.path = joinPath(resource.path, settings.path);
 
-          // cache invalidation could occur here, but at best its placed on script.js to grap also client put requests
-
           return baseMethods.put(settings, settings.fn);
       }
       , del: function (p, query, fn) {
           var settings = parseGetSignature(arguments);
           settings.path = joinPath(resource.path, settings.path);
-
-          // cache invalidation could occur here, but at best its placed on script.js to grap also client del requests
 
           return baseMethods.del(settings, settings.fn);
       }

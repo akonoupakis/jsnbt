@@ -1,0 +1,23 @@
+﻿<div>
+    <a class="selected-locale" href="javascript:;" ng-click="onClick($event)">
+        <img ng-if="optionCodes[ngModel][imageField]" ng-src="{{optionCodes[ngModel][imageField]}}" /> {{optionCodes[ngModel][textField]}}
+    </a>
+    <div class="language-container-scrollable" data-ng-show="opened">
+        <table class="language-container">
+            <tbody>
+                <tr>
+                    <td>
+                        <ul>
+                            <li ng-repeat="option in ngOptions">
+                                <a href="javascript:;" title="{{option[textField]}}" ng-click="select(option)" ng-class="option[valueField] == ngModel ? 'selected-locale' : ''">
+                                    <img ng-if="option[imageField]" ng-src="{{option[imageField]}}" />
+                                    {{option[textField]}}
+                                </a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,171 @@
+﻿<div ng-show="found === true" class="container-fluid affix-area form-buttons-container">
+    <div class="container">
+        <div class="row ">
+            <div class="col-md-10">
+                <div class="affix-container">
+                    <div class="buttons">
+                        <div ng-show="buttons" ng-include="buttons"></div>
+                        <button type="button" ng-show="!published && !draft" class="btn btn-danger" ng-click="discard()">discard</button>
+                        <button type="button" ng-disabled="published && !draft" class="btn btn-success" ng-click="publish()">publish</button>
+                    </div>
+
+                    <ctrl-language-selector class="language-selector" ng-model="language" ng-options="application.languages" ng-show="localized && localization"></ctrl-language-selector>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div ng-show="found === true" class="container">
+
+    <section class="col-md-10 scrollspy-container" data-scrollspy>
+
+        <ctrl-breadcrumb ng-show="breadcrumb" ng-model="current.breadcrumb.items" ng-title="current.breadcrumb.title"></ctrl-breadcrumb>
+
+        <div class="row title-container">
+            <div class="col-sm-12">
+                <span ng-click="back()" class="glyphicon glyphicon-arrow-left back-button"></span>
+                <h1 class="title">{{ title }}</h1>
+            </div>
+        </div>
+
+        <hr />
+
+        <div id="page-title" data-scrollspy="title" ng-show="entity.properties.title || entity.properties.active">
+            <div class="row">
+                <ctrl-text class="col-sm-10" ng-model="model.title[language]" ng-validating="model.active[language] || language === defaults.language" ng-disabled="!entity.properties.title" ng-required="true" ng-auto-focus="true" ng-label="title"></ctrl-text>
+                <ctrl-check class="col-sm-2" ng-model="model.active[language]" ng-show="entity.properties.active" ng-disabled="!entity.properties.active" ng-label="active"></ctrl-check>
+            </div>
+
+            <hr />
+        </div>
+
+        <div id="page-parent" data-scrollspy="parent" ng-show="entity.properties.parent">
+            <div class="row">
+                <ctrl-node class="col-sm-12" ng-language="defaults.language" ng-model="model.parent" ng-domain="model.domain" ng-entities="parentOptions.entities" ng-disabled="!entity.properties.parent" ng-required="false" ng-options="parentOptions" ng-label="parent" ng-tip="leave blank for root">
+                    {{model.title[language]}}
+                </ctrl-node>
+            </div>
+
+            <hr />
+        </div>
+
+        <div id="page-type" ng-show="model.domain === 'core' && entities.length &gt; 1" data-scrollspy="type">
+            <div class="row">
+                <ctrl-select class="col-sm-12" ng-model="model.entity" ng-required="true" ng-label="type" ng-options="entities" ng-disabled="model.domain !== 'core'"></ctrl-select>
+            </div>
+
+            <hr />
+        </div>
+
+        <div id="page-seo" data-scrollspy="seo" ng-show="entity.properties.seo">
+            <div class="row breadcrumb-form-row">
+                <div class="col-sm-12" ng-show="entity.properties.seo">
+                    <label for="txtSeoName">seo</label>
+                    <ol class="breadcrumb">
+                        <li ng-repeat="item in seoNames"><span>{{item[language]}}</span></li>
+                        <li class="active">
+                            <ctrl-text ng-model="model.seo[language]" ng-required="true" ng-validating="model.active[language]" ng-disabled="!entity.properties.seo" ng-validate="validateSeo" ng-valid="validation.seo" ng-characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_"></ctrl-text>
+                            <span ng-show="!validation.seo && model.active[language] && entity.properties.seo">(name is taken)</span>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+            <hr />
+        </div>
+
+        <div id="page-addon" data-scrollspy="addon" ng-show="model.entity === 'pointer'">
+            <div class="row">
+                <ctrl-select class="col-sm-6" ng-model="model.pointer.domain" ng-required="true" ng-disabled="model.entity !== 'pointer'" ng-label="addon" ng-default="true" ng-options="modules" ng-name-field="name" ng-value-field="domain"></ctrl-select>
+                <ctrl-node class="col-sm-5" ng-language="defaults.language" ng-model="model.pointer.nodeId" ng-domain="model.pointer.domain" ng-required="model.pointer.domain && model.entity === 'pointer'" ng-disabled="model.entity !== 'pointer'" ng-options="{ pointee: true }" ng-label="pointee">
+                    {{model.title[language]}}
+                </ctrl-node>
+                <div class="col-sm-1">
+                    <button type="button" ng-disabled="!model.pointer.domain || !model.pointer.nodeId" class="btn" ng-click="editPointee()" style="position: relative; top: 25px">edit</button>
+                </div>
+            </div>
+
+            <hr />
+        </div>
+
+        <div id="page-route" data-scrollspy="route" ng-show="model.entity === 'router'">
+            <div class="row">
+                <ctrl-select class="col-sm-12" ng-model="model.route" ng-required="true" ng-disabled="model.entity !== 'router'" ng-label="route" ng-default="true" ng-options="routes" ng-name-field="name" ng-value-field="id"></ctrl-select>
+            </div>
+            <hr />
+        </div>
+
+        <div id="page-layouts" data-scrollspy="layouts" ng-show="entity.properties.layouts">
+            <div class="row">
+                <ctrl-select-list class="col-sm-10" ng-model="values.layouts" ng-disabled="!entity.properties.layouts || model.layouts.inherits" ng-required="true" ng-options="layouts" ng-default="true" ng-value-field="id" ng-name-field="name" ng-label="layouts"></ctrl-select-list>
+                <ctrl-check class="col-sm-2" ng-model="model.layouts.inherits" ng-disabled="!entity.properties.layouts" ng-label="inheritance"></ctrl-check>
+            </div>
+
+            <hr />
+        </div>
+
+        <div id="page-content" data-scrollspy="content" ng-show="model.entity !== 'pointer'">
+            <div class="row" id="page-template" data-scrollspy="template" ng-show="entity.properties.template">
+                <ctrl-select class="col-sm-12" ng-model="model.template" ng-disabled="!entity.properties.template" ng-required="true" ng-options="templates[model.entity]" ng-default="true" ng-value-field="id" ng-name-field="name" ng-label="template"></ctrl-select>
+            </div>
+
+            <hr ng-show="entity.properties.template" />
+
+            <div ng-include="template"></div>
+            <hr ng-show="template" />
+
+            <div ng-show="form" ng-include="form"></div>
+            <hr ng-show="form" />
+        </div>
+
+        <div id="page-meta" data-scrollspy="meta" ng-show="entity.properties.meta">
+            <div id="page-meta-title" class="row" data-scrollspy="title">
+                <ctrl-text class="col-sm-12" ng-model="model.meta[language].title" ng-required="true" ng-validating="model.active[language]" ng-disabled="!entity.properties.meta" ng-label="meta title"></ctrl-text>
+            </div>
+            <div id="page-meta-description" class="row" data-scrollspy="description">
+                <ctrl-text-area class="col-sm-12" ng-rows="4" ng-model="model.meta[language].description" ng-required="false" ng-validating="model.active[language]" ng-disabled="!entity.properties.meta" ng-label="meta description"></ctrl-text-area>
+            </div>
+            <div id="page-meta-keywords" class="row" data-scrollspy="keywords">
+                <ctrl-tags class="col-sm-12" ng-model="model.meta[language].keywords" ng-placeholder="add a keyword" ng-required="false" ng-validating="model.active[language]" ng-disabled="!entity.properties.meta" ng-label="meta keywords"></ctrl-tags>
+            </div>
+
+            <hr />
+        </div>
+
+        <div id="page-robots" data-scrollspy="robots" ng-show="entity.properties.robots">
+            <div class="row">
+                <ctrl-check-list class="col-sm-10" ng-model="values.robots" ng-options="robots" ng-required="true" ng-disabled="!entity.properties.robots || model.robots.inherits" ng-label="robots"></ctrl-check-list>
+                <ctrl-check class="col-sm-2" ng-model="model.robots.inherits" ng-disabled="!entity.properties.robots" ng-label="inheritance"></ctrl-check>
+            </div>
+
+            <hr />
+        </div>
+
+        <div id="page-permissions" data-scrollspy="permissions" ng-show="entity.properties.permissions">
+            <div class="row">
+                <ctrl-check-list class="col-sm-10" ng-model="values.roles" ng-options="roles" ng-required="true" ng-disabled="!entity.properties.permissions || model.roles.inherits" ng-label="permissions"></ctrl-check-list>
+                <ctrl-check class="col-sm-2" ng-model="model.roles.inherits" ng-disabled="!entity.properties.permissions" ng-label="inheritance"></ctrl-check>
+            </div>
+
+            <hr />
+        </div>
+
+        <div id="page-ssl" data-scrollspy="ssl" ng-show="application.ssl && entity.properties.ssl">
+            <div class="row">
+                <ctrl-check class="col-sm-10" ng-model="values.secure" ng-disabled="!application.ssl || !entity.properties.ssl || model.secure.inherits" ng-label="ssl"></ctrl-check>
+                <ctrl-check class="col-sm-2" ng-model="model.secure.inherits" ng-disabled="!application.ssl || !entity.properties.ssl" ng-label="inheritance"></ctrl-check>
+            </div>
+
+            <hr />
+        </div>
+
+    </section>
+
+    <div class="col-md-2">
+        <ctrl-scroll-spy ng-model="nav" />
+    </div>
+
+</div>
+
+<div ng-if="found === false" class="container error-page" ng-include="'tmpl/core/common/404.html'"></div>

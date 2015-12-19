@@ -1,0 +1,15 @@
+﻿<div ng-class="{ invalid: enabled && !valid, empty: empty }">
+    <div class="form-group" ng-class="{ 'has-error': enabled && !valid, 'has-feedback': enabled && !valid }">
+        <label ng-show="ngLabel" class="control-label">{{ ngLabel }}<small ng-show="ngTip">({{ngTip}})</small></label>
+        <div class="form-control-feedback-container">
+            <div class="check-options">
+                <div class="check-option" ng-repeat="option in ngOptions">
+                    <label class="check-option-title">{{ option[nameField] }}</label>
+                    <input class="check-option-control" type="checkbox" id="chk{{ id }}{{ option[valueField] }}" />
+                    <span class="check-option-description">{{ option[descriptionField] }}</span>
+                </div>
+            </div>
+            <span ng-show="enabled && !valid" class="glyphicon glyphicon-ban-circle form-control-feedback" tooltip="value is required"></span>
+        </div>
+    </div>
+</div>

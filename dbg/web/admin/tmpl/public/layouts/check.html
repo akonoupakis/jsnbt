@@ -1,0 +1,10 @@
+﻿<div ng-init="checkOptions = [{ name: 'noindex', value: 'noindex', description: 'do not index this page' }, { name: 'nofollow', value: 'nofollow', description: 'do not follow any links' }, { name: 'noarchive', value: 'noarchive', description: 'do not show a cached link'}];">
+    <div class="row" id="layout-check" data-scrollspy="check">
+        <ctrl-check-list class="col-sm-10" ng-model="model.content.checks" ng-options="checkOptions" ng-disabled="!checked" ng-required="false" ng-label="checks"></ctrl-check-list>
+        <ctrl-check class="col-sm-2" ng-model="checked" ng-change-fn="null" ng-label="check"></ctrl-check>
+    </div>
+    <div class="row" id="layout-checkR" data-scrollspy="check required">
+        <ctrl-check-list class="col-sm-10" ng-model="model.content.checksR" ng-options="checkOptions" ng-disabled="!checkedR" ng-required="true" ng-label="checks required"></ctrl-check-list>
+        <ctrl-check class="col-sm-2" ng-model="checkedR" ng-change-fn="null" ng-label="check"></ctrl-check>
+    </div>
+</div>

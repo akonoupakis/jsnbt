@@ -14,7 +14,6 @@ var Context = function (server, req, res) {
     var checkTemplate = function (ctx) {
         var installedTemplate = _.find(server.app.config.templates, function (x) { return x.id === ctx.template; });
         if (installedTemplate) {
-            //ctx.template = installedTemplate.html;
             return true;
         }
         else {
@@ -79,7 +78,7 @@ var Context = function (server, req, res) {
     uri.parts = _.str.trim(uri.path, '/').split('/');
     uri.first = uri.parts.length > 0 ? _.first(uri.parts).toLowerCase() : '';
     uri.last = uri.parts.length > 0 ? _.last(uri.parts).toLowerCase() : '';
-
+    
     req.cookies = new cookies(req, res);
 
     var completing = false;
@@ -101,13 +100,14 @@ var Context = function (server, req, res) {
         timer: timer,
 
         node: undefined,
+        hierarchy: [],
         pointer: undefined,
-        layout: '',
+        layouts: [],
 
         meta: {
             title: '',
             description: '',
-            keywords: ''
+            keywords: []
         },
 
         params: [],
@@ -137,11 +137,12 @@ var Context = function (server, req, res) {
                 var href = this.scheme;
                 href += '://';
                 href += this.host;
+                
                 if (this.scheme === 'https') {
-                    href += (this.port != 433) ? ':' + this.port : '';
+                    href += (this.port !== '433' && this.port !== '433') ? ':' + this.port : '';
                 }
                 else {
-                    href += (this.port != 80) ? ':' + this.port : '';
+                    href += (this.port !== '80' && this.port !== '') ? ':' + this.port : '';
                 }
                 href += '/';
                 return href;

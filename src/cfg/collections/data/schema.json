@@ -9,9 +9,10 @@
             "type": "string",
             "required": true
         },
-		"name": {
-            "type": "string",
-            "required": true
+		"title": {
+            "type": "object",
+            "required": true,
+			"properties": { }
         },
 		"content": {
             "type": "object",

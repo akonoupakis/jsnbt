@@ -10,13 +10,6 @@
 	create the available languages and content nodes (system urls)
 
 
-## note
-
-	unfortunatelly, too many things are changing on developing jsnbt for a first time use, 
-	and combined with the lack of time, I am still unable to maintain a changelog or even
-	a stable version.
-
-	please bear with me until I prepare for you some proper documentation!
 	
 ## quick start
 
@@ -31,7 +24,7 @@
 	PhantomJs: http://phantomjs.org/download.html
 
 	bower : npm install -g bower
-	grunt : npm install -g grunt-cli
+	gulp : npm install -g gulp
 
 ### bootstrap
 
@@ -40,25 +33,25 @@
 
 	change the name to your site's name on package.json and bower.json
 	
-	change the database configuration on config.js for dev and production environments
+	change the hosts and database configuration on hosts.js
 	
 
 ### run
 
-	npm install - for grunt dependencies mentioned on package.json
+	npm install - for gulp dependencies mentioned on package.json
 	npm install jsnbt --save - install the jsnbt and save it to package.json
 
-	grunt dev/prod - prepares the application folder for the web server to serve
-	(you may use "grunt dev update-files" to monitor changes in the filesystem 
+	gulp dev/prod - prepares the application folder for the web server to serve
+	(you may use "gulp dev-update" to monitor changes in the filesystem 
 	and apply them to the application folder while developing)
 	
-	node server-dev.js (or node server-prod.js) - runs the webserver
+	node server-app.js - runs the webserver
 
-	if all worked smoothly, you will be able to se the deployd dashboard at /dashboard 
-	and the jsnbt admin at /admin which will ask you for a first time registration 
-	to set you up with an sa account
+	if all worked smoothly, you will be able to see the jsnbt admin at /admin 
+	which will ask you for a first time registration to set you up with 
+	an sa account
 
-	go ahead, create a language, create a page, and start! 
+	go ahead, create a language, create a page, and enjoy!
     
 
 ## license

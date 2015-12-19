@@ -1,5 +1,5 @@
 {
-  "dependencies": {
+"dependencies": {
     "jquery": "2.1.3",
     "angular": "1.3.15",
     "angular-route": "1.3.15",
@@ -8,7 +8,7 @@
     "angular-sanitize": "1.3.15",
     "underscore": "1.7.0",
     "underscore.string": "2.3.3",
-    "bootstrap": "3.2.0",
+    "bootstrap": "3.3.5",
     "bootstrap-switch": "3.0.2",
     "angular-bootstrap": "0.11.2",
     "angular-strap": "2.1.6",
@@ -16,10 +16,18 @@
     "jquery-ui": "1.11.4",
     "angular-ui-sortable": "0.13.3",
     "ngInfiniteScroll": "1.1.2",
-    "ng-flow": "2.5.1",
-    "tinymce": "4.0.0",
-    "angular-ui-tinymce": "0.0.9",
-    "cropper": "0.7.9"
+    "ng-flow": "2.6.1",
+    "cropper": "0.7.9",
+	"imperavi-redactor": "10.0.9",
+	"angular-redactor": "1.1.5",
+	"bootstrap-datepicker": "1.4.0",
+	"moment": "2.10.6",
+	"moment-timezone": "0.4.0",
+	"eonasdan-bootstrap-datetimepicker": "4.17.37",
+	"gmaps": "0.4.21",
+	"ng-tags-input": "3.0.0",
+	"jshashes": "1.0.5",
+	"webui-popover": "1.2.3"
   },
   "deploy": {
     "jquery": {
@@ -135,39 +143,33 @@
     "bootstrap": {
       "files": [
         {
-          "src": "bootstrap-3.2.0/dist/css/bootstrap.css",
+          "src": "bootstrap-3.3.5/dist/css/bootstrap.css",
           "dest": [
             "admin/css/core/lib/bootstrap/css/bootstrap.css"
           ]
         },
         {
-          "src": "bootstrap-3.2.0/dist/css/bootstrap.css.map",
+          "src": "bootstrap-3.3.5/dist/css/bootstrap.css.map",
           "dest": [
             "admin/css/core/lib/bootstrap/css/bootstrap.css.map"
           ]
         },
         {
-          "src": "bootstrap-3.2.0/dist/css/bootstrap.min.css",
+          "src": "bootstrap-3.3.5/dist/css/bootstrap.min.css",
           "dest": [
             "admin/css/core/lib/bootstrap/css/bootstrap.min.css"
           ]
         },
         {
-          "src": "bootstrap-3.2.0/dist/js/bootstrap.js",
+          "src": "bootstrap-3.3.5/dist/js/bootstrap.js",
           "dest": [
             "admin/js/core/lib/bootstrap/bootstrap.js"
           ]
         }
       ],
       "folders": [
-        {
-          "src": "bootstrap-3.2.0/dist/fonts",
-          "dest": [
-            "admin/css/core/lib/bootstrap/fonts"
-          ]
-        },
 		{
-          "src": "bootstrap-3.2.0/dist/fonts",
+          "src": "bootstrap-3.3.5/dist/fonts",
           "dest": [
             "admin/fonts"
           ]
@@ -197,6 +199,12 @@
           "dest": [
             "admin/js/core/lib/angular/angular-bootstrap.js"
           ]
+        },
+		{
+          "src": "angular-bootstrap-0.11.2/ui-bootstrap-tpls.js",
+          "dest": [
+            "admin/js/core/lib/angular/angular-bootstrap-tpls.js"
+          ]
         }
       ]
     },
@@ -213,101 +221,35 @@
     "ng-flow": {
       "files": [
         {
-          "src": "flow.js-2.5.1/dist/flow.js",
-          "dest": [
-            "admin/js/core/lib/flow/flow.js"
-          ]
-        },
-        {
-          "src": "ng-flow-2.5.1/dist/ng-flow.js",
+          "src": "ng-flow-2.6.1/dist/ng-flow-standalone.js",
           "dest": [
             "admin/js/core/lib/ng-flow/ng-flow.js"
           ]
         }
       ]
     },
-    "tinymce": {
+	"imperavi-redactor": {
       "files": [
         {
-          "src": "tinymce-4.0.0/tinymce.min.js",
+          "src": "imperavi-redactor-10.0.9/redactor/redactor.js",
           "dest": [
-            "admin/js/core/lib/tinymce/a-tinymce.js"
+            "admin/js/core/lib/redactor/a-redactor.js"
           ]
-        },
-        {
-          "src": "tinymce-4.0.0/themes/modern/theme.min.js",
+        }, 
+		{
+          "src": "imperavi-redactor-10.0.9/redactor/redactor.css",
           "dest": [
-            "admin/js/core/lib/tinymce/themes/theme.js"
-          ]
-        },
-        {
-          "src": "tinymce-4.0.0/skins/lightgray/skin.min.css",
-          "dest": [
-            "admin/css/core/lib/tinymce/skins/lightgray/skin.min.css"
-          ]
-        },
-        {
-          "src": "tinymce-4.0.0/skins/lightgray/content.min.css",
-          "dest": [
-            "admin/css/core/lib/tinymce/skins/lightgray/content.min.css"
-          ]
-        },
-        {
-          "src": "tinymce-4.0.0/skins/lightgray/fonts/icomoon.eot",
-          "dest": [
-            "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon.eot"
-          ]
-        },
-        {
-          "src": "tinymce-4.0.0/skins/lightgray/fonts/icomoon.svg",
-          "dest": [
-            "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon.svg"
-          ]
-        },
-        {
-          "src": "tinymce-4.0.0/skins/lightgray/fonts/icomoon.ttf",
-          "dest": [
-            "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon.ttf"
-          ]
-        },
-        {
-          "src": "tinymce-4.0.0/skins/lightgray/fonts/icomoon.woff",
-          "dest": [
-            "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon.woff"
-          ]
-        },
-        {
-          "src": "tinymce-4.0.0/skins/lightgray/fonts/icomoon-small.eot",
-          "dest": [
-            "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon-small.eot"
-          ]
-        },
-        {
-          "src": "tinymce-4.0.0/skins/lightgray/fonts/icomoon-small.svg",
-          "dest": [
-            "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon-small.svg"
-          ]
-        },
-        {
-          "src": "tinymce-4.0.0/skins/lightgray/fonts/icomoon-small.ttf",
-          "dest": [
-            "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon-small.ttf"
-          ]
-        },
-        {
-          "src": "tinymce-4.0.0/skins/lightgray/fonts/icomoon-small.woff",
-          "dest": [
-            "admin/css/core/lib/tinymce/skins/lightgray/fonts/icomoon-small.woff"
+            "admin/css/core/lib/redactor/redactor.css"
           ]
         }
       ]
     },
-    "angular-ui-tinymce": {
+	"angular-redactor": {
       "files": [
         {
-          "src": "angular-ui-tinymce-0.0.9/src/tinymce.js",
+          "src": "angular-redactor-1.1.5/angular-redactor.js",
           "dest": [
-            "admin/js/core/lib/tinymce/b-angular-ui-tinymce.js"
+            "admin/js/core/lib/redactor/b-angular-redactor.js"
           ]
         }
       ]
@@ -327,6 +269,110 @@
           ]
         }
       ]
-    }
+    },
+	"bootstrap-datepicker": {
+	   "files": [
+        {
+          "src": "bootstrap-datepicker-1.4.0/dist/js/bootstrap-datepicker.js",
+          "dest": [
+            "admin/js/core/lib/bootstrap/bootstrap.datepicker.js"
+          ]
+        },
+        {
+          "src": "bootstrap-datepicker-1.4.0/dist/css/bootstrap-datepicker.css",
+          "dest": [
+            "admin/css/core/lib/bootstrap/bootstrap-datepicker.css"
+          ]
+        }
+      ]
+	},
+	"moment": {
+      "files": [
+        {
+          "src": "moment-2.10.6/min/moment.min.js",
+          "dest": [
+            "admin/js/core/lib/moment.js"
+          ]
+        }
+      ]
+    },
+	"moment-timezone": {
+      "files": [
+        {
+          "src": "moment-timezone-0.4.0/builds/moment-timezone-with-data.js",
+          "dest": [
+            "admin/js/core/lib/moment-timezone.js"
+          ]
+        }
+      ]
+    },
+	"eonasdan-bootstrap-datetimepicker": {
+	   "files": [
+        {
+          "src": "eonasdan-bootstrap-datetimepicker-4.17.37/src/js/bootstrap-datetimepicker.js",
+          "dest": [
+            "admin/js/core/lib/bootstrap-datetimepicker.js"
+          ]
+        },
+		 {
+          "src": "eonasdan-bootstrap-datetimepicker-4.17.37/build/css/bootstrap-datetimepicker.css",
+          "dest": [
+            "admin/css/core/lib/bootstrap/bootstrap-datetimepicker.css"
+          ]
+        }
+      ]
+	},
+	"gmaps": {
+      "files": [
+        {
+          "src": "gmaps-0.4.21/gmaps.js",
+          "dest": [
+            "admin/js/core/lib/gmaps.js"
+          ]
+        }
+      ]
+    },
+	"ng-tags-input": {
+      "files": [
+        {
+          "src": "ng-tags-input-3.0.0/ng-tags-input.js",
+          "dest": [
+            "admin/js/core/lib/ng-tags-input.js"
+          ]
+        },
+		{
+          "src": "ng-tags-input-3.0.0/ng-tags-input.css",
+          "dest": [
+            "admin/css/core/lib/ng-tags-input.css"
+          ]
+        }
+      ]
+    },
+	"jshashes": {
+	   "files": [
+        {
+          "src": "jshashes-1.0.5/hashes.js",
+          "dest": [
+            "admin/js/core/lib/jshashes.js"
+          ]
+        }
+      ]
+	},
+	"webui-popover": {
+	   "files": [
+        {
+          "src": "webui-popover-1.2.3/dist/jquery.webui-popover.js",
+          "dest": [
+            "admin/js/core/lib/jquery.webui-popover.js"
+          ]
+        },
+		{
+          "src": "webui-popover-1.2.3/dist/jquery.webui-popover.css",
+          "dest": [
+            "admin/css/core/lib/jquery.webui-popover.css"
+          ]
+        }
+      ]
+	}
   }
 }

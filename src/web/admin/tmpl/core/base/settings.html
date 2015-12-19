@@ -1,0 +1,33 @@
+﻿<div class="container-fluid affix-area form-buttons-container">
+    <div class="container">
+        <div class="row ">
+            <div class="col-md-10">
+                <div class="affix-container">
+                    <div class="buttons">
+                        <button type="button" ng-show="!published && !draft" class="btn btn-danger" ng-click="discard()">discard</button>
+                        <button type="button" ng-disabled="published && !draft" class="btn btn-success" ng-click="publish()">save</button>
+                    </div>
+                    
+                    <ctrl-language-selector class="language-selector" ng-model="language" ng-options="application.languages" ng-show="localized && localization"></ctrl-language-selector>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+    <section class="col-md-10 scrollspy-container" data-scrollspy>
+
+        <ctrl-breadcrumb ng-show="breadcrumb" ng-model="current.breadcrumb.items" ng-title="current.breadcrumb.title"></ctrl-breadcrumb>
+
+        <div ng-include="template"></div>
+
+    </section>
+
+    <div class="col-md-2">
+        <ctrl-scroll-spy ng-model="nav" />
+    </div>
+
+</div>
+

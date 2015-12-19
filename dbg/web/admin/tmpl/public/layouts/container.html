@@ -1,0 +1,12 @@
+﻿<div class="row" id="layout-container" data-scrollspy="container">
+    <ctrl-container class="col-sm-12" ng-model="model.content.container" ng-required="false" ng-label="container"></ctrl-container>
+</div>
+<div class="row" id="layout-containerR" data-scrollspy="container required">
+    <ctrl-container class="col-sm-12" ng-model="model.content.containerR" ng-required="true" ng-label="container required"></ctrl-container>
+</div>
+<div class="row" id="layout-containers" data-scrollspy="containers">
+    <ctrl-container-list class="col-sm-12" ng-model="model.content.containers" ng-required="false" ng-max-length="2" ng-label="containers (max length 2)"></ctrl-container-list>
+</div>
+<div class="row" id="layout-containersR" data-scrollspy="containers required">
+    <ctrl-container-list class="col-sm-12" ng-model="model.content.containersR" ng-required="true" ng-max-length="2" ng-label="containers required (max length 2)"></ctrl-container-list>
+</div>

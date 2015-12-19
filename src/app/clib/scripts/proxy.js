@@ -284,13 +284,11 @@
             settings.func = arguments[i];
             i++;
 
-            // path
             if (isString(arguments[i])) {
                 settings.path = arguments[i];
                 i++;
             }
 
-            // body
             if (typeof arguments[i] === 'object') {
                 settings.body = arguments[i];
                 i++;

@@ -13,7 +13,7 @@ var Parser = function (server) {
             language: ctx.language || 'en',
             meta: {
                 title: '',
-                keywords: '',
+                keywords: [],
                 description: ''
             },
             params: [],
@@ -29,15 +29,18 @@ var Parser = function (server) {
             name: 'generator',
             content: 'jsnbt content management'
         }, {
-            name: 'layout',
-            content: ctx.layout
+            name: 'layouts',
+            content: ctx.layouts
         }, {
             name: 'page',
             content: (ctx.node || {}).id
         }, {
             name: 'pointer',
             content: (ctx.pointer || {}).id
-        }], ctx.params);
+        }], {
+            name: 'hierarchy',
+            content: ctx.hierarchy
+        }, ctx.params);
 
         var isAdmin = ctx.uri.first === 'admin';
 

@@ -1,0 +1,20 @@
+﻿<div class="row" id="layout-node" data-scrollspy="node">
+    <ctrl-node class="col-sm-12" ng-language="defaults.language" ng-model="model.content.node" ng-domain="'core'" ng-required="false" ng-label="node">
+        {{model.title[language]}}
+    </ctrl-node>
+</div>
+<div class="row" id="layout-nodeR" data-scrollspy="node required">
+    <ctrl-node class="col-sm-12" ng-language="defaults.language" ng-model="model.content.nodeR" ng-domain="'core'" ng-required="true" ng-label="node required">
+        {{model.title[language]}}
+    </ctrl-node>
+</div>
+<div class="row" id="layout-nodes" data-scrollspy="nodes">
+    <ctrl-node-list class="col-sm-12" ng-language="defaults.language" ng-model="model.content.nodes" ng-domain="'core'" ng-required="false" ng-max-length="2" ng-label="nodes (max length 2)">
+        {{model.title[language]}}
+    </ctrl-node-list>
+</div>
+<div class="row" id="layout-nodesR" data-scrollspy="nodes required">
+    <ctrl-node-list class="col-sm-12" ng-language="defaults.language" ng-model="model.content.nodesR" ng-domain="'core'" ng-required="true" ng-max-length="2" ng-label="nodes required (max length 2)">
+        {{model.title[language]}}
+    </ctrl-node-list>
+</div>

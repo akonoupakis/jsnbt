@@ -1,4 +1,4 @@
-var fs = require('fs');
+var fs = require('fs-extra');
 var path = require('path');
 var extend = require('extend');
 var _ = require('underscore');
@@ -157,7 +157,7 @@ var FileManager = function (server) {
 
             var fullPath = path.join(server.getPath('www'), 'public', root, normalize(opts.path));
             if (fs.existsSync(fullPath)) {
-                fs.create(path.join(fullPath, opts.name));
+                fs.mkdirsSync(path.join(fullPath, opts.name));
                 return true;
             }
 
@@ -185,8 +185,10 @@ var FileManager = function (server) {
 
             var fullPath = path.join(server.getPath('www'), 'public', root, normalize(opts.from));
             var fullNewPath = path.join(server.getPath('www'), 'public', root, normalize(opts.to));
+            
             if (fs.existsSync(fullPath) && !fs.existsSync(fullNewPath)) {
-                fs.renameSync(fullPath, fullNewPath);
+                fs.copySync(fullPath, fullNewPath);
+                fs.removeSync(fullPath);
                 return true;
             }
 

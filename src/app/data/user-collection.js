@@ -9,7 +9,7 @@ function UserCollection(server, config) {
   Collection.apply(this, arguments);
    
   this.config.schema.properties.username = this.config.schema.properties.username || { type: 'string', required: true };
-  this.config.schema.properties.password = this.config.schema.properties.password || { type: 'string', required: true };
+  this.config.schema.properties.password = this.config.schema.properties.password || { type: 'string' };
 }
 util.inherits(UserCollection, Collection);
 

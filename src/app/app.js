@@ -17,93 +17,99 @@ var configSchema = require('../cfg/schema.json');
 var languages = require('./data/store/languages.js');
 var countries = require('./data/store/countries.js');
 
-exports.domain = 'core';
-exports.browsable = false;
-exports.messager = true;
+var index = require('./index.js');
 
-exports.environment = Environment.Development;
-
-exports.path = null;
-
-exports.dbg = false;
-
-exports.title = 'jsnbt';
-
-exports.localization = {
-    enabled: true,
-    locale: 'en'
-};
-
-exports.ssl = false;
-
-exports.modules = {
-    core: undefined,
-    rest: [],
-    public: undefined,
-    all: []
-};
-
-exports.config = {
+var App = function () {
     
-    fileGroups: [],
+    this.environment = Environment.Development;
 
-    images: [],
+    this.path = null;
 
-    entities: [],
+    this.dbg = false;
 
-    roles: [],
+    this.title = 'jsnbt';
 
-    sections: [],
+    this.localization = {
+        enabled: true,
+        locale: 'en'
+    };
 
-    collections: {},
+    this.ssl = false;
 
-    lists: [],
+    this.modules = {
+        core: undefined,
+        rest: [],
+        public: undefined,
+        all: []
+    };
 
-    injects: [],
+    this.config = {
 
-    layouts: [],
+        name: undefined,
 
-    containers: [],
+        fileGroups: [],
 
-    scripts: { },
+        images: [],
 
-    styles: { },
+        entities: [],
 
-    templates: [],
+        roles: [],
 
-    routes: [],
+        sections: [],
 
-    messaging: {
-        mail: {
-            implementations: {},
-            templates: {}
-        },
-        sms: {
-            implementations: {},
-            templates: {}
+        collections: {},
+
+        lists: [],
+
+        injects: [],
+
+        layouts: [],
+
+        containers: [],
+
+        scripts: {},
+
+        styles: {},
+
+        templates: [],
+
+        content: [],
+
+        routes: [],
+
+        messaging: {
+            mail: {
+                implementations: {},
+                templates: {}
+            },
+            sms: {
+                implementations: {},
+                templates: {}
+            }
         }
-    }
+
+    };
+
+    var versionInfo = fs.existsSync(root.getPath('node_modules/jsnbt/package.json')) ?
+        require(root.getPath('node_modules/jsnbt/package.json')) :
+        require(root.getPath('package.json'));
+
+    this.version = versionInfo.version;
+
+    this.languages = require('./data/store/languages.js');
+    this.countries = require('./data/store/countries.js');
+
+    this.root = root;
 
 };
 
-var versionInfo = fs.existsSync(root.getPath('node_modules/jsnbt/package.json')) ?
-    require(root.getPath('node_modules/jsnbt/package.json')) :
-    require(root.getPath('package.json'));
-
-exports.version = versionInfo.version;
-
-exports.languages = require('./data/store/languages.js');
-exports.countries = require('./data/store/countries.js');
-
-exports.register = function (module) {
+App.prototype.register = function (module) {
 
     var self = this;
 
     if (!module.domain)
         return;
-
-    logger.debug('registering module: ' + module.domain);
-
+    
     var moduleConfig = typeof (module.getConfig) === 'function' ? module.getConfig() : {};
 
     var validator = new validation.JSONValidation();
@@ -191,7 +197,7 @@ exports.register = function (module) {
             }
         });
     }
-
+    
     var entityDefaults = {
         name: '',
         allowed: [],
@@ -199,10 +205,11 @@ exports.register = function (module) {
         localized: true,
 
         properties: {
-            name: true,
+            title: true,
+            active: true,
             parent: true,
             template: true,
-            layout: true,
+            layouts: true,
             seo: true,
             meta: true,
             permissions: true,
@@ -215,11 +222,13 @@ exports.register = function (module) {
         _.each(moduleConfig.entities, function (moduleEntity) {
             var matchedEntity = _.find(self.config.entities, function (x) { return x.name === moduleEntity.name; });
             if (matchedEntity) {
-                 extend(true, matchedEntity, moduleEntity);
+                extend(true, matchedEntity, moduleEntity);
+                matchedEntity.domain = module.domain;
             }
             else {
                 var newEntity = {};
                 extend(true, newEntity, entityDefaults, moduleEntity);
+                newEntity.domain = module.domain;
                 self.config.entities.push(newEntity);
             }
         });
@@ -235,26 +244,37 @@ exports.register = function (module) {
 
     applyTextArray('fileGroups');
 
+    applyArray('content', 'id');
+    
+    var dataDefaults = {
+        name: '',
+        localized: true,
+        properties: {
+            title: true
+        }
+    };
+
     if (moduleConfig.lists) {
         _.each(moduleConfig.lists, function (moduleList) {
-            var fileName = moduleList.form.substring(0, moduleList.form.lastIndexOf('.'));
-            fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
+            var matchedList = _.find(self.config.lists, function (x) { return x.id === moduleConfig.id && x.domain == module.domain; });
+            if (!matchedList) {
+                matchedList = _.find(self.config.lists, function (x) { return x.id === moduleConfig.id; });
+                if (matchedList)
+                    throw new Error('list ' + matchedList.id + ' already registered for domain ' + module.domain);
+            }
 
-            var matchedList = _.find(self.config.lists, function (x) { return x.id === fileName && x.domain == module.domain; });
             if (matchedList) {
                 extend(true, matchedList, moduleList);
             }
             else {
-                var newListSpec = {
+                var newListSpec = {};
+
+
+                extend(true, newListSpec, dataDefaults, {
                     domain: module.domain,
                     localized: true
-                };
-
-                extend(true, newListSpec, moduleList);
-
-                if (!newListSpec.id)
-                    newListSpec.id = fileName;
-                
+                }, moduleList);
+                                
                 self.config.lists.push(newListSpec);
             }
         });
@@ -273,23 +293,25 @@ exports.register = function (module) {
         }
     }
 
-    if (moduleConfig.messaging && moduleConfig.messaging.mail) {
-        if (moduleConfig.messaging.mail.provider && typeof (moduleConfig.messaging.mail.getSender) === 'function') {
-            self.config.messaging.mail.implementations[module.domain] = {
-                provider: moduleConfig.messaging.mail.provider,
-                settingsTmpl: moduleConfig.messaging.mail.settingsTmpl,
-                getSender: moduleConfig.messaging.mail.getSender
-            };
+    if (module.messager) {
+        if (moduleConfig.messaging && moduleConfig.messaging.mail) {
+            if (moduleConfig.messaging.mail.provider && typeof (moduleConfig.messaging.mail.getSender) === 'function') {
+                self.config.messaging.mail.implementations[module.domain] = {
+                    provider: moduleConfig.messaging.mail.provider,
+                    settingsTmpl: moduleConfig.messaging.mail.settingsTmpl,
+                    getSender: moduleConfig.messaging.mail.getSender
+                };
+            }
         }
-    }
 
-    if (moduleConfig.messaging && moduleConfig.messaging.sms) {
-        if (moduleConfig.messaging.sms.provider && typeof (moduleConfig.messaging.sms.getSender) === 'function') {
-            self.config.messaging.sms.implementations[module.domain] = {
-                provider: moduleConfig.messaging.sms.provider,
-                settingsTmpl: moduleConfig.messaging.sms.settingsTmpl,
-                getSender: moduleConfig.messaging.sms.getSender
-            };
+        if (moduleConfig.messaging && moduleConfig.messaging.sms) {
+            if (moduleConfig.messaging.sms.provider && typeof (moduleConfig.messaging.sms.getSender) === 'function') {
+                self.config.messaging.sms.implementations[module.domain] = {
+                    provider: moduleConfig.messaging.sms.provider,
+                    settingsTmpl: moduleConfig.messaging.sms.settingsTmpl,
+                    getSender: moduleConfig.messaging.sms.getSender
+                };
+            }
         }
     }
 
@@ -309,6 +331,8 @@ exports.register = function (module) {
     if (module.domain === 'public') {
         module.browsable = false;
 
+        self.config.name = moduleConfig.name;
+
         if (moduleConfig.ssl !== undefined) {
             self.ssl = moduleConfig.ssl === true;
         }
@@ -324,21 +348,20 @@ exports.register = function (module) {
         applyArray('layouts', 'id');
 
         applyArray('containers', 'id');
-
+        
         applyArray('routes', 'id');
 
-        if (module.messager) {
-            if (moduleConfig.messaging && moduleConfig.messaging.mail && moduleConfig.messaging.mail.templates && _.isArray(moduleConfig.messaging.mail.templates)) {
-                _.each(moduleConfig.messaging.mail.templates, function (template) {
-                    self.config.messaging.mail.templates[template.code] = template;
-                });
-            }
 
-            if (moduleConfig.messaging && moduleConfig.messaging.sms && moduleConfig.messaging.sms.templates && _.isArray(moduleConfig.messaging.sms.templates)) {
-                _.each(moduleConfig.messaging.sms.templates, function (template) {
-                    self.config.messaging.sms.templates[template.code] = template;
-                });
-            }
+        if (moduleConfig.messaging && moduleConfig.messaging.mail && moduleConfig.messaging.mail.templates && _.isArray(moduleConfig.messaging.mail.templates)) {
+            _.each(moduleConfig.messaging.mail.templates, function (template) {
+                self.config.messaging.mail.templates[template.code] = template;
+            });
+        }
+
+        if (moduleConfig.messaging && moduleConfig.messaging.sms && moduleConfig.messaging.sms.templates && _.isArray(moduleConfig.messaging.sms.templates)) {
+            _.each(moduleConfig.messaging.sms.templates, function (template) {
+                self.config.messaging.sms.templates[template.code] = template;
+            });
         }
     }
 
@@ -355,7 +378,7 @@ exports.register = function (module) {
     self.modules.all.push(module);
 };
 
-exports.init = function (options) {
+App.prototype.init = function (options) {
     var self = this;
     
     var defOpts = {
@@ -374,10 +397,10 @@ exports.init = function (options) {
         domain: 'core',
         browsable: false,
         messager: true,
-        getName: self.getName,
-        getVersion: self.getVersion,
-        getConfig: self.getConfig,
-        getBower: self.getBower
+        getName: index.getName,
+        getVersion: index.getVersion,
+        getConfig: index.getConfig,
+        getBower: index.getBower
     };
     
     this.register(coreModule);
@@ -385,9 +408,8 @@ exports.init = function (options) {
     var installedModulePaths = fs.readFileSync(root.getPath('www/modules'), 'utf8').split('\n');
     
     _.each(installedModulePaths, function (installedModulePath) {
-    
         var installedModule = require(root.getPath(installedModulePath));
-        if (installedModule.domain && installedModule.domain !== 'core') {            
+        if (installedModule.domain && installedModule.domain !== 'core') {
             self.register(installedModule);
         }
     });
@@ -423,7 +445,7 @@ exports.init = function (options) {
     delete this.init;
 }
 
-exports.createServer = function (options) {
+App.prototype.createServer = function (options) {
     if (!fs.existsSync(root.getPath('www')))
         throw new Error('deployment directory not found! run grunt!');
 
@@ -455,18 +477,6 @@ exports.createServer = function (options) {
     return server;
 };
 
-exports.getName = function () {
-    return require('../../package').name;
-};
-
-exports.getVersion = function () {
-    return require('../../package').version;
-};
-
-exports.getConfig = function () {
-    return require('../cfg/config.js');
-};
-
-exports.getBower = function () {
-    return require('../web/bower.json');
+module.exports = function () {
+    return new App();
 };

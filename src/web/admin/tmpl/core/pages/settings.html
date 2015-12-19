@@ -1,57 +1,39 @@
-﻿<div class="container">
-
-    <section class="col-md-10 scrollspy-container" data-scrollspy>
-
-        <ctrl-breadcrumb ng-model="current.breadcrumb" ng-title="you are here:"></ctrl-breadcrumb>
-
-        <div class="row title-container">
-            <div class="col-md-12">
-                <span ng-show="current.breadcrumb[0].name === 'modules'" ng-click="back()" class="glyphicon glyphicon-arrow-left back-button"></span>
-                <h1 class="title">{{ name }}</h1>
-                <div class="buttons">
-                    <button type="button" ng-show="!published" class="btn btn-danger" ng-click="discard()">discard</button>
-                    <button type="button" ng-disabled="published" class="btn btn-success" ng-click="publish()">save</button>
-                </div>
-            </div>
-        </div>
-        
-        <hr />
-
-        <div class="row" id="settings-page" data-scrollspy="home page">
-            <ctrl-node class="col-md-12" ng-model="settings.homepage" ng-domain="'core'" ng-required="true" ng-options="{entities: ['page']}" ng-label="home page"></ctrl-node>
-        </div>
-        
-        <hr />
-
-        <div class="row" id="settings-messaging" data-scrollspy="messaging">
-            <div class="col-md-6">
-                <label>messaging - mail</label>
-                <div class="row">
-                    <ctrl-select class="col-md-12" ng-model="settings.messaging.mail.provider" ng-required="false" ng-options="mailProviders"></ctrl-select>
-                </div>
-                <div ng-include="mailTmpl"></div>
-            </div>
-            <div class="col-md-6">
-                <label>messaging - sms</label>
-                <div class="row">
-                    <ctrl-select class="col-md-12" ng-model="settings.messaging.sms.provider" ng-required="false" ng-options="smsProviders"></ctrl-select>
-                    <div ng-include="smsTmpl"></div>
-                </div>
-            </div>
-        </div>
-
-        <hr />
-
-        <div ng-repeat="tmpl in injects">
-            <div ng-include="tmpl"></div>
-            <hr />
-        </div>
-
-</section>
-
-    <div class="col-md-2">
-        <scrollspy ng-model="nav" />
+﻿<div class="row title-container">
+    <div class="col-sm-12">
+        <h1 class="title">{{ title }}</h1>
     </div>
+</div>
+        
+<hr />
 
+<div class="row" id="settings-homeNode" data-scrollspy="home page">
+    <ctrl-node class="col-sm-12" ng-language="defaults.language" ng-model="settings.homepage" ng-domain="'core'" ng-required="true" ng-entities="['page']" ng-label="home page">
+        {{model.title[language]}}
+    </ctrl-node>
+</div>
+        
+<hr />
+
+<div class="row" id="settings-messaging" data-scrollspy="messaging">
+    <div class="col-sm-6">
+        <label>messaging - mail</label>
+        <div class="row">
+            <ctrl-select class="col-md-12" ng-model="settings.messaging.mail.provider" ng-required="false" ng-options="mailProviders"></ctrl-select>
+        </div>
+        <div ng-include="mailTmpl"></div>
+    </div>
+    <div class="col-sm-6">
+        <label>messaging - sms</label>
+        <div class="row">
+            <ctrl-select class="col-md-12" ng-model="settings.messaging.sms.provider" ng-required="false" ng-options="smsProviders"></ctrl-select>
+            <div ng-include="smsTmpl"></div>
+        </div>
+    </div>
 </div>
 
+<hr />
+
+<div ng-repeat="tmpl in injects">
+    <div ng-include="tmpl"></div>
+    <hr />
+</div>
