@@ -205,6 +205,21 @@ gulp.task('installBowerComponents', function (done) {
                         del.sync('./bower_components/' + bowerPackage.name);
                         gutil.log('bower: installed ' + bowerPackage.name + '#' + bowerPackage.version);
 
+                        var folders = _.filter(fs.readdirSync(server.getPath('bower_components')), function (x) {
+                            return _.str.startsWith(x, bowerPackage.name + '-');
+                        });
+
+                        _.each(folders, function (folder) {
+
+                            if (!_.any(bowerPackages, function (x) {
+                                return (x.name + '-' + x.version) === folder;
+                            })) {
+                                gutil.log('bower: deleting obsolete ' + folder);
+                                del.sync('./bower_components/' + folder);
+                                gutil.log('bower: deleted obsolete ' + folder);
+                            }
+                        });
+
                         cb();
                     });
             }
@@ -508,6 +523,16 @@ gulp.task('generateStyles', function () {
     return eventStream.merge(gulps);
 });
 
+gulp.task('checkStructure', function () {
+    fs.mkdirpSync('./' + TARGET_FOLDER + '/public/tmp');
+
+    fs.mkdirpSync('./' + TARGET_FOLDER + '/public/files');
+
+    _.each(app.config.fileGroups, function (fileGroup) {
+        fs.mkdirpSync('./' + TARGET_FOLDER + '/public/files/' + fileGroup);
+    });
+});
+
 gulp.task('minifyScripts', function () {
 
     var gulps = [];
@@ -719,6 +744,7 @@ gulp.task('dev', function (callback) {
         'parseTemplates',
         'generateJsnbtScript',
         'deployBowerComponents',
+        'checkStructure',
         'generateStyles',
         callback
     );
@@ -741,6 +767,7 @@ gulp.task('dev-update', function (callback) {
         'parseTemplates',
         'generateJsnbtScript',
         'deployBowerComponents',
+        'checkStructure',
         'generateStyles',
         function () {
             watch();
@@ -765,6 +792,7 @@ gulp.task('prod', function (callback) {
         'parseTemplates',
         'generateJsnbtScript',
         'deployBowerComponents',
+        'checkStructure',
         'generateStyles',
         'minifyScripts',
         'compressAngularTemplates',

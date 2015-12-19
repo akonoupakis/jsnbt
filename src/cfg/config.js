@@ -2,6 +2,7 @@ module.exports = {
     
     fileGroups: [
         'users',
+        'theme',
         'public'
     ],
 
