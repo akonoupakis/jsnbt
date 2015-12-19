@@ -293,7 +293,7 @@
                         moduleLookupMany(undefined, []).then(function (selectedNodeIds) {
                             if (!scope.ngModel)
                                 scope.ngModel = [];
-
+                            
                             $(selectedNodeIds).each(function (i, item) {
                                 scope.ngModel.push(item);
                             });

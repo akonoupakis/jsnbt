@@ -13,7 +13,7 @@ var Parser = function (server) {
             language: ctx.language || 'en',
             meta: {
                 title: '',
-                keywords: '',
+                keywords: [],
                 description: ''
             },
             params: [],

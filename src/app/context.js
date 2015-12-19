@@ -107,7 +107,7 @@ var Context = function (server, req, res) {
         meta: {
             title: '',
             description: '',
-            keywords: ''
+            keywords: []
         },
 
         params: [],

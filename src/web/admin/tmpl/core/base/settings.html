@@ -7,6 +7,8 @@
                         <button type="button" ng-show="!published && !draft" class="btn btn-danger" ng-click="discard()">discard</button>
                         <button type="button" ng-disabled="published && !draft" class="btn btn-success" ng-click="publish()">save</button>
                     </div>
+                    
+                    <ctrl-language-selector class="language-selector" ng-model="language" ng-options="application.languages" ng-show="localized && localization"></ctrl-language-selector>
                 </div>
             </div>
         </div>

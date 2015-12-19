@@ -51,11 +51,11 @@
 
                 TreeSelectorModalControllerBase.prototype.setSelected = function (selected) {
                     if (selected)
-                        this.ctor.TreeNodeService.setSelected(this.scope.nodes, this.scope.mode === 'multiple' ? selected : [selected]);
+                        this.ctor.TreeNodeService.setSelected(this.scope.model, this.scope.mode === 'multiple' ? selected : [selected]);
                 };
 
                 TreeSelectorModalControllerBase.prototype.getSelected = function () {
-                    var selected = this.scope.mode === 'single' ? _.first(this.ctor.TreeNodeService.getSelected(this.scope.nodes)) : this.ctor.TreeNodeService.getSelected(this.scope.nodes);
+                    var selected = this.scope.mode === 'single' ? _.first(this.ctor.TreeNodeService.getSelected(this.scope.model)) : this.ctor.TreeNodeService.getSelected(this.scope.model);
                     return selected;
                 };
 

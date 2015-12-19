@@ -14,7 +14,7 @@
 
                     var logger = $logger.create('SettingsControllerBase');
 
-                    $scope.localization = false;
+                    $scope.localization = $scope.localization || false;
 
                     $scope.settingsId = undefined;
                     $scope.settings = {};
