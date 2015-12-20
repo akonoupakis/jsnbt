@@ -1,0 +1,12 @@
+﻿<div class="row" id="layout-address" data-scrollspy="address">
+    <ctrl-custom class="col-sm-12" ng-model="model.content.contact" ng-scope="{}" ng-label="contact">
+        <div class="row">
+            <ctrl-text class="col-sm-6" ng-model="model.address" ng-required="true" ng-disabled="ngdisabled" ng-label="address"></ctrl-text>
+            <ctrl-text class="col-sm-3" ng-model="model.postcode" ng-required="true" ng-disabled="ngdisabled" ng-label="post code"></ctrl-text>
+            <ctrl-text class="col-sm-3" ng-model="model.city" ng-required="true" ng-disabled="ngdisabled" ng-label="city"></ctrl-text>
+        </div>
+        <div class="row">
+            <ctrl-map class="col-sm-12" ng-model="model.coordinates" ng-required="true" ng-label="coordinates" ng-disabled="ngdisabled"></ctrl-map>
+        </div>
+    </ctrl-custom>
+</div>
