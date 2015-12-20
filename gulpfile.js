@@ -21,7 +21,7 @@ _.str = require('underscore.string');
 
 var TARGET_FOLDER = 'www';
 
-var app = new require('./app')();
+var app = require('./src/app/index.js').create();
 var appMode = 'DEVELOPMENT';
 
 var modulePaths = [];
@@ -66,7 +66,7 @@ gulp.task('loadModules', function () {
             delete require.cache[key];
     });
 
-    app = new require('./app')();
+    app = require('./src/app/index.js').create();
 
     modulePaths = [];
 

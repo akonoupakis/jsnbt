@@ -1,11 +1,11 @@
 var hosts = require('./hosts.json');
-var app = require('jsnbt-docs');
+var Server = require('./docs.js');
 
-var server = app.createServer({
-    title: 'jsnbt documentation',
-    host: hosts.docs.host,
-    port: hosts.docs.port,
-    root: 'docs'
+var server = new Server({
+    web: {
+        host: hosts.docs.host,
+        port: hosts.docs.port
+    }
 });
 
 server.start();

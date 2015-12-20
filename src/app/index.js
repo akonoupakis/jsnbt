@@ -17,3 +17,7 @@ exports.getConfig = function () {
 exports.getBower = function () {
     return require('../web/bower.json');
 };
+
+exports.create = function () {
+    return new require('./app.js')();
+};
