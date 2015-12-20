@@ -46,4 +46,8 @@ module.exports = [{
     id: 'data',
     name: 'data control layout',
     form: 'tmpl/public/layouts/data.html'
+}, {
+    id: 'test',
+    name: 'test control layout',
+    form: 'tmpl/public/layouts/test.html'
 }];

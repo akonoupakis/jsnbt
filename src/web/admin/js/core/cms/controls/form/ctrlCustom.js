@@ -28,13 +28,13 @@
                     if (!_.isEqual([scope.ngModel], scope.value)) {
                         scope.value = [scope.ngModel];
                     }
-                });
+                }, true);
 
                 scope.$watch('value', function (newValue, prevValue) {
                     if (!_.isEqual([scope.ngModel], newValue)) {
                         scope.ngModel = _.first(newValue);
                     }
-                });
+                }, true);
 
                 scope.$watch('ngScope', function (newValue, prevValue) {
                     if (_.isObject(newValue)) {
