@@ -103,7 +103,7 @@ var App = function () {
 
 };
 
-App.prototype.register = function (module) {
+App.prototype.register = function (module, config) {
 
     var self = this;
 
@@ -322,6 +322,10 @@ App.prototype.register = function (module) {
         else {
             module.config = {};
         }
+
+        if (_.isObject(config)) {
+            extend(true, module.config, config);
+        }
     }
     
     if (module.domain === 'public' || module.domain === 'core') {
@@ -378,7 +382,7 @@ App.prototype.register = function (module) {
     self.modules.all.push(module);
 };
 
-App.prototype.init = function (options) {
+App.prototype.init = function (config) {
     var self = this;
     
     var defOpts = {
@@ -386,7 +390,7 @@ App.prototype.init = function (options) {
     };
 
     var opts = {};
-    extend(true, opts, defOpts, options);
+    extend(true, opts, defOpts, config);
 
     this.title = opts.title;
         
@@ -410,7 +414,10 @@ App.prototype.init = function (options) {
     _.each(installedModulePaths, function (installedModulePath) {
         var installedModule = require(root.getPath(installedModulePath));
         if (installedModule.domain && installedModule.domain !== 'core') {
-            self.register(installedModule);
+            if(installedModule.domain === 'public')
+                self.register(installedModule, config);
+            else
+                self.register(installedModule);
         }
     });
 
@@ -474,6 +481,49 @@ App.prototype.createServer = function (options) {
     this.path = path.join(__dirname, 'www', 'public');
     
     var server = require('./server.js')(this, opts);
+    return server;
+};
+
+App.prototype.createMigrator = function (options) {
+    if (!fs.existsSync(root.getPath('www')))
+        throw new Error('deployment directory not found! run grunt!');
+
+    var mode = fs.readFileSync('www/mode', {
+        encoding: 'utf8'
+    });
+
+    this.dbg = mode !== 'prod';
+    this.environment = mode === 'prod' ? Environment.Production : Environment.Development;
+
+    var defOpts = {
+        host: '',
+        port: 0,
+        db: {
+            host: '',
+            port: 27017,
+            name: ''
+        }
+    };
+
+    var opts = {};
+    extend(true, opts, defOpts, options);
+
+    process.chdir('www');
+
+    this.path = path.join(__dirname, 'www', 'public');
+
+    var server = require('./server.js')(this, opts);
+
+    server.next = function () {
+        var migrator = require('./migrator.js')(server);
+        migrator.process(function () {
+            process.exit(0);
+        }, function (err) {
+            throw err;
+            process.exit(1);
+        });
+    };
+
     return server;
 };
 

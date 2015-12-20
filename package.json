@@ -1,6 +1,6 @@
 ﻿{
   "name": "jsnbt",
-  "version": "1.0.118",
+  "version": "1.0.119",
   "description": "The Jsonbot engine",
   "keywords": [
     "jsnbt",
@@ -31,7 +31,6 @@
     "src/cfg/**",
     "src/dat/**",
     "src/web/**",
-    "app.js",
     "gulpfile.js"
   ],
   "dependencies": {

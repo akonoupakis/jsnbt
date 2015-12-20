@@ -133,9 +133,9 @@ Server.prototype.start = function (next) {
             if (typeof (next) === 'function') {
                 server.next = next;
             }
-            else {
-                server.next = undefined;
-            }
+            //else {
+                //server.next = undefined;
+            //}
         }
 
     });
