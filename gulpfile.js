@@ -28,7 +28,7 @@ var modulePaths = [];
 var moduleNames = [];
 
 var getModuleFolderPath = function (installedPath) {
-    var modulePath = installedPath.split('/')
+    var modulePath = installedPath.split('/');
     modulePath.pop();
     modulePath.pop();
     modulePath = modulePath.join('/');
@@ -158,7 +158,7 @@ gulp.task('installBowerComponents', function (done) {
     var exec = require('child_process').exec;
 
     var tasks = [];
-    
+
     var bowerPackages = [];
 
     var bowerConfigs = [];
@@ -220,7 +220,7 @@ gulp.task('installBowerComponents', function (done) {
 
                         del.sync('./bower_components/' + bowerPackage.name);
                         gutil.log('bower: installed ' + bowerPackage.name + '#' + bowerPackage.version);
-                        
+
                         cb();
                     });
             }
@@ -594,7 +594,7 @@ gulp.task('compressAngularTemplates', function () {
 		        module: 'jsnbt',
 		        standalone: false,
 		        path: function (path, base) {
-		            return 'tmpl\\' + path.replace(base, '');
+		            return ('tmpl\\' + path.replace(base, '')).replace(/\\/gi, '//');
 		        }
 		    }))
             .pipe(rename('tmpl.js'))
@@ -615,7 +615,7 @@ gulp.task('compressAngularTemplates', function () {
 		        module: 'jsnbt',
 		        standalone: false,
 		        path: function (path, base) {
-		            return 'tmpl\\' + path.replace(base, '');
+		            return ('tmpl\\' + path.replace(base, '')).replace(/\\/gi, '//');
 		        }
 		    }))
             .pipe(rename('tmpl.js'))
