@@ -45,8 +45,40 @@ gulp.task('copyLocalBowerComponents', function () {
 });
 
 gulp.task('copyLocalNodeModules', function () {
-    gulp.src('./npm/**')
-        .pipe(gulp.dest('./node_modules'));
+    var gulps = [];
+
+    var modules = undefined;
+    if (fs.existsSync(server.getPath('npm/modules'))) {
+        modules = _.filter(fs.readFileSync(server.getPath('npm/modules'), { encoding: 'utf8' }).split('\r\n'), function (x) {
+            return x !== undefined && x !== '';
+        });
+    }
+    
+    if (fs.existsSync(server.getPath('npm'))) {
+        var packages = fs.readdirSync(server.getPath('npm'));
+        _.each(packages, function (packageItem) {
+            if (fs.lstatSync(server.getPath('npm/' + packageItem)).isDirectory()) {
+                var found = true;
+                if (modules !== undefined) {
+                    if (modules.indexOf(packageItem) !== -1) {
+                        gulps.push(gulp.src('./npm/' + packageItem + '/**')
+                            .pipe(gulp.dest('./node_modules/' + packageItem)));
+                    }
+                    else {
+                        del.sync('./node_modules/' + packageItem);
+                    }
+                }
+                else {
+                    gulps.push(gulp.src('./npm/' + packageItem + '/**')
+                        .pipe(gulp.dest('./node_modules/' + packageItem)));
+                }
+            }
+        });
+    }
+
+    if (gulps.length > 0)
+        return eventStream.merge(gulps);
+
 });
 
 gulp.task('loadModules', function () {
@@ -101,11 +133,11 @@ gulp.task('loadModules', function () {
     if (fs.existsSync(server.getPath('node_modules'))) {
         var packages = fs.readdirSync(server.getPath('node_modules'));
         _.each(packages, function (packageItem) {
-
             if (_.str.startsWith(packageItem, 'jsnbt')) {
                 if (moduleNames.indexOf(packageItem) === -1) {
                     if (fs.lstatSync(server.getPath('node_modules/' + packageItem)).isDirectory()) {
                         var nodeModulePackagePath = server.getPath('node_modules/' + packageItem + '/package.json');
+
                         if (fs.existsSync(nodeModulePackagePath)) {
                             var nodeModulePackage = require(nodeModulePackagePath);
 
@@ -118,7 +150,6 @@ gulp.task('loadModules', function () {
                                     app.register(nodeModuleIndexModule);
 
                                     moduleNames.push(packageItem);
-
                                 }
                             }
                         }
