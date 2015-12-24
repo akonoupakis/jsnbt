@@ -58,14 +58,12 @@ gulp.task('copyLocalNodeModules', function () {
         var packages = fs.readdirSync(server.getPath('npm'));
         _.each(packages, function (packageItem) {
             if (fs.lstatSync(server.getPath('npm/' + packageItem)).isDirectory()) {
-                var found = true;
+                del.sync('./node_modules/' + packageItem);
+
                 if (modules !== undefined) {
                     if (modules.indexOf(packageItem) !== -1) {
                         gulps.push(gulp.src('./npm/' + packageItem + '/**')
                             .pipe(gulp.dest('./node_modules/' + packageItem)));
-                    }
-                    else {
-                        del.sync('./node_modules/' + packageItem);
                     }
                 }
                 else {
