@@ -326,7 +326,8 @@ gulp.task('copyMigrations', function () {
             .pipe(gulp.dest('./' + TARGET_FOLDER + '/migrations/' + moduleName)));
     });
 
-    return eventStream.merge(gulps);
+    if (gulps.length > 0)
+        return eventStream.merge(gulps);
 });
 
 var getFileCopyPublicPaths = function (module, modulePath) {
@@ -399,7 +400,8 @@ gulp.task('copyFiles', function () {
         gulp.src(adminTemplatePaths)
            .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/admin/'))];
 
-    return eventStream.merge(gulps);
+    if (gulps.length > 0)
+        return eventStream.merge(gulps);
 
 });
 
@@ -434,7 +436,8 @@ gulp.task('parseTemplates', function () {
 
     });
 
-    return eventStream.merge(gulps);
+    if (gulps.length > 0)
+        return eventStream.merge(gulps);
 });
 
 gulp.task('generateJsnbtScript', function () {
@@ -514,7 +517,8 @@ gulp.task('deployBowerComponents', function () {
         }
     });
 
-    return eventStream.merge(gulps);
+    if (gulps.length > 0)
+        return eventStream.merge(gulps);
 
 });
 
@@ -550,7 +554,8 @@ gulp.task('generateStyles', function () {
 
     });
 
-    return eventStream.merge(gulps);
+    if (gulps.length > 0)
+        return eventStream.merge(gulps);
 });
 
 gulp.task('checkStructure', function () {
@@ -598,7 +603,8 @@ gulp.task('minifyScripts', function () {
 
     });
 
-    return eventStream.merge(gulps);
+    if (gulps.length > 0)
+        return eventStream.merge(gulps);
 });
 
 gulp.task('compressAngularTemplates', function () {
