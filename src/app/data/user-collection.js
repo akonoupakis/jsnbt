@@ -52,7 +52,7 @@ UserCollection.prototype.handle = function (ctx) {
           return ctx.done();
         }
         
-        ctx.query = {id: ctx.session.data.uid, $fields: {password: 0}};
+        ctx.query = { id: ctx.session.data.uid, $fields: { password: 0 } };
         
         return this.find(ctx, ctx.done);
       }
@@ -82,6 +82,45 @@ UserCollection.prototype.handle = function (ctx) {
           ctx.done('bad credentials');
         });
         break;
+      }
+      else if (ctx.url === '/passwd') {
+          var path = this.path
+          , credentials = ctx.req.body || {};
+
+          uc.store.first({ id: ctx.session.user.id }, function (err, user) {
+              if (err) return ctx.done(err);
+
+              if (user) {
+                  var salt = user.password.substr(0, SALT_LEN)
+                    , hash = user.password.substr(SALT_LEN);
+
+                  if (hash === uc.hash(credentials.password, salt)) {
+                      var newSalt = db.uuid.create(SALT_LEN);
+                      var newPassword = newSalt + uc.hash(credentials.newPassword, newSalt);
+                      uc.store.update({ id: ctx.session.user.id }, {
+                          password: newPassword
+                      }, function (err) {
+                          if (err) {
+                              throw err;
+                              ctx.res.statusCode = 500;
+                          }
+
+                          ctx.done(err);
+                      });
+
+                      return;
+                  }
+                  else {
+                      ctx.res.statusCode = 401;
+                      ctx.done('bad credentials');
+                  }
+              }
+              else {
+                  ctx.res.statusCode = 400;
+                  ctx.done('bad request');
+              }
+          });
+          break;
       }
       /* falls through */
     case 'PUT':
@@ -135,6 +174,6 @@ UserCollection.prototype.hash = function (password, salt) {
 };
 
 UserCollection.prototype.clientGenerationGet = ['me'];
-UserCollection.prototype.clientGenerationExec = ['login', 'logout'];
+UserCollection.prototype.clientGenerationExec = ['login', 'logout', 'passwd'];
 
 module.exports = UserCollection;

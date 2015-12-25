@@ -7,7 +7,7 @@
         .filter("gravatar", function () {
             return function (input) {
                 var md5 = new Hashes.MD5();
-                return md5.hex((input || '').toLowerCase());
+                return 'http://www.gravatar.com/avatar/' + md5.hex((input || '').toLowerCase());
             };
         });
 

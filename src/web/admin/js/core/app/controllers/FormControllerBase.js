@@ -51,7 +51,7 @@
 
                         return deferred.promise;
                     });
-
+                     
                     this.enqueue('watch', '', function () {
                         var deferred = $q.defer();
 
@@ -77,7 +77,7 @@
                             logger.error(ex);
                         });
                     };
-                 
+                    
                     $scope.publish = function () {
                         self.run('validating').then(function () {
                             self.validate().then(function (validationResults) {
@@ -105,7 +105,7 @@
                                                     }
                                                 }
                                                 else {
-                                                    logger.error(new Error('save unsuccessful'));
+                                                    self.failed(new Error('save unsuccessful'));
                                                 }
                                             }).catch(function (pushError) {
                                                 logger.error(pushError);
@@ -129,6 +129,7 @@
                         });
 
                     };
+
 
                     $scope.$on(CONTROL_EVENTS.valueChanged, function (sender) {
                         sender.stopPropagation();
@@ -209,12 +210,12 @@
                             c.initValidation();
                     });
                     
-                    this.ctor.$q.all(_.map(_.filter(self.controls, function (f) { return typeof (f.isValid) === 'function'; }), function (x) { return x.isValid(); })).then(function (result) {
+                    this.ctor.$q.all(_.map(_.filter(self.controls, function (f) { return typeof (f.validate) === 'function'; }), function (x) { return x.validate(); })).then(function (result) {
                         
                         self.setValid(_.all(result, function (x) { return x === true; }));
                         
                         var initialLanguage = self.scope.language;
-
+                        
                         if (self.isValid()) {
                             if (self.scope.localized) {
                                 var checkLanguage = function (lang, next) {
@@ -222,7 +223,7 @@
 
                                     self.ctor.$timeout(function () {
 
-                                        self.ctor.$q.all(_.map(_.filter(self.controls, function (f) { return typeof (f.isValid) === 'function'; }), function (x) { return x.isValid(); })).then(function (langResult) {
+                                        self.ctor.$q.all(_.map(_.filter(self.controls, function (f) { return typeof (f.validate) === 'function'; }), function (x) { return x.validate(); })).then(function (langResult) {
                                             self.setValid(_.all(langResult, function (x) { return x === true; }));
 
                                             if (!self.scope.valid) {
@@ -324,6 +325,12 @@
                     throw new Error('not implemented');
 
                     return deferred.promise;
+                };
+
+                FormControllerBase.prototype.failed = function (ex) {
+
+                    throw ex;
+
                 };
 
                 FormControllerBase.prototype.init = function () {

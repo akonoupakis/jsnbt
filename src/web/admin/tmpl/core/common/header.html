@@ -6,12 +6,12 @@
         <div class="pull-right account-options">
             <popover class="user-button glyphicon glyphicon-user">
                 <div class="user-info-box">
-                    <img class="gravatar" ng-src="{{ 'http://www.gravatar.com/avatar/' + (current.user.username | gravatar) }}" />
+                    <img class="gravatar" ng-src="{{ current.user.username | gravatar }}" />
                     <div class="account-info">
                         <span class="user-name">{{ current.user.firstName }} {{ current.user.lastName }}</span>
                         <span class="user-username">{{ current.user.username }}</span>
                         
-                        <button class="btn btn-primary account-button" ng-click="goto('/account')">account</button>                        
+                        <button class="btn btn-primary account-button" ng-click="goto('/account');close()">account</button>                        
                     </div>
                 </div>
             </popover>

@@ -4,7 +4,7 @@
     "use strict";
 
     angular.module("jsnbt")
-        .factory('AuthService', ['$q', '$jsnbt', function ($q, $jsnbt) {
+        .factory('AuthService', ['$q', '$jsnbt', '$http', function ($q, $jsnbt, $http) {
             var AuthService = {};
             
             AuthService.login = function (username, password) {
@@ -111,6 +111,22 @@
 
                     return result;
                 }
+            };
+
+            AuthService.setPassword = function (password, newPassword) {
+                var deferred = $q.defer();
+
+                var url = '../jsnbt-db/users/passwd';
+                $http.post(url, {
+                    password: password,
+                    newPassword: newPassword
+                }).then(function (data) {
+                    deferred.resolve(data.data);
+                }).catch(function (ex) {
+                    deferred.reject(ex);
+                });
+
+                return deferred.promise;
             };
 
             return AuthService;

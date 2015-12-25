@@ -144,6 +144,12 @@
             x.controller('SettingsController');
         });
 
+        router.when('/account', function (x) {
+            x.baseTemplate(TEMPLATE_BASE.form);
+            x.template('tmpl/core/pages/account.html');
+            x.controller('AccountController');
+        });
+
         router.otherwise(function (x) {
             x.template('tmpl/core/common/404.html');
             x.controller('NotFoundController');

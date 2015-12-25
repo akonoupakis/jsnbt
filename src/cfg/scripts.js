@@ -73,6 +73,7 @@ module.exports = [{
         '/admin/js/core/cms/controllers/RegistrationController.js',
         '/admin/js/core/cms/controllers/DeniedController.js',
         '/admin/js/core/cms/controllers/NotFoundController.js',
+        '/admin/js/core/cms/controllers/AccountController.js',
         '/admin/js/core/cms/controllers/DashboardController.js',
         '/admin/js/core/cms/controllers/ContentController.js',
         '/admin/js/core/cms/controllers/LanguagesController.js',
@@ -103,6 +104,7 @@ module.exports = [{
         '/admin/js/core/cms/controllers/modal/FileUploadController.js',
         '/admin/js/core/cms/controllers/modal/ImageSelectorController.js',
         '/admin/js/core/cms/controllers/modal/NodeSelectorController.js',
+        '/admin/js/core/cms/controllers/modal/PasswordChangeController.js',
         
         '/admin/js/core/cms/controls/form/ctrlCheck.js',
         '/admin/js/core/cms/controls/form/ctrlCheckList.js',

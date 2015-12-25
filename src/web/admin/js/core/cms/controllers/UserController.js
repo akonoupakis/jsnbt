@@ -12,7 +12,6 @@
 
         $scope.localization = false;
 
-        $scope.user = undefined;
         $scope.roles = [];
 
         $scope.credentials = {
@@ -55,7 +54,7 @@
 
             if (_.any($scope.roles, function (x) {
 
-                if (!x.disabled && $scope.user.roles.indexOf(x.value) !== -1)
+                if (!x.disabled && $scope.model.roles.indexOf(x.value) !== -1)
                     if (!AuthService.isInRole($scope.current.user, x.value))
                         return true;
 
@@ -65,7 +64,7 @@
             }
 
             $scope.editRoles = false;
-            if ($scope.current.user.id !== $scope.user.id)
+            if ($scope.current.user.id !== $scope.model.id)
                 $scope.editRoles = allowEdit;
 
             deferred.resolve($scope.editRoles);
@@ -113,22 +112,22 @@
         if (this.isNew()) {
             this.setTitle('');
 
-            this.scope.user = this.ctor.$data.create('users', {});
+            this.scope.model = this.ctor.$data.create('users', {});
 
             this.setValid(true);
             this.setPublished(false);
 
-            deferred.resolve(this.scope.user);
+            deferred.resolve(this.scope.model);
         }
         else {
             if (data) {
                 this.setTitle(data.username);
-                this.scope.user = data;
+                this.scope.model = data;
 
                 this.setValid(true);
                 this.setPublished(true);
 
-                deferred.resolve(this.scope.user);
+                deferred.resolve(this.scope.model);
             }
             else {
                 deferred.reject(new Error('data is not defined for setting into scope'));
@@ -139,7 +138,7 @@
     };
 
     UserController.prototype.get = function () {
-        return this.scope.user;
+        return this.scope.model;
     };
 
     UserController.prototype.push = function (data) {

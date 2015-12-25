@@ -21,6 +21,10 @@
                     popoverBody.append(clone);
 
                     element.webuiPopover();
+
+                    innerScope.close = function () {
+                        element.webuiPopover('hide');
+                    };
                 });
             },
             template: '<span></span>'

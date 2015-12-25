@@ -136,6 +136,8 @@
                 FormControlBase.prototype.validate = function () {
                     var self = this;
 
+                    var deferred = this.ctor.$q.defer();
+
                     if (this.initiated && this.validated) {
                         this.isValid().then(function (valid) {
                             self.setValid(valid);
@@ -154,11 +156,16 @@
                                         self.setValid(validInternal);
                                 }
                             }
+                            
+                            deferred.resolve(self.scope.valid);
                         });
                     }
                     else {
                         this.setValid(true);
+                        deferred.resolve(true);
                     }
+
+                    return deferred.promise;
                 };
 
                 FormControlBase.prototype.clearValidation = function () {

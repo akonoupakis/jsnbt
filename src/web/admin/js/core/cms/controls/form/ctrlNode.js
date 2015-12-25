@@ -21,7 +21,6 @@
                 scope.missing = false;
 
                 scope.$watch('ngModel', function (newValue, prevValue) {
-                    console.log(1, newValue);
                     if (newValue) {
                         if (_.isString(newValue)) {
                             if (newValue !== '') {
