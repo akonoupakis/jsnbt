@@ -16,6 +16,7 @@
 
                     var self = this;
                     
+                    $scope.breadcrumb = false;
                     $scope.domain = domain;
 
                     if (!$scope.mode)

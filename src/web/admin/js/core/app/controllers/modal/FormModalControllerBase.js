@@ -16,6 +16,8 @@
 
                     var logger = $logger.create('FormModalControllerBase');
 
+                    $scope.breadcrumb = false;
+
                     $scope.$on(CONTROL_EVENTS.valueChanged, function (sender, value) {
                         sender.stopPropagation();
                         $scope.ngModel = value;
