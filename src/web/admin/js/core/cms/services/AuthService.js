@@ -129,6 +129,37 @@
                 return deferred.promise;
             };
 
+            AuthService.requestEmailChangeCode = function (email) {
+                var deferred = $q.defer();
+
+                var url = '../jsnbt-api/core/auth/remail';
+                $http.post(url, {
+                    email: email
+                }).then(function (data) {
+                    deferred.resolve(data.data);
+                }).catch(function (ex) {
+                    deferred.reject(ex);
+                });
+
+                return deferred.promise;
+            };
+
+            AuthService.submitEmailChangeCode = function (email, code) {
+                var deferred = $q.defer();
+
+                var url = '../jsnbt-api/core/auth/semail';
+                $http.post(url, {
+                    email: email,
+                    code: code
+                }).then(function (data) {
+                    deferred.resolve(data.data);
+                }).catch(function (ex) {
+                    deferred.reject(ex);
+                });
+
+                return deferred.promise;
+            };
+
             return AuthService;
         }]);
 })();

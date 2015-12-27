@@ -11,10 +11,24 @@
         var logger = $logger.create('AccountController');
 
         $scope.localization = false;
-
-        $scope.user = undefined;
-
+        
         $scope.changeEmail = function () {
+            ModalService.select(function (x) {
+                x.title('change email');
+                x.controller('EmailChangeController');
+                x.template('tmpl/core/modals/emailEditor.html');
+                x.scope({
+                    btn: {
+                        cancel: 'cancel',
+                        ok: false 
+                    }
+                });
+            }).then(function (response) {
+                $scope.model.username = response.email;
+                $scope.current.user.username = response.email;
+            }).catch(function (error) {
+                logger.error(error);
+            });
         };
 
         $scope.changePassword = function () {
@@ -22,9 +36,6 @@
                 x.title('change password');
                 x.controller('PasswordChangeController');
                 x.template('tmpl/core/modals/passwordEditor.html');
-                //x.scope({
-                //    domain: scope.ngDomain
-                //});
             }).then(function () {
                 
             }).catch(function (error) {
@@ -55,18 +66,18 @@
         var deferred = this.ctor.$q.defer();
 
         this.setTitle('my account');
-        this.scope.user = data;
+        this.scope.model = data;
 
         this.setValid(true);
         this.setPublished(true);
 
-        deferred.resolve(this.scope.user);
+        deferred.resolve(this.scope.model);
 
         return deferred.promise;
     };
 
     AccountController.prototype.get = function () {
-        return this.scope.user;
+        return this.scope.model;
     };
 
     AccountController.prototype.push = function (data) {

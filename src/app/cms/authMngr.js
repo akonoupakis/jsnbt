@@ -1,3 +1,5 @@
+var moment = require('moment');
+var random = new require("random-js")();
 var _ = require('underscore');
 _.str = require('underscore.string');
 
@@ -162,6 +164,118 @@ var AuthorizationManager = function (server) {
             else {
                 return isUserAuthorized(user, section, permission);
             }
+        },
+
+        requestEmailConfirmationCode: function (ctx, user, email, cb) {
+
+            var store = server.db.createStore('users');
+            store.find({ id: user.id }, function (err, res) {
+                if (err) {
+                    cb(err);
+                }
+                else {
+                    var code = random.string(6, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+                    var expiresAt = moment(new Date()).add(5, 'minutes')._d.getTime();
+                    
+                    var templateCode = 'email-change';
+                    server.messager.mail.getTemplate(templateCode, function (err, tmpl) {
+                        if (err) {
+                            cb(err);
+                        }
+                        else {
+                            server.messager.mail.getModel(templateCode, function (modelErr, model) {
+                                if (modelErr) {
+                                    cb(modelErr);
+                                }
+                                else {
+
+                                    model.code = code;
+                                    model.email = email;
+                                    model.firstName = res.firstName;
+                                    model.lastName = res.lastName;
+
+                                    server.messager.mail.parseTemplate(tmpl, model, function (parseErr, parsedTmpl) {
+                                        if (parseErr) {
+                                            cb(parseErr);
+                                        }
+                                        else {
+                                            server.messager.mail.getSender(ctx.db, function (senderErr, sender) {
+                                                if (senderErr) {
+                                                    cb(senderErr);
+                                                }
+                                                else {
+                                                    sender.send({
+                                                        to: email,
+                                                        subject: parsedTmpl.subject,
+                                                        body: parsedTmpl.body
+                                                    }, function (sendErr, response) {
+                                                        if (sendErr) {
+                                                            cb(sendErr);
+                                                        }
+                                                        else {
+                                                            store.update(user.id, {
+                                                                $set: {
+                                                                    emailChange: {
+                                                                        email: email,
+                                                                        code: code,
+                                                                        expiresAt: expiresAt
+                                                                    }
+                                                                }
+                                                            }, function (err, res) {
+                                                                if (err) {
+                                                                    cb(err);
+                                                                }
+                                                                else {
+                                                                    cb(null, code);
+                                                                }
+                                                            });
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+
+        },
+
+        submitEmailConfirmationCode: function (ctx, user, code, cb) {
+
+            var store = server.db.createStore('users');
+            store.find({ id: user.id, 'emailChange.code': code }, function (err, res) {
+                if (err) {
+                    cb(err);
+                }
+                else {
+                    if (_.isObject(res) && res.id) {
+                        var now = moment(new Date());
+                        var then = moment(res.emailChange.expiresAt);
+
+                        if (then.isAfter(now)) {
+                            store.update(user.id, { $set: { username: res.emailChange.email }, $unset: { emailChange: '' } }, function (err, res) {
+                                if (err) {
+                                    cb(err);
+                                }
+                                else {
+                                    cb(null, true);
+                                }
+                            });
+                        }
+                        else {
+                            cb(null, false);
+                        }
+                    }
+                    else {
+                        cb(null, false);
+                    }
+                }
+            });
+
         }
 
     };

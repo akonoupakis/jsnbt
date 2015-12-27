@@ -74,8 +74,8 @@
         this.enqueue('set', '', function () {
             var deferred = $q.defer();
             
-            if ($scope.messaging && $scope.messaging.mail && $scope.messaging.mail.provider)
-                self.setMailTemplate($scope.messaging.mail.provider);
+            if ($scope.settings.messaging && $scope.settings.messaging.mail && $scope.settings.messaging.mail.provider)
+                self.setMailTemplate($scope.settings.messaging.mail.provider);
             else
                 self.setMailTemplate();
 
@@ -87,8 +87,8 @@
         this.enqueue('set', '', function () {
             var deferred = $q.defer();
 
-            if ($scope.messaging && $scope.messaging.sms && $scope.messaging.sms.provider)
-                self.setSmsTemplate($scope.messaging.sms.provider);
+            if ($scope.settings.messaging && $scope.settings.messaging.sms && $scope.settings.messaging.sms.provider)
+                self.setSmsTemplate($scope.settings.messaging.sms.provider);
             else
                 self.setSmsTemplate();
 
@@ -101,11 +101,13 @@
             var deferred = $q.defer();
 
             $scope.$watch('settings.messaging.mail.provider', function (newValue, prevValue) {
-                if (newValue !== prevValue && newValue !== undefined) 
-                    self.setMailTemplate(newValue);
-                else 
-                    self.setMailTemplate();
-                
+                if (newValue !== prevValue) {
+                    if (newValue !== undefined)
+                        self.setMailTemplate(newValue);
+                    else
+                        self.setMailTemplate();
+                }
+
                 deferred.resolve();
             });
 
@@ -116,10 +118,12 @@
             var deferred = $q.defer();
 
             $scope.$watch('settings.messaging.sms.provider', function (newValue, prevValue) {
-                if (newValue !== prevValue && newValue !== undefined)
-                    self.setSmsTemplate(newValue);
-                else
-                    self.setSmsTemplate();
+                if (newValue !== prevValue) {
+                    if (newValue !== undefined)
+                        self.setSmsTemplate(newValue);
+                    else
+                        self.setSmsTemplate();
+                }
 
                 deferred.resolve();
             });

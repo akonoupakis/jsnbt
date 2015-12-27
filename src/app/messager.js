@@ -8,6 +8,7 @@ var Messager = function (server) {
 
         mail: {
             getTemplate: function (templateCode, callback) {
+                console.log(1233, server.app.config.messaging.mail.templates);
                 var template = server.app.config.messaging.mail.templates[templateCode];
                 if (template) {
                     callback(null, {

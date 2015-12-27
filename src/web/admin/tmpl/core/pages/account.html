@@ -8,22 +8,26 @@
 <hr />
 
 <div class="row" id="user-name" data-scrollspy="name">
-    <ctrl-text class="col-sm-6" ng-model="user.firstName" ng-required="true" ng-label="first name"></ctrl-text>
-    <ctrl-text class="col-sm-6" ng-model="user.lastName" ng-required="true" ng-label="last name"></ctrl-text>
+    <ctrl-text class="col-sm-6" ng-model="model.firstName" ng-required="true" ng-label="first name"></ctrl-text>
+    <ctrl-text class="col-sm-6" ng-model="model.lastName" ng-required="true" ng-label="last name"></ctrl-text>
 </div>
 
 <hr />
 
 <div class="row" id="email" data-scrollspy="email">
-    <ctrl-text class="col-sm-11" ng-model="user.username" ng-required="true" ng-disabled="true" ng-label="email"></ctrl-text>
-    <button type="button" class="btn btn-primary col-sm-1" style="margin-top: 24px" ng-click="changeEmail()">change</button>
+    <ctrl-text class="col-sm-10" ng-model="model.username" ng-required="true" ng-disabled="true" ng-label="email"></ctrl-text>
+    <div class="col-sm-2">
+        <button type="button" class="btn btn-primary" style="margin-top: 24px" ng-click="changeEmail()">change</button>
+    </div>
 </div>
 
 <hr />
 
 <div class="row" id="password" data-scrollspy="password">
-    <ctrl-text class="col-sm-11" ng-required="true" ng-disabled="true" ng-label="password"></ctrl-text>
-    <button type="button" class="btn btn-primary col-sm-1" style="margin-top: 24px" ng-click="changePassword()">change</button>
+    <ctrl-text class="col-sm-10" ng-required="true" ng-disabled="true" ng-label="password"></ctrl-text>
+    <div class="col-sm-2">
+        <button type="button" class="btn btn-primary" style="margin-top: 24px" ng-click="changePassword()">change</button>
+    </div>
 </div>
 
 <hr />

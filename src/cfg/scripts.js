@@ -105,6 +105,7 @@ module.exports = [{
         '/admin/js/core/cms/controllers/modal/ImageSelectorController.js',
         '/admin/js/core/cms/controllers/modal/NodeSelectorController.js',
         '/admin/js/core/cms/controllers/modal/PasswordChangeController.js',
+        '/admin/js/core/cms/controllers/modal/EmailChangeController.js',
         
         '/admin/js/core/cms/controls/form/ctrlCheck.js',
         '/admin/js/core/cms/controls/form/ctrlCheckList.js',

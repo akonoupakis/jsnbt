@@ -315,6 +315,18 @@ App.prototype.register = function (module, config) {
         }
     }
 
+    if (moduleConfig.messaging && moduleConfig.messaging.mail && moduleConfig.messaging.mail.templates && _.isArray(moduleConfig.messaging.mail.templates)) {
+        _.each(moduleConfig.messaging.mail.templates, function (template) {
+            self.config.messaging.mail.templates[template.code] = template;
+        });
+    }
+
+    if (moduleConfig.messaging && moduleConfig.messaging.sms && moduleConfig.messaging.sms.templates && _.isArray(moduleConfig.messaging.sms.templates)) {
+        _.each(moduleConfig.messaging.sms.templates, function (template) {
+            self.config.messaging.sms.templates[template.code] = template;
+        });
+    }
+
     if (module.domain !== 'core') {
         if (typeof (moduleConfig.register) === 'function') {
             module.config = moduleConfig.register();
@@ -354,19 +366,6 @@ App.prototype.register = function (module, config) {
         applyArray('containers', 'id');
         
         applyArray('routes', 'id');
-
-
-        if (moduleConfig.messaging && moduleConfig.messaging.mail && moduleConfig.messaging.mail.templates && _.isArray(moduleConfig.messaging.mail.templates)) {
-            _.each(moduleConfig.messaging.mail.templates, function (template) {
-                self.config.messaging.mail.templates[template.code] = template;
-            });
-        }
-
-        if (moduleConfig.messaging && moduleConfig.messaging.sms && moduleConfig.messaging.sms.templates && _.isArray(moduleConfig.messaging.sms.templates)) {
-            _.each(moduleConfig.messaging.sms.templates, function (template) {
-                self.config.messaging.sms.templates[template.code] = template;
-            });
-        }
     }
 
     if (module.domain === 'core') {
