@@ -4,58 +4,76 @@ var UserApi = function (server) {
 
     return {
 
-        passwd: function (ctx, fields) {
-            console.log(123);
-            //
-            var store = server.db.createStore('nodes');
-            //store.find({
-                
-            //}, function (err, result) {
-            //    if (err)
-            //        ctx.error(err);
-            //    else
-            //        ctx.json(result);
+        create: function (ctx, fields) {
 
-            //});
+        },
 
-            
-            
+        login: function (ctx, fields) {
+            var store = server.db.createStore('users');
 
-            store.exec(function (x) {
-                x.find({})
-                .findOne({})
-                .count()
-                
+            store.first({ username: fields.username }, function (err, user) {
+                if (err) return ctx.done(err);
 
-                .fields(['domain', 'entity', 'title.en'])
-                .fields({
-                    'domain': 1,
-                    'entity': 1,
-                    'title.en': 1
-                })
-
-                .sort({ 'title.en': 1 })
-                .skip(1)
-                .limit(5)
-
-                
-            }, function (err, results) {
-                if (err)
-                    throw err;
-                else
-                    console.log(response);
+                if (user) {
+                    ctx.session.set({ uid: user.id }).save(function () {
+                        ctx.json(user);
+                    });
+                }
+                else {
+                    ctx.error(401);
+                }
             });
+        },
 
-            //ctx.db.users.get({
-            //    '$limit': 1
-            //}, function (err, result) {
-            //    if (err)
-            //        ctx.error(err);
-            //    else
-            //        ctx.json(result);
+        logout: function (ctx, fields) {
+            if (ctx.res.cookies)
+                ctx.res.cookies.set('sid', null);
 
-            //});
+            ctx.session.remove(function () {
+                ctx.json({});
+            });
+        },
 
+        passwd: function (ctx, fields) {
+
+            /*
+            
+               uc.store.first({ id: ctx.session.user.id }, function (err, user) {
+              if (err) return ctx.done(err);
+
+              if (user) {
+                  var salt = user.password.substr(0, SALT_LEN)
+                    , hash = user.password.substr(SALT_LEN);
+
+                  if (hash === uc.hash(credentials.password, salt)) {
+                      var newSalt = db.uuid.create(SALT_LEN);
+                      var newPassword = newSalt + uc.hash(credentials.newPassword, newSalt);
+                      uc.store.update({ id: ctx.session.user.id }, {
+                          password: newPassword
+                      }, function (err) {
+                          if (err) {
+                              throw err;
+                              ctx.res.statusCode = 500;
+                          }
+
+                          ctx.done(err);
+                      });
+
+                      return;
+                  }
+                  else {
+                      ctx.res.statusCode = 401;
+                      ctx.done('bad credentials');
+                  }
+              }
+              else {
+                  ctx.res.statusCode = 400;
+                  ctx.done('bad request');
+              }
+            
+            */
+
+            ctx.json({});
         },
 
         remail: function (ctx, fields) {

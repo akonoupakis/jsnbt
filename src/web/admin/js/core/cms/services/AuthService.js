@@ -10,32 +10,50 @@
             AuthService.login = function (username, password) {
                 var deferred = $q.defer();
 
-                jsnbt.db.users.login({
+                var url = '../jsnbt-api/core/auth/login';
+                $http.post(url, {
                     username: username,
                     password: password
-                }, function (error, response) {
-                    if (error) {
-                        deferred.reject(error);
+                }).then(function (data) {
+                    var response = data.data;
+
+                    if (response.id) {
+                        deferred.resolve(response);
                     }
                     else {
-                        if (response.id) {
-                            jsnbt.db.users.me(function (userError, userResponse) {
-                                if (userError) {
-                                    deferred.reject(userError);
-                                }
-                                else {
-                                    if (userResponse)
-                                        deferred.resolve(userResponse);
-                                    else
-                                        deferred.reject();
-                                }
-                            });
-                        }
-                        else {
-                            deferred.reject(response);
-                        }
+                        deferred.reject(response);
                     }
+
+                }).catch(function (ex) {
+                    deferred.reject(ex);
                 });
+
+                //jsnbt.db.users.login({
+                //    username: username,
+                //    password: password
+                //}, function (error, response) {
+                //    if (error) {
+                //        deferred.reject(error);
+                //    }
+                //    else {
+                //        if (response.id) {
+                //            jsnbt.db.users.me(function (userError, userResponse) {
+                //                if (userError) {
+                //                    deferred.reject(userError);
+                //                }
+                //                else {
+                //                    if (userResponse)
+                //                        deferred.resolve(userResponse);
+                //                    else
+                //                        deferred.reject();
+                //                }
+                //            });
+                //        }
+                //        else {
+                //            deferred.reject(response);
+                //        }
+                //    }
+                //});
 
                 return deferred.promise;
             };
