@@ -6,7 +6,7 @@ var _ = require('underscore');
 
 _.str = require('underscore.string');
     
-var PublicRouter = function (server) {
+var Router = function (server) {
 
     var logger = require('../logger.js')(this);
     var authMngr = require('../cms/authMngr.js')(server);
@@ -122,63 +122,52 @@ var PublicRouter = function (server) {
 
     return {
         route: function (ctx, next) {
-            if (ctx.uri.path !== '/') {
-                var parsedUri = new parseUri('http://' + server.host + ctx.req.url);
-                send(ctx.req, url.parse(parsedUri.path).pathname)
-                    .root('public')
-                    .on('error', function (err) {
-                        try {
-                            var node = require('../cms/nodeMngr.js')(server, ctx.db);                         
-                            node.resolveUrl(ctx.uri.url, function (resolved) {
-                                if (resolved) {
-                                    ctx.debug('node resolved: ' + resolved.page.id);
-                                    if (resolved.isActive()) {
+            try {
+                var node = require('../cms/nodeMngr.js')(server, ctx.db);                         
+                node.resolveUrl(ctx.uri.url, function (resolved) {
+                    if (resolved) {
+                        ctx.debug('node resolved: ' + resolved.page.id);
+                        if (resolved.isActive()) {
 
-                                        var inherited = resolved.getInheritedProperties();
+                            var inherited = resolved.getInheritedProperties();
 
-                                        if (!ctx.restricted) {
-                                            if (!authMngr.isInRole(ctx.user, (inherited.roles || []))) {
-                                                ctx.restricted = true;
-                                            }
-                                        }
-
-                                        if (server.app.modules.public && typeof (server.app.modules.public.routeNode) === 'function') {
-                                            server.app.modules.public.routeNode(server, ctx, resolved, function () {
-                                                process(ctx, resolved, inherited);
-                                            });
-                                        }
-                                        else {
-                                            process(ctx, resolved, inherited);
-                                        }
-                                    }
-                                    else {
-                                        if (!resolved.isActive()) {
-                                            ctx.debug('node ' + resolved.page.id + ' is inactive');
-                                            next();
-                                        }
-                                        else {
-                                            resolveLanguage(node, ctx, next);
-                                        }
-                                    }
+                            if (!ctx.restricted) {
+                                if (!authMngr.isInRole(ctx.user, (inherited.roles || []))) {
+                                    ctx.restricted = true;
                                 }
-                                else {
-                                    resolveLanguage(node, ctx, next);
-                                }
-                            });
+                            }
+
+                            if (server.app.modules.public && typeof (server.app.modules.public.routeNode) === 'function') {
+                                server.app.modules.public.routeNode(server, ctx, resolved, function () {
+                                    process(ctx, resolved, inherited);
+                                });
+                            }
+                            else {
+                                process(ctx, resolved, inherited);
+                            }
                         }
-                        catch (err) {
-                            logger.error(ctx.req.method, ctx.req.url, err);
-                            ctx.error(500, err);
+                        else {
+                            if (!resolved.isActive()) {
+                                ctx.debug('node ' + resolved.page.id + ' is inactive');
+                                next();
+                            }
+                            else {
+                                resolveLanguage(node, ctx, next);
+                            }
                         }
-                    })
-                    .pipe(ctx.res);
+                    }
+                    else {
+                        resolveLanguage(node, ctx, next);
+                    }
+                });
             }
-            else {
-                next();
+            catch (err) {
+                logger.error(ctx.req.method, ctx.req.url, err);
+                ctx.error(500, err);
             }
         }
 
     };
 };
 
-module.exports = PublicRouter;
+module.exports = Router;

@@ -93,9 +93,14 @@
     }
 
     function returnSuccess(fn) {
+        /// <summary>
+        /// Returns the success.
+        /// </summary>
+        /// <param name="fn">The function.</param>
+        /// <returns></returns>
         return function (data) {
             if (fn === consoleLog) return console.log(data);
-            if (typeof fn === 'function') fn(null, data);
+            if (typeof fn === 'function') fn(null, JSON.parse(data));
         };
     }
 

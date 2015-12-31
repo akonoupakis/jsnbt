@@ -1,204 +1,126 @@
-var fs = require('fs');
+var express = require('express');
+var Context = require('./context.js');
+
 var _ = require('underscore');
 
 _.str = require('underscore.string');
 
-var routerNames = [
-    './route/home.js',
-    './route/api.js',
-    './route/image.js',
-    './route/dev.js',
-    './route/upload.js',
-    './route/admin.js',
-    './route/resource.js',
-    './route/site.js',
-    './route/public.js'
-];
+var Router = function(server, express) {
 
-var getRouters = function (server) {
-    var routers = [];
+    this.server = server;
+    this.express = express;
 
-    for (var i = 0; i < routerNames.length; i++) {
-        var router = require(routerNames[i])(server);
-        routers.push(router);
-    }
+};
 
-    routers.push({
-        route: function (ctx, next) {
-            ctx.error(404);
+Router.prototype.start = function () {
+    var self = this;
+
+    var buildSession = function (ctx, cb) {
+
+        self.server.sessions.createSession(ctx.req.cookies.get('sid'), function (err, session) {
+            ctx.req.cookies.set('sid', session.data.id);
+
+            if (err)
+                return cb(err);
+
+            ctx.session = session;
+
+            if ((session.data && session.data.uid) && !session.user) {
+
+                var store = server.db.createStore('users', false);
+                ctx.timer.start('current user retrieval');
+                store.get(function (x) {
+                    x.query(session.data.uid);
+                    x.single();
+                }, function (uerr, user) {
+                    if (uerr)
+                        return cb(uerr);
+
+                    ctx.timer.stop('current user retrieval');
+                    if (user) {
+                        session.user = user;
+                    }
+                    cb(null, ctx);
+                });
+            }
+            else {
+                cb(null, ctx);
+            }
+        });
+        
+    };
+
+    this.express.get('/socket.io*', function (req, res, next) {
+        return;
+    });
+
+    this.express.get('/admin', function (req, res, next) {
+        var context = new Context(self.server, req, res);
+        if (context.req.url.toLowerCase() === '/admin' || _.str.startsWith(context.req.url.toLowerCase(), '/admin#')) {
+            if (_.str.startsWith(context.req.url.toLowerCase(), '/admin#'))
+                context.redirect(context.req.url.replace(/\/admin#/, '/admin/#'));
+            else
+                context.redirect("/admin/");
+        }
+        else {
+            buildSession(context, function (err, ctx) {
+                var router = new require('./route/admin.js')(self.server);
+                router.route(ctx, next);
+            });
         }
     });
 
-    return routers;
-};
+    this.express.get('/jsnbt-db/users/me', function (req, res, next) {
+        buildSession(new Context(self.server, req, res), function (err, context) {
+            var router = new require('./route/user.js')(self.server);
+            router.route(context, next);
+        });
+    });
 
-var Router = function(server, req, res) {
+    this.express.all('/jsnbt-db/:collection*', function (req, res, next) {
+        buildSession(new Context(self.server, req, res), function (err, context) {
+            var router = new require('./route/proxy.js')(self.server);
+            router.route(context, next);
+        });
+    });
 
-    var authMngr = require('./cms/authMngr.js')(server);
+    this.express.all('/jsnbt-dev/*', function (req, res, next) {
+        next();
+    });
+    
+    this.express.all('/jsnbt-api/*', function (req, res, next) {
+        next();
+    });
 
-    var routers = getRouters(server);
+    this.express.post('/jsnbt-upload*', function (req, res, next) {
+        var context = new Context(self.server, req, res);
+        var router = new require('./route/upload.js')(self.server);
+        router.route(context, next);
+    });
 
-    var logger = require('./logger.js')(this);
-
-    var ignoredPaths = [];
-
-    var ignoredPathPrefixes = [];
-
-    var forbiddedPathPrefixes = [];
-
-    var notFoundPaths = [];
-    var templatePaths = _.pluck(server.app.config.templates, 'path');
-    notFoundPaths = _.union(notFoundPaths, templatePaths);
-    notFoundPaths = _.union(notFoundPaths, ['/error/', '/admin/error/']);
-
-    var formPaths = _.union(
-        _.pluck(_.filter(server.app.config.templates, function (x) { return x.form !== undefined; }), 'form'),
-        _.pluck(_.filter(server.app.config.lists, function (x) { return x.form !== undefined; }), 'form')
-    );
-
-    var checkForbidded = function (ctx, next) {
-        
-        var forbidRequest = false;
-        for (var i = 0; i < forbiddedPathPrefixes.length; i++) {
-            if (_.str.startsWith(ctx.uri.path, forbiddedPathPrefixes[i])) {
-                forbidRequest = true;
-                break;
-            }
-        }
-
-        if (forbidRequest) {
-            ctx.error(403);
+    this.express.get('/files/*', function (req, res, next) {
+        if (ctx.uri.query.type) {
+            var router = new require('./route/image.js')(self.server);
+            router.route(context, next);
         }
         else {
             next();
         }
+    });
 
-    };
-
-    var checkFound = function (ctx, next)
-    {
-        var foundUrl = _.filter(notFoundPaths, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length === 0;
-        if (foundUrl) {
-
-            var processRequest = true;
-            if (ignoredPaths.indexOf(ctx.uri.first) != -1)
-                processRequest = false;
-
-            if (processRequest) {
-                if (_.filter(ignoredPathPrefixes, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length > 0) {
-                    processRequest = false;
-                }
-            }
-
-            if (_.filter(formPaths, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length > 0) {
-                processRequest = true;
-            }
-            
-            if (processRequest) {
-                req._routed = true;
-
-                next();
-            }
-        }
-        else {
-            ctx.error(404);
-        }
-    };
-
-    var buildSession = function (ctx, next) {
-        ctx.timer.start('session built');
-        server.sessions.createSession(ctx.req.cookies.get('sid'), function (err, session) {
-            ctx.timer.stop('session built');
-
-            if (err) {
-                logger.error(req.method, req.url, err);
-                throw err;
-            } else {
-
-                ctx.session = session;
-
-                ctx.timer.start('db-api built');
-                var dbClient = require('./database.js').build(server, session, req.stack);
-                ctx.timer.stop('db-api built');
-
-                ctx.db = dbClient;
-
-                if ((session.data && session.data.uid) && !session.user) {
-
-                    ctx.timer.start('current user retrieval');
-                    dbClient.users.get(session.data.uid, function (user, err) {
-                        ctx.timer.stop('current user retrieval');
-                        if (user) {
-                            session.user = user;
-                            next(ctx);
-                        }
-                        else
-                            throw new Error('user not found');
-                    });
-                }
-                else {
-                    next(ctx);
-                }
-            }
-        });
-    };
-
-    var processRequest = function (ctx) {
-        ctx.req.cookies.set('sid', ctx.session.sid);
-        
-        ctx.req.db = ctx.db;
-
-        ctx.req.session = ctx.session;
-
-        ctx.user = ctx.session.user;
-
-        if (_.filter(formPaths, function (x) { return _.str.startsWith(ctx.uri.path, x); }).length > 0) {
-            if (!(ctx.session.user && authMngr.isInRole(ctx.session.user, 'admin'))) {
-                ctxInteral.error(404);
-            }
-            else {
-                fs.readFile(server.getPath('www/public' + ctx.uri.path), function (readErr, readResults) {
-                    if (readErr) {
-                        ctx.error(500, readErr);
-                    }
-                    else {
-                        ctx.writeHead(200, { 'Content-Type': 'text/html' });
-                        ctx.write(readResults);
-                        ctx.end();
-                    }
-                });
-            }
-        }
-        else {
-            var nextIndex = 0;
-            var next = function () {
-                nextIndex++;
-                var router = routers[nextIndex];
-                router.route(ctx, next);
-            };
-
-            var first = _.first(routers);
-            first.route(ctx, next);
-        }
-    };
-
-    return {
-
-        process: function () {
-
-            var ctx = new require('./context.js')(server, req, res);
-
-            checkForbidded(ctx, function () {
-                checkFound(ctx, function () {
-                    buildSession(ctx, function (session) {
-                        processRequest(ctx);
-                    });
-                });
+    this.express.use(express.static(self.server.getPath('www/public')));
+    
+    this.express.get('*', function (req, res, next) {
+        buildSession(new Context(self.server, req, res), function (err, context) {
+            var siteRouter = new require('./route/site.js')(self.server);
+            siteRouter.route(context, function () {
+                var publicRouter = new require('./route/public.js')(self.server);
+                publicRouter.route(context, next);
             });
-
-        }
-
-    };
+        });
+    });
 };
 
-module.exports = Router;
+module.exports = function (server) {
+    return new Router(server, server.express);
+};

@@ -161,54 +161,44 @@ var ImageRouter = function (server) {
         },
 
         route: function (ctx, next) {
-            if (ctx.uri.first === 'files') {
-                if (ctx.method !== 'GET') {
-                    ctx.error(405);
-                }
-                else if (!ctx.uri.query.type) {
-                    next();
-                }
-                else {
-                    var filePath = decodeURIComponent(ctx.uri.path);
+            var filePath = decodeURIComponent(ctx.uri.path);
 
-                    if (filePath.length > 4) {
-                        var targetFilePath = server.getPath('www/public' + filePath);
+            if (filePath.length > 4) {
+                var targetFilePath = server.getPath('www/public' + filePath);
 
-                        fs.exists(targetFilePath, function (cbExists) {
-                            if (!cbExists) {
+                fs.exists(targetFilePath, function (cbExists) {
+                    if (!cbExists) {
+                        ctx.error(404);
+                    }
+                    else {
+                        if (ctx.uri.query.type === 'custom') {
+                            if (!ctx.uri.query.processors) {
+                                ctx.error(400);
+                            }
+                            else {
+                                var parsedProcessors = JSON.parse(decodeURIComponent(ctx.uri.query.processors));
+                                if (parsedProcessors) {
+                                    renderImage(ctx, filePath, parsedProcessors);
+                                }
+                                else {
+                                    ctx.error(500);
+                                }
+                            }
+                        }
+                        else {
+                            var imageType = _.find(server.app.config.images, function (x) { return x.name === ctx.uri.query.type; });
+                            if (!imageType) {
                                 ctx.error(404);
                             }
                             else {
-                                if (ctx.uri.query.type === 'custom') {
-                                    if (!ctx.uri.query.processors) {
-                                        ctx.error(400);
-                                    }
-                                    else {
-                                        var parsedProcessors = JSON.parse(decodeURIComponent(ctx.uri.query.processors));
-                                        if (parsedProcessors) {
-                                            renderImage(ctx, filePath, parsedProcessors);
-                                        }
-                                        else {
-                                            ctx.error(500);
-                                        }
-                                    }
-                                }
-                                else {
-                                    var imageType = _.find(server.app.config.images, function (x) { return x.name === ctx.uri.query.type; });
-                                    if (!imageType) {
-                                        ctx.error(404);
-                                    }
-                                    else {
-                                        renderImage(ctx, filePath, imageType.processors);
-                                    }
-                                }
+                                renderImage(ctx, filePath, imageType.processors);
                             }
-                        });
+                        }
                     }
-                }
+                });
             }
             else {
-                next();
+                ctx.error(404);
             }
         }
 

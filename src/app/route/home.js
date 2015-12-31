@@ -1,7 +1,7 @@
 var _ = require('underscore');
 _.str = require('underscore.string');
 
-var HomeRouter = function (server) {
+var Router = function (server) {
 
     var logger = require('../logger.js')(this);
     var authMngr = require('../cms/authMngr.js')(server);
@@ -76,54 +76,47 @@ var HomeRouter = function (server) {
     };
 
     return {
-
         route: function (ctx, next) {
-            if (ctx.uri.path === '/') {
-                
-                try {
 
-                    var node = require('../cms/nodeMngr.js')(server, ctx.db);
+            try {
+                var node = require('../cms/nodeMngr.js')(server, ctx.db);
 
-                    ctx.timer.start('node retrieval');
+                ctx.timer.start('node retrieval');
 
-                    node.resolveUrl(ctx.uri.url, function (resolved) {
-                        ctx.timer.stop('node retrieval');
-                        if (resolved && resolved.page) {
-                            ctx.debug('node resolved: ' + resolved.page.id);
-                            if (resolved.isActive()) {
-                                var inherited = resolved.getInheritedProperties();
+                node.resolveUrl(ctx.uri.url, function (resolved) {
+                    ctx.timer.stop('node retrieval');
+                    if (resolved && resolved.page) {
+                        ctx.debug('node resolved: ' + resolved.page.id);
+                        if (resolved.isActive()) {
+                            var inherited = resolved.getInheritedProperties();
 
-                                if (!ctx.restricted) {
-                                    if (!authMngr.isInRole(ctx.user, (inherited.roles || []))) {
-                                        ctx.restricted = true;
-                                    }
-                                }
-                                if (server.app.modules.public && typeof (server.app.modules.public.routeNode) === 'function') {
-                                    server.app.modules.public.routeNode(server, ctx, resolved, function () {
-                                        process(ctx, resolved, inherited);
-                                    });
-                                }
-                                else {
-                                    process(ctx, resolved, inherited);
+                            if (!ctx.restricted) {
+                                if (!authMngr.isInRole(ctx.user, (inherited.roles || []))) {
+                                    ctx.restricted = true;
                                 }
                             }
+                            if (server.app.modules.public && typeof (server.app.modules.public.routeNode) === 'function') {
+                                server.app.modules.public.routeNode(server, ctx, resolved, function () {
+                                    process(ctx, resolved, inherited);
+                                });
+                            }
                             else {
-                                ctx.debug('node ' + resolved.page.id + ' is inactive');
-                                next();
+                                process(ctx, resolved, inherited);
                             }
                         }
                         else {
+                            ctx.debug('node ' + resolved.page.id + ' is inactive');
                             next();
                         }
-                    });
-                }
-                catch (err) {
-                    logger.error(ctx.req.method, ctx.req.url, err);
-                    ctx.error(500, err);
-                }
+                    }
+                    else {
+                        next();
+                    }
+                });
             }
-            else {
-                next();
+            catch (err) {
+                logger.error(ctx.req.method, ctx.req.url, err);
+                ctx.error(500, err);
             }
         }
 
@@ -131,4 +124,4 @@ var HomeRouter = function (server) {
 
 };
 
-module.exports = HomeRouter;
+module.exports = Router;

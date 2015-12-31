@@ -17,56 +17,51 @@ var UploadRouter = function (server) {
     return {
 
         route: function (ctx, next) {
-            if (ctx.uri.first === 'jsnbt-upload') {
 
-                var current = flow('public/tmp');
+            var current = flow('public/tmp');
 
-                if (ctx.method === 'POST') {
+            if (ctx.method === 'POST') {
 
-                    if (!authMngr.isInRole(ctx.user, 'admin')) {
-                        ctx.error(401, null, false);
-                    }
-                    else {
-                        var internalPath = './public/files' + (ctx.uri.query.path || '/');
-
-                        current.post(ctx.req, function (status, filename, original_filename, identifier, currentTestChunk, numberOfChunks) {
-
-                            if (!_.str.endsWith(internalPath, '/'))
-                                internalPath += '/';
-
-                            var s = fs.createWriteStream(internalPath + filename);
-
-                            if (status === 'done') {
-                                current.write(identifier, s, {
-                                    end: true,
-                                    onDone: function () {
-
-                                        current.clean(identifier, {
-                                            onDone: function () {
-                                                s.end();
-                                                s.close();
-                                            }
-                                        });
-                                        ctx.end();
-                                    }
-                                });
-                            }
-                            else {
-                                ctx.end();
-                            }
-
-                        });
-                    }
+                if (!authMngr.isInRole(ctx.user, 'admin')) {
+                    ctx.error(401, null, false);
                 }
                 else {
-                    current.get(ctx, ctx.req, function (status, filename, original_filename, identifier) {
-                        ctx.writeHead(status === 'found' ? 200 : 204, { "Content-Type": "application/text" });
-                        ctx.end();
+                    var internalPath = './public/files' + (ctx.uri.query.path || '/');
+
+                    current.post(ctx.req, function (status, filename, original_filename, identifier, currentTestChunk, numberOfChunks) {
+
+                        if (!_.str.endsWith(internalPath, '/'))
+                            internalPath += '/';
+
+                        var s = fs.createWriteStream(internalPath + filename);
+
+                        if (status === 'done') {
+                            current.write(identifier, s, {
+                                end: true,
+                                onDone: function () {
+
+                                    current.clean(identifier, {
+                                        onDone: function () {
+                                            s.end();
+                                            s.close();
+                                        }
+                                    });
+                                    ctx.end();
+                                }
+                            });
+                        }
+                        else {
+                            ctx.end();
+                        }
+
                     });
                 }
             }
             else {
-                next();
+                current.get(ctx, ctx.req, function (status, filename, original_filename, identifier) {
+                    ctx.writeHead(status === 'found' ? 200 : 204, { "Content-Type": "application/text" });
+                    ctx.end();
+                });
             }
         }
     };

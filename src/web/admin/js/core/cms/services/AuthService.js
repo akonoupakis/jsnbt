@@ -28,49 +28,25 @@
                     deferred.reject(ex);
                 });
 
-                //jsnbt.db.users.login({
-                //    username: username,
-                //    password: password
-                //}, function (error, response) {
-                //    if (error) {
-                //        deferred.reject(error);
-                //    }
-                //    else {
-                //        if (response.id) {
-                //            jsnbt.db.users.me(function (userError, userResponse) {
-                //                if (userError) {
-                //                    deferred.reject(userError);
-                //                }
-                //                else {
-                //                    if (userResponse)
-                //                        deferred.resolve(userResponse);
-                //                    else
-                //                        deferred.reject();
-                //                }
-                //            });
-                //        }
-                //        else {
-                //            deferred.reject(response);
-                //        }
-                //    }
-                //});
-
                 return deferred.promise;
             };
 
             AuthService.get = function () {
                 var deferred = $q.defer();
 
-                jsnbt.db.users.me(function (userError, userResponse) {
-                    if (userError) {
-                        deferred.reject(userError);
+                var url = '../jsnbt-db/users/me';
+                $http.get(url).then(function (data) {
+                    var response = data.data;
+
+                    if (response.id) {
+                        deferred.resolve(response);
                     }
                     else {
-                        if (userResponse)
-                            deferred.resolve(userResponse);
-                        else
-                            deferred.reject();
+                        deferred.reject(response);
                     }
+
+                }).catch(function (ex) {
+                    deferred.reject(ex);
                 });
 
                 return deferred.promise;
@@ -94,8 +70,11 @@
             AuthService.logout = function () {
                 var deferred = $q.defer();
 
-                jsnbt.db.users.logout(function () {
+                var url = '../jsnbt-api/core/auth/logout';
+                $http.get(url).then(function (data) {
                     deferred.resolve();
+                }).catch(function (ex) {
+                    deferred.reject(ex);
                 });
 
                 return deferred.promise;
