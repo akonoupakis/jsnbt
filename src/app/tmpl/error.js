@@ -60,12 +60,12 @@ var ErrorRenderer = function (server, ctx, error, stack) {
         stack: stack || ''
     }, function (err, response) {
         if (err) {
-            ctx.write('template parse failed: ' + err.toString());
-            ctx.end();
+            ctx.res.write('template parse failed: ' + err.toString());
+            ctx.res.end();
         }
         else {
-            ctx.write(response);
-            ctx.end();
+            ctx.res.write(response);
+            ctx.res.end();
         }
     });
 

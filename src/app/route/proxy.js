@@ -14,6 +14,7 @@ Router.prototype.route = function (ctx, next) {
     };
 
     ctx.req.on('end', function () {
+        
         var jsonData = JSON.parse(postdata || '{}');
         route.data = jsonData;
 
@@ -21,18 +22,23 @@ Router.prototype.route = function (ctx, next) {
             if (error) {
                 if (typeof (error) === 'object') {
                     if (error.code && error.messages) {
-                        ctx.res.status(error.code).send(error.messages);
+                        ctx.status(error.code).send(error.messages);
                     }
                     else {
-                        ctx.res.status(500).send(error.message);
+                        ctx.status(500).send(error.message);
                     }
                 }
                 else {
-                    ctx.res.status(500).send(error);
+                    ctx.status(500).send(error);
                 }
             }
             else {
-                ctx.res.send(results);
+                if (results) {
+                    ctx.send(results);
+                }
+                else {
+                    next();
+                }
             }
         });
     });
@@ -41,7 +47,7 @@ Router.prototype.route = function (ctx, next) {
     ctx.req.on('data', function (postdataChunk) {
         postdata += postdataChunk;
     });
-
+    
 };
 
 module.exports = function (server) {

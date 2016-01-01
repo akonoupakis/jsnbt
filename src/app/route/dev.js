@@ -1,34 +1,25 @@
-var DevRouter = function (server) {
+var Router = function (server) {
+    this.server = server;
+};
 
-    var logger = require('../logger.js')(this);
+Router.prototype.route = function (ctx, serviceName, next) {
+    var self = this;
 
-    return {
+    var service = null;
+    try {
+        service = require('../dev/' + serviceName + '.js')(self.server);
+    }
+    catch (e) { }
 
-        route: function (ctx, next) {
-            if (ctx.uri.first === 'jsnbt-dev' && server.app.dbg && ctx.uri.parts.length > 1) {
-                
-                var serviceName = ctx.uri.parts[1];
-
-                var service = null;
-                try {
-                    service = require('../dev/' + serviceName + '.js')(server);
-                }
-                catch (e) { }
-
-                if (service !== null && typeof (service.route) === 'function') {
-                    service.route(ctx, next);
-                }
-                else {
-                    next();
-                }
-            }
-            else {
-                next();
-            }
-        }
-
-    };
+    if (service !== null && typeof (service.route) === 'function') {
+        service.route(ctx, next);
+    }
+    else {
+        next();
+    }
 
 };
 
-module.exports = DevRouter;
+module.exports = function (server) {
+    return new Router(server);
+};

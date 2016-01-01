@@ -1,71 +1,63 @@
 var fs = require('fs-extra');
 var path = require('path');
-var util = require('util');
 var Stream = require('stream').Stream;
+var formidable = require('formidable');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
 
-var formidable = require('formidable'),
-    http = require('http'),
-    util = require('util');
+var Router = function (server) {
+    this.server = server;
+};
 
-var UploadRouter = function (server) {
-
+Router.prototype.route = function (ctx, next) {
     var authMngr = require('../cms/authMngr.js')(server);
 
-    return {
+    var current = flow('public/tmp');
 
-        route: function (ctx, next) {
+    if (ctx.method === 'POST') {
 
-            var current = flow('public/tmp');
+        if (!authMngr.isInRole(ctx.user, 'admin')) {
+            ctx.error(401, null, false);
+        }
+        else {
+            var internalPath = './public/files' + (ctx.uri.query.path || '/');
 
-            if (ctx.method === 'POST') {
+            current.post(ctx.req, function (status, filename, original_filename, identifier, currentTestChunk, numberOfChunks) {
 
-                if (!authMngr.isInRole(ctx.user, 'admin')) {
-                    ctx.error(401, null, false);
-                }
-                else {
-                    var internalPath = './public/files' + (ctx.uri.query.path || '/');
+                if (!_.str.endsWith(internalPath, '/'))
+                    internalPath += '/';
 
-                    current.post(ctx.req, function (status, filename, original_filename, identifier, currentTestChunk, numberOfChunks) {
+                var s = fs.createWriteStream(internalPath + filename);
 
-                        if (!_.str.endsWith(internalPath, '/'))
-                            internalPath += '/';
+                if (status === 'done') {
+                    current.write(identifier, s, {
+                        end: true,
+                        onDone: function () {
 
-                        var s = fs.createWriteStream(internalPath + filename);
-
-                        if (status === 'done') {
-                            current.write(identifier, s, {
-                                end: true,
+                            current.clean(identifier, {
                                 onDone: function () {
-
-                                    current.clean(identifier, {
-                                        onDone: function () {
-                                            s.end();
-                                            s.close();
-                                        }
-                                    });
-                                    ctx.end();
+                                    s.end();
+                                    s.close();
                                 }
                             });
-                        }
-                        else {
                             ctx.end();
                         }
-
                     });
                 }
-            }
-            else {
-                current.get(ctx, ctx.req, function (status, filename, original_filename, identifier) {
-                    ctx.writeHead(status === 'found' ? 200 : 204, { "Content-Type": "application/text" });
+                else {
                     ctx.end();
-                });
-            }
-        }
-    };
+                }
 
+            });
+        }
+    }
+    else {
+        current.get(ctx, ctx.req, function (status, filename, original_filename, identifier) {
+            ctx.writeHead(status === 'found' ? 200 : 204, { "Content-Type": "application/text" });
+            ctx.end();
+        });
+    }
 };
 
 var flow = function (temporaryFolder) {
@@ -276,4 +268,6 @@ var flow = function (temporaryFolder) {
     return $;
 };
 
-module.exports = UploadRouter;
+module.exports = function (server) {
+    return new Router();
+};

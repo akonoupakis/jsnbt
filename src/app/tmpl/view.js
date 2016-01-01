@@ -19,16 +19,16 @@ var ViewRenderer = function (server, ctx) {
             if (fs.existsSync(tmplFilePath)) {
                 var tmplContent = fs.readFileSync(tmplFilePath, 'utf-8');
 
-                ctx.writeHead(200, { "Content-Type": "text/html" });
+                ctx.res.writeHead(200, { "Content-Type": "text/html" });
 
                 require('./html.js')(server).parse(ctx, tmplContent, {}, function (err, response) {
                     if (err) {
-                        ctx.write('template parse failed: ' + err.toString());
-                        ctx.end();
+                        ctx.res.write('template parse failed: ' + err.toString());
+                        ctx.res.end();
                     }
                     else {
-                        ctx.write(response);
-                        ctx.end();
+                        ctx.res.write(response);
+                        ctx.res.end();
                     }
                 });
             }

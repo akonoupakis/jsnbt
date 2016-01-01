@@ -12,8 +12,6 @@ var _ = require('underscore');
 var logger = require('./logger.js')(this);
 
 function Server(app, options) {
-    var self = this;
-
     var optsHost = options.host;
     if (options.host)
         delete options.host;

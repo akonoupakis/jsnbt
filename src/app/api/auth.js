@@ -76,7 +76,7 @@ var UserApi = function (server) {
             ctx.json({});
         },
 
-        remail: function (ctx, fields) {
+        forgot: function (ctx, fields) {
             authMngr.requestEmailConfirmationCode(ctx, ctx.session.user, fields.email, function (err, res) {
                 if (err) {
                     ctx.json(null);
@@ -87,7 +87,7 @@ var UserApi = function (server) {
             });
         },
 
-        semail: function (ctx, fields) {
+        reset: function (ctx, fields) {
             authMngr.submitEmailConfirmationCode(ctx, ctx.session.user, fields.code, function (err, res) {
                 if (err) {
                     ctx.json(null);

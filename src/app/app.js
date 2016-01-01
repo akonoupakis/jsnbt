@@ -14,9 +14,6 @@ var logger = require('./logger.js')(this);
 
 var configSchema = require('../cfg/schema.json');
 
-var languages = require('./data/store/languages.js');
-var countries = require('./data/store/countries.js');
-
 var index = require('./index.js');
 
 var App = function () {
@@ -96,8 +93,8 @@ var App = function () {
 
     this.version = versionInfo.version;
 
-    this.languages = require('./data/store/languages.js');
-    this.countries = require('./data/store/countries.js');
+    this.languages = require('./data/languages.js');
+    this.countries = require('./data/countries.js');
 
     this.root = root;
 

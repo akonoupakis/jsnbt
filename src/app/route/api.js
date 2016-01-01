@@ -19,77 +19,66 @@ var getGetParams = function (ctx, onSuccess, onFailure) {
     onSuccess(ctx.uri.query);
 }
 
-var ApiRouter = function (server) {
-
-    return {
-
-        route: function (ctx, next) {
-            if (ctx.uri.first === 'jsnbt-api' && ctx.uri.parts.length === 4) {
-
-                var domain = ctx.uri.parts[1].toLowerCase();
-                var serviceName = ctx.uri.parts[2];
-                var fnName = ctx.uri.parts[3];
-
-                if (domain === 'core') {
-
-                    var service = null;
-                    try {
-                        service = require('../api/' + serviceName + '.js')(server);
-                    }
-                    catch (e) { }
-
-                    if (service !== null && _.isFunction(service[fnName])) {
-                        if (ctx.method === 'POST') {
-                            getPostParams(ctx, function (fields, files) {
-                                service[fnName].apply(service[fnName], [ctx, fields]);
-                            }, function (err) {
-                                ctx.error(500, err, 'application/text');
-                            });
-                        }
-                        else {
-                            getGetParams(ctx, function (fields) {
-                                service[fnName].apply(service[fnName], [ctx, fields]);
-                            }, function (err) {
-                                ctx.error(500, err, 'application/text');
-                            });
-                        }
-                    }
-                    else {
-                        ctx.error(404);
-                    }
-
-                }
-                else {
-                    var apiRouter = require('./processors/api.js')(server, domain);
-                    if (apiRouter) {
-                        if (ctx.method === 'POST') {
-                            getPostParams(ctx, function (fields, files) {
-                                apiRouter.route(ctx, serviceName, fnName, fields, files);
-                            }, function (err) {
-                                ctx.error(500, err, 'application/text');
-                            });
-                        }
-                        else {
-                            getGetParams(ctx, function (fields) {
-                                apiRouter.route(ctx, serviceName, fnName, fields);
-                            }, function (err) {
-                                ctx.error(500, err, 'application/text');
-                            });
-                        }
-                    }
-                    else {
-                        ctx.error(404);
-                    }
-
-                }
-            }
-            else {
-                next();
-            }
-        }
-    };
-
+var Router = function (server) {
+    this.server = server;
 };
 
-// routes should be as: /jsnbt-api/{domain}/{serviceName}/{fnName}
-module.exports = ApiRouter;
+Router.prototype.route = function (ctx, domain, serviceName, fnName, next) {
+    var self = this;
+
+    if (domain === 'core') {
+
+        var service = null;
+        try {
+            service = require('../api/' + serviceName + '.js')(self.server);
+        }
+        catch (e) { }
+
+        if (service !== null && _.isFunction(service[fnName])) {
+            if (ctx.method === 'POST') {
+                getPostParams(ctx, function (fields, files) {
+                    service[fnName].apply(service[fnName], [ctx, fields]);
+                }, function (err) {
+                    ctx.status(500).send(err);
+                });
+            }
+            else {
+                getGetParams(ctx, function (fields) {
+                    service[fnName].apply(service[fnName], [ctx, fields]);
+                }, function (err) {
+                    ctx.status(500).send(err);
+                });
+            }
+        }
+        else {
+            next();
+        }
+
+    }
+    else {
+        var apiRouter = require('./processors/api.js')(self.server, domain);
+        if (apiRouter) {
+            if (ctx.method === 'POST') {
+                getPostParams(ctx, function (fields, files) {
+                    apiRouter.route(ctx, serviceName, fnName, fields, files);
+                }, function (err) {
+                    ctx.status(500).send(err);
+                });
+            }
+            else {
+                getGetParams(ctx, function (fields) {
+                    apiRouter.route(ctx, serviceName, fnName, fields);
+                }, function (err) {
+                    ctx.status(500).send(err);
+                });
+            }
+        }
+        else {
+            next();
+        }
+    }
+};
+
+module.exports = function (server) {
+    return new Router(server);
+};
