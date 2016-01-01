@@ -1,5 +1,6 @@
 var express = require('express');
 var path = require('path');
+var Cookies = require('cookies');
 var Context = require('./context.js');
 
 var _ = require('underscore');
@@ -15,6 +16,7 @@ Router.prototype.start = function () {
     var self = this;
 
     var buildSession = function (ctx, cb) {
+        ctx.cookies = new Cookies(ctx.req, ctx.res);
         self.server.sessions.createSession(ctx.cookies.get('sid'), function (err, session) {
             ctx.cookies.set('sid', session.data && session.data.id);
 

@@ -8,7 +8,9 @@ var ApiRouteProcessor = function (server, domain) {
     }));
 
     var nextRouter = function (ctx) {
-        ctx.error(404);
+        ctx.status(404).send({
+            404: 'Not Found'
+        });
     };
 
     return moduleRouter ? {

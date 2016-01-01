@@ -1,7 +1,6 @@
 var error = require('./tmpl/error.js');
 var view = require('./tmpl/view.js');
 var parseUri = require('parseUri');
-var Cookies = require('cookies');
 var jsuri = require('jsuri');
 var _ = require('underscore');
 
@@ -83,14 +82,8 @@ var Context = function (server, req, res) {
     uri.first = uri.parts.length > 0 ? _.first(uri.parts).toLowerCase() : '';
     uri.last = uri.parts.length > 0 ? _.last(uri.parts).toLowerCase() : '';
 
-    var cookies = new Cookies(req, res);
-
     this.method = req.method;
-    this.session = undefined;
-    this.cookies = cookies;
-
-    this.user = undefined;
-
+    
     this.timer = timer;
 
     this.node = undefined;
