@@ -150,17 +150,20 @@ Router.prototype.start = function () {
     
     var restrictedPaths = ['jsnbt-db', 'jsnbt-dev', 'jsnbt-api', 'jsnbt-upload'];
     this.express.get('*', function (req, res, next) {
+
         var ctx = new Context(self.server, req, res);
         if (restrictedPaths.indexOf(ctx.uri.first) === -1) {
             buildSession(ctx, function (err, context) {
                 var siteRouter = new require('./route/site.js')(self.server);
                 siteRouter.route(context, function () {
                     var publicRouter = new require('./route/public.js')(self.server);
-                    publicRouter.route(context, next);
+                    publicRouter.route(context, function () {
+                        context.error(404);
+                    });
                 });
             });
         } else {
-            next();
+            ctx.error(404);
         }
     });
 };

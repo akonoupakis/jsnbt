@@ -4,7 +4,7 @@ var _ = require('underscore');
 module.exports = function (sender, context, data) {
 
     var authMngr = sender.server.require('./cms/authMngr.js')(sender.server);
-    var node = sender.server.require('./cms/nodeMngr.js')(sender.server);
+    var nodeMngr = sender.server.require('./cms/nodeMngr.js')(sender.server);
     
     if (!context.internal) {
         if (!authMngr.isAuthorized(context.req.session.user, 'nodes:' + data.entity, 'R'))
@@ -13,16 +13,22 @@ module.exports = function (sender, context, data) {
         var asyncs = [];
 
         asyncs.push(function (cb) {
-            node.buildUrl(data, function (response) {
-                data.url = response;
-                cb();
+            nodeMngr.getUrl(data, function (err, builtUrl) {
+                if (err)
+                    return cb(err);
+
+                data.url = builtUrl;
+                cb(null, builtUrl);
             });
         });
 
         asyncs.push(function (cb) {
-            node.getActiveInfo(data, function (response) {
-                data.enabled = response;
-                cb();
+            nodeMngr.getEnabled(data, function (err, enabledObj) {
+                if (err)
+                    return cb(err);
+
+                data.enabled = enabledObj;
+                cb(null, enabledObj);
             });
         });
 
@@ -37,6 +43,7 @@ module.exports = function (sender, context, data) {
                 context.hide('createdOn');
                 context.hide('modifiedOn');
             }
+
             cb();
         });
 

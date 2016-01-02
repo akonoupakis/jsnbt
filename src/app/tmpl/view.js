@@ -23,8 +23,7 @@ var ViewRenderer = function (server, ctx) {
 
                 require('./html.js')(server).parse(ctx, tmplContent, {}, function (err, response) {
                     if (err) {
-                        ctx.res.write('template parse failed: ' + err.toString());
-                        ctx.res.end();
+                        error(server, ctx, 500, err);
                     }
                     else {
                         ctx.res.write(response);

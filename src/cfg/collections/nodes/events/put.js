@@ -4,7 +4,7 @@ var _ = require('underscore');
 module.exports = function (sender, context, data) {
 
     var authMngr = sender.server.require('./cms/authMngr.js')(sender.server);
-    var node = sender.server.require('./cms/nodeMngr.js')(sender.server);
+    var nodeMngr = sender.server.require('./cms/nodeMngr.js')(sender.server);
     
     delete data.enabled;
     delete data.url;
@@ -118,11 +118,14 @@ module.exports = function (sender, context, data) {
             if (!hierarchyChange) 
                 return cb();
 
-            node.getHierarchy(data, function (hierarchyNodes) {
+            nodeMngr.getHierarchy(data, function (hErr, hierarchyNodes) {
+                if (hErr)
+                    return cb(hErr);
+
                 var hierarchyNodeIds = _.pluck(hierarchyNodes, 'id');
                 data.hierarchy = hierarchyNodeIds;
 
-                node.purgeCache(data.id);
+                nodeMngr.purgeCache(data.id);
 
                 processChildren(data.domain, data.hierarchy, function (err, result) {
                     cb(err, result);
