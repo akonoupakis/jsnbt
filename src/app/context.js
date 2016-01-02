@@ -140,13 +140,13 @@ var Context = function (server, req, res) {
 };
 
 Context.prototype.status = function (code) {
-    this.res.sendStatus.apply(this.res, arguments);
+    this.res.status.apply(this.res, arguments);
     return this;
 };
 
 Context.prototype.send = function (result) {
-    this.res.send.apply(this.res, arguments);
     this.timer.stop();
+    this.res.send.apply(this.res, arguments);
     return this;
 };
 

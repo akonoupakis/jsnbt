@@ -9,28 +9,41 @@ var UserApi = function (server) {
         },
 
         login: function (ctx, fields) {
-            var store = server.db.createStore('users');
+            var store = server.db.createStore('users', ctx.req, ctx.res, true);
 
-            store.first({ username: fields.username }, function (err, user) {
-                if (err) return ctx.done(err);
-
-                if (user) {
-                    ctx.session.set({ uid: user.id }).save(function () {
-                        ctx.json(user);
-                    });
+            store.get(function (x) {
+                x.query({ username: fields.username });
+                x.single();
+            }, function (err, user) {
+                if (err) {
+                    if (err.code && err.messages)
+                        ctx.status(err.code).send(err.messages);
+                    else
+                        ctx.status(500).send(err);
                 }
                 else {
-                    ctx.error(401);
+                    if (user) {
+                        ctx.req.session.uid = user.id;
+                        delete user.password;
+                        ctx.req.session.user = user;
+                        ctx.req.session.save(function () { 
+                            ctx.send(user);
+                        });
+                    }
+                    else {
+                        ctx.status(401).send('Access Denied');
+                    }
                 }
             });
         },
 
         logout: function (ctx, fields) {
-            if (ctx.res.cookies)
-                ctx.res.cookies.set('sid', null);
+            delete ctx.req.session.uid;
+            delete ctx.req.session.user;
+            ctx.req.session.save();
 
-            ctx.session.remove(function () {
-                ctx.json({});
+            ctx.send({
+                logout: true
             });
         },
 

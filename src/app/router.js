@@ -1,6 +1,5 @@
 var express = require('express');
 var path = require('path');
-var Cookies = require('cookies');
 var Context = require('./context.js');
 
 var _ = require('underscore');
@@ -16,40 +15,42 @@ Router.prototype.start = function () {
     var self = this;
 
     var buildSession = function (ctx, cb) {
-        ctx.cookies = new Cookies(ctx.req, ctx.res);
-        self.server.sessions.createSession(ctx.cookies.get('sid'), function (err, session) {
-            ctx.cookies.set('sid', session.data && session.data.id);
 
-            if (err)
-                return cb(err);
+        if (!ctx.req.sessionID)
+            return cb(null, ctx);
 
-            ctx.session = session;
+        var session = ctx.req.session;
+        if (session.uid && !session.user) {
 
-            if ((session.data && session.data.uid) && !session.user) {
+            var store = server.db.createStore('users', ctx.req, ctx.res, true);
+            ctx.timer.start('current user retrieval');
+            store.get(function (x) {
+                x.query(session.uid);
+                x.single();
+            }, function (uerr, user) {
+                if (uerr)
+                    return cb(uerr);
 
-                var store = server.db.createStore('users', false);
-                ctx.timer.start('current user retrieval');
-                store.get(function (x) {
-                    x.query(session.data.uid);
-                    x.single();
-                }, function (uerr, user) {
-                    if (uerr)
-                        return cb(uerr);
+                ctx.timer.stop('current user retrieval');
+                if (user) {
+                    delete user.password;
+                    session.user = user;
+                }
+                else {
+                    delete sssion.uid;
+                }
 
-                    ctx.timer.stop('current user retrieval');
-                    if (user) {
-                        session.user = user;
-                    }
+                session.save(function () {
                     cb(null, ctx);
                 });
-            }
-            else {
-                cb(null, ctx);
-            }
-        });        
+            });
+
+        }
+        else {
+            cb(null, ctx);
+        }
     };
-
-
+    
     var notFoundPaths = [];
     var templatePaths = _.pluck(self.server.app.config.templates, 'path');
     notFoundPaths = _.union(notFoundPaths, templatePaths);

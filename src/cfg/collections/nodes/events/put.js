@@ -1,90 +1,141 @@
-var authMngr = requireApp('cms/authMngr.js')(server);
-var node = requireApp('cms/nodeMngr.js')(server, db);
-
+var async = require('async');
 var _ = require('underscore');
 
-var self = this;
+module.exports = function (sender, context, data) {
 
-delete self.enabled;
-delete self.url;
+    var authMngr = sender.server.require('./cms/authMngr.js')(sender.server);
+    var node = sender.server.require('./cms/nodeMngr.js')(sender.server, sender.server.db);
+    
+    delete data.enabled;
+    delete data.url;
 
-var processChildren = function (domain, hierarchy) {
-    if (hierarchy.length > 0) {
-        var nodeId = hierarchy[hierarchy.length - 1];
-        db.nodes.get({ domain: domain, parent: nodeId }, function (error, results) {
-            if (error) {
-                throw error;
-            }
-            else {
+    var processChildren = function (domain, hierarchy, cb) {
+        if (hierarchy.length > 0) {
+            var nodeId = hierarchy[hierarchy.length - 1];
+            context.store.get(function (x) {
+                x.query({
+                    domain: domain,
+                    parent: nodeId
+                });
+            }, function (error, results) {
+                if (error) 
+                    return cb(error);
+                
+                var processAsyncs = [];
+
                 _.each(results, function (nodeResult) {
-                    var newHierarchy = hierarchy.slice(0);
-                    newHierarchy.push(nodeResult.id);
-                    nodeResult.hierarchy = newHierarchy.slice(0);
-                    
-                    db.nodes.put(nodeResult.id, nodeResult, function (err, result) {
-                        if (err)
-                            throw err;
+                    processAsyncs.push(function (pcb) {
+                        var newHierarchy = hierarchy.slice(0);
+                        newHierarchy.push(nodeResult.id);
+
+                        context.store.put(function (x) {
+                            x.query(nodeResult.id);
+                            x.data({
+                                hierarchy: newHierarchy
+                            })
+                        }, function (err, result) {
+                            pcb(err, result);
+                        });
                     });
                 });
-            }
-        });
-    }
-};
 
-var entity = requireApp('cms/entityMngr.js')(server, self.entity);
-
-if (internal) {
-    if (entity.hasProperty('parent'))
-        processChildren(this.domain, this.hierarchy);
-}
-else {
-    
-    if (!authMngr.isAuthorized(me, 'nodes:' + self.entity, 'U'))
-        cancel('Access denied', 401);
-
-    self.modifiedOn = new Date().getTime();
-
-    var hierarchyChange = false;
-    
-    if (entity.hasProperty('parent') && changed('parent') && self.parent !== previous.parent) {
-        hierarchyChange = true;
-    }
-   
-    var seoNamesChanged = false;
-    if (entity.hasProperty('seo')) {
-
-        for (var lang in self.seo) {
-            if (self.seo[lang] !== previous.seo[lang]) {
-                seoNamesChanged = true;
-            }
-        }
-        
-        if (seoNamesChanged) {
-            db.nodes.get({ parent: self.parent, domain: self.domain, id: { $nin: [self.id] } }, function (siblingNodesError, siblingNodes) {
-                if (siblingNodesError)
-                    throw siblingNodesError;
+                if (processAsyncs.length > 0) {
+                    async.parallel(processAsyncs, function (err, result) {
+                        cb(err, result);
+                    });
+                }
                 else {
-                    for (var lang in self.seo) {
-                        if (self.active[lang]) {
-                            var siblingSeoNames = _.pluck(_.pluck(_.filter(siblingNodes, function (x) { return x.seo[lang]; }), 'seo'), lang);
-                            if (siblingSeoNames.indexOf(self.seo[lang]) !== -1) {
-                                cancel('seo name already exists', 400);
-                            }
+                    cb();
+                }
+
+            });
+        }
+    };
+
+    var entity = sender.server.require('./cms/entityMngr.js')(sender.server, data.entity);
+
+    if (context.internal) {
+        if (entity.hasProperty('parent')) {
+            processChildren(data.domain, data.hierarchy, function (err, result) {
+                if (err)
+                    return context.error(err);
+
+                context.done();
+            });
+        }
+        else {
+            context.done();
+        }
+    }
+    else {
+        if (!authMngr.isAuthorized(context.req.session.user, 'nodes:' + data.entity, 'U'))
+            return context.error(401, 'Access denied');
+
+        data.modifiedOn = new Date().getTime();
+
+        var asyncs = [];
+
+        asyncs.push(function (cb) {
+            var seoNamesChanged = false;
+            if (!entity.hasProperty('seo'))
+                return cb();
+
+            for (var lang in data.seo) {
+                if (data.seo[lang] !== context.previous.seo[lang]) {
+                    seoNamesChanged = true;
+                }
+            }
+
+            if (!seoNamesChanged) 
+                return cb();
+
+            context.store.get(function (x) {
+                x.query({
+                    parent: data.parent,
+                    domain: data.domain,
+                    id: { $nin: [data.id] }
+                });
+            }, function (siblingNodesError, siblingNodes) {
+                if (siblingNodesError)
+                    return cb(siblingNodesError);
+
+                for (var lang in data.seo) {
+                    if (data.active[lang]) {
+                        var siblingSeoNames = _.pluck(_.pluck(_.filter(siblingNodes, function (x) { return x.seo[lang]; }), 'seo'), lang);
+                        if (siblingSeoNames.indexOf(data.seo[lang]) !== -1) {
+                            return cb('seo name already exists');
                         }
                     }
                 }
-            });
-        }
-    }
-    
-    if (hierarchyChange) {        
-        node.getHierarchy(self, function (hierarchyNodes) {
-            var hierarchyNodeIds = _.pluck(hierarchyNodes, 'id');
-            self.hierarchy = hierarchyNodeIds;
-            
-            node.purgeCache(self.id);
 
-            processChildren(self.domain, self.hierarchy);
+                cb();
+            });
+        });
+
+        asyncs.push(function (cb) {
+            var hierarchyChange = entity.hasProperty('parent') && context.changed('parent') && data.parent !== context.previous.parent;
+
+            if (!hierarchyChange) 
+                return cb();
+
+            node.getHierarchy(data, function (hierarchyNodes) {
+                var hierarchyNodeIds = _.pluck(hierarchyNodes, 'id');
+                data.hierarchy = hierarchyNodeIds;
+
+                node.purgeCache(data.id);
+
+                processChildren(data.domain, data.hierarchy, function (err, result) {
+                    cb(err, result);
+                });
+            });
+        });
+
+        async.parallel(asyncs, function (err, result) {
+            if (err)
+                return context.error(err);
+
+            context.done();
         });
     }
-}
+
+};

@@ -7,8 +7,8 @@ _.str = require('underscore.string');
 
 var Script = function (app) {
 
-    var languages = require('../data/store/languages.js');
-    var countries = require('../data/store/countries.js');
+    var languages = require('../data/languages.js');
+    var countries = require('../data/countries.js');
 
     var getResources = function () {
 

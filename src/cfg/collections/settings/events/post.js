@@ -1,11 +1,18 @@
-var self = this;
+module.exports = function (sender, context, data) {
 
-db.settings.get({
-    domain: self.domain
-}, function (matchedError, matched) {
-    if (matchedError)
-        throw matchedError;
-    else
-        if (matched.length > 0)
-            cancel('setting already exists', 400);
-});
+    context.store.get(function (x) {
+        x.query({
+            domain: data.domain
+        });
+        x.single();
+    }, function (matchedError, matched) {
+        if (matchedError)
+            return context.error(matchedError);
+        else
+            if (matched)
+                return context.error(400, 'setting already exists');
+
+        context.done();
+    });
+
+};

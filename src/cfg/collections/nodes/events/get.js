@@ -1,33 +1,54 @@
-var authMngr = requireApp('cms/authMngr.js')(server);
-var node = requireApp('cms/nodeMngr.js')(server, db);
-
+var async = require('async');
 var _ = require('underscore');
 
-var self = this;
+module.exports = function (sender, context, data) {
 
-if (!internal) {
-    if (self.id) {
+    var authMngr = sender.server.require('./cms/authMngr.js')(sender.server);
+    var node = sender.server.require('./cms/nodeMngr.js')(sender.server, sender.server.db);
+    
+    if (!context.internal) {
+        if (!authMngr.isAuthorized(context.req.session.user, 'nodes:' + data.entity, 'R'))
+            return context.error(401, 'Access denied');
 
-        if (!authMngr.isAuthorized(me, 'nodes:' + self.entity, 'R'))
-            cancel('Access denied', 401);
+        var asyncs = [];
 
-        node.buildUrl(self, function (response) {
-            self.url = response;
+        asyncs.push(function (cb) {
+            node.buildUrl(data, function (response) {
+                data.url = response;
+                cb();
+            });
         });
 
-        node.getActiveInfo(self, function (response) {
-            self.enabled = response;
+        asyncs.push(function (cb) {
+            node.getActiveInfo(data, function (response) {
+                data.enabled = response;
+                cb();
+            });
         });
 
-        if (!authMngr.isInRole(me, 'admin')) {
-            hide('roles');
-            hide('robots');
-            hide('template');
-            hide('meta');
-            hide('layouts');
+        asyncs.push(function (cb) {
+            if (!authMngr.isInRole(context.req.session.user, 'admin')) {
+                context.hide('roles');
+                context.hide('robots');
+                context.hide('template');
+                context.hide('meta');
+                context.hide('layouts');
 
-            hide('createdOn');
-            hide('modifiedOn');
-        }
+                context.hide('createdOn');
+                context.hide('modifiedOn');
+            }
+            cb();
+        });
+
+        async.parallel(asyncs, function (err, results) {
+            if (err)
+                return context.error(err);
+
+            context.done();
+        });
     }
-}
+    else {
+        context.done();
+    }
+
+};

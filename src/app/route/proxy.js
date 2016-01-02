@@ -10,7 +10,9 @@ Router.prototype.route = function (ctx, next) {
         collection: ctx.uri.parts[1],
         path: ctx.uri.path.substring('/jsnbt-db/'.length + ctx.uri.parts[1].length),
         query: JSON.stringify(ctx.uri.query.q || {}),
-        data: ctx.req.body
+        data: ctx.req.body,
+        req: ctx.req,
+        res: ctx.res
     };
 
     ctx.req.on('end', function () {

@@ -1,11 +1,9 @@
 var express = require('express');
-var http = require('http');
+var session = require('express-session')
 var dbproxy = require('mongodb-proxy');
-var util = require('util');
-var session = require('./session');
+var data = require('./data.js');
 var io = require('socket.io');
 var extend = require('extend');
-var async = require('async');
 var serverRoot = require('server-root');
 var _ = require('underscore');
 
@@ -28,16 +26,23 @@ function Server(app, options) {
 
     extend(true, this.options, options);
     
-    session.appPath = __dirname;
-        
     this.db = dbproxy.create(this.options.db);
-
+    this.db.server = this;
+    
     this.db.configure(function (config) {
 
         for (var collectionName in app.config.collections) {
             config.register(app.config.collections[collectionName]);
         }
 
+        config.bind('preread', data.preread);
+        config.bind('postread', data.postread);
+        config.bind('precreate', data.precreate);
+        config.bind('postcreate', data.postcreate);
+        config.bind('preupdate', data.preupdate);
+        config.bind('postupdate', data.postupdate);
+        config.bind('predelete', data.predelete);
+        config.bind('postdelete', data.postdelete);
     });
 
     this.host = optsHost;
@@ -53,17 +58,26 @@ function Server(app, options) {
 }
 Server.prototype = Object.create(express.prototype);
 
+Server.prototype.require = function () {
+    var result = require.apply(require, arguments);
+    return result;
+}
+
 Server.prototype.start = function () {
     var self = this;
 
-    var serv = this.express.listen(this.options.port);
+    var server = this.express.listen(this.options.port);
 
-    this.sockets = io.listen(serv, {
+    this.sockets = io.listen(server, {
         'log level': 0
     }).sockets;
 
-    this.sessions = session.createStore('sessions', this.db, this.sockets);
-    
+    this.express.use(session({
+        secret: 'keyboard cat',
+        resave: false,
+        saveUninitialized: true
+    }));
+
     var router = new require('./router.js')(self, self.express);
     router.start();
     

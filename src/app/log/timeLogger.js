@@ -42,82 +42,78 @@ var getDiff = function(earlierDate, laterDate) {
     return oDiff;
 }
 
-var TimeLogger = function (name) {
+var Logger = function (name) {
+    this.name = name;
 
-    var watches = [];
+    this.watches = [];
 
-    var startedOn = undefined;
-    var stoppedOn = undefined;
-    
-    return {
-
-        name: name,
-
-        start: function (watchName) {
-            if (watchName) {
-                if (startedOn === undefined) 
-                    startedOn = new Date();
-
-                watches.push({
-                    name: watchName,
-                    startedOn: new Date(),
-                    stoppedOn: undefined
-                });
-            }
-            else {
-                if (startedOn === undefined) {
-                    startedOn = new Date();
-                    stoppedOn = undefined;
-                }
-            }
-        },
-        
-        stop: function (watchName) {
-            if (watchName) {
-                var watch = _.find(watches, function (x) { return x.name === watchName; });
-                if (watch)
-                    if (watch.stoppedOn === undefined)
-                        watch.stoppedOn = new Date();
-            }
-            else {
-                stoppedOn = new Date();
-            }
-        },
-
-        get: function () {
-            var internalStoppedOn = stoppedOn || new Date();
-
-            var diff = getDiff(startedOn, internalStoppedOn);
-
-            var result = {
-                name: this.name,
-                startedOn: startedOn,
-                hits: [],
-                stoppedOn: internalStoppedOn,
-                ellapsed: diff.ellapsed,
-                total: diff.total
-            };
-
-            var sortedWatches = _.filter(watches, function (x) { return x.startedOn !== undefined && x.stoppedOn !== undefined; }).sort(function (a, b) {
-                return a.stoppedOn - b.stoppedOn;
-            });
-
-            _.each(sortedWatches, function (watch) {
-                var watchDiff = getDiff(watch.startedOn, watch.stoppedOn);
-                result.hits.push({
-                    name: watch.name,
-                    startedOn: watch.startedOn,
-                    stoppedOn: watch.stoppedOn,
-                    ellapsed: watchDiff.ellapsed,
-                    total: watchDiff.total
-                });
-            });
-
-            return result;
-        }
-    
-    }
-
+    this.startedOn = undefined;
+    this.stoppedOn = undefined;
 };
 
-module.exports = TimeLogger;
+Logger.prototype.start = function (watchName) {
+    if (watchName) {
+        if (this.startedOn === undefined)
+            this.startedOn = new Date();
+
+        this.watches.push({
+            name: watchName,
+            startedOn: new Date(),
+            stoppedOn: undefined
+        });
+    }
+    else {
+        if (this.startedOn === undefined) {
+            this.startedOn = new Date();
+            this.stoppedOn = undefined;
+        }
+    }
+};
+
+Logger.prototype.stop = function (watchName) {
+    if (watchName) {
+        var watch = _.find(this.watches, function (x) { return x.name === watchName; });
+        if (watch)
+            if (watch.stoppedOn === undefined)
+                watch.stoppedOn = new Date();
+    }
+    else {
+        this.stoppedOn = new Date();
+    }
+};
+
+Logger.prototype.get = function () {
+    var internalStoppedOn = this.stoppedOn || new Date();
+
+    var diff = getDiff(this.startedOn, internalStoppedOn);
+
+    var result = {
+        name: this.name,
+        startedOn: this.startedOn,
+        hits: [],
+        stoppedOn: internalStoppedOn,
+        ellapsed: diff.ellapsed,
+        total: diff.total
+    };
+
+    var sortedWatches = _.filter(this.watches, function (x) { return x.startedOn !== undefined && x.stoppedOn !== undefined; }).sort(function (a, b) {
+        return a.stoppedOn - b.stoppedOn;
+    });
+
+    _.each(sortedWatches, function (watch) {
+        var watchDiff = getDiff(watch.startedOn, watch.stoppedOn);
+        result.hits.push({
+            name: watch.name,
+            startedOn: watch.startedOn,
+            stoppedOn: watch.stoppedOn,
+            ellapsed: watchDiff.ellapsed,
+            total: watchDiff.total
+        });
+    });
+
+    return result;
+};
+
+module.exports = function (name) {
+    return new Logger(name);
+};

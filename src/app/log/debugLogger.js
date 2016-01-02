@@ -1,19 +1,15 @@
-var DebugLogger = function () {
-
-    var messages = [];
-
-    return {
-
-        log: function (text) {
-            messages.push(text);
-        },
-
-        get: function () {
-            return messages;
-        }
-
-    };
-
+var Logger = function () {
+    this.messages = [];
 };
 
-module.exports = DebugLogger;
+Logger.prototype.log = function (text) {
+    this.messages.push(text);
+};
+
+Logger.prototype.get = function () {
+    return this.messages;
+};
+
+module.exports = function () {
+    return new Logger();
+};

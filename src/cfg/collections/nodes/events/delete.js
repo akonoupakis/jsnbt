@@ -1,9 +1,13 @@
-var authMngr = requireApp('cms/authMngr.js')(server);
-var node = requireApp('cms/nodeMngr.js')(server, db);
+module.exports = function (sender, context, data) {
 
-var self = this;
+    var authMngr = sender.server.require('./cms/authMngr.js')(sender.server);
+    var node = sender.server.require('./cms/nodeMngr.js')(sender.server, sender.server.db);
+    
+    if (!context.internal && !authMngr.isAuthorized(context.req.session.user, 'nodes:' + data.entity, 'D'))
+        return context.error(401, 'Access denied');
 
-if (!internal && !authMngr.isAuthorized(me, 'nodes:' + self.entity, 'D'))
-    cancel('Access denied', 401);
+    node.purgeCache(data.id);
 
-node.purgeCache(self.id);
+    context.done();
+
+};
