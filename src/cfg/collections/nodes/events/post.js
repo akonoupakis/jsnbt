@@ -4,7 +4,7 @@ var _ = require('underscore');
 module.exports = function (sender, context, data) {
 
     var authMngr = sender.server.require('./cms/authMngr.js')(sender.server);
-    var node = sender.server.require('./cms/nodeMngr.js')(sender.server, sender.server.db);
+    var node = sender.server.require('./cms/nodeMngr.js')(sender.server);
 
     if (!internal && !authMngr.isAuthorized(context.req.session.user, 'nodes:' + data.entity, 'C'))
         return context.error(401, 'Access denied');

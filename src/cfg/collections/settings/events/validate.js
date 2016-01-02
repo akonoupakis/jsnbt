@@ -9,7 +9,7 @@ module.exports = function (sender, context, data) {
                     type: 'object',
                     required: true,
                     properties: {
-                        homepage: { type: "string", required: true }
+                        homepage: { type: "object", required: true }
                     }
                 }
             }

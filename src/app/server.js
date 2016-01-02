@@ -5,6 +5,7 @@ var dbproxy = require('mongodb-proxy');
 var data = require('./data.js');
 var io = require('socket.io');
 var extend = require('extend');
+var Cache = require('./cache.js');
 var serverRoot = require('server-root');
 var _ = require('underscore');
 
@@ -52,6 +53,8 @@ function Server(app, options) {
     this.getPath = serverRoot.getPath;
 
     this.messager = require('./messager.js')(this);
+
+    this.cache = new Cache();
 
     this.app = app;
     

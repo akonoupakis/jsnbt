@@ -79,7 +79,7 @@ var Router = function (server) {
         route: function (ctx, next) {
 
             try {
-                var node = require('../cms/nodeMngr.js')(server, ctx.db);
+                var node = require('../cms/nodeMngr.js')(server);
 
                 ctx.timer.start('node retrieval');
 

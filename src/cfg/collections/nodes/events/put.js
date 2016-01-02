@@ -4,7 +4,7 @@ var _ = require('underscore');
 module.exports = function (sender, context, data) {
 
     var authMngr = sender.server.require('./cms/authMngr.js')(sender.server);
-    var node = sender.server.require('./cms/nodeMngr.js')(sender.server, sender.server.db);
+    var node = sender.server.require('./cms/nodeMngr.js')(sender.server);
     
     delete data.enabled;
     delete data.url;

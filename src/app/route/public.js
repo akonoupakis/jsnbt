@@ -86,7 +86,11 @@ var Router = function (server) {
 
             var matched = _.filter(languages, function (x) { return _.str.startsWith(ctx.uri.path, '/' + x.code + '/'); });
             if (matched.length === 0) {
-                ctx.db.languages.getCached({ active: true, "default": true }, function (defaultLanguagesError, defaultLanguages) {
+                var languagesStore = server.db.createStore('languages', ctx.req, ctx.res, true);
+                languagesStore.get(function (x) {
+                    x.query({ active: true, "default": true });
+                    x.cached();
+                }, function (defaultLanguagesError, defaultLanguages) {
                     if (defaultLanguagesError) {
                         ctx.error(500, defaultLanguagesError);
                     }
@@ -123,7 +127,7 @@ var Router = function (server) {
     return {
         route: function (ctx, next) {
             try {
-                var node = require('../cms/nodeMngr.js')(server, ctx.db);                         
+                var node = require('../cms/nodeMngr.js')(server);
                 node.resolveUrl(ctx.uri.url, function (resolved) {
                     if (resolved) {
                         ctx.debug('node resolved: ' + resolved.page.id);

@@ -4,7 +4,9 @@ var _ = require('underscore');
 
 _.str = require('underscore.string');
 
-module.exports = function(server, db) {
+module.exports = function(server) {
+
+    var db = server.db.createApi();
 
     var getEntity = function (name) {
         return require('./entityMngr.js')(server, name);
@@ -346,7 +348,7 @@ module.exports = function(server, db) {
                     var languagePart = defaultLanguage;
                     var urlPart = uri.path;
 
-                    db.settings.getCached({ domain: 'core' }, function (settingNodesError, settingNodes) {
+                    db.settings.get({ domain: 'core', $cached: true }, function (settingNodesError, settingNodes) {
                         if (settingNodesError)
                             throw settingNodesError;
                         else {
