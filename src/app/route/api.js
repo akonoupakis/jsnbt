@@ -37,14 +37,14 @@ Router.prototype.route = function (ctx, domain, serviceName, fnName, next) {
         if (service !== null && _.isFunction(service[fnName])) {
             if (ctx.method === 'POST') {
                 getPostParams(ctx, function (fields, files) {
-                    service[fnName].apply(service[fnName], [ctx, fields]);
+                    service[fnName].apply(service, [ctx, fields]);
                 }, function (err) {
                     ctx.status(500).send(err);
                 });
             }
             else {
                 getGetParams(ctx, function (fields) {
-                    service[fnName].apply(service[fnName], [ctx, fields]);
+                    service[fnName].apply(service, [ctx, fields]);
                 }, function (err) {
                     ctx.status(500).send(err);
                 });
