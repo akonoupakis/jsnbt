@@ -1,5 +1,5 @@
 var express = require('express');
-var session = require('express-session')
+var session = require('express-session');
 var dbproxy = require('mongodb-proxy');
 var data = require('./data.js');
 var io = require('socket.io');
@@ -72,10 +72,25 @@ Server.prototype.start = function () {
         'log level': 0
     }).sockets;
 
-    this.express.use(session({
-        secret: 'keyboard cat',
+    var secret = this.host + ':' + this.options.db.name + ':' + this.options.db.host + ':' + this.options.db.port;
+       
+    var MongoStore = require('express-session-mongo');
+    var sessionStore = new MongoStore({
+        db: self.options.db.name,
+        ip: self.options.db.host,
+        port: self.options.db.port,
+        username: self.options.db.credentials && self.options.db.credentials.username,
+        password: self.options.db.credentials && self.options.db.credentials.password,
+        collection: 'sessions',
+        fsync: false,
+        native_parser: false
+    });
+
+    self.express.use(session({
+        secret: secret,
         resave: false,
-        saveUninitialized: true
+        saveUninitialized: true,
+        store: sessionStore
     }));
 
     var router = new require('./router.js')(self, self.express);

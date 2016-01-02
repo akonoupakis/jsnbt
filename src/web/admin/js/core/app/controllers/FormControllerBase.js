@@ -95,12 +95,16 @@
                                                         $location.goto(targetUrl);
                                                     }
                                                     else {
-                                                        self.set(pushed).then(function(){
-                                                            self.run('published', [pushed]).catch(function (publishedError) {
-                                                                logger.error(publishedError);
+                                                        self.load().then(function (loaded) {
+                                                            self.set(loaded).then(function () {
+                                                                self.run('published', [loaded]).catch(function (publishedError) {
+                                                                    logger.error(publishedError);
+                                                                });
+                                                            }).catch(function (settedError) {
+                                                                logger.error(settedError);
                                                             });
-                                                        }).catch(function (settedError) {
-                                                            logger.error(settedError);
+                                                        }).catch(function (loadError) {
+                                                            logger.error(loadError);
                                                         });
                                                     }
                                                 }

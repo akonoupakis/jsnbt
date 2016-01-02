@@ -4,10 +4,10 @@ var logAction = function (sender, collection, action, req, res, data, callback) 
         if (sender.server.app.config.collections[collection].logging) {
 
             var store = sender.createStore('actions', null, null, true);
-            store.post(function(x) {
+            store.post(function (x) {
                 x.data({
                     timestamp: new Date().getTime(),
-                    user: req.sessionID && req.session.uid ? req.session.uid : undefined,
+                    user: req.session.uid,
                     collection: collection,
                     action: action,
                     objectId: data ? data.id : undefined,
