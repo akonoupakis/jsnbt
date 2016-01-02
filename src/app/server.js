@@ -1,5 +1,6 @@
 var express = require('express');
 var session = require('express-session');
+var MongoStore = require('express-session-mongo');
 var dbproxy = require('mongodb-proxy');
 var data = require('./data.js');
 var io = require('socket.io');
@@ -53,7 +54,7 @@ function Server(app, options) {
     this.messager = require('./messager.js')(this);
 
     this.app = app;
-
+    
     this.express = express();
 }
 Server.prototype = Object.create(express.prototype);
@@ -71,11 +72,10 @@ Server.prototype.start = function () {
     this.sockets = io.listen(server, {
         'log level': 0
     }).sockets;
-
+        
     var secret = this.host + ':' + this.options.db.name + ':' + this.options.db.host + ':' + this.options.db.port;
-       
-    var MongoStore = require('express-session-mongo');
-    var sessionStore = new MongoStore({
+    
+    this.session = new MongoStore({
         db: self.options.db.name,
         ip: self.options.db.host,
         port: self.options.db.port,
@@ -90,12 +90,12 @@ Server.prototype.start = function () {
         secret: secret,
         resave: false,
         saveUninitialized: true,
-        store: sessionStore
+        store: this.session
     }));
 
     var router = new require('./router.js')(self, self.express);
     router.start();
-    
+
     logger.info('jsnbt server is listening on:' + self.options.port);
 };
 

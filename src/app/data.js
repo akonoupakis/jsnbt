@@ -1,3 +1,5 @@
+var _ = require('underscore');
+
 var logAction = function (sender, collection, action, req, res, data, callback) {
 
     if (sender.server.app.config.collections[collection]) {
@@ -32,7 +34,6 @@ var logAction = function (sender, collection, action, req, res, data, callback) 
 
 var authIgnoredCollections = ['nodes', 'data'];
 
-
 module.exports.preread = function (sender, collection, context) {
     var authMngr = require('./cms/authMngr.js')(sender.server);
     if (!context.internal && authIgnoredCollections.indexOf(collection) === -1 && !authMngr.isAuthorized(context.req.session.user, collection, 'R')) {
@@ -62,8 +63,8 @@ module.exports.postcreate = function (sender, collection, context, data) {
         if (err) 
             return context.error(err);
         
-        //if (!context.internal)
-        //    context.emit(collection + ':created', data);
+        if (!context.internal)
+            sender.server.sockets.emit(collection + 'Created', data);
 
         context.done();
     });
@@ -84,8 +85,8 @@ module.exports.postupdate = function (sender, collection, context, data) {
         if (err)
             return context.error(err);
 
-        //if (!context.internal)
-        //    context.emit(collection + ':updated', data);
+        if (!context.internal)
+            sender.server.sockets.emit(collection + 'Updated', data);
 
         context.done();
     });
@@ -106,8 +107,8 @@ module.exports.postdelete = function (sender, collection, context, data) {
         if (err)
             return context.error(err);
 
-        //if (!context.internal)
-        //    context.emit(collection + ':deleted', data);
+        if (!context.internal)
+            sender.server.sockets.emit(collection + 'Deleted', data);
 
         context.done();
     });
