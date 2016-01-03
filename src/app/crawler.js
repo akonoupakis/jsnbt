@@ -9,7 +9,7 @@ var Crawler = function (server) {
     this.server = server;
 };
 
-Crawler.prototype.crawl = function (url, onSuccess, onError) {
+Crawler.prototype.crawl = function (url, cb) {
 
     var childArgs = [
         path.join(__dirname, 'crawl', 'phantom.js'),
@@ -18,16 +18,16 @@ Crawler.prototype.crawl = function (url, onSuccess, onError) {
 
     childProcess.execFile('phantomjs', childArgs, function (err, stdout, stderr) {
         if (err) {
-            onError(err);
+            return cb(err);
         }
         else {
             if (!_.str.startsWith(stdout, '200')) {
                 var errorText = stdout.substring(3);
-                onError(errorText);
+                cb(errorText);
             }
             else {
                 var pageContent = stdout.substring(3);
-                onSuccess(pageContent);
+                cb(null, pageContent);
             }
         }
     });

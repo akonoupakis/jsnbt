@@ -41,32 +41,24 @@ var process = function (server, ctx, resolved, inherited, next) {
         if (resolved.pointer) {
 
             var pointerRouter = require('./processors/pointer.js')(server, resolved.pointer.pointer.domain);
-            if (pointerRouter) {
-                ctx.debug('node ' + resolved.page.id + ' is pointing to ' + resolved.pointer.pointer.nodeId);
-                pointerRouter.route(ctx);
-            }
-            else {
+            pointerRouter.route(ctx, function () {
                 if (ctx.node) {
-                    ctx.debug('node ' + resolved.page.id + ' has a custom route: ' + resolved.route);
                     ctx.view();
                 }
                 else {
                     next();
                 }
-            }
+            });
 
         }
         else if (resolved.route) {
             ctx.url = resolved.url;
 
+            ctx.debug('node ' + resolved.page.id + ' has a custom route: ' + resolved.route);
             var routeRouter = require('./processors/router.js')(server, resolved.route);
-            if (routeRouter) {
-                ctx.debug('node ' + resolved.page.id + ' has a custom route: ' + resolved.route);
-                routeRouter.route(ctx);
-            }
-            else {
+            routeRouter.route(ctx, function () { 
                 ctx.error(500, 'custom route not found in public module: ' + resolved.route);
-            }
+            });
         }
         else {
             ctx.debug('node ' + resolved.page.id + ' is rendering');

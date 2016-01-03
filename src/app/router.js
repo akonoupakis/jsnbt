@@ -84,22 +84,28 @@ Router.prototype.start = function () {
         else {
             buildSession(context, function (err, ctx) {
                 var router = new require('./route/admin.js')(self.server);
-                router.route(ctx, next);
+                router.route(ctx, function () {
+                    context.error(404);
+                });
             });
         }
     });
 
     this.express.get('/jsnbt-db/users/me', function (req, res, next) {
-        buildSession(new Context(self.server, req, res), function (err, context) {
+        buildSession(new Context(self.server, req, res, 'json'), function (err, context) {
             var router = new require('./route/user.js')(self.server);
-            router.route(context, next);
+            router.route(context, function () {
+                context.error(404);
+            });
         });
     });
 
     this.express.all('/jsnbt-db/:collection*', function (req, res, next) {
-        buildSession(new Context(self.server, req, res), function (err, context) {
+        buildSession(new Context(self.server, req, res, 'json'), function (err, context) {
             var router = new require('./route/proxy.js')(self.server);
-            router.route(context, next);
+            router.route(context, function () {
+                context.error(404);
+            });
         });
     });
 
@@ -107,7 +113,9 @@ Router.prototype.start = function () {
         if (server.app.dbg) {
             buildSession(new Context(self.server, req, res), function (err, context) {
                 var router = new require('./route/dev.js')(self.server);
-                router.route(context, req.params.service, next);
+                router.route(context, req.params.service, function () {
+                    context.error(404);
+                });
             });
         }
         else {
@@ -116,16 +124,20 @@ Router.prototype.start = function () {
     });
     
     this.express.all('/jsnbt-api/:domain/:service/:method', function (req, res, next) {
-        buildSession(new Context(self.server, req, res), function (err, context) {
+        buildSession(new Context(self.server, req, res, 'json'), function (err, context) {
             var router = new require('./route/api.js')(self.server);
-            router.route(context, req.params.domain, req.params.service, req.params.method, next);
+            router.route(context, req.params.domain, req.params.service, req.params.method, function () {
+                context.error(404);
+            });
         });
     });
 
     this.express.post('/jsnbt-upload*', function (req, res, next) {
         buildSession(new Context(self.server, req, res), function (err, context) {
             var router = new require('./route/upload.js')(self.server);
-            router.route(context, next);
+            router.route(context, function () {
+                context.error(404);
+            });
         });
     });
 
@@ -148,23 +160,17 @@ Router.prototype.start = function () {
 
     this.express.use(express.static(self.server.getPath('www/public')));
     
-    var restrictedPaths = ['jsnbt-db', 'jsnbt-dev', 'jsnbt-api', 'jsnbt-upload'];
     this.express.get('*', function (req, res, next) {
-
-        var ctx = new Context(self.server, req, res);
-        if (restrictedPaths.indexOf(ctx.uri.first) === -1) {
-            buildSession(ctx, function (err, context) {
-                var siteRouter = new require('./route/site.js')(self.server);
-                siteRouter.route(context, function () {
-                    var publicRouter = new require('./route/public.js')(self.server);
-                    publicRouter.route(context, function () {
-                        context.error(404);
-                    });
+        var ctx = new Context(self.server, req, res, 'html');
+        buildSession(ctx, function (err, context) {
+            var siteRouter = new require('./route/site.js')(self.server);
+            siteRouter.route(context, function () {
+                var publicRouter = new require('./route/public.js')(self.server);
+                publicRouter.route(context, function () {
+                    context.error(404);
                 });
             });
-        } else {
-            ctx.error(404);
-        }
+        });
     });
 };
 

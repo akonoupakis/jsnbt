@@ -87,7 +87,7 @@ FileManager.prototype.get = function (paths, cb) {
     else {
         var results = [];
 
-        _.each(paths, function (loopPath) {
+        _.each(filePaths, function (loopPath) {
             var loopFullPath = path.join(self.server.getPath('www'), 'public', root, normalize(loopPath));
 
             if (fs.existsSync(loopFullPath)) {
@@ -115,12 +115,16 @@ FileManager.prototype.delete = function (paths, cb) {
     var root = 'files';
 
     var fullPath = path.join(self.server.getPath('www'), 'public', root, normalize(paths));
-    if (fs.existsSync(fullPath)) {
-        fs.delete(fullPath);
-        return cb(null, true);
-    }
-
-    cb(null, false);
+    fs.exists(fullPath, function (err, res) {
+        if (!err) {
+            fs.remove(fullPath, function (rErr, rRes) {
+                return cb(null, true);
+            });
+        }
+        else {
+            return cb(null, true);
+        }
+    });
 };
 
 FileManager.prototype.create = function (dir, fileName, cb) {
@@ -129,12 +133,14 @@ FileManager.prototype.create = function (dir, fileName, cb) {
     var root = 'files';
 
     var fullPath = path.join(self.server.getPath('www'), 'public', root, normalize(dir));
-    if (fs.existsSync(fullPath)) {
-        fs.mkdirsSync(path.join(fullPath, fileName));
-        cb(null, true);
-    }
-
-    cb(null, false);
+    fs.exists(fullPath, function (err, res) {
+        if (err)
+            return cb(err);
+        
+        fs.mkdirs(path.join(fullPath, fileName), function (mErr, mRes) {
+            cb(null, true);
+        });
+    });
 };
 
 FileManager.prototype.move = function (from, to, cb) {
@@ -145,13 +151,38 @@ FileManager.prototype.move = function (from, to, cb) {
     var fullPath = path.join(self.server.getPath('www'), 'public', root, normalize(from));
     var fullNewPath = path.join(self.server.getPath('www'), 'public', root, normalize(to));
 
-    if (fs.existsSync(fullPath) && !fs.existsSync(fullNewPath)) {
-        fs.copySync(fullPath, fullNewPath);
-        fs.removeSync(fullPath);
-        cb(null, true);
-    }
+    fs.exists(fullPath, function (err, res) {
+        if (err)
+            return cb(err);
 
-    cb(null, false);
+        if (res) {
+            fs.exists(fullNewPath, function (rErr, rRes) {
+                if (rErr)
+                    return cb(rErr);
+
+                if (!rRes) {
+                    fs.copy(fullPath, fullNewPath, function (cErr, cRes) {
+                        if (cErr)
+                            return cb(cErr);
+
+                        fs.remove(fullPath, function (reErr, reRes) {
+                            if (reErr)
+                                return cb(reErr);
+                            
+                            cb(null, true);
+                        });
+                    });
+                }
+                else {
+                    cb(null, false);
+                }
+            });
+        }
+        else {
+            cb(null, false);
+        }
+    });
+
 };
 
 module.exports = function (server) {

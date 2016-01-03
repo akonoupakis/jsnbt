@@ -24,19 +24,19 @@ Router.prototype.route = function (ctx, next) {
             if (error) {
                 if (typeof (error) === 'object') {
                     if (error.code && error.messages) {
-                        ctx.status(error.code).send(error.messages);
+                        ctx.error(error.code, error.messages);
                     }
                     else {
-                        ctx.status(500).send(error.message);
+                        ctx.error(500, error.message);
                     }
                 }
                 else {
-                    ctx.status(500).send(error);
+                    ctx.error(500, error);
                 }
             }
             else {
                 if (results) {
-                    ctx.send(results);
+                    ctx.json(results);
                 }
                 else {
                     next();

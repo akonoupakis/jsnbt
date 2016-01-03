@@ -490,7 +490,7 @@ NodeManager.prototype.getUrl = function (node, cb) {
 
                         extend(true, parentUrl, lastNode.seo);
                         
-                        var entity = require('./entityMngr.js')(self.server, node.entity);
+                        var entity = self.getEntity(node.entity);
                         var urlKeys = entity.isSeoNamed() ? node.seo : lastNode.seo;
 
                         for (var langItem in urlKeys) {
@@ -588,7 +588,7 @@ NodeManager.prototype.getUrl = function (node, cb) {
                 var seoName = node.seo[langItem];
                 var resolvedLangUrl = '';
                 if (node.domain === 'core' && self.server.app.localization.enabled) {
-                    var entity = require('./entityMngr.js')(self.server, node.entity);
+                    var entity = self.getEntity(node.entity);
                     if (entity.isLocalized())
                         resolvedLangUrl += '/' + langItem;
                 }
@@ -711,6 +711,41 @@ NodeManager.prototype.getEnabled = function (node, cb) {
 
 NodeManager.prototype.getHierarchy = function (node, cb) {
     resolveHierarchy(this.server, [node], node, cb);
+};
+
+NodeManager.prototype.getEntity = function (name) {
+    var entity = _.find(server.app.config.entities, function (x) { return x.name === name; });;
+
+    if (!entity) {
+        return {
+            isLocalized: function () { return false },
+            hasProperty: function () { return false },
+            isSeoNamed: function () { return false }
+        };
+    }
+    else {
+        return {
+
+            isLocalized: function () {
+
+                return entity.localized === undefined || entity.localized === true;
+
+            },
+
+            hasProperty: function (property) {
+
+                return entity.properties[property] === undefined || entity.properties[property] === true;
+
+            },
+
+            isSeoNamed: function () {
+
+                return this.hasProperty('seo');
+
+            }
+
+        }
+    }
 };
 
 module.exports = function (server) {

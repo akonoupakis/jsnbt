@@ -111,7 +111,11 @@ module.exports = function (sender, context, data) {
         }
     });
 
-    var entity = sender.server.require('./cms/entityMngr.js')(sender.server, data.entity);
+    if (errors)
+        return context.error(errors);
+
+    var nodeMngr = sender.server.require('./cms/nodeMngr.js')(sender.server);
+    var entity = nodeMngr.getEntity(data.entity);
 
     if (entity.hasProperty('seo')) {
         var validSeoNameChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_'.split('');

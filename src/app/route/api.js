@@ -39,14 +39,14 @@ Router.prototype.route = function (ctx, domain, serviceName, fnName, next) {
                 getPostParams(ctx, function (fields, files) {
                     service[fnName].apply(service, [ctx, fields]);
                 }, function (err) {
-                    ctx.status(500).send(err);
+                    ctx.error(500, err);
                 });
             }
             else {
                 getGetParams(ctx, function (fields) {
                     service[fnName].apply(service, [ctx, fields]);
                 }, function (err) {
-                    ctx.status(500).send(err);
+                    ctx.error(500, err);
                 });
             }
         }
@@ -57,24 +57,19 @@ Router.prototype.route = function (ctx, domain, serviceName, fnName, next) {
     }
     else {
         var apiRouter = require('./processors/api.js')(self.server, domain);
-        if (apiRouter) {
-            if (ctx.method === 'POST') {
-                getPostParams(ctx, function (fields, files) {
-                    apiRouter.route(ctx, serviceName, fnName, fields, files);
-                }, function (err) {
-                    ctx.status(500).send(err);
-                });
-            }
-            else {
-                getGetParams(ctx, function (fields) {
-                    apiRouter.route(ctx, serviceName, fnName, fields);
-                }, function (err) {
-                    ctx.status(500).send(err);
-                });
-            }
+        if (ctx.method === 'POST') {
+            getPostParams(ctx, function (fields, files) {
+                apiRouter.route(ctx, serviceName, fnName, fields, files, next);
+            }, function (err) {
+                ctx.error(500, err);
+            });
         }
         else {
-            next();
+            getGetParams(ctx, function (fields) {
+                apiRouter.route(ctx, serviceName, fnName, fields, null, next);
+            }, function (err) {
+                ctx.error(500, err);
+            });
         }
     }
 };

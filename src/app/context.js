@@ -41,24 +41,24 @@ var shouldRenderCrawled = function (server, ctx) {
     return prerender;
 };
 
-var renderCrawled = function (server, ctx) {
+var getCrawled = function (server, cb) {
     var targetUrl = new jsuri(_.str.rtrim(ctx.uri.getBaseHref(), '/') + ctx.uri.url).deleteQueryParam('prerender').toString();
 
     var crawler = require('./crawler.js')(server);
-    crawler.crawl(targetUrl, function (crawlData) {
-        ctx.writeHead(200, { "Content-Type": "text/html" });
-        ctx.write(crawlData);
-        ctx.end();
-    }, function (crawlErr) {
-        ctx.error(500, crawlErr);
+    crawler.crawl(targetUrl, function (crawlErr, crawlData) {
+        if (crawlErr)
+            return cb(crawlErr);
+
+        cb(null, crawlData);
     });
 };
 
-var Context = function (server, req, res) {
+var Context = function (server, req, res, type) {
 
     this.server = server;
     this.req = req;
     this.res = res;
+    this.type = type || 'html';
 
     var uri = new parseUri('http://' + server.host + req.url);
 
@@ -158,10 +158,14 @@ Context.prototype.debug = function (text) {
 };
 
 Context.prototype.error = function (code, stack) {
-    error(this.server, this, code, stack);
+    this.timer.stop();
+    error(this.server, this, code, stack, this.type === 'html');
 };
 
 Context.prototype.view = function () {
+    var self = this;
+
+    this.timer.stop();
     if ((this.uri.query.dbg || '').toLowerCase() === 'true' && (this.uri.query.type || '').toLowerCase() === 'json') {
         this.send({
             uri: this.uri,
@@ -171,7 +175,14 @@ Context.prototype.view = function () {
     }
     else {
         if (shouldRenderCrawled(this.server, this))
-            renderCrawled(this.server, this);
+            getCrawled(this.server, function (err, res) {
+                if (err)
+                    return error(self.server, self, 500, err, self.type);
+
+                ctx.writeHead(200, { "Content-Type": "text/html" });
+                ctx.write(res);
+                ctx.end();
+            });
         else {
             if (_.str.startsWith(this.template, '/'))
                 view(this.server, this);
@@ -180,7 +191,7 @@ Context.prototype.view = function () {
                     view(this.server, this);
                 }
                 else {
-                    error(this.server, this, 500, 'template not found: ' + this.template);
+                    error(this.server, this, 500, 'template not found: ' + this.template, this.type);
                 }
             }
         }
@@ -188,10 +199,12 @@ Context.prototype.view = function () {
 };
 
 Context.prototype.json = function (data) {
+    this.timer.stop();
     this.send(data);
 };
 
 Context.prototype.html = function (html) {
+    this.timer.stop();
     this.res.writeHead(200, { "Content-Type": 'text/html' });
     this.res.write(html);
     this.res.end();
@@ -204,6 +217,6 @@ Context.prototype.redirect = function (url, mode) {
     this.res.end();
 };
 
-module.exports = function (server, req, res) {
-    return new Context(server, req, res);
+module.exports = function (server, req, res, type) {
+    return new Context(server, req, res, type);
 };

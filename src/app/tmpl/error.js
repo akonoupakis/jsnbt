@@ -14,8 +14,15 @@ var errors = {
     503: 'Service Unavailable',
 };
 
-var ErrorRenderer = function (server, ctx, error, stack) {
+var ErrorRenderer = function (server, ctx, error, stack, html) {
     
+    if (html === false) {
+        var obj = {};
+        obj[error] = errors[error];
+        ctx.status(error).send(obj);
+        return;
+    }
+
     ctx.template = 'error';
     var tmplPath = '../www/public/err/';
 

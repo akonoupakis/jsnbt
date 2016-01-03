@@ -9,7 +9,7 @@ module.exports = function (sender, context, data) {
     if (!internal && !authMngr.isAuthorized(context.req.session.user, 'nodes:' + data.entity, 'C'))
         return context.error(401, 'Access denied');
 
-    var entity = sender.server.require('./cms/entityMngr.js')(sender.server, data.entity);
+    var entity = nodeMngr.getEntity(data.entity);
 
     data.createdOn = new Date().getTime();
 

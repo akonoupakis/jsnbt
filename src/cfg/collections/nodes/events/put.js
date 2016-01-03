@@ -52,7 +52,7 @@ module.exports = function (sender, context, data) {
         }
     };
 
-    var entity = sender.server.require('./cms/entityMngr.js')(sender.server, data.entity);
+    var entity = nodeMngr.getEntity(data.entity);
 
     if (context.internal) {
         if (entity.hasProperty('parent')) {

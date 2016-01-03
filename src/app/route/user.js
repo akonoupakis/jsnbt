@@ -6,7 +6,7 @@ Router.prototype.route = function (ctx, next) {
     if (ctx.req.session.user)
         ctx.send(ctx.req.session.user);
     else
-        ctx.status(401).send('Access Denied');
+        ctx.error(401, 'Access Denied');
 };
 
 module.exports = function (server) {
