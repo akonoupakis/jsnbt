@@ -15,7 +15,7 @@ BaseMessager.prototype.parseTemplate = function (template, model, callback)
 {
     throw new Error('not implemented');
 };
-BaseMessager.prototype.getSender = function (db, callback) {
+BaseMessager.prototype.getSender = function (callback) {
     throw new Error('not implemented');
 };
 

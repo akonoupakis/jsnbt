@@ -203,7 +203,9 @@ var resolvePointerUrl = function (server, returnObj, seoNodes, urlPath, url, cb)
                 }
             }
 
-            pack.url.resolve(returnObj, cb);
+            pack.url.resolve(server, returnObj, function () {
+                cb(null, returnObj);
+            });
         }
         else {
             if (pointedSeoNames.length === 0) {
@@ -440,10 +442,12 @@ NodeManager.prototype.getUrl = function (node, cb) {
                             newUrl[item] = '';
                     }
                             
-                    pack.url.build({
+                    pack.url.build(self.server, {
                         node: node,
                         url: newUrl
-                    }, cb);
+                    }, function () {
+                        cb(null, newUrl);
+                    });
 
                 }
                 else {
@@ -543,10 +547,12 @@ NodeManager.prototype.getUrl = function (node, cb) {
                                         newUrl[item] = '';
                                 }
 
-                                pack.url.build({
+                                pack.url.build(self.server, {
                                     node: node,
                                     url: newUrl
-                                }, cb);
+                                }, function () {
+                                    cb(null, newUrl);
+                                });
                             }
                             else {
                                 extend(true, newUrl, node.seo);
@@ -580,10 +586,12 @@ NodeManager.prototype.getUrl = function (node, cb) {
                     newUrl[item] = '';
             }
 
-            pack.url.build({
+            pack.url.build(self.server, {
                 node: node,
                 url: newUrl
-            }, cb);
+            }, function () {
+                cb(null, newUrl);
+            });
         }
         else {
             var newUrl = {};
