@@ -1,8 +1,8 @@
 ﻿module.exports = {
 
-    process: function (db, next, error) {
-        // process here the db and call next();
-        next();
+    process: function (server, cb) {
+        // process here the db and call cb(err, res);
+        cb();
     }
 
 };

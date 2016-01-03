@@ -262,15 +262,15 @@ var NodeManager = function(server) {
 NodeManager.prototype.purgeCache = function (nodeId) {
     var self = this;
 
-    self.server.cache.getKeys('node.url', function (urlCacheKeys) {
+    self.server.cache.getKeys('node.url', function (urlCacheErr, urlCacheKeys) {
         _.find(_.filter(urlCacheKeys, function (x) { return x.indexOf(nodeId) !== -1; }), function (key) {
-            self.server.cache.purge('node.url.' + key);
+            self.server.cache.purge('node.url.' + key, function (err, res) { });
         });
     });
 
-    self.server.cache.getKeys('node.active', function (activeCacheKeys) {
+    self.server.cache.getKeys('node.active', function (activeCacheErr, activeCacheKeys) {
         _.find(_.filter(activeCacheKeys, function (x) { return x.indexOf(nodeId) !== -1; }), function (key) {
-            self.server.cache.purge('node.active.' + key);
+            self.server.cache.purge('node.active.' + key, function (err, res) { });
         });
     });
 }
@@ -420,7 +420,9 @@ NodeManager.prototype.getUrl = function (node, cb) {
     if (parentHierarchy.length > 0) {
         var parentCacheKey = parentHierarchy.join('-');
         
-        self.server.cache.get('node.url.' + parentCacheKey, function (parentCachedValue) {
+        self.server.cache.get('node.url.' + parentCacheKey, function (parentCachedErr, parentCachedValue) {
+            if (parentCachedErr)
+                return cb(parentCachedErr);
 
             if (parentCachedValue) {                        
                 var newUrl = {};
@@ -525,7 +527,9 @@ NodeManager.prototype.getUrl = function (node, cb) {
 
                         var newUrl = {};
 
-                        self.server.cache.add('node.url.' + parentCacheKey, parentUrl, function (parentCachedValue) {
+                        self.server.cache.add('node.url.' + parentCacheKey, parentUrl, function (parentCachedErr, parentCachedValue) {
+                            if (parentCachedErr)
+                                return cb(parentCachedErr);
 
                             var pack = _.find(self.server.app.modules.all, function (x) {
                                 return x.domain === node.domain
@@ -613,7 +617,9 @@ NodeManager.prototype.getEnabled = function (node, cb) {
     if (parentHierarchy.length > 0) {
         var parentCacheKey = parentHierarchy.join('-');
 
-        self.server.cache.get('node.active.' + parentCacheKey, function (parentCachedValue) {
+        self.server.cache.get('node.active.' + parentCacheKey, function (parentCachedErr, parentCachedValue) {
+            if (parentCachedErr)
+                return cb(parentCachedErr);
 
             if (parentCachedValue) {
                 var newValue = {};
@@ -675,7 +681,10 @@ NodeManager.prototype.getEnabled = function (node, cb) {
 
                         var newActive = {};
 
-                        self.server.cache.add('node.active.' + parentCacheKey, parentActive, function (parentCachedValue) {
+                        self.server.cache.add('node.active.' + parentCacheKey, parentActive, function (parentCachedErr, parentCachedValue) {
+                            if (parentCachedErr)
+                                return cb(parentCachedErr);
+
                             extend(true, newActive, node.active);
                             for (var langItem in node.active) {
                                 if (parentActive[langItem] && node.active[langItem])

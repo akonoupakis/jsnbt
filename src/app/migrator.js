@@ -6,7 +6,7 @@ var Migrator = function (server) {
     this.server = server;
 };
 
-Migrator.prototype.process = function (onSuccess, onError) {
+Migrator.prototype.start = function () {
     var self = this;
 
     var logger = require('./logger.js')(this);
@@ -15,31 +15,37 @@ Migrator.prototype.process = function (onSuccess, onError) {
     var migrationsCount = 0;
 
     var error = function (err) {
-        onError(err);
-
+        throw err;
+        process.exit(1);
     };
+
     var done = function () {
-        onSuccess();
+        process.exit(0);
     };
 
-    var runMigration = function (db) {
+    var runMigration = function () {
         var migration = migrations.shift();
         if (migration) {
-            db.migrations.count({
-                module: migration.module,
-                name: migration.name
+            var migrationsStore = self.server.db.createStore('migrations');
+            migrationsStore.count(function (x) {
+                x.query({
+                    module: migration.module,
+                    name: migration.name
+                });
             }, function (err, result) {
                 if (err) {
-                    runMigration(db);
+                    runMigration();
                 }
                 else {
                     if (result.count === 0) {
-                        migration.fn.process(db, function () {
+                        migration.fn.process(self.server, function () {
 
-                            db.migrations.post({
-                                module: migration.module,
-                                name: migration.name,
-                                processedOn: new Date().getTime()
+                            migrationsStore.post(function (x) {
+                                x.data({
+                                    module: migration.module,
+                                    name: migration.name,
+                                    processedOn: new Date().getTime()
+                                });
                             }, function (err, response) {
                                 if (err) {
                                     logger.error(err);
@@ -48,7 +54,7 @@ Migrator.prototype.process = function (onSuccess, onError) {
                                 else {
                                     logger.info('migration processed: ' + migration.module + ', ' + migration.name);
                                     migrationsCount++;
-                                    runMigration(db);
+                                    runMigration();
                                 }
                             });
 
@@ -58,11 +64,10 @@ Migrator.prototype.process = function (onSuccess, onError) {
                         });
                     }
                     else {
-                        runMigration(db);
+                        runMigration();
                     }
                 }
             });
-
 
         }
         else {
@@ -70,9 +75,7 @@ Migrator.prototype.process = function (onSuccess, onError) {
             done();
         }
     };
-
-    var db = require('./database.js').build(self.server);
-
+    
     var migrationsPath = 'www/migrations';
 
     if (fs.existsSync(self.server.getPath(migrationsPath))) {
@@ -103,7 +106,7 @@ Migrator.prototype.process = function (onSuccess, onError) {
     }
 
     logger.info('server is updating migrations');
-    runMigration(db);
+    runMigration();
 
 }
 

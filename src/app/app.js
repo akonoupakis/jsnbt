@@ -502,7 +502,8 @@ App.prototype.createMigrator = function (options) {
     };
 
     var opts = {};
-    extend(true, opts, defOpts, options);
+    extend(true, opts, defOpts);
+    extend(true, opts.db, options);
 
     process.chdir('www');
 
@@ -510,17 +511,9 @@ App.prototype.createMigrator = function (options) {
 
     var server = require('./server.js')(this, opts);
 
-    server.next = function () {
-        var migrator = require('./migrator.js')(server);
-        migrator.process(function () {
-            process.exit(0);
-        }, function (err) {
-            throw err;
-            process.exit(1);
-        });
-    };
+    var migrator = require('./migrator.js')(server);
 
-    return server;
+    return migrator;
 };
 
 module.exports = function () {
