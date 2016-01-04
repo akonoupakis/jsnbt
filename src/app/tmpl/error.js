@@ -1,4 +1,5 @@
 var fs = require('fs');
+var HtmlParser = require('./html.js');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
@@ -14,11 +15,16 @@ var errors = {
     503: 'Service Unavailable',
 };
 
-var ErrorRenderer = function (server, ctx, error, stack, html) {
+var ErrorRenderer = function (server) {
     
-    if (html === false) {
+    this.server = server;
+
+};
+
+ErrorRenderer.prototype.render = function (ctx, error, stack) {
+    if (ctx.type === 'json') {
         var obj = {};
-        obj[error] = errors[error];
+        obj[error] = stack || errors[error];
         ctx.status(error).send(obj);
         return;
     }
@@ -49,19 +55,20 @@ var ErrorRenderer = function (server, ctx, error, stack, html) {
     }
 
     ctx.res.writeHead(error, { "Content-Type": "text/html" });
-    
+
     var text = null;
     if (errors[error])
         text = errors[error];
 
     if (!ctx.meta.title || ctx.meta.title === '')
-        ctx.meta.title = server.app.title;
+        ctx.meta.title = this.server.app.title;
     else
-        ctx.meta.title = server.app.title + (server.app.title ? ' | ' : '') + ctx.meta.title;
+        ctx.meta.title = this.server.app.title + (this.server.app.title ? ' | ' : '') + ctx.meta.title;
 
     ctx.halt = true;
 
-    require('./html.js')(server).parse(ctx, errorContent, {
+    var parser = new HtmlParser(this.server);
+    parser.parse(ctx, errorContent, {
         error: error,
         text: text,
         stack: stack || ''
@@ -75,7 +82,8 @@ var ErrorRenderer = function (server, ctx, error, stack, html) {
             ctx.res.end();
         }
     });
-
 };
 
-module.exports = ErrorRenderer;
+module.exports = function (server) {
+    return new ErrorRenderer(server);
+};

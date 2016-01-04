@@ -79,8 +79,8 @@ var prepare = function (server, ctx, tmpl, model, callback) {
 
 var preparse = function (server, ctx, preparsingContext, callback) {
     if (!ctx.halt && ctx.uri.first !== 'admin') {
-        var preparser = require('./parsing/preparser.js')(server, ctx);
-        preparser.process(preparsingContext, function (preparsingContextResult) {
+        var preparser = require('./parsing/preparser.js')(server);
+        preparser.process(ctx, preparsingContext, function (preparsingContextResult) {
             callback(null, preparsingContextResult);
         });
     }
@@ -113,8 +113,8 @@ var postParse = function (server, ctx, html, callback) {
     }
 
     if (!ctx.halt && ctx.uri.first !== 'admin') {
-        var postparser = require('./parsing/postparser.js')(server, ctx);
-        postparser.process(postparsingContext, function (postParsedContext) {
+        var postparser = require('./parsing/postparser.js')(server);
+        postparser.process(ctx, postparsingContext, function (postParsedContext) {
             callback(null, postParsedContext.html);
         });
     }
@@ -131,35 +131,26 @@ Parser.prototype.parse = function (ctx, tmpl, model, callback) {
     var self = this;
 
     prepare(self.server, ctx, tmpl, model, function (preparsingContextErr, preparsingContext) {
-        if (preparsingContextErr) {
-            callback(preparsingContextErr);
-        }
-        else {
-            preparse(self.server, ctx, preparsingContext, function (preparsedContextErr, preparsedContext) {
-                if (preparsedContextErr) {
-                    callback(preparsedContextErr);
-                }
-                else {
-                    parse(self.server, ctx, preparsedContext, function (parsedHtmlErr, parsedHtml) {
-                        if (parsedHtmlErr) {
-                            callback(parsedHtmlErr);
-                        }
-                        else {
-                            postParse(self.server, ctx, parsedHtml, function (postParsedHtmlErr, postParsedHtml) {
-                                if (postParsedHtmlErr) {
-                                    callback(postParsedHtmlErr);
-                                }
-                                else {
-                                    callback(null, postParsedHtml);
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-        }
-    });
+        if (preparsingContextErr)
+            return callback(preparsingContextErr);
 
+        preparse(self.server, ctx, preparsingContext, function (preparsedContextErr, preparsedContext) {
+            if (preparsedContextErr)
+                return callback(preparsedContextErr);
+
+            parse(self.server, ctx, preparsedContext, function (parsedHtmlErr, parsedHtml) {
+                if (parsedHtmlErr)
+                    return callback(parsedHtmlErr);
+
+                postParse(self.server, ctx, parsedHtml, function (postParsedHtmlErr, postParsedHtml) {
+                    if (postParsedHtmlErr)
+                        return callback(postParsedHtmlErr);
+                    callback(null, postParsedHtml);
+
+                });
+            });
+        });
+    });
 };
 
 module.exports = function (server) {

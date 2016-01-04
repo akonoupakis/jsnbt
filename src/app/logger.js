@@ -1,7 +1,13 @@
-module.exports = function (scope) {
+var fs = require('fs');
+var moment = require('moment');
+var _ = require('underscore');
 
-    var logger = require('custom-logger').config({ level: 0 });
-    logger.new({
+var Logger = function (server, scope) {
+    this.server = server;
+    this.scope = scope;
+
+    this.logger = require('custom-logger').config({ level: 0 });
+    this.logger.new({
         debug: { event: "debug", level: 0, color: "yellow" },
         info: { color: 'cyan', level: 1, event: 'info' },
         notice: { color: 'yellow', level: 2, event: 'notice' },
@@ -9,18 +15,36 @@ module.exports = function (scope) {
         error: { color: 'red', level: 4, event: 'error' },
         fatal: { color: 'red', level: 5, event: 'fatal' }
     });
-    
-    var errorFn = logger.error;
-    logger.error = function (method, path, err) {
-        require('./log/fileLogger.js')('error').log(method, path, err);        
-        errorFn(method, path, err);
-    };
+};
 
-    var fatalFn = logger.fatal;
-    logger.fatal = function (method, path, err) {
-        require('./log/fileLogger.js')('fatal').log(method, path, err);
-        fatalFn(method, path, err);
-    };
+Logger.prototype.debug = function (text) {
+    this.logger.debug(text);
+};
 
-    return logger;
+Logger.prototype.info = function (text) {
+    this.logger.notice(text);
+};
+
+Logger.prototype.log = function (text) {
+    this.logger.info(text);
+};
+
+Logger.prototype.warn = function (text) {
+    this.logger.warn(text);
+};
+
+Logger.prototype.error = function (err) {
+    this.logger.error(err);
+    var errorText = _.isObject(err) ? JSON.stringify(err) : err;
+    fs.appendFileSync('error.log', moment().format() + '-' + errorText + '\n\n');
+};
+
+Logger.prototype.fatal = function (err) {
+    this.logger.fatal(err);
+    var errorText = _.isObject(err) ? JSON.stringify(err) : err;
+    fs.appendFileSync('fatal.log', moment().format() + '-' + errorText + '\n\n');
+};
+
+module.exports = function (server, scope) {
+    return new Logger(server, scope);
 };

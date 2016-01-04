@@ -341,7 +341,7 @@ NodeManager.prototype.resolveUrl = function (url, cb) {
                     return cb(resolvedNodeError);
                 
                 if (homeNode) {
-                    var nodesStore = server.db.createStore('nodes');
+                    var nodesStore = self.server.db.createStore('nodes');
                     nodesStore.get(function (x) {
                         x.query({
                             hierarchy: homeNode.hierarchy
@@ -731,7 +731,7 @@ NodeManager.prototype.getHierarchy = function (node, cb) {
 };
 
 NodeManager.prototype.getEntity = function (name) {
-    var entity = _.find(server.app.config.entities, function (x) { return x.name === name; });;
+    var entity = _.find(this.server.app.config.entities, function (x) { return x.name === name; });;
 
     if (!entity) {
         return {

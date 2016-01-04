@@ -8,9 +8,7 @@ var Migrator = function (server) {
 
 Migrator.prototype.start = function () {
     var self = this;
-
-    var logger = require('./logger.js')(this);
-
+    
     var migrations = [];
     var migrationsCount = 0;
 
@@ -48,18 +46,18 @@ Migrator.prototype.start = function () {
                                 });
                             }, function (err, response) {
                                 if (err) {
-                                    logger.error(err);
+                                    self.server.logger.error(err);
                                     error(err);
                                 }
                                 else {
-                                    logger.info('migration processed: ' + migration.module + ', ' + migration.name);
+                                    self.server.logger.info('migration processed: ' + migration.module + ', ' + migration.name);
                                     migrationsCount++;
                                     runMigration();
                                 }
                             });
 
                         }, function (err) {
-                            logger.error(err);
+                            self.server.logger.error(err);
                             error(err);
                         });
                     }
@@ -71,7 +69,7 @@ Migrator.prototype.start = function () {
 
         }
         else {
-            logger.info('total migrations processed: ' + migrationsCount);
+            self.server.logger.info('total migrations processed: ' + migrationsCount);
             done();
         }
     };
@@ -97,7 +95,7 @@ Migrator.prototype.start = function () {
                             });
                         }
                         catch (err) {
-                            logger.error(err);
+                            self.server.logger.error(err);
                         }
                     }
                 });
@@ -105,7 +103,7 @@ Migrator.prototype.start = function () {
         });
     }
 
-    logger.info('server is updating migrations');
+    self.server.logger.info('server is updating migrations');
     runMigration();
 
 }

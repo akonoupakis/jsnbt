@@ -42,7 +42,7 @@ var getDiff = function(earlierDate, laterDate) {
     return oDiff;
 }
 
-var Logger = function (name) {
+var TimeLogger = function (name) {
     this.name = name;
 
     this.watches = [];
@@ -51,7 +51,7 @@ var Logger = function (name) {
     this.stoppedOn = undefined;
 };
 
-Logger.prototype.start = function (watchName) {
+TimeLogger.prototype.start = function (watchName) {
     if (watchName) {
         if (this.startedOn === undefined)
             this.startedOn = new Date();
@@ -70,7 +70,7 @@ Logger.prototype.start = function (watchName) {
     }
 };
 
-Logger.prototype.stop = function (watchName) {
+TimeLogger.prototype.stop = function (watchName) {
     if (watchName) {
         var watch = _.find(this.watches, function (x) { return x.name === watchName; });
         if (watch)
@@ -82,7 +82,7 @@ Logger.prototype.stop = function (watchName) {
     }
 };
 
-Logger.prototype.get = function () {
+TimeLogger.prototype.get = function () {
     var internalStoppedOn = this.stoppedOn || new Date();
 
     var diff = getDiff(this.startedOn, internalStoppedOn);
@@ -115,5 +115,5 @@ Logger.prototype.get = function () {
 };
 
 module.exports = function (name) {
-    return new Logger(name);
+    return new TimeLogger(name);
 };

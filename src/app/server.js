@@ -1,6 +1,8 @@
 var express = require('express');
 var session = require('express-session');
 var MongoStore = require('express-session-mongo');
+var Messager = require('./messager.js');
+var Logger = require('./logger.js');
 var dbproxy = require('mongodb-proxy');
 var data = require('./data.js');
 var io = require('socket.io');
@@ -8,8 +10,6 @@ var extend = require('extend');
 var Cache = require('./cache.js');
 var serverRoot = require('server-root');
 var _ = require('underscore');
-
-var logger = require('./logger.js')(this);
 
 function Server(app, options) {
     var optsHost = options.host;
@@ -52,9 +52,11 @@ function Server(app, options) {
 
     this.getPath = serverRoot.getPath;
 
-    this.messager = require('./messager.js')(this);
+    this.messager = new Messager(this);
 
     this.cache = new Cache();
+
+    this.logger = new Logger(this);
 
     this.app = app;
     
@@ -99,7 +101,7 @@ Server.prototype.start = function () {
     var router = new require('./router.js')(self, self.express);
     router.start();
 
-    logger.info('jsnbt server is listening on:' + self.options.port);
+    this.logger.info('jsnbt server is listening on:' + self.options.port);
 };
 
 module.exports = function (app, options) {

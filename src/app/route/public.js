@@ -1,5 +1,4 @@
 var path = require('path');
-var send = require('send');
 var url = require('url');
 var parseUri = require('parseUri');
 var _ = require('underscore');
@@ -43,6 +42,7 @@ var process = function (server, ctx, resolved, inherited, next) {
             var pointerRouter = require('./processors/pointer.js')(server, resolved.pointer.pointer.domain);
             pointerRouter.route(ctx, function () {
                 if (ctx.node) {
+                    ctx.debug('node ' + resolved.page.id + ' renders pointed not ' + ctx.node.id);
                     ctx.view();
                 }
                 else {
@@ -86,7 +86,9 @@ Router.prototype.route = function (ctx, next) {
         }
         else {
             if (resolved && resolved.page) {
+                ctx.debug('node ' + resolved.page.id + ' resolved');
                 if (resolved.isActive()) {
+                    ctx.debug('node ' + resolved.page.id + ' is active');
                     var inherited = resolved.getInheritedProperties();
 
                     if (!ctx.restricted) {
@@ -105,32 +107,27 @@ Router.prototype.route = function (ctx, next) {
                     }
                 }
                 else {
-                    if (!resolved.isActive()) {
-                        ctx.debug('node ' + resolved.page.id + ' is inactive');
-                        next();
-                    }
-                    else {
+                    ctx.debug('node ' + resolved.page.id + ' is inactive');
+                    next();
+                }
+            }
+            else {
 
-                        if (self.server.app.localization.enabled) {
+                if (self.server.app.localization.enabled) {
 
-                            var matched = _.filter(self.server.app.languages, function (x) { return _.str.startsWith(ctx.uri.path, '/' + x.code + '/'); });
-                            if (matched.length === 0) {
+                    var matched = _.filter(self.server.app.languages, function (x) { return _.str.startsWith(ctx.uri.path, '/' + x.code + '/'); });
+                    if (matched.length === 0) {
 
-                                localeMngr.getDefault(function (defaultLanguageErr, defaultLanguage) {
-                                    if (defaultLanguageErr)
-                                        return ctx.error(500, defaultLanguageErr);
+                        localeMngr.getDefault(function (defaultLanguageErr, defaultLanguage) {
+                            if (defaultLanguageErr)
+                                return ctx.error(500, defaultLanguageErr);
 
-                                    if (defaultLanguage) {
-                                        nodeMngr.resolveUrl('/' + defaultLanguage + ctx.uri.path, function (newUrlResolved) {
-                                            if (newUrlResolved) {
-                                                var targetUrl = '/' + defaultLanguage + ctx.uri.url;
-                                                ctx.debug('redirecting to ' + targetUrl);
-                                                ctx.redirect(targetUrl, 301);
-                                            }
-                                            else {
-                                                next();
-                                            }
-                                        });
+                            if (defaultLanguage) {
+                                nodeMngr.resolveUrl('/' + defaultLanguage + ctx.uri.path, function (newUrlResolved) {
+                                    if (newUrlResolved) {
+                                        var targetUrl = '/' + defaultLanguage + ctx.uri.url;
+                                        ctx.debug('redirecting to ' + targetUrl);
+                                        ctx.redirect(targetUrl, 301);
                                     }
                                     else {
                                         next();
@@ -140,16 +137,15 @@ Router.prototype.route = function (ctx, next) {
                             else {
                                 next();
                             }
-                        }
-                        else {
-                            next();
-                        }
-
+                        });
+                    }
+                    else {
+                        next();
                     }
                 }
-            }
-            else {
-                next();
+                else {
+                    next();
+                }
             }
         }
     });

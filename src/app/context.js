@@ -1,7 +1,10 @@
-var error = require('./tmpl/error.js');
-var view = require('./tmpl/view.js');
+var ErrorRenderer = require('./tmpl/error.js');
+var ViewRenderer = require('./tmpl/view.js');
+var DebugLogger = require('./log/debugLogger.js');
+var TimeLogger = require('./log/timeLogger.js');
 var parseUri = require('parseUri');
 var jsuri = require('jsuri');
+var debug = require('debug')('jsnbt');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
@@ -67,10 +70,10 @@ var Context = function (server, req, res, type) {
 
     uri = new parseUri(('http://' + server.host + uri.path).toLowerCase() + (uri.query !== '' ? '?' + uri.query : ''));
 
-    var timer = require('./log/timeLogger.js')('context: ' + uri.relative);
+    var timer = new TimeLogger('context: ' + uri.relative);
     timer.start();
 
-    this.dbgLogger = require('./log/debugLogger.js')();
+    this.dbgLogger = new DebugLogger();
 
     if (uri.path === '/' || uri.path.toLowerCase() === '/index.html')
         uri.path = '/';
@@ -155,11 +158,13 @@ Context.prototype.debug = function (text) {
     if ((this.uri.query.dbg || '').toLowerCase() === 'true') {
         this.dbgLogger.log(text);
     }
+    debug(text);
 };
 
 Context.prototype.error = function (code, stack) {
     this.timer.stop();
-    error(this.server, this, code, stack, this.type === 'html');
+    var renderer = new ErrorRenderer(this.server);
+    renderer.render(this, code, stack);
 };
 
 Context.prototype.view = function () {
@@ -174,24 +179,29 @@ Context.prototype.view = function () {
         });
     }
     else {
+        var errorRenderer = new ErrorRenderer(this.server);
         if (shouldRenderCrawled(this.server, this))
             getCrawled(this.server, function (err, res) {
-                if (err)
-                    return error(self.server, self, 500, err, self.type);
-
-                ctx.writeHead(200, { "Content-Type": "text/html" });
-                ctx.write(res);
-                ctx.end();
-            });
-        else {
-            if (_.str.startsWith(this.template, '/'))
-                view(this.server, this);
-            else {
-                if (checkTemplate(this.server, this)) {
-                    view(this.server, this);
+                if (err) {
+                    errorRenderer.render(this, 500, err);
                 }
                 else {
-                    error(this.server, this, 500, 'template not found: ' + this.template, this.type);
+                    ctx.writeHead(200, { "Content-Type": "text/html" });
+                    ctx.write(res);
+                    ctx.end();
+                }
+            });
+        else {
+            var viewRenderer = new ViewRenderer(self.server);
+            if (_.str.startsWith(this.template, '/')) {
+                viewRenderer.render(this);
+            }
+            else {
+                if (checkTemplate(this.server, this)) {
+                    viewRenderer.render(this);
+                }
+                else {
+                    errorRenderer.render(this, 500, 'template not found: ' + this.template);
                 }
             }
         }
