@@ -39,7 +39,6 @@
                                             };
 
                                             if (authCodes[error.status]) {
-                                                console.log(name, args);
                                                 $rootScope.$broadcast(authCodes[error.status], function () {
                                                     jsnbt.db[name][fn].apply(jsnbt.db[name][fn], getPromiseParams(true));
                                                 });

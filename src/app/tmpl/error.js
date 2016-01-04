@@ -24,7 +24,11 @@ var ErrorRenderer = function (server) {
 ErrorRenderer.prototype.render = function (ctx, error, stack) {
     if (ctx.type === 'json') {
         var obj = {};
-        obj[error] = stack || errors[error];
+        if (typeof (stack) === 'object')
+            obj = stack;
+        else
+            obj[error] = stack || errors[error];
+
         ctx.status(error).send(obj);
         return;
     }

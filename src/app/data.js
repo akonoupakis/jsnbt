@@ -1,9 +1,13 @@
+var extend = require('extend');
 var _ = require('underscore');
 
 var logAction = function (sender, collection, action, req, res, data, callback) {
 
     if (sender.server.app.config.collections[collection]) {
         if (sender.server.app.config.collections[collection].logging) {
+
+            var copied = {};
+            extend(true, copied, data);
 
             var store = sender.createStore('actions', null, null, true);
             store.post(function (x) {
@@ -13,7 +17,7 @@ var logAction = function (sender, collection, action, req, res, data, callback) 
                     collection: collection,
                     action: action,
                     objectId: data ? data.id : undefined,
-                    objectData: data
+                    objectData: {}
                 });
             }, function (err, results) {
                 if (err) 

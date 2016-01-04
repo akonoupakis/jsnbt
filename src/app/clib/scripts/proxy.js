@@ -63,6 +63,9 @@
 
     function isComplex(obj) {
         if (obj) {
+            if (typeof (obj) === 'object' && Object.keys(obj).length === 1) {
+                return true;
+            }
             for (var k in obj) {
                 if (obj.hasOwnProperty(k)) {
                     if (typeof obj[k] !== 'string') {
@@ -86,9 +89,9 @@
 
     function encodeIfComplex(query) {
         if (isComplex(query)) {
-            return encodeURI(JSON.stringify(query));
+            return 'q=' + encodeURIComponent(JSON.stringify(query));
         } else if (query) {
-            return createQueryString(query);
+            return '';// 'q=' + createQueryString(query);
         }
     }
 
@@ -100,7 +103,7 @@
         /// <returns></returns>
         return function (data) {
             if (fn === consoleLog) return console.log(data);
-            if (typeof fn === 'function') fn(null, JSON.parse(data));
+            if (typeof fn === 'function') fn(null, data);
         };
     }
 
@@ -120,7 +123,7 @@
               , query: query
               , success: returnSuccess(fn)
               , error: returnError(fn)
-            });
+            }); 
         }
       , del: function (options, fn) {
           var query = encodeIfComplex(options.query);

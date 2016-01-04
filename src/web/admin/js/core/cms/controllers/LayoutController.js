@@ -52,14 +52,18 @@
         var self = this;
 
         this.ctor.$data.layouts.get({
-            layout: this.scope.id
-        }).then(function (results) {
-
+            layout: this.scope.id,
+            $single: true
+        }).then(function (result) {
             self.setTemplate(self.scope.id);
-
-            deferred.resolve(_.first(results));
+            deferred.resolve(result);
         }).catch(function (error) {
-            deferred.reject(error);
+            if (error[404]) {
+                self.setTemplate(self.scope.id);
+                deferred.resolve();
+            } else {
+                deferred.reject(error);
+            }
         });
 
         return deferred.promise;

@@ -27,10 +27,7 @@
   "config": {},
   "main": "src/app/index.js",
   "files": [
-    "src/app/**",
-    "src/cfg/**",
-    "src/dat/**",
-    "src/web/**",
+    "src/**",
     "gulpfile.js"
   ],
   "dependencies": {

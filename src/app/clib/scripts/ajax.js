@@ -6,8 +6,8 @@
 (function() {
 
 function parseBody(req) {
-  var header = req.getResponseHeader('Content-Type');
-  if (header === "application/json" && req.responseText) {
+    var header = req.getResponseHeader('Content-Type');
+  if (header.indexOf("application/json") !== -1 && req.responseText) {
     try {
       return JSON.parse(req.responseText);
     } catch (ex) {

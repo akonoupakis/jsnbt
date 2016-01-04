@@ -52,6 +52,7 @@
                                 var scopeValues = [];
 
                                 $(newValue).each(function (nv, nValue) {
+                                    
                                     var result = _.first(_.filter(results, function (x) { return x.id === nValue; }));
                                     if (result) {
                                         scopeValues.push(result);
