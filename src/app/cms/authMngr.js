@@ -1,4 +1,6 @@
 var moment = require('moment');
+var md5 = require('MD5');
+var extend = require('extend');
 var random = new require("random-js")();
 var _ = require('underscore');
 _.str = require('underscore.string');
@@ -126,17 +128,23 @@ var isUserDataAuthorized = function (server, user, section, permission) {
     }
 };
 
-var AuthorizationManager = function (server) {
+var AuthManager = function (server) {
 
     this.server = server;
 
 };
 
-AuthorizationManager.prototype.isInRole = function (user, role) {
+AuthManager.prototype.isInRole = function (user, role, cb) {
     var roles = getUserRoles(this.server, user);
 
     if (typeof (role) === 'string') {
-        return roles.indexOf(role) !== -1;
+        var result = false;
+        result = roles.indexOf(role) !== -1;
+
+        if (typeof (cb) === 'function')
+            cb(null, result);
+
+        return result;
     }
     else {
         var result = false;
@@ -146,33 +154,159 @@ AuthorizationManager.prototype.isInRole = function (user, role) {
                 return false;
             }
         });
+
+        if (typeof (cb) === 'function')
+            cb(null, result);
+
         return result;
     }
 };
 
-AuthorizationManager.prototype.isAuthorized = function (user, section, permission) {
+AuthManager.prototype.isAuthorized = function (user, section, permission, cb) {
     if (section.indexOf(':') !== -1) {
         var sectionParts = section.split(':');
         if (sectionParts[0] === 'data') {
-            return isUserDataAuthorized(this.server, user, section, permission);
+            var result = isUserDataAuthorized(this.server, user, section, permission);
+
+            if (typeof (cb) === 'function')
+                cb(null, result);
+
+            return result;
         }
         else if (sectionParts[0] === 'nodes') {
-            return isUserNodeAuthorized(this.server, user, section, permission);
+            var result = isUserNodeAuthorized(this.server, user, section, permission);
+
+            if (typeof (cb) === 'function')
+                cb(null, result);
+
+            return result;
         }
         else {
-            return isUserAuthorized(this.server, user, section, permission);
+            var result = isUserAuthorized(this.server, user, section, permission);
+
+            if (typeof (cb) === 'function')
+                cb(null, result);
+
+            return result;
         }
     }
     else {
-        return isUserAuthorized(this.server, user, section, permission);
+        var result = isUserAuthorized(this.server, user, section, permission);
+
+        if (typeof (cb) === 'function')
+            cb(null, result);
+
+        return result;
     }
 };
 
-AuthorizationManager.prototype.requestEmailConfirmationCode = function (user, email, cb) {
+AuthManager.prototype.create = function (user, cb) {
+
+    var store = this.server.db.createStore('users');
+    store.count(function (x) {
+        x.query({
+            username: user.username
+        });
+    }, function (err, count) {
+        if (err)
+            return cb(err);
+
+        if (count > 0)
+            return cb(new Error('username already exists'));
+
+
+        var newUser = {};
+        extend(true, newUser, user);
+        delete newUser.password;
+
+        newUser.password = md5(user.password);
+        
+        store.post(function (x) {
+            x.data(newUser);
+        }, function (err, result) {
+            if (err)
+                return cb(err);
+
+             delete result.password;
+
+            return cb(null, result);
+        });
+
+    });
+};
+
+AuthManager.prototype.authenticate = function (username, password, cb) {
+    var store = this.server.db.createStore('users');
+
+    store.get(function (x) {
+        x.query({ username: username });
+        x.single();
+    }, function (err, user) {
+        if (err) 
+            return cb(err);
+
+        if (user) {
+            if (md5(password) === user.password) {
+                delete user.password;
+                cb(null, user);
+            }
+            else {
+                cb(new Error(401, 'Access Denied'));
+            }
+        }
+        else {
+            cb(new Error(401, 'Access Denied'));
+        }
+    });
+};
+
+AuthManager.prototype.invalidate = function (cb) {
+    cb();
+};
+
+AuthManager.prototype.setPassword = function (userId, oldPassword, password, cb) {
+    var store = this.server.db.createStore('users');
+    store.get(function (x) {
+        x.query({ id: userId });
+        x.single();
+    }, function (err, user) {
+        if (err)
+            return cb(err);
+
+        if (user) {
+            var oldHash = md5(oldPassword);
+
+            if (oldHash === user.password) {
+                var newHash = md5(password);
+
+                store.put(function (x) {
+                    x.query({ id: userId });
+                    x.data({
+                        password: newHash
+                    });
+                }, function (err, result) {
+                    if (err)
+                        return cb(err);
+                    
+                    cb(null, true);
+                });
+            }
+            else {
+                cb(null, false);
+            }
+        }
+        else {
+            cb(null, false);
+        }
+    });
+
+};
+
+AuthManager.prototype.requestEmailChange = function (userId, email, cb) {
     var self = this;
 
     var store = this.server.db.createStore('users');
-    store.find({ id: user.id }, function (err, res) {
+    store.find({ id: userId }, function (err, res) {
         if (err)
             return cb(err);
 
@@ -209,7 +343,7 @@ AuthorizationManager.prototype.requestEmailConfirmationCode = function (user, em
                             if (sendErr)
                                 return cb(sendErr);
 
-                            store.update(user.id, {
+                            store.update(userId, {
                                 $set: {
                                     emailChange: {
                                         email: email,
@@ -221,7 +355,7 @@ AuthorizationManager.prototype.requestEmailConfirmationCode = function (user, em
                                 if (err)
                                     return cb(err);
 
-                                cb(null, code);
+                                cb(null, true);
                             });
                         });
                     });
@@ -232,10 +366,10 @@ AuthorizationManager.prototype.requestEmailConfirmationCode = function (user, em
 
 };
 
-AuthorizationManager.prototype.submitEmailConfirmationCode = function (user, code, cb) {
+AuthManager.prototype.submitEmailChange = function (userId, code, cb) {
 
     var store = server.db.createStore('users');
-    store.find({ id: user.id, 'emailChange.code': code }, function (err, res) {
+    store.find({ id: userId, 'emailChange.code': code }, function (err, res) {
         if (err)
             return cb(err);
 
@@ -244,11 +378,11 @@ AuthorizationManager.prototype.submitEmailConfirmationCode = function (user, cod
             var then = moment(res.emailChange.expiresAt);
 
             if (then.isAfter(now)) {
-                store.update(user.id, { $set: { username: res.emailChange.email }, $unset: { emailChange: '' } }, function (err, res) {
+                store.update(userId, { $set: { username: res.emailChange.email }, $unset: { emailChange: '' } }, function (err, res) {
                     if (err)
                         return cb(err);
 
-                    cb(null, true);
+                    cb(null, true, res.emailChange.email);
                 });
             }
             else {
@@ -262,6 +396,14 @@ AuthorizationManager.prototype.submitEmailConfirmationCode = function (user, cod
 
 };
 
+AuthManager.prototype.requestPasswordReset = function (cb) {
+    cb();
+};
+
+AuthManager.prototype.submitPasswordReset = function (cb) {
+    cb();
+};
+
 module.exports = function (server) {
-    return new AuthorizationManager(server);
+    return new AuthManager(server);
 };

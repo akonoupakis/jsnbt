@@ -2,6 +2,9 @@ var _ = require('underscore');
 
 module.exports = function (sender, context, data) {
 
+    if (context.internal)
+        return context.done();
+
     var authMngr = sender.server.require('./cms/authMngr.js')(sender.server);
     
     if (!context.internal && data.password) 
@@ -28,6 +31,9 @@ module.exports = function (sender, context, data) {
             });
         }
     }
+
+    if (data.password)
+        return context.error(401, 'cannot set password');
 
     context.done();
 

@@ -7,6 +7,27 @@
         .factory('AuthService', ['$q', '$jsnbt', '$http', function ($q, $jsnbt, $http) {
             var AuthService = {};
             
+            AuthService.create = function (user) {
+                var deferred = $q.defer();
+
+                var url = '../jsnbt-api/core/auth/create';
+                $http.post(url, user).then(function (data) {
+                    var response = data.data;
+
+                    if (response.id) {
+                        deferred.resolve(response);
+                    }
+                    else {
+                        deferred.reject(response);
+                    }
+
+                }).catch(function (ex) {
+                    deferred.reject(ex);
+                });
+
+                return deferred.promise;
+            };
+
             AuthService.login = function (username, password) {
                 var deferred = $q.defer();
 
@@ -113,7 +134,7 @@
             AuthService.setPassword = function (password, newPassword) {
                 var deferred = $q.defer();
 
-                var url = '../jsnbt-db/users/passwd';
+                var url = '../jsnbt-api/core/auth/setPassword';
                 $http.post(url, {
                     password: password,
                     newPassword: newPassword
@@ -129,7 +150,7 @@
             AuthService.requestEmailChangeCode = function (email) {
                 var deferred = $q.defer();
 
-                var url = '../jsnbt-api/core/auth/remail';
+                var url = '../jsnbt-api/core/auth/requestEmailChange';
                 $http.post(url, {
                     email: email
                 }).then(function (data) {
@@ -144,7 +165,7 @@
             AuthService.submitEmailChangeCode = function (email, code) {
                 var deferred = $q.defer();
 
-                var url = '../jsnbt-api/core/auth/semail';
+                var url = '../jsnbt-api/core/auth/submitEmailChange';
                 $http.post(url, {
                     email: email,
                     code: code
