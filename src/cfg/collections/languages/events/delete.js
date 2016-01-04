@@ -1,4 +1,8 @@
-var self = this;
+module.exports = function (sender, context, data) {
 
-if (this.default)
-    error('default', "is default and cannot be deleted");
+    if (data.default)
+        return context.error("the language is default and cannot be deleted");
+
+    context.done();
+
+};

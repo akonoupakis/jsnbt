@@ -1,20 +1,25 @@
-var _ = require('underscore');
+module.exports = function (sender, context, data) {
 
-var self = this;
+    if (data.domain === 'core') {
 
-if (self.domain === 'core') {
-
-    validate({
-        type: 'object',
-        properties: {
-            data: {
-                type: 'object',
-                required: true,
-                properties: {
-                    homepage: { type: "string", required: true }
+        var errors = context.validate({
+            type: 'object',
+            properties: {
+                data: {
+                    type: 'object',
+                    required: true,
+                    properties: {
+                        homepage: { type: "object", required: true }
+                    }
                 }
             }
-        }
-    });
+        });
 
-}
+        if (errors)
+            return context.error(errors);
+
+    }
+
+    context.done();
+
+};

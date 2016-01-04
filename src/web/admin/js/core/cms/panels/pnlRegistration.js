@@ -43,7 +43,7 @@
                         scope.valid = _.all(result, function (x) { return x === true; });
 
                         if (scope.valid) {
-                            $data.users.post($data.create('users', {
+                            AuthService.create($data.create('users', {
                                 username: scope.username,
                                 password: scope.password,
                                 firstName: scope.firstName,

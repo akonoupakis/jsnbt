@@ -57,7 +57,13 @@
         self.scope.invalidPassword = false;
 
         this.ctor.AuthService.setPassword(data.password, data.newPassword).then(function (response) {
-            deferred.resolve(true);
+            if (response) {
+                deferred.resolve(true);
+            }
+            else {
+                self.scope.invalidPassword = true;
+                deferred.resolve(false);
+            }
         }).catch(function (ex) {
             self.scope.invalidPassword = true;
             deferred.resolve(false);

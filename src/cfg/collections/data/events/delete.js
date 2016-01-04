@@ -1,6 +1,10 @@
-var authMngr = requireApp('cms/authMngr.js')(server);
+module.exports = function (sender, context, data) {
 
-var self = this;
+    var authMngr = sender.server.require('./cms/authMngr.js')(sender.server);
+    
+    if (!context.internal && !authMngr.isAuthorized(context.req.session.user, 'data:' + data.domain + ':' + data.list, 'D'))
+        return context.error(401, 'Access denied');
 
-if (!internal && !authMngr.isAuthorized(me, 'data:' + self.domain + ':' + self.list, 'D'))
-    cancel('Access denied', 401);
+    context.done();
+
+};

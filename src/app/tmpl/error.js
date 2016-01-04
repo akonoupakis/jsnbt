@@ -14,8 +14,15 @@ var errors = {
     503: 'Service Unavailable',
 };
 
-var ErrorRenderer = function (server, ctx, error, stack) {
+var ErrorRenderer = function (server, ctx, error, stack, html) {
     
+    if (html === false) {
+        var obj = {};
+        obj[error] = errors[error];
+        ctx.status(error).send(obj);
+        return;
+    }
+
     ctx.template = 'error';
     var tmplPath = '../www/public/err/';
 
@@ -60,12 +67,12 @@ var ErrorRenderer = function (server, ctx, error, stack) {
         stack: stack || ''
     }, function (err, response) {
         if (err) {
-            ctx.write('template parse failed: ' + err.toString());
-            ctx.end();
+            ctx.res.write('template parse failed: ' + err.toString());
+            ctx.res.end();
         }
         else {
-            ctx.write(response);
-            ctx.end();
+            ctx.res.write(response);
+            ctx.res.end();
         }
     });
 

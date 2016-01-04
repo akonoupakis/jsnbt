@@ -1,48 +1,53 @@
 var _ = require('underscore');
 
-var self = this;
+module.exports = function (sender, context, data) {
 
-var languageProperties = {};
+    var languageProperties = {};
 
-if (server.app.localization.enabled) {
+    if (sender.server.app.localization.enabled) {
 
-    _.each(server.app.languages, function (lang) {
-        languageProperties[lang] = {
+        _.each(sender.server.app.languages, function (lang) {
+            languageProperties[lang] = {
+                type: "string"
+            }
+        });
+
+    }
+    else {
+        languageProperties.en = {
             type: "string"
+        }
+    }
+
+    var errors = context.validate({
+        type: 'object',
+        properties: {
+            value: {
+                type: "object",
+                required: true,
+                properties: languageProperties
+            }
         }
     });
 
-}
-else {
-    languageProperties.en = {
-        type: "string"
-    }
-}
+    if (errors)
+        return context.error(errors);
 
-validate({
-    type: 'object',
-    properties: {
-        value: {
-            type: "object",
-            required: true,
-            properties: languageProperties
-        }
-    }
-});
+    var keyValidChars = 'abcdefghijklmnopqrstuvwxyz0123456789_.'.split('');
 
-var keyValidChars = 'abcdefghijklmnopqrstuvwxyz0123456789_.'.split('');
+    var currentChars = (data.key || '').split('');
+    _.each(currentChars, function (char) {
+        if (keyValidChars.indexOf(char) === -1)
+            return context.error(400, 'key invalid characters');
+    });
+    
+    var groupValidChars = 'abcdefghijklmnopqrstuvwxyz_'.split('');
 
-var currentChars = (self.key || '').split('');
-_.each(currentChars, function (char) {
-    if (keyValidChars.indexOf(char) === -1)
-        error('key', 'key invalid characters');
-});
+    var currentGroupChars = (data.group || '').split('');
+    _.each(currentGroupChars, function (char) {
+        if (groupValidChars.indexOf(char) === -1)
+            return context.error(400, 'group invalid characters');
+    });
 
-
-var groupValidChars = 'abcdefghijklmnopqrstuvwxyz_'.split('');
-
-var currentGroupChars = (self.group || '').split('');
-_.each(currentGroupChars, function (char) {
-    if (groupValidChars.indexOf(char) === -1)
-        error('group', 'group invalid characters');
-});
+    context.done();
+};

@@ -1,19 +1,24 @@
 var _ = require('underscore');
 
-var self = this;
-
-db.languages.get({ }, function (error, results) {
-    if (error)
-        throw error;
-    else {
+module.exports = function (sender, context, data) {
+    
+    context.store.get(function (x) {
+        x.query({});
+    }, function (error, results) {
+        if (error)
+            return context.error(error);
+        
         if (results.length === 0) {
-            self.default = true;
+            data.default = true;
         }
         else {
-            var existing = _.find(results, function (x) { return x.code === self.code; });
+            var existing = _.find(results, function (x) { return x.code === data.code; });
             if (existing) {
-                cancel('language code already exists', 400);
+                return context.error(400, 'language code already exists');
             }
         }
-    }
-});
+
+        context.done();
+    });
+
+};

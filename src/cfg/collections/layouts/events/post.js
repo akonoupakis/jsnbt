@@ -1,11 +1,18 @@
-var self = this;
+module.exports = function (sender, context, data) {
 
-db.layouts.get({
-    layout: self.layout
-}, function (matchedError, matched) {
-    if (matchedError)
-        throw matchedError;
-    else
-        if (matched.length > 0)
-            cancel('layout already exists', 400);
-});
+    context.store.get(function (x) {
+        x.query({
+            layout: data.layout
+        });
+        x.single();
+    }, function (matchedError, matched) {
+        if (matchedError)
+            return context.error(matchedError);
+
+        if (matched)
+            return context.error(400, 'layout already exists');
+
+        context.done();
+    });
+
+};

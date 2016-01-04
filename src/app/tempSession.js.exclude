@@ -1,5 +1,3 @@
-var db = require('./database');
-var Store = require('./database').Store;
 var util = require('util');
 var Cookies = require('cookies');
 var EventEmitter = require('events').EventEmitter;
@@ -7,69 +5,83 @@ var EventEmitter = require('events').EventEmitter;
 var sessionIndex = {}
   , userSessionIndex = {};
 
-function SessionStore(namespace, db, sockets) {
-  this.sockets = sockets;
+exports.createStore = function (namespace, db, sockets) {
+    
+    var store = db.createStore('sessions');
 
-  // socket queue
-  var socketQueue = this.socketQueue = new EventEmitter()
-    , socketIndex = this.socketIndex = {};
+    function SessionStore(namespace, db, sockets) {
+        this.sockets = sockets;
+        this.db = db;
 
-  if(sockets) {
-    sockets.on('connection', function (socket) {
-      // NOTE: do not use set here ever, the `Cookies` api is meant to get a req, res
-      // but we are just using it for a cookie parser
-      var cookies = new Cookies(socket.handshake)
-        , sid = cookies.get('sid');
+        var socketQueue = this.socketQueue = new EventEmitter()
+          , socketIndex = this.socketIndex = {};
 
-      if(sid) {
-        // index sockets against their session id
-        socketIndex[sid] = socket;
-        socketQueue.emit(sid, socket);
-      }
-    });
-  } 
+        if (sockets) {
+            sockets.on('connection', function (socket) {
+                var cookies = new Cookies(socket.handshake)
+                  , sid = cookies.get('sid');
 
-  Store.apply(this, arguments);
-}
-util.inherits(SessionStore, Store);
-exports.SessionStore = SessionStore;
+                if (sid) {
+                    socketIndex[sid] = socket;
+                    socketQueue.emit(sid, socket);
+                }
+            });
+        }
+    }
 
-SessionStore.prototype.createUniqueIdentifier = function() {
-  return db.uuid.create(128);
-};
+    SessionStore.prototype.createUniqueIdentifier = function () {
+        return db.uuid.create(128);
+    };
 
-SessionStore.prototype.createSession = function(sid, fn) {
-  var socketIndex = this.socketIndex
-    , store = this;
+    SessionStore.prototype.createSession = function (sid, fn) {
+        var socketIndex = this.socketIndex
+          , self = this;
+        if (typeof sid == 'function') {
+            fn = sid;
+            sid = undefined;
+        }
 
-  if(typeof sid == 'function') {
-    fn = sid;
-    sid = undefined;
-  }
-  if(sid) {
-    this.find({id: sid}, function(err, s) {
-      if(err) return fn(err);
-      if(!s) {
-        store.insert({id: sid}, function(err, s) {
-          if(err) console.error(err);
-        });
-      }
-      var sess = sessionIndex[sid] || new Session(s, store, socketIndex, store.sockets);
-      sessionIndex[sid] = sess;
-      // index sessions by user
-      if(s && s.uid) {
-        userSessionIndex[s.uid] = sess;
-      }
-      fn(err, sess);
-    });
-  } else {
-    sid = this.createUniqueIdentifier();
-    var sess = sessionIndex[sid] = new Session({id: sid}, this, socketIndex, store.sockets);
-    fn(null, sess);
-    this.insert({id: sid}, function(err, s) {
-      if(err) console.error(err);
-    });
-  }
+        if (sid) {
+
+            store.get(function (x) {
+                x.query(sid);
+                x.single();
+            }, function (err, s) {
+                if (err) return fn(err);
+                if (!s) {
+                    store.post(function (x) {
+                        x.data({});
+                    }, function (err, s) {
+                        if (err) console.error(err);
+                    });
+                }
+                var sess = sessionIndex[sid] || new Session(s, self, socketIndex, self.sockets);
+                sessionIndex[sid] = sess;
+
+                if (s && s.uid) {
+                    userSessionIndex[s.uid] = sess;
+                }
+                fn(err, sess);
+            });
+        } else {
+            store.post(function (x) {
+                x.data({});
+            }, function (err, s) {
+                if (err) {
+                    throw err;
+                }
+                else {
+                    sid = s.id;
+
+                    var sess = sessionIndex[sid] = new Session({ id: sid }, self, socketIndex, self.sockets);
+
+                    fn(null, sess);
+                }
+            });
+        }
+    };
+
+    return new SessionStore(namespace, db, sockets);
 };
 
 function Session(data, store, sockets, rawSockets) {

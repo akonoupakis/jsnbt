@@ -1,29 +1,80 @@
-var self = this;
+var async = require('async');
 
-if (changed('code')) {
-    db.languages.get({ code: self.code, id: { $nin: [self.id] } }, function (matchedError, matched) {
-        if (matchedError)
-            throw matchedError;
-        else
-            if (matched.length > 0)
-                cancel('language code already exists', 400);
+module.exports = function (sender, context, data) {
+    var self = this;
+
+    var asyncs = [];
+
+    asyncs.push(function (cb) { 
+        if (context.changed('code')) {
+            context.store.get(function (x) {
+                x.query({
+                    code: self.code,
+                    id: {
+                        $nin: [data.id]
+                    }
+                });
+                x.single();
+            }, function (matchedError, matched) {
+                if (matchedError)
+                    return cb(matchedError);
+            
+                if (matched)
+                    return cb('language code already exists');
+
+                cb();
+            });
+        }
+        else {
+            cb();
+        }
     });
-}
 
-if (changed('active')) {
-    if(!self.active && self.default)
-        error('active', 'cannot inactivate while default');
-}
+    asyncs.push(function (cb) {
+        if (context.changed('active')) {
+            if (!data.active && data.default)
+                return cb('language is default and cannot be deactivated');
+        }
 
-if (changed('default')) {
-    if (!self.default) {
+        cb();
+    });
 
-        db.languages.get({ active: true, 'default': true, id: { $nin: [self.id] } }, function (defaultsError, defaults) {
-            if (defaultsError)
-                throw defaultsError;
-            else
-                if (defaults.length === 0)
-                    error('default', 'cannot set to false as there are no other active default languages');
-        });
-    }
-}
+
+    asyncs.push(function (cb) {
+        if (context.changed('default')) {
+            if (!data.default) {
+
+                context.store.get(function (x) {
+                    x.query({
+                        active: true,
+                        'default': true,
+                        id: { $nin: [data.id] }
+                    });
+                }, function (defaultsError, defaults) {
+                    if (defaultsError)
+                        return cb(defaultsError);
+
+                    if (defaults.length === 0)
+                        return cb('cannot set to false as there are no other active default languages');
+
+                    cb();
+                });
+
+            }
+            else {
+                cb();
+            }
+        }
+        else {
+            cb();
+        }
+    });
+
+    async.parallel(asyncs, function (err, results) {
+        if (err)
+            return context.error(err);
+
+        context.done();
+    });
+
+};

@@ -142,7 +142,7 @@
                             if (user.id === $scope.current.user.id)
                                 $scope.current.setUser(user);
                     });
-
+                                        
                     jsnbt.db.on(DATA_EVENTS.languageCreated, function (language) {
                         setApplicationLanguages().then(function () {
                             if (language.default)

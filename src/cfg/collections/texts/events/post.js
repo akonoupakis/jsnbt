@@ -1,12 +1,19 @@
-var self = this;
+module.exports = function (sender, context, data) {
 
-db.texts.get({
-    group: self.group,
-    key: self.key
-}, function (matchedError, matched) {
-    if (matchedError)
-        throw matchedError;
-    else
-        if (matched.length > 0)
-            cancel('combination of group and key already exists', 400);
-});
+    context.store.get(function(x) {
+        x.query({
+            group: data.group,
+            key: data.key
+        });
+        x.single();
+    }, function (matchedError, matched) {
+        if (matchedError)
+            return context.error(matchedError);
+        else
+            if (matched)
+                return context.error(400, 'combination of group and key already exists');
+
+        context.done();
+    });
+
+};

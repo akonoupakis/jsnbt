@@ -1,35 +1,67 @@
-var authMngr = requireApp('cms/authMngr.js')(server);
-var node = requireApp('cms/nodeMngr.js')(server, db);
-
+var async = require('async');
 var _ = require('underscore');
 
-var self = this;
+module.exports = function (sender, context, data) {
 
-if (!internal && !authMngr.isAuthorized(me, 'nodes:' + self.entity, 'C'))
-    cancel('Access denied', 401);
-    
-var entity = requireApp('cms/entityMngr.js')(server, self.entity);
+    var authMngr = sender.server.require('./cms/authMngr.js')(sender.server);
+    var nodeMngr = sender.server.require('./cms/nodeMngr.js')(sender.server);
 
-if (entity.hasProperty('seo')) {
-    db.nodes.get({ parent: self.parent, domain: self.domain, id: { $nin: [self.id] } }, function (siblingNodesError, siblingNodes) {
-        if (siblingNodesError)
-            throw siblingNodesError;
-        else {
-            for (var lang in self.seo) {
-                if (self.active[lang]) {
-                    var siblingSeoNames = _.pluck(_.pluck(_.filter(siblingNodes, function (x) { return x.seo[lang]; }), 'seo'), lang);
-                    if (siblingSeoNames.indexOf(self.seo[lang]) !== -1) {
-                        cancel('seo name already exists', 400);
+    if (!internal && !authMngr.isAuthorized(context.req.session.user, 'nodes:' + data.entity, 'C'))
+        return context.error(401, 'Access denied');
+
+    var entity = nodeMngr.getEntity(data.entity);
+
+    data.createdOn = new Date().getTime();
+
+    var asyncs = [];
+
+    asyncs.push(function (cb) {
+        if (entity.hasProperty('seo')) {
+            context.store.get(function (x) {
+                x.query({
+                    parent: data.parent,
+                    domain: data.domain,
+                    id: {
+                        $nin: [data.id]
+                    }
+                });
+            }, function (siblingNodesError, siblingNodes) {
+                if (siblingNodesError)
+                    return cb(siblingNodesError);
+                
+                for (var lang in data.seo) {
+                    if (data.active[lang]) {
+                        var siblingSeoNames = _.pluck(_.pluck(_.filter(siblingNodes, function (x) { return x.seo[lang]; }), 'seo'), lang);
+                        if (siblingSeoNames.indexOf(data.seo[lang]) !== -1) {
+                            return cb('seo name already exists');
+                        }
                     }
                 }
-            }
+
+                cb();
+            });
+        }
+        else {
+            cb();
         }
     });
-}
+    
+    asyncs.push(function (cb) {
+        nodeMngr.getHierarchy(data, function (err, hierarchyNodes) {
+            if (err)
+                return cb(err)
 
-self.createdOn = new Date().getTime();
-self.modifiedOn = new Date().getTime();
+            var hierarchyIds = _.pluck(hierarchyNodes, 'id');
+            data.hierarchy = hierarchyIds
+            cb(null, hierarchyIds);
+        });
+    });
 
-node.getHierarchy(self, function (hierarchyNodes) {
-    self.hierarchy = _.pluck(hierarchyNodes, 'id');
-});
+    async.parallel(asyncs, function (err, result) {
+        if (err)
+            return context.error(err);
+
+        context.done();
+    });
+
+};

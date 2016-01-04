@@ -1,64 +1,68 @@
 var FileApi = function (server) {
-
-    var authMngr = require('../cms/authMngr.js')(server);
-    var fileMngr = require('../cms/fileMngr.js')(server);
-
-    return {
-
-        get: function (ctx, fields) {
-            if (!authMngr.isInRole(ctx.user, 'admin'))
-                return null;
-
-            try {
-                var result = fileMngr.get(fields);
-                ctx.json(result);
-            }
-            catch (ex) {
-                ctx.error(500, ex, false);
-            }
-        },
-
-        delete: function (ctx, fields) {
-            if (!authMngr.isInRole(ctx.user, 'admin'))
-                return null;
-
-            try {
-                var result = fileMngr.delete(fields);
-                ctx.json(result);
-            }
-            catch (ex) {
-                ctx.error(500, ex, false);
-            }
-        },
-
-        create: function (ctx, fields) {
-            if (!authMngr.isInRole(ctx.user, 'admin'))
-                return null;
-
-            try {
-                var result = fileMngr.create(fields);
-                ctx.json(result);
-            }
-            catch (ex) {
-                ctx.error(500, ex, false);
-            }
-        },
-
-        move: function (ctx, fields) {
-            if (!authMngr.isInRole(ctx.user, 'admin'))
-                return null;
-
-            try {
-                var result = fileMngr.move(fields);
-                ctx.json(result);
-            }
-            catch (ex) {
-                ctx.error(500, ex, false);
-            }
-        }
-
-    };
-
+    this.server = server;
 };
 
-module.exports = FileApi;
+FileApi.prototype.get = function (ctx, fields) {
+    var authMngr = require('../cms/authMngr.js')(this.server);
+
+    if (!authMngr.isInRole(ctx.req.session.user, 'admin')) 
+        return ctx.status(401).send('Access Denied');
+        
+    var paths = fields.path ? fields.path : fields.paths;
+    var fileMngr = require('../cms/fileMngr.js')(this.server);
+    fileMngr.get(paths, function (err, result) {
+        if (err)
+            return ctx.error(err);
+
+        ctx.send(result);
+    });
+};
+
+FileApi.prototype.delete = function (ctx, fields) {
+    var authMngr = require('../cms/authMngr.js')(this.server);
+
+    if (!authMngr.isInRole(ctx.req.session.user, 'admin'))
+        return ctx.status(401).send('Access Denied');
+
+    var fileMngr = require('../cms/fileMngr.js')(this.server);
+    fileMngr.delete(fields.path, function (err, result) { 
+        if (err)
+            return ctx.error(err);
+
+        ctx.send(result);
+    });
+};
+
+FileApi.prototype.create = function (ctx, fields) {
+    var authMngr = require('../cms/authMngr.js')(this.server);
+
+    if (!authMngr.isInRole(ctx.req.session.user, 'admin'))
+        return ctx.status(401).send('Access Denied');
+
+    var fileMngr = require('../cms/fileMngr.js')(this.server);
+    fileMngr.create(fields.path, fields.name, function (err, result) { 
+        if (err)
+            return ctx.error(err);
+
+        ctx.send(result);
+    });
+};
+
+FileApi.prototype.move = function (ctx, fields) {
+    var authMngr = require('../cms/authMngr.js')(this.server);
+
+    if (!authMngr.isInRole(ctx.req.session.user, 'admin'))
+        return ctx.status(401).send('Access Denied');
+
+    var fileMngr = require('../cms/fileMngr.js')(this.server);
+    fileMngr.move(fields.from, fields.to, function (err, result) {
+        if (err)
+            return ctx.error(err);
+
+        ctx.send(result);
+    });
+};
+
+module.exports = function (server) {
+    return new FileApi(server);
+};
