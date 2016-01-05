@@ -17,7 +17,7 @@ var logAction = function (sender, collection, action, req, res, data, callback) 
                     collection: collection,
                     action: action,
                     objectId: data ? data.id : undefined,
-                    objectData: {}
+                    objectData: copied
                 });
             }, function (err, results) {
                 if (err) 
