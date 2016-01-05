@@ -63,7 +63,7 @@
                     method: 'POST',
                     data: JSON.stringify(data)
                 }).done(function (result) {
-                    cb(null, result);
+                    cb(null, result.inserted);
                 })
                 .error(function (ex) {
                     cb(ex.responseJSON);
@@ -101,7 +101,7 @@
                     method: 'PUT',
                     data: JSON.stringify(data)
                 }).done(function (result) {
-                    cb(null, result);
+                    cb(null, result.updated);
                 })
                 .error(function (ex) {
                     if (ex.responseJSON && ex.responseJSON[404]) {
@@ -134,8 +134,8 @@
 
                 $.ajax({
                     url: urlInternal
-                }).done(function (data, ex) {
-                    callbackInternal(null, data);
+                }).done(function (result, ex) {
+                    callbackInternal(null, result.count);
                 })
                 .error(function (ex) {
                     if (ex.responseJSON && ex.responseJSON[404]) {
@@ -177,8 +177,8 @@
                 $.ajax({
                     url: urlInternal,
                     method: 'DELETE'
-                }).done(function (data, ex) {
-                    callbackInternal(null, data);
+                }).done(function (result, ex) {
+                    callbackInternal(null, result.deleted);
                 })
                 .error(function (ex) {
                     if (ex.responseJSON && ex.responseJSON[404]) {
