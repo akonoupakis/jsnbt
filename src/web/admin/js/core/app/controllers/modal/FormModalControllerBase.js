@@ -14,21 +14,46 @@
 
                     var self = this;
 
+                    var logger = $logger.create('FormModalControllerBase');
+
+                    $scope.breadcrumb = false;
+
                     $scope.$on(CONTROL_EVENTS.valueChanged, function (sender, value) {
                         sender.stopPropagation();
                         $scope.ngModel = value;
                     });
 
                     $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
-                        self.validate();
-
-                        if (self.isValid()) {
-                            self.publish().then(function (response) {
-                                $scope.$emit(MODAL_EVENTS.valueSubmitted, response);
-                            }).catch(function (ex) {
-                                throw ex;
+                        self.run('validating').then(function () {
+                            self.validate().then(function (validationResults) {
+                                self.run('validated', [validationResults]).then(function () {
+                                    if (validationResults) {
+                                        var model = self.get();
+                                        self.run('publishing', [model]).then(function () {
+                                            self.push(model).then(function (pushed) {
+                                                if (pushed) {
+                                                    $scope.$emit(MODAL_EVENTS.valueSubmitted, model);
+                                                }
+                                                else {
+                                                    self.failed(new Error('save unsuccessful'));
+                                                }
+                                            }).catch(function (ex) {
+                                                self.failed(ex);
+                                            });
+                                        }).catch(function (publishingError) {
+                                            logger.error(publishingError);
+                                        });
+                                    }
+                                }).catch(function (validatedError) {
+                                    logger.error(validatedError);
+                                });
+                            }).catch(function (validateError) {
+                                logger.error(validateError);
                             });
-                        }
+
+                        }).catch(function (validatingError) {
+                            logger.error(validatingError);
+                        });
                     });
                 };
                 FormModalControllerBase.prototype = Object.create(controllers.FormControllerBase.prototype);
@@ -38,7 +63,7 @@
 
                     deferred.resolve(null);
 
-                    return deferred;
+                    return deferred.promise;
                 };
 
                 FormModalControllerBase.prototype.init = function () {

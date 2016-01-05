@@ -1,20 +1,17 @@
-var http = require('http');
-var database = require('./database');
-var util = require('util');
-var sessionFile = require('./session');
-var SessionStore = require('./session').SessionStore;
+var express = require('express');
+var session = require('express-session');
+var MongoStore = require('express-session-mongo');
+var Messager = require('./messager.js');
+var Logger = require('./logger.js');
+var dbproxy = require('mongodb-proxy');
+var data = require('./data.js');
 var io = require('socket.io');
 var extend = require('extend');
-var async = require('async');
+var Cache = require('./cache.js');
 var serverRoot = require('server-root');
 var _ = require('underscore');
 
-var logger = require('./logger.js')(this);
-
 function Server(app, options) {
-    var server = process.server = this;
-    http.Server.call(this);
-
     var optsHost = options.host;
     if (options.host)
         delete options.host;
@@ -31,128 +28,81 @@ function Server(app, options) {
 
     extend(true, this.options, options);
     
-    sessionFile.appPath = __dirname;
+    this.db = dbproxy.create(this.options.db);
+    this.db.server = this;
     
-    var started = false;
+    this.db.configure(function (config) {
 
-    this.stores = {};
+        for (var collectionName in app.config.collections) {
+            config.register(app.config.collections[collectionName]);
+        }
 
-    this.db = database.create(options.db);
+        config.bind('preread', data.preread);
+        config.bind('postread', data.postread);
+        config.bind('precreate', data.precreate);
+        config.bind('postcreate', data.postcreate);
+        config.bind('preupdate', data.preupdate);
+        config.bind('postupdate', data.postupdate);
+        config.bind('predelete', data.predelete);
+        config.bind('postdelete', data.postdelete);
+    });
 
-    this.cache = require('./cache.js')();
+    this.host = optsHost;
+    this.port = this.options.port;
 
-    this.sockets = io.listen(this, {
+    this.getPath = serverRoot.getPath;
+
+    this.messager = new Messager(this);
+
+    this.cache = new Cache();
+
+    this.logger = new Logger(this);
+
+    this.app = app;
+    
+    this.express = express();
+}
+Server.prototype = Object.create(express.prototype);
+
+Server.prototype.require = function () {
+    var result = require.apply(require, arguments);
+    return result;
+}
+
+Server.prototype.start = function () {
+    var self = this;
+
+    var server = this.express.listen(this.options.port);
+
+    this.sockets = io.listen(server, {
         'log level': 0
     }).sockets;
-    
-    this.sessions = new SessionStore('sessions', this.db, this.sockets);
-
-    if (options.events)
-        for (var item in options.events)
-            this.on(item, options.events[item]);
-
-    this.on('listening', function () {
-        server.host = optsHost;
-        server.port = server.options.port;
         
-        logger.info('jsnbt server is listening on:' + server.options.port);
-
-        started = true;
-
-        if (server.next)
-            server.next();
+    var secret = this.host + ':' + this.options.db.name + ':' + this.options.db.host + ':' + this.options.db.port;
+    
+    this.session = new MongoStore({
+        db: self.options.db.name,
+        ip: self.options.db.host,
+        port: self.options.db.port,
+        username: self.options.db.credentials && self.options.db.credentials.username,
+        password: self.options.db.credentials && self.options.db.credentials.password,
+        collection: 'sessions',
+        fsync: false,
+        native_parser: false
     });
 
-    this.on('request', function (req, res) {
-        if (started) {
-            server.route(req, res);
-        }
-        else {
-            req._routed = true;
-            res.write('503 - Service is starting'); 
-            res.end();
-        }
-    });
+    self.express.set('trust proxy', 1);
+    self.express.use(session({
+        secret: secret,
+        resave: false,
+        saveUninitialized: true,
+        store: this.session
+    }));
 
-    this.on("request:error", function (err, req, res) {
-        logger.error(req.method, req.url, err.stack || err);
-        process.exit(1);
-    });
+    var router = new require('./router.js')(self, self.express);
+    router.start();
 
-    server.getPath = serverRoot.getPath;
-
-    server.messager = require('./messager.js')(server);
-
-    server.app = app;
-}
-util.inherits(Server, http.Server);
-
-var getResources = function (server, cb) {
-   
-    var resources = [];
-    var asyncFns = [];
-
-    Object.keys(server.app.config.collections).forEach(function (collectionName) {
-
-        var collectionConfig = server.app.config.collections[collectionName];
-
-        asyncFns.push(function (fn) {
-            var rType = collectionConfig.users ? require('./data/user-collection.js') : require('./data/collection.js');
-            var resource = new rType(server, collectionConfig);
-            resources.push(resource);
-
-            if (resource.load) {
-                resource.load(function () {
-                    fn();
-                });
-            } else {
-                fn();
-            }
-        });
-
-    });
-
-    async.series(asyncFns, function (err, results) {
-        cb(err, resources);
-    });
-};
-
-Server.prototype.start = function (next) {
-    var server = this;
-
-    getResources(server, function (err, resources) {
-        if (err) {
-            console.error();
-            console.error("Error loading resources: ");
-            console.error(err.stack || err);
-            process.exit(1);
-        } else {
-            server.resources = resources;
-            http.Server.prototype.listen.call(server, server.options.port, server.options.host);
-
-            if (typeof (next) === 'function') {
-                server.next = next;
-            }
-            //else {
-                //server.next = undefined;
-            //}
-        }
-
-    });
-};
-
-Server.prototype.route = function route(req, res) {
-    var server = this;
-
-    if (req.url.indexOf('/socket.io/') === 0) 
-        return;
-
-    var router = new require('./router.js')(server, req, res);
-    router.process();
-};
-
-Server.prototype.createStore = function (namespace) {
-    return (this.stores[namespace] = this.db.createStore(namespace));
+    this.logger.info('jsnbt server is listening on:' + self.options.port);
 };
 
 module.exports = function (app, options) {

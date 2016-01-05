@@ -14,6 +14,8 @@
 
                     var self = this;
 
+                    $scope.breadcrumb = false;
+
                     $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
                         $scope.$emit(MODAL_EVENTS.valueSubmitted, true);
                     });

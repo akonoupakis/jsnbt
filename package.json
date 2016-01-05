@@ -1,6 +1,6 @@
 ﻿{
   "name": "jsnbt",
-  "version": "1.0.119",
+  "version": "1.0.121",
   "description": "The Jsonbot engine",
   "keywords": [
     "jsnbt",
@@ -27,17 +27,13 @@
   "config": {},
   "main": "src/app/index.js",
   "files": [
-    "src/app/**",
-    "src/cfg/**",
-    "src/dat/**",
-    "src/web/**",
+    "src/**",
     "gulpfile.js"
   ],
   "dependencies": {
     "MD5": "1.2.1",
     "async": "0.8.0",
     "bower": "1.2.7",
-    "cookies": "0.3.0",
     "custom-logger": "0.2.1",
     "easyimage": "1.0.3",
     "emailjs": "0.3.16",
@@ -52,13 +48,15 @@
     "server-root": "0.0.9",
     "underscore": "1.6.0",
     "underscore.string": "2.3.3",
-    "mongodb": "1.0.2",
+    "mongodb-proxy": "1.0.10",
+    "express-session-mongo": "0.1.0",
     "socket.io": "0.9.x",
-    "scrubber": "*",
-    "send": "0.0.2",
     "corser": "~1.1.1",
-    "qs": "~0.6.5",
-    "fs-extra": "0.22.1"
+    "fs-extra": "0.22.1",
+    "random-js": "1.0.8",
+    "express": "4.13.3",
+    "express-session": "1.12.1",
+    "debug": "2.2.0"
   },
   "devDependencies": {
     "chalk": "*",

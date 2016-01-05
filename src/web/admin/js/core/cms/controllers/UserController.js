@@ -12,7 +12,6 @@
 
         $scope.localization = false;
 
-        $scope.user = undefined;
         $scope.roles = [];
 
         $scope.credentials = {
@@ -23,6 +22,7 @@
         $scope.editRoles = false;
 
         $scope.invalidPasswordComparison = false;
+        $scope.emailExists = false;
         
         this.enqueue('preloading', '', function () {
             var deferred = $q.defer();
@@ -55,7 +55,7 @@
 
             if (_.any($scope.roles, function (x) {
 
-                if (!x.disabled && $scope.user.roles.indexOf(x.value) !== -1)
+                if (!x.disabled && $scope.model.roles.indexOf(x.value) !== -1)
                     if (!AuthService.isInRole($scope.current.user, x.value))
                         return true;
 
@@ -65,13 +65,19 @@
             }
 
             $scope.editRoles = false;
-            if ($scope.current.user.id !== $scope.user.id)
+            if ($scope.current.user.id !== $scope.model.id)
                 $scope.editRoles = allowEdit;
 
             deferred.resolve($scope.editRoles);
 
             return deferred.promise;
         });
+
+        $scope.validateEmail = function (value) {
+            var isValid = value.match(/^[A-Z0-9._%+-]+@(?:[A-Z0-9\-]+\.)+[A-Z]{2,4}$/i);
+            $scope.emailExists = false;
+            return isValid;
+        };
 
         $scope.validatePasswordConfirm = function (value) {
             var valid = value === $scope.credentials.password;
@@ -113,22 +119,22 @@
         if (this.isNew()) {
             this.setTitle('');
 
-            this.scope.user = this.ctor.$data.create('users', {});
+            this.scope.model = this.ctor.$data.create('users', {});
 
             this.setValid(true);
             this.setPublished(false);
 
-            deferred.resolve(this.scope.user);
+            deferred.resolve(this.scope.model);
         }
         else {
             if (data) {
                 this.setTitle(data.username);
-                this.scope.user = data;
+                this.scope.model = data;
 
                 this.setValid(true);
                 this.setPublished(true);
 
-                deferred.resolve(this.scope.user);
+                deferred.resolve(this.scope.model);
             }
             else {
                 deferred.reject(new Error('data is not defined for setting into scope'));
@@ -139,11 +145,15 @@
     };
 
     UserController.prototype.get = function () {
-        return this.scope.user;
+        return this.scope.model;
     };
 
     UserController.prototype.push = function (data) {
+        var self = this;
+
         var deferred = this.ctor.$q.defer();
+
+        self.scope.emailExists = false;
 
         if (this.isNew()) {
 
@@ -152,10 +162,16 @@
 
             newUser.password = this.scope.credentials.password;
 
-            this.ctor.$data.users.post(newUser).then(function (result) {
+            this.ctor.AuthService.create(newUser).then(function (result) {
                 deferred.resolve(result);
             }).catch(function (error) {
-                deferred.reject(error);
+                if (typeof (error) === 'object' && error.exists === true) {
+                    self.scope.emailExists = true;
+                    deferred.reject(error);
+                }
+                else {
+                    deferred.reject(error);
+                }
             });
         }
         else {

@@ -39,9 +39,8 @@
                                             };
 
                                             if (authCodes[error.status]) {
-                                                console.log(name, args);
                                                 $rootScope.$broadcast(authCodes[error.status], function () {
-                                                    jsnbt.db[name][fn].apply(jsnbt.db[name][fn], getPromiseParams(true));
+                                                    jsnbt.db[name][fn].apply(jsnbt.db[name], getPromiseParams(true));
                                                 });
                                             }
                                             else {
@@ -63,7 +62,7 @@
                             return params;
                         };
 
-                        jsnbt.db[name][fn].apply(jsnbt.db[name][fn], getPromiseParams());
+                        jsnbt.db[name][fn].apply(jsnbt.db[name], getPromiseParams());
 
                         return deferred.promise;
                     };

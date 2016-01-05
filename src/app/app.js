@@ -14,9 +14,6 @@ var logger = require('./logger.js')(this);
 
 var configSchema = require('../cfg/schema.json');
 
-var languages = require('./data/store/languages.js');
-var countries = require('./data/store/countries.js');
-
 var index = require('./index.js');
 
 var App = function () {
@@ -96,8 +93,8 @@ var App = function () {
 
     this.version = versionInfo.version;
 
-    this.languages = require('./data/store/languages.js');
-    this.countries = require('./data/store/countries.js');
+    this.languages = require('./data/languages.js');
+    this.countries = require('./data/countries.js');
 
     this.root = root;
 
@@ -315,6 +312,18 @@ App.prototype.register = function (module, config) {
         }
     }
 
+    if (moduleConfig.messaging && moduleConfig.messaging.mail && moduleConfig.messaging.mail.templates && _.isArray(moduleConfig.messaging.mail.templates)) {
+        _.each(moduleConfig.messaging.mail.templates, function (template) {
+            self.config.messaging.mail.templates[template.code] = template;
+        });
+    }
+
+    if (moduleConfig.messaging && moduleConfig.messaging.sms && moduleConfig.messaging.sms.templates && _.isArray(moduleConfig.messaging.sms.templates)) {
+        _.each(moduleConfig.messaging.sms.templates, function (template) {
+            self.config.messaging.sms.templates[template.code] = template;
+        });
+    }
+
     if (module.domain !== 'core') {
         if (typeof (moduleConfig.register) === 'function') {
             module.config = moduleConfig.register();
@@ -354,19 +363,6 @@ App.prototype.register = function (module, config) {
         applyArray('containers', 'id');
         
         applyArray('routes', 'id');
-
-
-        if (moduleConfig.messaging && moduleConfig.messaging.mail && moduleConfig.messaging.mail.templates && _.isArray(moduleConfig.messaging.mail.templates)) {
-            _.each(moduleConfig.messaging.mail.templates, function (template) {
-                self.config.messaging.mail.templates[template.code] = template;
-            });
-        }
-
-        if (moduleConfig.messaging && moduleConfig.messaging.sms && moduleConfig.messaging.sms.templates && _.isArray(moduleConfig.messaging.sms.templates)) {
-            _.each(moduleConfig.messaging.sms.templates, function (template) {
-                self.config.messaging.sms.templates[template.code] = template;
-            });
-        }
     }
 
     if (module.domain === 'core') {
@@ -506,7 +502,8 @@ App.prototype.createMigrator = function (options) {
     };
 
     var opts = {};
-    extend(true, opts, defOpts, options);
+    extend(true, opts, defOpts);
+    extend(true, opts.db, options);
 
     process.chdir('www');
 
@@ -514,17 +511,9 @@ App.prototype.createMigrator = function (options) {
 
     var server = require('./server.js')(this, opts);
 
-    server.next = function () {
-        var migrator = require('./migrator.js')(server);
-        migrator.process(function () {
-            process.exit(0);
-        }, function (err) {
-            throw err;
-            process.exit(1);
-        });
-    };
+    var migrator = require('./migrator.js')(server);
 
-    return server;
+    return migrator;
 };
 
 module.exports = function () {

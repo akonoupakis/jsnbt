@@ -1,26 +1,36 @@
-var authMngr = requireApp('cms/authMngr.js')(server);
 var _ = require('underscore');
 
-var self = this;
+module.exports = function (sender, context, data) {
 
-if (me && me.id === self.id) {
-    if (changed('roles') && !_.isEmpty(_.difference(previous.roles, self.roles))) {
-        error('roles', 'cannot assign own roles');
-    }
-}
-else {
-    if (!internal && !authMngr.isAuthorized(me, 'users', 'U'))
-        cancel('access denied', 401);
+    if (context.internal)
+        return context.done();
 
-    if (changed('roles') && !_.isEmpty(_.difference(previous.roles, self.roles))) {
-        if (self.roles.length === 0) {
-            error('roles', 'at least one role is required');
+    var authMngr = sender.server.require('./cms/authMngr.js')(sender.server);
+
+    if (context.req.session.user && context.req.session.user.id === data.id) {
+        if (context.changed('roles')) {
+            return context.error(401, 'cannot assign own roles');
         }
-
-        _.each(self.roles, function (role) {
-            if (!authMngr.isInRole(me, role)) {
-                error('roles', 'access denied for role "' + role + '"');
-            }
-        });
     }
-}
+    else {
+        if (!context.internal && !authMngr.isAuthorized(context.req.session.user, 'users', 'U'))
+            return context.error(401, 'access denied');
+
+        if (context.changed('roles')) {
+            if (data.roles.length === 0) {
+                return context.error(400, 'at least one role is required');
+            }
+
+            _.each(data.roles, function (role) {
+                if (!authMngr.isInRole(context.req.session.user, role)) {
+                    return context.error(401, 'access denied for role "' + role + '"');
+                }
+            });
+        }
+    }
+
+    
+
+    context.done();
+
+};

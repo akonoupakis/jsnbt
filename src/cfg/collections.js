@@ -1,11 +1,9 @@
-var fs = require("fs");
-
 module.exports = [{
     name: "actions",
     schema: require("./collections/actions/schema.json"),
     logging: false,
     events: {
-        validate: fs.readFileSync(__dirname + "/collections/actions/events/validate.js", "utf8")        
+        validate: require("./collections/actions/events/validate.js")
     }
 }, {
     name: "data", 
@@ -13,11 +11,11 @@ module.exports = [{
     permissions: require("./collections/data/permissions.json"),
     logging: true,
     events: {
-        get: fs.readFileSync(__dirname + "/collections/data/events/get.js", "utf8"),
-        validate: fs.readFileSync(__dirname + "/collections/data/events/validate.js", "utf8"),
-        post: fs.readFileSync(__dirname + "/collections/data/events/post.js", "utf8"),
-        put: fs.readFileSync(__dirname + "/collections/data/events/put.js", "utf8"),
-        delete: fs.readFileSync(__dirname + "/collections/data/events/delete.js", "utf8")
+        get: require("./collections/data/events/get.js"),
+        validate: require("./collections/data/events/validate.js"),
+        post: require("./collections/data/events/post.js"),
+        put: require("./collections/data/events/put.js"),
+        delete: require("./collections/data/events/delete.js")
     },
     default: require('./collections/data/default.json')
 }, {
@@ -26,10 +24,10 @@ module.exports = [{
     permissions: require("./collections/languages/permissions.json"),
     logging: true,
     events: {
-        validate: fs.readFileSync(__dirname + "/collections/languages/events/validate.js", "utf8"),
-        post: fs.readFileSync(__dirname + "/collections/languages/events/post.js", "utf8"),
-        put: fs.readFileSync(__dirname + "/collections/languages/events/put.js", "utf8"),
-        delete: fs.readFileSync(__dirname + "/collections/languages/events/delete.js", "utf8")
+        validate: require("./collections/languages/events/validate.js"),
+        post: require("./collections/languages/events/post.js"),
+        put: require("./collections/languages/events/put.js"),
+        delete: require("./collections/languages/events/delete.js")
     },
     default: require('./collections/languages/default.json')
 }, {
@@ -38,9 +36,9 @@ module.exports = [{
     permissions: require("./collections/layouts/permissions.json"),
     logging: true,
     events: {
-        validate: fs.readFileSync(__dirname + "/collections/layouts/events/validate.js", "utf8"),
-        post: fs.readFileSync(__dirname + "/collections/layouts/events/post.js", "utf8"),
-        put: fs.readFileSync(__dirname + "/collections/layouts/events/put.js", "utf8")
+        validate: require("./collections/layouts/events/validate.js"),
+        post: require("./collections/layouts/events/post.js"),
+        put: require("./collections/layouts/events/put.js")
     },
     default: require('./collections/layouts/default.json')
 }, {
@@ -53,11 +51,11 @@ module.exports = [{
     permissions: require("./collections/nodes/permissions.json"),
     logging: true,
     events: {
-        get: fs.readFileSync(__dirname + "/collections/nodes/events/get.js", "utf8"),
-        validate: fs.readFileSync(__dirname + "/collections/nodes/events/validate.js", "utf8"),
-        post: fs.readFileSync(__dirname + "/collections/nodes/events/post.js", "utf8"),
-        put: fs.readFileSync(__dirname + "/collections/nodes/events/put.js", "utf8"),
-        delete: fs.readFileSync(__dirname + "/collections/nodes/events/delete.js", "utf8")
+        get: require("./collections/nodes/events/get.js"),
+        validate: require("./collections/nodes/events/validate.js"),
+        post: require("./collections/nodes/events/post.js"),
+        put: require("./collections/nodes/events/put.js"),
+        delete: require("./collections/nodes/events/delete.js")
     },
     default: require('./collections/nodes/default.json')
 }, {
@@ -66,9 +64,9 @@ module.exports = [{
     permissions: require("./collections/settings/permissions.json"),
     logging: true,
     events: {
-        validate: fs.readFileSync(__dirname + "/collections/settings/events/validate.js", "utf8"),
-        post: fs.readFileSync(__dirname + "/collections/settings/events/post.js", "utf8"),
-        put: fs.readFileSync(__dirname + "/collections/settings/events/put.js", "utf8")
+        validate: require("./collections/settings/events/validate.js"),
+        post: require("./collections/settings/events/post.js"),
+        put: require("./collections/settings/events/put.js")
     },
     default: require('./collections/settings/default.json')
 }, {
@@ -77,9 +75,9 @@ module.exports = [{
     permissions: require("./collections/texts/permissions.json"),
     logging: true,
     events: {
-        validate: fs.readFileSync(__dirname + "/collections/texts/events/validate.js", "utf8"),
-        post: fs.readFileSync(__dirname + "/collections/texts/events/post.js", "utf8"),
-        put: fs.readFileSync(__dirname + "/collections/texts/events/put.js", "utf8")
+        validate: require("./collections/texts/events/validate.js"),
+        post: require("./collections/texts/events/post.js"),
+        put: require("./collections/texts/events/put.js")
     },
     default: require('./collections/texts/default.json')
 }, {
@@ -87,13 +85,14 @@ module.exports = [{
     schema: require("./collections/users/schema.json"),
     permissions: false,
     logging: false,
-    users: true,
+    //users: true,
     events: {
-        get: fs.readFileSync(__dirname + "/collections/users/events/get.js", "utf8"),
-        validate: fs.readFileSync(__dirname + "/collections/users/events/validate.js", "utf8"),
-        post: fs.readFileSync(__dirname + "/collections/users/events/post.js", "utf8"),
-        put: fs.readFileSync(__dirname + "/collections/users/events/put.js", "utf8"),
-        delete: fs.readFileSync(__dirname + "/collections/users/events/delete.js", "utf8")
+        get: require("./collections/users/events/get.js"),
+        resolve: require("./collections/users/events/resolve.js"),
+        validate: require("./collections/users/events/validate.js"),
+        post: require("./collections/users/events/post.js"),
+        put: require("./collections/users/events/put.js"),
+        delete: require("./collections/users/events/delete.js")
     },
     default: require('./collections/users/default.json')
 }];

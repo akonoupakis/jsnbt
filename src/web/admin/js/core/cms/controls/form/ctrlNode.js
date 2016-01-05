@@ -21,14 +21,10 @@
                 scope.missing = false;
 
                 scope.$watch('ngModel', function (newValue, prevValue) {
-                    console.log(1, newValue);
                     if (newValue) {
                         if (_.isString(newValue)) {
                             if (newValue !== '') {
-                                $data.nodes.get({
-                                    id: newValue,
-                                    domain: scope.ngDomain
-                                }).then(function (response) {
+                                $data.nodes.get(newValue).then(function (response) {
                                     scope.value = response;
                                     scope.wrong = false;
                                     scope.missing = false;
@@ -147,6 +143,7 @@
                     }
                     else {
                         moduleLookup().then(function (selectedNodeId) {
+                            
                             scope.ngModel = selectedNodeId || '';
                             scope.changed();
                         });

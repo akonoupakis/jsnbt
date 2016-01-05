@@ -5,6 +5,10 @@ var jsnbt = (function (jsnbt) {
     
     jsnbt.db = (function (db) {
         
+        for (var collection in jsnbt.collections) {
+            db[collection] = new PROXY(collection);
+        };
+
         db.on = function () {
             PROXY.on.apply(this, arguments);
         };

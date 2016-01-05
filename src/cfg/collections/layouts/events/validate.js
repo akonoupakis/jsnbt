@@ -1,38 +1,45 @@
 var _ = require('underscore');
 
-var self = this;
+module.exports = function (sender, context, data) {
+    
+    var languageProperties = {};
+    var contentProperties = {};
 
-var languageProperties = {};
-var contentProperties = {};
+    if (sender.server.app.localization.enabled) {
 
-if (server.app.localization.enabled) {
+        _.each(sender.server.app.languages, function (lang) {
+            languageProperties[lang] = {
+                type: "object"
+            }
+        });
 
-    _.each(server.app.languages, function (lang) {
-        languageProperties[lang] = {
-            type: "object"
+        contentProperties = {
+            localized: {
+                type: "object",
+                properties: languageProperties
+            }
+        };
+    }
+
+    var errors = context.validate({
+        type: 'object',
+        properties: {
+            layout: {
+                type: 'string',
+                required: true,
+                enum: _.pluck(sender.server.app.config.layouts, 'id')
+            },
+            content: {
+                type: "object",
+                required: true,
+                properties: contentProperties
+            }
         }
     });
 
-    contentProperties = {
-        localized: {
-            type: "object",
-            properties: languageProperties
-        }
-    };
-}
+    if (errors)
+        return context.error(errors);
 
-validate({
-    type: 'object',
-    properties: {
-        layout: {
-            type: 'string',
-            required: true,
-            enum: _.pluck(server.app.config.layouts, 'id')
-        },
-        content: {
-            type: "object",
-            required: true,
-            properties: contentProperties
-        }
-    }
-});
+    context.done();
+
+};

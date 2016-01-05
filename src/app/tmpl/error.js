@@ -1,4 +1,5 @@
 var fs = require('fs');
+var HtmlParser = require('./html.js');
 var _ = require('underscore');
 
 _.str = require('underscore.string');
@@ -14,8 +15,32 @@ var errors = {
     503: 'Service Unavailable',
 };
 
-var ErrorRenderer = function (server, ctx, error, stack) {
+var ErrorRenderer = function (server) {
     
+    this.server = server;
+
+};
+
+ErrorRenderer.prototype.render = function (ctx, error, stack) {
+    var errorInternal = _.isNumber(error) ? error : 500;
+    var stackInternal = stack || error;
+    var errorMessage = errors[errorInternal];
+
+    if (ctx.type === 'json') {
+        var obj = {};
+        if (typeof (stackInternal) === 'object' && typeof(stackInternal.message) === 'string') {
+            obj[errorInternal] = stackInternal.message;
+        }
+        else if (typeof (stackInternal) === 'object') {
+            obj = stackInternal;
+        }
+        else
+            obj[errorInternal] = stackInternal || errorMessage;
+
+        ctx.status(errorInternal).send(obj);
+        return;
+    }
+
     ctx.template = 'error';
     var tmplPath = '../www/public/err/';
 
@@ -24,7 +49,7 @@ var ErrorRenderer = function (server, ctx, error, stack) {
         tmplPath = '../www/public/admin/err/';
     }
 
-    var tmplFilePath = tmplPath + error + '.html';
+    var tmplFilePath = tmplPath + errorInternal + '.html';
     var tmplDefaultFilePath = tmplPath + 'error.html';
 
     var errorContent = '';
@@ -41,34 +66,32 @@ var ErrorRenderer = function (server, ctx, error, stack) {
         }
     }
 
-    ctx.res.writeHead(error, { "Content-Type": "text/html" });
+    ctx.res.writeHead(errorInternal, { "Content-Type": "text/html" });
     
-    var text = null;
-    if (errors[error])
-        text = errors[error];
-
     if (!ctx.meta.title || ctx.meta.title === '')
-        ctx.meta.title = server.app.title;
+        ctx.meta.title = this.server.app.title;
     else
-        ctx.meta.title = server.app.title + (server.app.title ? ' | ' : '') + ctx.meta.title;
+        ctx.meta.title = this.server.app.title + (this.server.app.title ? ' | ' : '') + ctx.meta.title;
 
     ctx.halt = true;
 
-    require('./html.js')(server).parse(ctx, errorContent, {
-        error: error,
-        text: text,
-        stack: stack || ''
+    var parser = new HtmlParser(this.server);
+    parser.parse(ctx, errorContent, {
+        error: errorInternal,
+        text: errorMessage,
+        stack: stackInternal || ''
     }, function (err, response) {
         if (err) {
-            ctx.write('template parse failed: ' + err.toString());
-            ctx.end();
+            ctx.res.write('template parse failed: ' + err.toString());
+            ctx.res.end();
         }
         else {
-            ctx.write(response);
-            ctx.end();
+            ctx.res.write(response);
+            ctx.res.end();
         }
     });
-
 };
 
-module.exports = ErrorRenderer;
+module.exports = function (server) {
+    return new ErrorRenderer(server);
+};

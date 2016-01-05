@@ -53,151 +53,138 @@ var getFolderContents = function (rootPath, folderPath, stats) {
 
 var FileManager = function (server) {
 
-    return {
-
-        get: function (fields) {
-
-            var defaults = {
-                path: undefined,
-                paths: undefined
-            };
-
-            var opts = {};
-            extend(true, opts, defaults, fields);
-
-            if (!opts.path && !opts.paths)
-                throw new Error('path or paths are required');
-
-            var root = 'files';
-
-            var rootPath = path.join(server.getPath('www'), 'public', root);
-
-            if (opts.path) {
-
-                var fullPath = path.join(server.getPath('www'), 'public', root, normalize(opts.path));
-                if (fs.existsSync(fullPath)) {
-                    var cstats = fs.statSync(fullPath);
-                    if (cstats.isFile()) {
-                        return getFsObject(rootPath, fullPath, cstats);
-                    }
-                    else {
-                        return getFolderContents(rootPath, fullPath, cstats);
-                    }
-                }
-                else {
-                    return null;
-                }
-            }
-            else if (opts.paths) {
-                var results = [];
-
-                _.each(opts.paths, function (loopPath) {
-                    var loopFullPath = path.join(server.getPath('www'), 'public', root, normalize(loopPath));
-
-                    if (fs.existsSync(loopFullPath)) {
-                        var fstats = fs.statSync(loopFullPath);
-                        if (fstats.isFile()) {
-                            results.push(getFsObject(rootPath, loopFullPath, fstats));
-                        }
-                        else {
-                            results.push(getFolderContents(rootPath, loopFullPath, fstats));
-                        }
-                    }
-                    else {
-                        results.push(null);
-                    }
-                });
-
-                return results;
-            }
-
-        },
-
-        delete: function (fields) {
-
-            var defaults = {
-                path: undefined
-            };
-
-            var opts = {};
-            extend(true, opts, defaults, fields);
-
-            if (!opts.path)
-                throw new Error('path is required');
-
-            var root = 'files';
-
-            var fullPath = path.join(server.getPath('www'), 'public', root, normalize(opts.path));
-            if (fs.existsSync(fullPath)) {
-                fs.delete(fullPath);
-                return true;
-            }
-
-            return false;
-
-        },
-
-        create: function (fields) {
-
-            var defaults = {
-                path: undefined,
-                name: undefined
-            };
-
-            var opts = {};
-            extend(true, opts, defaults, fields);
-
-            if (!opts.path)
-                throw new Error('path is required');
-
-            if (!opts.name)
-                throw new Error('name is required');
-
-            var root = 'files';
-
-            var fullPath = path.join(server.getPath('www'), 'public', root, normalize(opts.path));
-            if (fs.existsSync(fullPath)) {
-                fs.mkdirsSync(path.join(fullPath, opts.name));
-                return true;
-            }
-
-            return false;
-
-        },
-
-        move: function (fields) {
-
-            var defaults = {
-                from: undefined,
-                to: undefined
-            };
-
-            var opts = {};
-            extend(true, opts, defaults, fields);
-
-            if (!opts.from)
-                throw new Error('from is required');
-
-            if (!opts.to)
-                throw new Error('to is required');
-
-            var root = 'files';
-
-            var fullPath = path.join(server.getPath('www'), 'public', root, normalize(opts.from));
-            var fullNewPath = path.join(server.getPath('www'), 'public', root, normalize(opts.to));
-            
-            if (fs.existsSync(fullPath) && !fs.existsSync(fullNewPath)) {
-                fs.copySync(fullPath, fullNewPath);
-                fs.removeSync(fullPath);
-                return true;
-            }
-
-            return false;
-
-        }
-
-    };
+    this.server = server;
 
 };
 
-module.exports = FileManager;
+FileManager.prototype.get = function (paths, cb) {
+    var self = this;
+
+    var isArray = _.isArray(paths);
+    var filePaths = _.isArray(paths) ? paths : [paths];
+    var filePath = _.isString(paths) ? paths : undefined;
+
+    var root = 'files';
+
+    var rootPath = path.join(self.server.getPath('www'), 'public', root);
+
+    if (!isArray && filePath) {
+
+        var fullPath = path.join(self.server.getPath('www'), 'public', root, normalize(filePath));
+        if (fs.existsSync(fullPath)) {
+            var cstats = fs.statSync(fullPath);
+            if (cstats.isFile()) {
+                cb(null, getFsObject(rootPath, fullPath, cstats));
+            }
+            else {
+                cb(null, getFolderContents(rootPath, fullPath, cstats));
+            }
+        }
+        else {
+            cb();
+        }
+    }
+    else {
+        var results = [];
+
+        _.each(filePaths, function (loopPath) {
+            var loopFullPath = path.join(self.server.getPath('www'), 'public', root, normalize(loopPath));
+
+            if (fs.existsSync(loopFullPath)) {
+                var fstats = fs.statSync(loopFullPath);
+                if (fstats.isFile()) {
+                    results.push(getFsObject(rootPath, loopFullPath, fstats));
+                }
+                else {
+                    results.push(getFolderContents(rootPath, loopFullPath, fstats));
+                }
+            }
+            else {
+                results.push(null);
+            }
+        });
+
+        return cb(null, results);
+    }
+
+};
+
+FileManager.prototype.delete = function (paths, cb) {
+    var self = this;
+
+    var root = 'files';
+
+    var fullPath = path.join(self.server.getPath('www'), 'public', root, normalize(paths));
+    fs.exists(fullPath, function (err, res) {
+        if (!err) {
+            fs.remove(fullPath, function (rErr, rRes) {
+                return cb(null, true);
+            });
+        }
+        else {
+            return cb(null, true);
+        }
+    });
+};
+
+FileManager.prototype.create = function (dir, fileName, cb) {
+    var self = this;
+
+    var root = 'files';
+
+    var fullPath = path.join(self.server.getPath('www'), 'public', root, normalize(dir));
+    fs.exists(fullPath, function (err, res) {
+        if (err)
+            return cb(err);
+        
+        fs.mkdirs(path.join(fullPath, fileName), function (mErr, mRes) {
+            cb(null, true);
+        });
+    });
+};
+
+FileManager.prototype.move = function (from, to, cb) {
+    var self = this;
+
+    var root = 'files';
+
+    var fullPath = path.join(self.server.getPath('www'), 'public', root, normalize(from));
+    var fullNewPath = path.join(self.server.getPath('www'), 'public', root, normalize(to));
+
+    fs.exists(fullPath, function (err, res) {
+        if (err)
+            return cb(err);
+
+        if (res) {
+            fs.exists(fullNewPath, function (rErr, rRes) {
+                if (rErr)
+                    return cb(rErr);
+
+                if (!rRes) {
+                    fs.copy(fullPath, fullNewPath, function (cErr, cRes) {
+                        if (cErr)
+                            return cb(cErr);
+
+                        fs.remove(fullPath, function (reErr, reRes) {
+                            if (reErr)
+                                return cb(reErr);
+                            
+                            cb(null, true);
+                        });
+                    });
+                }
+                else {
+                    cb(null, false);
+                }
+            });
+        }
+        else {
+            cb(null, false);
+        }
+    });
+
+};
+
+module.exports = function (server) {
+    return new FileManager(server);
+};

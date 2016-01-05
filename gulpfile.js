@@ -45,8 +45,38 @@ gulp.task('copyLocalBowerComponents', function () {
 });
 
 gulp.task('copyLocalNodeModules', function () {
-    gulp.src('./npm/**')
-        .pipe(gulp.dest('./node_modules'));
+    var gulps = [];
+
+    var modules = undefined;
+    if (fs.existsSync(server.getPath('npm/modules'))) {
+        modules = _.filter(fs.readFileSync(server.getPath('npm/modules'), { encoding: 'utf8' }).split('\r\n'), function (x) {
+            return x !== undefined && x !== '';
+        });
+    }
+    
+    if (fs.existsSync(server.getPath('npm'))) {
+        var packages = fs.readdirSync(server.getPath('npm'));
+        _.each(packages, function (packageItem) {
+            if (fs.lstatSync(server.getPath('npm/' + packageItem)).isDirectory()) {
+                del.sync('./node_modules/' + packageItem);
+
+                if (modules !== undefined) {
+                    if (modules.indexOf(packageItem) !== -1) {
+                        gulps.push(gulp.src('./npm/' + packageItem + '/**')
+                            .pipe(gulp.dest('./node_modules/' + packageItem)));
+                    }
+                }
+                else {
+                    gulps.push(gulp.src('./npm/' + packageItem + '/**')
+                        .pipe(gulp.dest('./node_modules/' + packageItem)));
+                }
+            }
+        });
+    }
+
+    if (gulps.length > 0)
+        return eventStream.merge(gulps);
+
 });
 
 gulp.task('loadModules', function () {
@@ -101,11 +131,11 @@ gulp.task('loadModules', function () {
     if (fs.existsSync(server.getPath('node_modules'))) {
         var packages = fs.readdirSync(server.getPath('node_modules'));
         _.each(packages, function (packageItem) {
-
             if (_.str.startsWith(packageItem, 'jsnbt')) {
                 if (moduleNames.indexOf(packageItem) === -1) {
                     if (fs.lstatSync(server.getPath('node_modules/' + packageItem)).isDirectory()) {
                         var nodeModulePackagePath = server.getPath('node_modules/' + packageItem + '/package.json');
+
                         if (fs.existsSync(nodeModulePackagePath)) {
                             var nodeModulePackage = require(nodeModulePackagePath);
 
@@ -118,7 +148,6 @@ gulp.task('loadModules', function () {
                                     app.register(nodeModuleIndexModule);
 
                                     moduleNames.push(packageItem);
-
                                 }
                             }
                         }
@@ -297,7 +326,8 @@ gulp.task('copyMigrations', function () {
             .pipe(gulp.dest('./' + TARGET_FOLDER + '/migrations/' + moduleName)));
     });
 
-    return eventStream.merge(gulps);
+    if (gulps.length > 0)
+        return eventStream.merge(gulps);
 });
 
 var getFileCopyPublicPaths = function (module, modulePath) {
@@ -370,7 +400,8 @@ gulp.task('copyFiles', function () {
         gulp.src(adminTemplatePaths)
            .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/admin/'))];
 
-    return eventStream.merge(gulps);
+    if (gulps.length > 0)
+        return eventStream.merge(gulps);
 
 });
 
@@ -405,7 +436,8 @@ gulp.task('parseTemplates', function () {
 
     });
 
-    return eventStream.merge(gulps);
+    if (gulps.length > 0)
+        return eventStream.merge(gulps);
 });
 
 gulp.task('generateJsnbtScript', function () {
@@ -485,7 +517,8 @@ gulp.task('deployBowerComponents', function () {
         }
     });
 
-    return eventStream.merge(gulps);
+    if (gulps.length > 0)
+        return eventStream.merge(gulps);
 
 });
 
@@ -521,7 +554,8 @@ gulp.task('generateStyles', function () {
 
     });
 
-    return eventStream.merge(gulps);
+    if (gulps.length > 0)
+        return eventStream.merge(gulps);
 });
 
 gulp.task('checkStructure', function () {
@@ -569,7 +603,8 @@ gulp.task('minifyScripts', function () {
 
     });
 
-    return eventStream.merge(gulps);
+    if (gulps.length > 0)
+        return eventStream.merge(gulps);
 });
 
 gulp.task('compressAngularTemplates', function () {
@@ -682,7 +717,7 @@ function watch() {
             processFile(event, 'web\\public\\', './' + TARGET_FOLDER + '/public/');
         });
 
-        gulp.watch('./' + modulePath + '/cfg/**', function (event) {
+        gulp.watch(['./' + modulePath + '/app/clib/**', './' + modulePath + '/cfg/**'], function (event) {
             runSequence('loadModules', 'generateJsnbtScript');
         });
 

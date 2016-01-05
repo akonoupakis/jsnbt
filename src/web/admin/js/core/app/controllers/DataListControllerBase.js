@@ -72,7 +72,7 @@
                                 $data.data.del(row.id).then(function () {
                                     self.remove(row);
                                 }).catch(function (error) {
-                                    deferred.reject(error);
+                                    throw error;
                                 });
                             }
                         });
