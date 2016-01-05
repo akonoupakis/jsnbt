@@ -91,6 +91,7 @@ Server.prototype.start = function () {
         native_parser: false
     });
 
+    self.express.set('trust proxy', 1);
     self.express.use(session({
         secret: secret,
         resave: false,
