@@ -15,7 +15,7 @@
             "required": true
         },
 		"parent": {
-            "type": ["string", "object"],
+            "type": ["string", "objectId"],
             "required": false
         },
 		"createdOn": {
@@ -35,7 +35,7 @@
             "required": false,
 			"properties": {
 				"domain": { "type": "string", "required": true },
-				"nodeId": { "type": ["string", "object"], "required": true }
+				"nodeId": { "type": "objectId", "required": true }
 			}
         },
 		"route": {
@@ -109,7 +109,7 @@
 		"hierarchy": {
             "type": "array",
             "required": true,
-			"items": { "type": ["string", "object"] },
+			"items": { "type": "objectId" },
 			"uniqueItems":  true
         }
     }

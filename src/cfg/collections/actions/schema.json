@@ -6,7 +6,7 @@
             "required": true
         },
         "user": {
-            "type": "any",
+            "type": "objectId",
             "required": true
         },
 		"action": {
@@ -19,7 +19,7 @@
             "required": true
         },
 		"objectId": {
-            "type": "any",
+            "type": "objectId",
             "required": true
         },
 		"objectData": {
