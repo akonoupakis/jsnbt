@@ -48,7 +48,7 @@
     "server-root": "0.0.9",
     "underscore": "1.6.0",
     "underscore.string": "2.3.3",
-    "mongodb-proxy": "1.0.10",
+    "mongodb-proxy": "1.0.11",
     "express-session-mongo": "0.1.0",
     "socket.io": "0.9.x",
     "corser": "~1.1.1",
