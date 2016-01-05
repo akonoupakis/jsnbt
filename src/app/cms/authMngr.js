@@ -214,6 +214,7 @@ AuthManager.prototype.create = function (user, cb) {
         if (count > 0)
             return cb(new Error('username already exists'));
 
+        
 
         var newUser = {};
         extend(true, newUser, user);
@@ -306,56 +307,72 @@ AuthManager.prototype.requestEmailChange = function (userId, email, cb) {
     var self = this;
 
     var store = this.server.db.createStore('users');
-    store.find({ id: userId }, function (err, res) {
+    store.count(function (x) {
+        x.query({
+            username: email
+        });
+    }, function (err, count) {
         if (err)
             return cb(err);
 
-        var code = random.string(6, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
-        var expiresAt = moment(new Date()).add(5, 'minutes')._d.getTime();
+        if (count > 0)
+            return cb(new Error('username already exists'));
 
-        var templateCode = 'email-change';
-        self.server.messager.mail.getTemplate(templateCode, function (tmplErr, tmpl) {
-            if (tmplErr)
-                return cb(tmplErr);
+        store.get(function (x) {
+            x.query(userId);
+            x.single();
+        }, function (err, res) {
+            if (err)
+                return cb(err);
 
-            self.server.messager.mail.getModel(templateCode, function (modelErr, model) {
-                if (modelErr)
-                    return cb(modelErr);
+            var code = random.string(6, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+            var expiresAt = moment(new Date()).add(5, 'minutes')._d.getTime();
 
-                model.code = code;
-                model.email = email;
-                model.firstName = res.firstName;
-                model.lastName = res.lastName;
+            var templateCode = 'email-change';
+            self.server.messager.mail.getTemplate(templateCode, function (tmplErr, tmpl) {
+                if (tmplErr)
+                    return cb(tmplErr);
 
-                self.server.messager.mail.parseTemplate(tmpl, model, function (parseErr, parsedTmpl) {
-                    if (parseErr) 
-                        return cb(parseErr);
-                    
-                    self.server.messager.mail.getSender(function (senderErr, sender) {
-                        if (senderErr)
-                            return cb(senderErr);
+                self.server.messager.mail.getModel(templateCode, function (modelErr, model) {
+                    if (modelErr)
+                        return cb(modelErr);
 
-                        sender.send({
-                            to: email,
-                            subject: parsedTmpl.subject,
-                            body: parsedTmpl.body
-                        }, function (sendErr, response) {
-                            if (sendErr)
-                                return cb(sendErr);
+                    model.code = code;
+                    model.email = email;
+                    model.firstName = res.firstName;
+                    model.lastName = res.lastName;
 
-                            store.update(userId, {
-                                $set: {
-                                    emailChange: {
-                                        email: email,
-                                        code: code,
-                                        expiresAt: expiresAt
-                                    }
-                                }
-                            }, function (err, res) {
-                                if (err)
-                                    return cb(err);
+                    self.server.messager.mail.parseTemplate(tmpl, model, function (parseErr, parsedTmpl) {
+                        if (parseErr)
+                            return cb(parseErr);
 
-                                cb(null, true);
+                        self.server.messager.mail.getSender(function (senderErr, sender) {
+                            if (senderErr)
+                                return cb(senderErr);
+
+                            sender.send({
+                                to: email,
+                                subject: parsedTmpl.subject,
+                                body: parsedTmpl.body
+                            }, function (sendErr, response) {
+                                if (sendErr)
+                                    return cb(sendErr);
+
+                                store.put(function (x) {
+                                    x.query(userId);
+                                    x.data({
+                                        emailChange: {
+                                            email: email,
+                                            code: code,
+                                            expiresAt: expiresAt
+                                        }
+                                    });
+                                }, function (err, res) {
+                                    if (err)
+                                        return cb(err);
+
+                                    cb(null, true);
+                                });
                             });
                         });
                     });
@@ -363,7 +380,6 @@ AuthManager.prototype.requestEmailChange = function (userId, email, cb) {
             });
         });
     });
-
 };
 
 AuthManager.prototype.submitEmailChange = function (userId, code, cb) {

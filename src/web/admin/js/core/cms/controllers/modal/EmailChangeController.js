@@ -9,13 +9,22 @@
         var logger = $logger.create('EmailChangeController');
         
         $scope.invalidCode = false;
+        $scope.emailExists = false;
 
         $scope.requesting = false;
         $scope.requested = false;
         $scope.submitted = false;
 
+        $scope.validateEmail = function (value) {
+            var isValid = value.match(/^[A-Z0-9._%+-]+@(?:[A-Z0-9\-]+\.)+[A-Z]{2,4}$/i);
+            $scope.emailExists = false;
+            return isValid;
+        };
+
         $scope.requestCode = function () {
             $scope.requesting = true;
+            $scope.emailExists = false;
+
             AuthService.requestEmailChangeCode($scope.model.email).then(function (code) {
                 $scope.requesting = false;
                 $scope.requested = true;
@@ -24,7 +33,13 @@
                 $scope.btn.ok = 'submit';
             }).catch(function (ex) {
                 $scope.requesting = false;
-                throw ex;
+                if (typeof (ex) === 'object' && ex.exists === true) {
+                    $scope.emailExists = true;
+                    throw ex;
+                }
+                else {
+                    throw ex;
+                }
             });
         };
         

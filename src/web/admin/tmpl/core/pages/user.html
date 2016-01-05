@@ -8,7 +8,8 @@
 <hr />
 
 <div class="row" id="user-username" data-scrollspy="email">
-    <ctrl-text class="col-sm-12" ng-model="model.username" ng-required="true" ng-disabled="!isNew()" ng-label="email"></ctrl-text>
+    <ctrl-text class="col-sm-12" ng-model="model.username" ng-required="true" ng-validate="validateEmail" ng-valid="!emailExists" ng-disabled="!isNew()" ng-label="email"></ctrl-text>
+    <span class="validation-error whole centered" ng-show="emailExists">email already exist</span>
 </div>
         
 <div class="row" id="user-name" data-scrollspy="name">

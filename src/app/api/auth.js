@@ -62,8 +62,15 @@ AuthApi.prototype.create = function (ctx, fields) {
 
     var createUser = function () {
         authMngr.create(user, function (err, result) {
-            if (err)
-                return ctx.error(err);
+            if (err) {
+                if (err.message === 'username already exists') {
+                    return ctx.status(401).send({
+                        exists: true
+                    });
+                };
+
+                return ctx.error(500, err);
+            }
 
             if (result) {
                 ctx.json(result);
@@ -75,8 +82,7 @@ AuthApi.prototype.create = function (ctx, fields) {
     }
 
     if (!authMngr.isAuthorized(ctx.req.session.user, 'users', 'C'))
-        ctx.error(401, 'Access Denied');
-
+        return ctx.error(401, 'Access Denied');
 
     if (user.roles.length === 0)
         return ctx.error(400, 'at least one role is required');
@@ -146,8 +152,15 @@ AuthApi.prototype.register = function (ctx, fields) {
 
     var createUser = function () {
         authMngr.create(user, function (err, result) {
-            if (err)
-                return ctx.error(err);
+            if (err) {
+                if (err.message === 'username already exists') {
+                    return ctx.status(401).send({
+                        exists: true
+                    });
+                };
+
+                return ctx.error(500, err);
+            }
 
             if (result) {
                 ctx.req.session.uid = result.id;
@@ -232,8 +245,15 @@ AuthApi.prototype.logout = function (ctx, fields) {
 AuthApi.prototype.requestEmailChange = function (ctx, fields) {
     var authMngr = require('../cms/authMngr.js')(this.server);
     authMngr.requestEmailChange(ctx.req.session.user.id, fields.email, function (err, res) {
-        if (err) 
+        if (err) {
+            if (err.message === 'username already exists') {
+                return ctx.status(401).send({
+                    exists: true
+                });
+            };
+
             return ctx.error(500, err);
+        }
         
         ctx.json(res);
     });

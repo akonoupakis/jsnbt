@@ -22,6 +22,7 @@
         $scope.editRoles = false;
 
         $scope.invalidPasswordComparison = false;
+        $scope.emailExists = false;
         
         this.enqueue('preloading', '', function () {
             var deferred = $q.defer();
@@ -71,6 +72,12 @@
 
             return deferred.promise;
         });
+
+        $scope.validateEmail = function (value) {
+            var isValid = value.match(/^[A-Z0-9._%+-]+@(?:[A-Z0-9\-]+\.)+[A-Z]{2,4}$/i);
+            $scope.emailExists = false;
+            return isValid;
+        };
 
         $scope.validatePasswordConfirm = function (value) {
             var valid = value === $scope.credentials.password;
@@ -142,7 +149,11 @@
     };
 
     UserController.prototype.push = function (data) {
+        var self = this;
+
         var deferred = this.ctor.$q.defer();
+
+        self.scope.emailExists = false;
 
         if (this.isNew()) {
 
@@ -154,7 +165,13 @@
             this.ctor.AuthService.create(newUser).then(function (result) {
                 deferred.resolve(result);
             }).catch(function (error) {
-                deferred.reject(error);
+                if (typeof (error) === 'object' && error.exists === true) {
+                    self.scope.emailExists = true;
+                    deferred.reject(error);
+                }
+                else {
+                    deferred.reject(error);
+                }
             });
         }
         else {

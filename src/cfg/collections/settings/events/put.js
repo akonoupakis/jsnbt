@@ -10,7 +10,7 @@ module.exports = function (sender, context, data) {
         if (matchedError)
             return context.error(matchedError);
         else
-            if (matched)
+            if (matched) 
                 return context.error(400, 'setting already exists');
 
         context.done();

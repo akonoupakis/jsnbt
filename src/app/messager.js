@@ -83,13 +83,11 @@ MailMessager.prototype.getSender = function (callback) {
             callback(err, null);
         }
         else {
-            var first = _.first(res);
-
             var opts = {};
             extend(true, opts, settings);
 
-            if (first.data && first.data.messaging && first.data.messaging.mail)
-                extend(true, opts, first.data.messaging.mail);
+            if (res.data && res.data.messaging && res.data.messaging.mail)
+                extend(true, opts, res.data.messaging.mail);
 
             if (opts.provider !== undefined && opts.provider !== null) {
                 if (self.server.app.config.messaging.mail.implementations[opts.provider]) {

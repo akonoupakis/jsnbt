@@ -22,14 +22,22 @@ var ErrorRenderer = function (server) {
 };
 
 ErrorRenderer.prototype.render = function (ctx, error, stack) {
+    var errorInternal = _.isNumber(error) ? error : 500;
+    var stackInternal = stack || error;
+    var errorMessage = errors[errorInternal];
+
     if (ctx.type === 'json') {
         var obj = {};
-        if (typeof (stack) === 'object')
-            obj = stack;
+        if (typeof (stackInternal) === 'object' && typeof(stackInternal.message) === 'string') {
+            obj[errorInternal] = stackInternal.message;
+        }
+        else if (typeof (stackInternal) === 'object') {
+            obj = stackInternal;
+        }
         else
-            obj[error] = stack || errors[error];
+            obj[errorInternal] = stackInternal || errorMessage;
 
-        ctx.status(error).send(obj);
+        ctx.status(errorInternal).send(obj);
         return;
     }
 
@@ -41,7 +49,7 @@ ErrorRenderer.prototype.render = function (ctx, error, stack) {
         tmplPath = '../www/public/admin/err/';
     }
 
-    var tmplFilePath = tmplPath + error + '.html';
+    var tmplFilePath = tmplPath + errorInternal + '.html';
     var tmplDefaultFilePath = tmplPath + 'error.html';
 
     var errorContent = '';
@@ -58,12 +66,8 @@ ErrorRenderer.prototype.render = function (ctx, error, stack) {
         }
     }
 
-    ctx.res.writeHead(error, { "Content-Type": "text/html" });
-
-    var text = null;
-    if (errors[error])
-        text = errors[error];
-
+    ctx.res.writeHead(errorInternal, { "Content-Type": "text/html" });
+    
     if (!ctx.meta.title || ctx.meta.title === '')
         ctx.meta.title = this.server.app.title;
     else
@@ -73,9 +77,9 @@ ErrorRenderer.prototype.render = function (ctx, error, stack) {
 
     var parser = new HtmlParser(this.server);
     parser.parse(ctx, errorContent, {
-        error: error,
-        text: text,
-        stack: stack || ''
+        error: errorInternal,
+        text: errorMessage,
+        stack: stackInternal || ''
     }, function (err, response) {
         if (err) {
             ctx.res.write('template parse failed: ' + err.toString());

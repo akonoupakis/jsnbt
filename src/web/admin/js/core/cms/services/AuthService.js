@@ -11,18 +11,10 @@
                 var deferred = $q.defer();
 
                 var url = '../jsnbt-api/core/auth/create';
-                $http.post(url, user).then(function (data) {
-                    var response = data.data;
-
-                    if (response.id) {
-                        deferred.resolve(response);
-                    }
-                    else {
-                        deferred.reject(response);
-                    }
-
+                $http.post(url, user).then(function (response) {
+                    deferred.resolve(response.data);
                 }).catch(function (ex) {
-                    deferred.reject(ex);
+                    deferred.reject(ex.data);
                 });
 
                 return deferred.promise;
@@ -32,18 +24,10 @@
                 var deferred = $q.defer();
 
                 var url = '../jsnbt-api/core/auth/register';
-                $http.post(url, user).then(function (data) {
-                    var response = data.data;
-
-                    if (response.id) {
-                        deferred.resolve(response);
-                    }
-                    else {
-                        deferred.reject(response);
-                    }
-
+                $http.post(url, user).then(function (response) {
+                    deferred.resolve(response.data);
                 }).catch(function (ex) {
-                    deferred.reject(ex);
+                    deferred.reject(ex.data);
                 });
 
                 return deferred.promise;
@@ -56,18 +40,10 @@
                 $http.post(url, {
                     username: username,
                     password: password
-                }).then(function (data) {
-                    var response = data.data;
-
-                    if (response.id) {
-                        deferred.resolve(response);
-                    }
-                    else {
-                        deferred.reject(response);
-                    }
-
+                }).then(function (response) {
+                    deferred.resolve(response.data);
                 }).catch(function (ex) {
-                    deferred.reject(ex);
+                    deferred.reject(ex.data);
                 });
 
                 return deferred.promise;
@@ -77,18 +53,10 @@
                 var deferred = $q.defer();
 
                 var url = '../jsnbt-db/users/me';
-                $http.get(url).then(function (data) {
-                    var response = data.data;
-
-                    if (response.id) {
-                        deferred.resolve(response);
-                    }
-                    else {
-                        deferred.reject(response);
-                    }
-
+                $http.get(url).then(function (response) {
+                    deferred.resolve(response.data);
                 }).catch(function (ex) {
-                    deferred.reject(ex);
+                    deferred.reject(ex.data);
                 });
 
                 return deferred.promise;
@@ -159,10 +127,10 @@
                 $http.post(url, {
                     password: password,
                     newPassword: newPassword
-                }).then(function (data) {
-                    deferred.resolve(data.data);
+                }).then(function (response) {
+                    deferred.resolve(response.data);
                 }).catch(function (ex) {
-                    deferred.reject(ex);
+                    deferred.reject(ex.data);
                 });
 
                 return deferred.promise;
@@ -174,10 +142,10 @@
                 var url = '../jsnbt-api/core/auth/requestEmailChange';
                 $http.post(url, {
                     email: email
-                }).then(function (data) {
-                    deferred.resolve(data.data);
+                }).then(function (response) {
+                    deferred.resolve(response.data);
                 }).catch(function (ex) {
-                    deferred.reject(ex);
+                    deferred.reject(ex.data);
                 });
 
                 return deferred.promise;
@@ -190,10 +158,10 @@
                 $http.post(url, {
                     email: email,
                     code: code
-                }).then(function (data) {
-                    deferred.resolve(data.data);
+                }).then(function (response) {
+                    deferred.resolve(response.data);
                 }).catch(function (ex) {
-                    deferred.reject(ex);
+                    deferred.reject(ex.data);
                 });
 
                 return deferred.promise;
