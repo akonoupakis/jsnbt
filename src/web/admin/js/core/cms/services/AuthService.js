@@ -28,6 +28,27 @@
                 return deferred.promise;
             };
 
+            AuthService.register = function (user) {
+                var deferred = $q.defer();
+
+                var url = '../jsnbt-api/core/auth/register';
+                $http.post(url, user).then(function (data) {
+                    var response = data.data;
+
+                    if (response.id) {
+                        deferred.resolve(response);
+                    }
+                    else {
+                        deferred.reject(response);
+                    }
+
+                }).catch(function (ex) {
+                    deferred.reject(ex);
+                });
+
+                return deferred.promise;
+            };
+
             AuthService.login = function (username, password) {
                 var deferred = $q.defer();
 

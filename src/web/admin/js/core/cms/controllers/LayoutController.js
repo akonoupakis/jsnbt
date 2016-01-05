@@ -58,12 +58,7 @@
             self.setTemplate(self.scope.id);
             deferred.resolve(result);
         }).catch(function (error) {
-            if (error[404]) {
-                self.setTemplate(self.scope.id);
-                deferred.resolve();
-            } else {
-                deferred.reject(error);
-            }
+            deferred.reject(error);
         });
 
         return deferred.promise;

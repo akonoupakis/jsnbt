@@ -21,6 +21,9 @@ module.exports = function (sender, context, data) {
     if (!data.username.match(/^[A-Z0-9._%+-]+@(?:[A-Z0-9\-]+\.)+[A-Z]{2,4}$/i)) 
         return context.error(400, 'username is not a valid email');
     
+    if (!context.internal && data.password)
+        delete data.password;
+
     context.done();
 
 };

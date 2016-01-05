@@ -6,9 +6,6 @@ module.exports = function (sender, context, data) {
         return context.done();
 
     var authMngr = sender.server.require('./cms/authMngr.js')(sender.server);
-    
-    if (!context.internal && data.password) 
-        return context.error(401, 'cannot set password');
 
     if (context.req.session.user && context.req.session.user.id === data.id) {
         if (context.changed('roles')) {
@@ -32,8 +29,7 @@ module.exports = function (sender, context, data) {
         }
     }
 
-    if (data.password)
-        return context.error(401, 'cannot set password');
+    
 
     context.done();
 

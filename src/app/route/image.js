@@ -29,9 +29,9 @@ var renderImage = function (server, ctx, src, gen) {
                             ctx.error(500, readErr);
                         }
                         else {
-                            ctx.writeHead(200, { 'Content-Type': 'image/' + image.type.toLowerCase() });
-                            ctx.write(img);
-                            ctx.end();
+                            ctx.res.writeHead(200, { 'Content-Type': 'image/' + image.type.toLowerCase() });
+                            ctx.res.write(img);
+                            ctx.res.end();
                         }
                     });
                 }, function (err) {
@@ -119,9 +119,9 @@ var renderImage = function (server, ctx, src, gen) {
                                 ctx.error(500, readErr);
                             }
                             else {
-                                ctx.writeHead(200, { 'Content-Type': 'image/' + ctxInternal.imageObj.type.toLowerCase() });
-                                ctx.write(img);
-                                ctx.end();
+                                ctx.res.writeHead(200, { 'Content-Type': 'image/' + ctxInternal.imageObj.type.toLowerCase() });
+                                ctx.res.write(img);
+                                ctx.res.end();
                             }
                         });
                     }

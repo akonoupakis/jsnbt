@@ -151,7 +151,7 @@
 
             newUser.password = this.scope.credentials.password;
 
-            this.ctor.$data.users.post(newUser).then(function (result) {
+            this.ctor.AuthService.create(newUser).then(function (result) {
                 deferred.resolve(result);
             }).catch(function (error) {
                 deferred.reject(error);

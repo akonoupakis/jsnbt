@@ -66,6 +66,90 @@ AuthApi.prototype.create = function (ctx, fields) {
                 return ctx.error(err);
 
             if (result) {
+                ctx.json(result);
+            }
+            else {
+                ctx.json(null);
+            }
+        });
+    }
+
+    if (!authMngr.isAuthorized(ctx.req.session.user, 'users', 'C'))
+        ctx.error(401, 'Access Denied');
+
+
+    if (user.roles.length === 0)
+        return ctx.error(400, 'at least one role is required');
+
+    _.each(user.roles, function (role) {
+        if (!authMngr.isInRole(ctx.req.session.user, role)) {
+            return ctx.error(401, 'access denied for role "' + role + '"');
+        }
+    });
+
+    createUser();
+
+};
+
+AuthApi.prototype.register = function (ctx, fields) {
+    var self = this;
+
+    var user = {
+        username: fields.username,
+        firstName: fields.firstName,
+        lastName: fields.lastName,
+        password: fields.password,
+        roles: fields.roles
+    };
+
+    var validator = new validation.JSONValidation();
+    var validationResult = validator.validate(user, {
+        type: 'object',
+        required: true,
+        properties: {
+            username: {
+                type: 'string',
+                required: true
+            },
+            password: {
+                type: 'string',
+                required: true
+            },
+            firstName: {
+                type: 'string',
+                required: true
+            },
+            lastName: {
+                type: 'string',
+                required: true
+            },
+            roles: {
+                type: 'array',
+                required: true,
+                items: {
+                    type: 'string'
+                },
+                enum: _.pluck(self.server.app.config.roles, 'name'),
+                uniqueItems: true
+            }
+        }
+    });
+    if (!validationResult.ok) {
+        var validationErrors = validationResult.path + ': ' + validationResult.errors.join(' - ');
+        return ctx.error(400, 'validation error on user object\n' + validationErrors);
+    }
+
+    if (!user.username.match(/^[A-Z0-9._%+-]+@(?:[A-Z0-9\-]+\.)+[A-Z]{2,4}$/i))
+        return ctx.error(400, 'username is not a valid email');
+
+    var authMngr = require('../cms/authMngr.js')(this.server);
+
+    var createUser = function () {
+        authMngr.create(user, function (err, result) {
+            if (err)
+                return ctx.error(err);
+
+            if (result) {
                 ctx.req.session.uid = result.id;
                 ctx.req.session.user = result;
                 ctx.req.session.save(function () {
@@ -73,7 +157,7 @@ AuthApi.prototype.create = function (ctx, fields) {
                 });
             }
             else {
-                ctx.json({});
+                ctx.json(null);
             }
         });
     }
@@ -88,14 +172,10 @@ AuthApi.prototype.create = function (ctx, fields) {
 
             if (user.roles.indexOf('sa') === -1)
                 return ctx.error(400, 'first time user should be on the "sa" role');
-            
+
             createUser();
         }
         else {
-            if (!authMngr.isAuthorized(ctx.req.session.user, 'users', 'C'))
-                ctx.error(401, 'Access Denied');
-
-
             if (user.roles.length === 0)
                 return ctx.error(400, 'at least one role is required');
 

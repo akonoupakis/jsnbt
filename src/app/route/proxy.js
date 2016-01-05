@@ -20,7 +20,10 @@ Router.prototype.route = function (ctx, next) {
         var jsonData = JSON.parse(postdata || '{}');
         route.data = jsonData;
 
-        self.server.db.handle(route, next, function (error, results) {
+        self.server.db.handle(route, function () {
+            //ctx.json(null);
+            next();
+        }, function (error, results) {
             if (error) {
                 if (typeof (error) === 'object') {
                     if (error.code && error.messages) {

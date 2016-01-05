@@ -675,7 +675,7 @@ NodeManager.prototype.getEnabled = function (node, cb) {
 
                         for (var langItem in lastNode.active) {
                             var langActive = true;
-                            if (_.filter(server.app.languages, function (x) { return x.code === langItem; }).length > 0) {
+                            if (_.filter(self.server.app.languages, function (x) { return x.code === langItem; }).length > 0) {
                                 _.each(hierarchyNodes, function (hnode) {
                                     if (!hnode.active[langItem]) {
                                         langActive = false;

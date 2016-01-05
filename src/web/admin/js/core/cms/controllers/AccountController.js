@@ -85,9 +85,9 @@
 
         var deferred = this.ctor.$q.defer();
 
-        this.ctor.$data.users.put(this.scope.id, data).then(function (result) {
-            self.scope.current.setUser(result);
-            deferred.resolve(result);
+        this.ctor.$data.users.put(this.scope.current.user.id, data).then(function (result) {
+            self.scope.current.setUser(data);
+            deferred.resolve(data);
         }).catch(function (error) {
             deferred.reject(error);
         });

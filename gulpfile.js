@@ -717,7 +717,7 @@ function watch() {
             processFile(event, 'web\\public\\', './' + TARGET_FOLDER + '/public/');
         });
 
-        gulp.watch('./' + modulePath + '/cfg/**', function (event) {
+        gulp.watch(['./' + modulePath + '/app/**', './' + modulePath + '/cfg/**'], function (event) {
             runSequence('loadModules', 'generateJsnbtScript');
         });
 
