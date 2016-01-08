@@ -8,7 +8,6 @@ var data = require('./data.js');
 var io = require('socket.io');
 var extend = require('extend');
 var Cache = require('./cache.js');
-var serverRoot = require('server-root');
 var _ = require('underscore');
 
 function Server(app, options) {
@@ -50,7 +49,7 @@ function Server(app, options) {
     this.host = optsHost;
     this.port = this.options.port;
 
-    this.getPath = serverRoot.getPath;
+    this.getPath = app.root.getPath;
 
     this.messager = new Messager(this);
 
