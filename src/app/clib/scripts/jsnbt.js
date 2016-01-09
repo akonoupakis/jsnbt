@@ -1,8 +1,6 @@
 var jsnbt = (function (jsnbt) {
     'use strict';
-
-    jsnbt.version = '0.0.0';
-    
+        
     jsnbt.db = (function (db) {
         
         for (var collection in jsnbt.collections) {

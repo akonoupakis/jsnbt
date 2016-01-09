@@ -25,7 +25,7 @@
                             title: 'v' + $jsnbt.version
                         }
                     };
-
+                    
                     $scope.current = {
 
                         user: undefined,
