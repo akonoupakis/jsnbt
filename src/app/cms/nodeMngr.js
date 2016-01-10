@@ -517,7 +517,7 @@ NodeManager.prototype.getUrl = function (node, cb) {
 
                             if (langUrl !== '' && fullyResolved) {
                                 var resolvedLangUrl = '';
-                                if (lastNode.domain === 'core' && self.server.app.localization.enabled && getEntity(lastNode.entity).isLocalized()) {
+                                if (lastNode.domain === 'core' && self.server.app.localization.enabled && self.getEntity(lastNode.entity).isLocalized()) {
                                     resolvedLangUrl += '/' + langItem;
                                 }
 

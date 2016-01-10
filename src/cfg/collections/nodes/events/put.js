@@ -6,8 +6,8 @@ module.exports = function (sender, context, data) {
     var authMngr = sender.server.require('./cms/authMngr.js')(sender.server);
     var nodeMngr = sender.server.require('./cms/nodeMngr.js')(sender.server);
     
-    delete data.enabled;
-    delete data.url;
+    delete context.raw.enabled;
+    delete context.raw.url;
 
     var processChildren = function (domain, hierarchy, cb) {
         if (hierarchy.length > 0) {
@@ -114,20 +114,19 @@ module.exports = function (sender, context, data) {
 
         asyncs.push(function (cb) {
             var hierarchyChange = entity.hasProperty('parent') && context.changed('parent') && data.parent !== context.previous.parent;
-
             if (!hierarchyChange) 
                 return cb();
-
+            
             nodeMngr.getHierarchy(data, function (hErr, hierarchyNodes) {
                 if (hErr)
                     return cb(hErr);
 
                 var hierarchyNodeIds = _.pluck(hierarchyNodes, 'id');
-                data.hierarchy = hierarchyNodeIds;
+                context.raw.hierarchy = hierarchyNodeIds;
 
                 nodeMngr.purgeCache(data.id);
 
-                processChildren(data.domain, data.hierarchy, function (err, result) {
+                processChildren(data.domain, hierarchyNodeIds, function (err, result) {
                     cb(err, result);
                 });
             });
