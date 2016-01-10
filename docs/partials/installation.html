@@ -20,13 +20,13 @@
         </p>
     </li>
     <li>
-        <h4>gruntfile.js</h4>
+        <h4>gulpfile.js</h4>
         <p>
-            This is used by the grunt task runner to bundle the site to a deployment target folder (dev/dist) in order to be started by the node web server.
+            This is used by the gulp task runner to bundle the site to the deployment target folder (/www) in order to be started by the node web server.
             <br />
-            The jsnbt grunt process is fairly complicated, so it has been embedded in the jsnbt core code and will be covered in next chapters.
+            The jsnbt gulp process is fairly complicated, so it has been embedded in the jsnbt core code and will be covered in next chapters.
             <br />
-            In your gruntfile, you should point the grunt function to <b>jsnbt/gruntfile.js</b>.
+            In your gulpfile, you should point the gulp function to <b>jsnbt/gulpfile.js</b>.
         </p>
     </li>
     <li>
@@ -63,7 +63,7 @@
 </p>
 <h3>run</h3>
 <p>
-    Run <b>grunt dev</b> or <b>grunt prod</b> to grunt the app (this also downloads any bower components needed).
+    Run <b>gulp dev</b> or <b>gulp prod</b> to structure-up the app (this also downloads any bower components needed).
     <br />
     Run <b>node server-app.js</b> to run the app.
 </p>

@@ -1,14 +1,14 @@
 ﻿<p>
-    Grunt is a task runner.
+    Gulp is a task runner.
 </p>
 <p>
-    We use grunt to prepare the a target folder with the nessesary app files for deployment.
+    We use gulp to prepare a target folder with the nessesary app files for deployment.
 </p>
 <p>
-    In general lines, grunting, gets the files from all installed modules from their "src/" folders and merges them to the deployment folder target ("www/").
+    In general lines, gulping, gets the files from all installed modules from their "src/" folders and merges them to the deployment folder target ("www/").
 </p>
 <p>
-    Upon grunt, the "src/public/" files are placed in "/www/public/" and the "src/admin/" files in "/www/public/admin/" ready as wanted by the app so that the admin would reside in a "/admin" directory.
+    Upon gulp, the "src/public/" files are placed in "/www/public/" and the "src/admin/" files in "/www/public/admin/" ready as wanted by the app so that the admin would reside in a "/admin" directory.
 </p>
 <p>
     The "src/app/" location containing all server side code is left out as it is always triggered from the downloaded npm packages, from "node_modules".
@@ -45,14 +45,14 @@
             <li>performs less parsing on the copied less files</li>
             <li>preprocess the copied html templates depending on the deployment target (on "dist", it preprocess the templates and leaves the unminified resources)</li>
             <li>minifies the parsed less response</li>
-            <li>uglifies copies js files</li>
+            <li>uglifies copied js files</li>
         </ul>
     </div>
 </div>
         
-<h4>update-files switch</h4>
+<h4>update switch</h4>
 <p>
-    Grunt utilizes a files watch, and if the update-files switch is defined (e.g. grunt dev update-files), grunt will monitor any changes on your src files and re-deploy them to the deployment target folder when modified.
+    Gulp utilizes a files watch, and if the "update" switch is defined (e.g. gulp dev-update), grunt will monitor any changes on your src files and re-deploy them to the deployment target folder when modified.
     <br /><br />
-    Try <b>grunt dev/prod update-files</b>
+    Try <b>gulp dev-update</b>
 </p>
