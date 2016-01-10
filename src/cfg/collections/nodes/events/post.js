@@ -6,7 +6,7 @@ module.exports = function (sender, context, data) {
     var authMngr = sender.server.require('./cms/authMngr.js')(sender.server);
     var nodeMngr = sender.server.require('./cms/nodeMngr.js')(sender.server);
 
-    if (!internal && !authMngr.isAuthorized(context.req.session.user, 'nodes:' + data.entity, 'C'))
+    if (!context.internal && !authMngr.isAuthorized(context.req.session.user, 'nodes:' + data.entity, 'C'))
         return context.error(401, 'Access denied');
 
     var entity = nodeMngr.getEntity(data.entity);
@@ -48,11 +48,12 @@ module.exports = function (sender, context, data) {
     
     asyncs.push(function (cb) {
         nodeMngr.getHierarchy(data, function (err, hierarchyNodes) {
+
             if (err)
                 return cb(err)
 
             var hierarchyIds = _.pluck(hierarchyNodes, 'id');
-            data.hierarchy = hierarchyIds
+            context.raw.hierarchy = hierarchyIds;
             cb(null, hierarchyIds);
         });
     });

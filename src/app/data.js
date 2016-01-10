@@ -8,15 +8,16 @@ var logAction = function (sender, collection, action, req, res, data, callback) 
 
             var copied = {};
             extend(true, copied, data);
-
-            var store = sender.createStore('actions', null, null, true);
+            delete copied.id;
+            
+            var store = sender.createStore('actions', req, res, true);
             store.post(function (x) {
                 x.data({
                     timestamp: new Date().getTime(),
                     user: req.session.uid,
                     collection: collection,
                     action: action,
-                    objectId: data ? data.id : undefined,
+                    objectId: data.id,
                     objectData: copied
                 });
             }, function (err, results) {
@@ -33,7 +34,6 @@ var logAction = function (sender, collection, action, req, res, data, callback) 
     else {
         callback();
     }
-
 };
 
 var authIgnoredCollections = ['nodes', 'data'];
