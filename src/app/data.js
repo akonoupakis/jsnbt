@@ -11,6 +11,7 @@ var logAction = function (sender, collection, action, req, res, data, callback) 
 
             var store = sender.createStore('actions', null, null, true);
             store.post(function (x) {
+                
                 x.data({
                     timestamp: new Date().getTime(),
                     user: req.session.uid,
@@ -33,7 +34,6 @@ var logAction = function (sender, collection, action, req, res, data, callback) 
     else {
         callback();
     }
-
 };
 
 var authIgnoredCollections = ['nodes', 'data'];
