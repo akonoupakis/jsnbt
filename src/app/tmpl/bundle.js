@@ -1,4 +1,4 @@
-var md5 = require('MD5');
+var md5 = require('md5');
 var path = require('path');
 var fs = require('fs');
 var _ = require('underscore');

@@ -1,5 +1,5 @@
 var moment = require('moment');
-var md5 = require('MD5');
+var md5 = require('md5');
 var extend = require('extend');
 var random = new require("random-js")();
 var _ = require('underscore');
