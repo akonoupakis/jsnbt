@@ -1,6 +1,6 @@
 {
 	"name": "jsnbt",
-	"version": "1.0.124",
+	"version": "1.0.125",
 	"description": "The Jsonbot engine",
 	"keywords": [
 		"jsnbt",
@@ -49,7 +49,7 @@
 		"jsuri": "1.3.0-beta.1",
 		"less": "1.3.3",
 		"moment": "2.6.0",
-		"mongodb-proxy": "^1.0.20",
+		"mongodb-proxy": "^1.0.21",
 		"mustache": "2.0.0",
 		"parseUri": "1.2.3-2",
 		"random-js": "1.0.8",
