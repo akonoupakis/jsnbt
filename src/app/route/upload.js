@@ -11,13 +11,11 @@ var Router = function (server) {
 };
 
 Router.prototype.route = function (ctx, next) {
-    var authMngr = require('../cms/authMngr.js')(server);
-
     var current = flow('public/tmp');
-
+    
     if (ctx.method === 'POST') {
-
-        if (!authMngr.isInRole(ctx.user, 'admin')) {
+        var authMngr = require('../cms/authMngr.js')(this.server);
+        if (!authMngr.isInRole(ctx.req.session.user, 'admin')) {
             ctx.error(401, null, false);
         }
         else {
@@ -41,12 +39,12 @@ Router.prototype.route = function (ctx, next) {
                                     s.close();
                                 }
                             });
-                            ctx.end();
+                            ctx.res.end();
                         }
                     });
                 }
                 else {
-                    ctx.end();
+                    ctx.res.end();
                 }
 
             });
@@ -54,8 +52,8 @@ Router.prototype.route = function (ctx, next) {
     }
     else {
         current.get(ctx, ctx.req, function (status, filename, original_filename, identifier) {
-            ctx.writeHead(status === 'found' ? 200 : 204, { "Content-Type": "application/text" });
-            ctx.end();
+            ctx.res.writeHead(status === 'found' ? 200 : 204, { "Content-Type": "application/text" });
+            ctx.res.end();
         });
     }
 };
@@ -269,5 +267,5 @@ var flow = function (temporaryFolder) {
 };
 
 module.exports = function (server) {
-    return new Router();
+    return new Router(server);
 };

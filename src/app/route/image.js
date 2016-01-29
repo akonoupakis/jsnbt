@@ -2,7 +2,6 @@ var fs = require('fs');
 var easyimg = require('easyimage');
 var md5 = require('md5');
 var path = require('path');
-var extend = require('extend');
 
 var _ = require('underscore');
 

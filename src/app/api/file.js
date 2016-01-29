@@ -43,7 +43,7 @@ FileApi.prototype.create = function (ctx, fields) {
     fileMngr.create(fields.path, fields.name, function (err, result) { 
         if (err)
             return ctx.error(err);
-
+        
         ctx.send(result);
     });
 };
