@@ -8,10 +8,8 @@
             function ($scope, $q, $jsnbt, $context, $data, $text, $url, $image) {
 
                 $scope.init().then(function () {
-                    
-
-                    var built = $image.build($scope.layout.image.image.src, $scope.layout.image.image.gen);
-                    console.log('initited', $scope.layout, built);
+                    //var built = $image.build($scope.layout.image.image.src, $scope.layout.image.image.gen);
+                    //console.log('initited', $scope.layout, built);
                 });
 
             }]);

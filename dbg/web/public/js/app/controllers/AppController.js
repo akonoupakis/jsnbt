@@ -69,10 +69,8 @@
                 var loadLayouts = function () {
                     var deferred = $q.defer();
 
-                    console.log(13131, $scope.layoutIds);
                     if ($scope.layoutIds && $scope.layoutIds.length > 0) {
                         $data.layouts.get({ layout: { $in: $scope.layoutIds } }).then(function (results) {
-                            console.log(1222, results);
                             deferred.resolve(results);
                         }).catch(function (ex) {
                             deferred.reject(ex);
@@ -167,10 +165,8 @@
 
                 $scope.init = function () {
                     var deferred = $q.defer();
-                    console.log(12);
                     $q.all([loadLayouts(), loadPage()]).then(function (results) {
                         var layouts = results[0];
-                        console.log(111, results);
                         var pageObj = results[1];
 
                         _.each(layouts, function (layout) {
