@@ -14,11 +14,13 @@
 
                         language: $('html').prop('lang'),
 
-                        layout: $('head > meta[name="layout"]').prop('content'),
+                        layouts: $('head > meta[name="layouts"]').prop('content').split(','),
 
                         pageId: $('head > meta[name="page"]').prop('content'),
 
-                        pointerId: $('head > meta[name="pointer"]').prop('content')
+                        pointerId: $('head > meta[name="pointer"]').prop('content'),
+
+                        hierarchy: $('head > meta[name="hierarchy"]').prop('content').split(',')
 
                     };
 

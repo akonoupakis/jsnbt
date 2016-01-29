@@ -132,7 +132,7 @@ Router.prototype.start = function () {
         });
     });
 
-    this.express.post('/jsnbt-upload*', function (req, res, next) {
+    this.express.all('/jsnbt-upload*', function (req, res, next) {
         buildSession(new Context(self.server, req, res), function (err, context) {
             var router = new require('./route/upload.js')(self.server);
             router.route(context, function () {
