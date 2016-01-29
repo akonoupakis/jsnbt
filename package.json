@@ -1,6 +1,6 @@
 {
 	"name": "jsnbt",
-	"version": "1.1.0-pre2",
+	"version": "1.1.0-pre3",
 	"description": "The Jsonbot engine",
 	"keywords": [
 		"jsnbt",
@@ -71,7 +71,7 @@
 		"underscore.string": "2.3.3"
 	},
 	"devDependencies": {
-	    "gulp": "*",
+		"gulp": "*",
 		"jsnbt-docs": "*"
 	}
 }
