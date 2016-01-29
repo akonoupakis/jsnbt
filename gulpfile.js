@@ -838,3 +838,5 @@ gulp.task('prod', function (callback) {
     );
 
 });
+
+module.exports = gulp;
