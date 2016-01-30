@@ -282,12 +282,29 @@ AuthApi.prototype.setPassword = function (ctx, fields) {
     });
 };
 
-AuthApi.prototype.forgotPassword = function (ctx, fields) {
-    ctx.error(500, 'not implemented');
+AuthApi.prototype.requestPasswordReset = function (ctx, fields) {
+    var authMngr = require('../cms/authMngr.js')(this.server);
+    authMngr.requestPasswordReset(fields.email, function (err, res) {
+        if (err) {
+            if (err.message === 'email not found') {
+                return ctx.json(true);
+            };
+
+            return ctx.error(500, err);
+        }
+
+        ctx.json(res);
+    });
 };
 
-AuthApi.prototype.resetPassword = function (ctx, fields) {
-    ctx.error(500, 'not implemented');
+AuthApi.prototype.submitPasswordReset = function (ctx, fields) {
+    var authMngr = require('../cms/authMngr.js')(this.server);
+    authMngr.submitPasswordReset(fields.email, fields.code, fields.password, function (err, res, value) {
+        if (err)
+            return ctx.error(500, err);
+
+        ctx.json(res);
+    });
 };
 
 module.exports = function (server) {

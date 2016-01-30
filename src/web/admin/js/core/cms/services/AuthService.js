@@ -167,6 +167,38 @@
                 return deferred.promise;
             };
 
+            AuthService.requestPasswordResetCode = function (email) {
+                var deferred = $q.defer();
+
+                var url = '../jsnbt-api/core/auth/requestPasswordReset';
+                $http.post(url, {
+                    email: email
+                }).then(function (response) {
+                    deferred.resolve(response.data);
+                }).catch(function (ex) {
+                    deferred.reject(ex.data);
+                });
+
+                return deferred.promise;
+            };
+
+            AuthService.submitPasswordResetCode = function (email, code, password) {
+                var deferred = $q.defer();
+
+                var url = '../jsnbt-api/core/auth/submitPasswordReset';
+                $http.post(url, {
+                    email: email,
+                    code: code,
+                    password: password
+                }).then(function (response) {
+                    deferred.resolve(response.data);
+                }).catch(function (ex) {
+                    deferred.reject(ex.data);
+                });
+
+                return deferred.promise;
+            };
+
             return AuthService;
         }]);
 })();

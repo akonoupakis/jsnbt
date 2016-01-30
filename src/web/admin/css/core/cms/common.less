@@ -13,6 +13,10 @@
     border-top: 0;
 }
 
+body.overflowed {
+    overflow: hidden;
+}
+
 .login-dialog {
     position: fixed;
     background-color: #FFFFFF;
@@ -23,13 +27,16 @@
 
 .login-dialog-container {
     position: absolute;
-    height: 80%;
-    padding-top: 20%;
+    padding-top: calc(14%);
     width: 100%;
 }
 
 .login-dialog .container {
     width: 400px;
+}
+
+.login-dialog .button-area-lnk {
+    font-size: 12px;
 }
 
 .first-user-dialog {
