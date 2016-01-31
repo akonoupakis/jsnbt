@@ -100,7 +100,6 @@ Router.prototype.start = function () {
     });
 
     this.express.all('/jsnbt-db/:collection*', function (req, res, next) {
-        self.server.getLogger().error(new Error('na'));
         buildSession(new Context(self.server, req, res, 'json'), function (err, context) {
             var router = new require('./route/proxy.js')(self.server);
             router.route(context, function () {

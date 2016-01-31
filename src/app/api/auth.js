@@ -10,6 +10,8 @@ var AuthApi = function (server) {
 AuthApi.prototype.create = function (ctx, fields) {
     var self = this;
 
+    var logger = this.server.getLogger();
+
     var user = {
         username: fields.username,
         firstName: fields.firstName,
@@ -67,8 +69,11 @@ AuthApi.prototype.create = function (ctx, fields) {
                     return ctx.status(401).send({
                         exists: true
                     });
-                };
-
+                }
+                else {
+                    logger.error(err);
+                }
+                
                 return ctx.error(500, err);
             }
 
@@ -100,6 +105,8 @@ AuthApi.prototype.create = function (ctx, fields) {
 AuthApi.prototype.register = function (ctx, fields) {
     var self = this;
 
+    var logger = this.server.getLogger();
+
     var user = {
         username: fields.username,
         firstName: fields.firstName,
@@ -157,7 +164,10 @@ AuthApi.prototype.register = function (ctx, fields) {
                     return ctx.status(401).send({
                         exists: true
                     });
-                };
+                }
+                else {
+                    logger.error(err);
+                }
 
                 return ctx.error(500, err);
             }
@@ -206,13 +216,18 @@ AuthApi.prototype.register = function (ctx, fields) {
 };
 
 AuthApi.prototype.login = function (ctx, fields) {
+    var logger = this.server.getLogger();
+
     var authMngr = require('../cms/authMngr.js')(this.server);
     authMngr.authenticate(fields.username, fields.password, function (err, user) {
         if (err) {
-            if (err.code && err.messages)
+            if (err.code && err.messages) {
                 ctx.error(err.code, err.messages);
-            else
+            }
+            else {
+                logger.error(err);
                 ctx.error(500, err);
+            }
         }
         else {
             if (user) {
@@ -243,6 +258,8 @@ AuthApi.prototype.logout = function (ctx, fields) {
 };
 
 AuthApi.prototype.requestEmailChange = function (ctx, fields) {
+    var logger = this.server.getLogger();
+
     var authMngr = require('../cms/authMngr.js')(this.server);
     authMngr.requestEmailChange(ctx.req.session.user.id, fields.email, function (err, res) {
         if (err) {
@@ -250,7 +267,10 @@ AuthApi.prototype.requestEmailChange = function (ctx, fields) {
                 return ctx.status(401).send({
                     exists: true
                 });
-            };
+            }
+            else {
+                logger.error(err);
+            }
 
             return ctx.error(500, err);
         }
@@ -260,10 +280,14 @@ AuthApi.prototype.requestEmailChange = function (ctx, fields) {
 };
 
 AuthApi.prototype.submitEmailChange = function (ctx, fields) {
+    var logger = this.server.getLogger();
+
     var authMngr = require('../cms/authMngr.js')(this.server);
     authMngr.submitEmailChange(ctx.req.session.user.id, fields.code, function (err, res, value) {
-        if (err) 
+        if (err) {
+            logger.error(err);
             return ctx.error(500, err);
+        }
         
         if (res) 
             ctx.req.session.user.username = value;
@@ -273,22 +297,31 @@ AuthApi.prototype.submitEmailChange = function (ctx, fields) {
 }
 
 AuthApi.prototype.setPassword = function (ctx, fields) {
+    var logger = this.server.getLogger();
+
     var authMngr = require('../cms/authMngr.js')(this.server);
     authMngr.setPassword(ctx.req.session.user.id, fields.password, fields.newPassword, function (err, res) {
-        if (err)
-            ctx.error(err);
+        if (err) {
+            logger.error(err);
+            return ctx.error(err);
+        }
 
         ctx.json(res);
     });
 };
 
 AuthApi.prototype.requestPasswordReset = function (ctx, fields) {
+    var logger = this.server.getLogger();
+
     var authMngr = require('../cms/authMngr.js')(this.server);
     authMngr.requestPasswordReset(fields.email, function (err, res) {
         if (err) {
             if (err.message === 'email not found') {
                 return ctx.json(true);
-            };
+            }
+            else {
+                logger.error(err);
+            }
 
             return ctx.error(500, err);
         }
@@ -298,10 +331,14 @@ AuthApi.prototype.requestPasswordReset = function (ctx, fields) {
 };
 
 AuthApi.prototype.submitPasswordReset = function (ctx, fields) {
+    var logger = this.server.getLogger();
+
     var authMngr = require('../cms/authMngr.js')(this.server);
     authMngr.submitPasswordReset(fields.email, fields.code, fields.password, function (err, res, value) {
-        if (err)
+        if (err) {
+            logger.error(err);
             return ctx.error(500, err);
+        }
 
         ctx.json(res);
     });
