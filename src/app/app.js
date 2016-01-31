@@ -392,7 +392,7 @@ App.prototype.init = function (config) {
     this.title = opts.title;
         
     if (!fs.existsSync(root.getPath('www')))
-       throw new Error('deployment directory not found! run grunt!');
+       throw new Error('deployment directory not found! run gulp!');
 
     var coreModule = {
         domain: 'core',
@@ -451,7 +451,7 @@ App.prototype.init = function (config) {
 
 App.prototype.createServer = function (options) {
     if (!fs.existsSync(root.getPath('www')))
-        throw new Error('deployment directory not found! run grunt!');
+        throw new Error('deployment directory not found! run gulp!');
 
     var mode = fs.readFileSync('www/mode', {
         encoding: 'utf8'
@@ -483,7 +483,7 @@ App.prototype.createServer = function (options) {
 
 App.prototype.createMigrator = function (options) {
     if (!fs.existsSync(root.getPath('www')))
-        throw new Error('deployment directory not found! run grunt!');
+        throw new Error('deployment directory not found! run gulp!');
 
     var mode = fs.readFileSync('www/mode', {
         encoding: 'utf8'
