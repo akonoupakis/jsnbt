@@ -3,14 +3,13 @@ var path = require('path');
 var extend = require('extend');
 var root = require('server-root');
 var validation = require('json-validation');
+var log4js = require('log4js');
 var _ = require('underscore');
 
 var Environment = {
     Development: 'dev',
     Production: 'prod'
 };
-
-var logger = require('./logger.js')(this);
 
 var configSchema = require('../cfg/schema.json');
 
@@ -381,6 +380,8 @@ App.prototype.register = function (module, config) {
 App.prototype.init = function (config) {
     var self = this;
     
+    var logger = log4js.getLogger('jsnbt');
+
     var defOpts = {
         title: self.title
     };

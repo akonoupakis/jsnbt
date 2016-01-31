@@ -1,7 +1,6 @@
 var express = require('express');
 var path = require('path');
 var Context = require('./context.js');
-
 var _ = require('underscore');
 
 _.str = require('underscore.string');
@@ -22,7 +21,7 @@ Router.prototype.start = function () {
         var session = ctx.req.session;
         if (session.uid && !session.user) {
 
-            var store = server.db.createStore('users', ctx.req, ctx.res, true);
+            var store = self.server.db.createStore('users', ctx.req, ctx.res, true);
             ctx.timer.start('current user retrieval');
             store.get(function (x) {
                 x.query(session.uid);
@@ -101,6 +100,7 @@ Router.prototype.start = function () {
     });
 
     this.express.all('/jsnbt-db/:collection*', function (req, res, next) {
+        self.server.getLogger().error(new Error('na'));
         buildSession(new Context(self.server, req, res, 'json'), function (err, context) {
             var router = new require('./route/proxy.js')(self.server);
             router.route(context, function () {
@@ -110,7 +110,7 @@ Router.prototype.start = function () {
     });
 
     this.express.all('/jsnbt-dev/:service/*', function (req, res, next) {
-        if (server.app.dbg) {
+        if (self.server.app.dbg) {
             buildSession(new Context(self.server, req, res), function (err, context) {
                 var router = new require('./route/dev.js')(self.server);
                 router.route(context, req.params.service, function () {

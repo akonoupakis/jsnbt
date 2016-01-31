@@ -8,6 +8,8 @@ var Migrator = function (server) {
 
 Migrator.prototype.start = function () {
     var self = this;
+
+    var logger = this.server.getLogger();
     
     var migrations = [];
     var migrationsCount = 0;
@@ -46,7 +48,7 @@ Migrator.prototype.start = function () {
                                 });
                             }, function (err, response) {
                                 if (err) {
-                                    self.server.logger.error(err);
+                                    logger.error(err);
                                     error(err);
                                 }
                                 else {
@@ -57,7 +59,7 @@ Migrator.prototype.start = function () {
                             });
 
                         }, function (err) {
-                            self.server.logger.error(err);
+                            logger.error(err);
                             error(err);
                         });
                     }
@@ -95,7 +97,7 @@ Migrator.prototype.start = function () {
                             });
                         }
                         catch (err) {
-                            self.server.logger.error(err);
+                            logger.error(err);
                         }
                     }
                 });
@@ -103,7 +105,7 @@ Migrator.prototype.start = function () {
         });
     }
 
-    self.server.logger.info('server is updating migrations');
+    logger.info('server is updating migrations');
     runMigration();
 
 }
