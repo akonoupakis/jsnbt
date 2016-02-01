@@ -1,145 +1,12 @@
 var fs = require('fs');
-var easyimg = require('easyimage');
-var md5 = require('MD5');
-var path = require('path');
-var extend = require('extend');
-
+var ImageTransformer = require('image-transform');
 var _ = require('underscore');
-
-_.str = require('underscore.string');
-
-var renderImage = function (server, ctx, src, gen) {
-
-    try {
-        var fileKey = md5(JSON.stringify({
-            src: src,
-            gen: gen
-        }));
-
-        var fileExt = path.extname(src);
-
-        var targetFilePath = server.getPath('www/public' + src);
-        var destFilePath = server.getPath('www/public/tmp/' + fileKey + fileExt);
-
-        fs.exists(destFilePath, function (cbExists) {
-            if (cbExists) {
-                easyimg.info(destFilePath).then(function (image) {
-                    fs.readFile(destFilePath, function (readErr, img) {
-                        if (readErr) {
-                            ctx.error(500, readErr);
-                        }
-                        else {
-                            ctx.res.writeHead(200, { 'Content-Type': 'image/' + image.type.toLowerCase() });
-                            ctx.res.write(img);
-                            ctx.res.end();
-                        }
-                    });
-                }, function (err) {
-                    ctx.error(500, err);
-                });
-            }
-            else {
-
-                var cropProcessors = [];
-
-                var nextIndex = 0;
-                var next = function () {
-                    nextIndex++;
-                    var processor = cropProcessors[nextIndex];
-                    processor.process(ctx, next);
-
-                };
-
-                _.each(gen, function (processor) {
-
-                    cropProcessors.push({
-                        process: function (ctxInternal, nextInternal) {
-
-                            var options = {};
-
-                            var fnName = undefined;
-                            if (processor.type === 'crop') {
-                                options.x = processor.options.x;
-                                options.y = processor.options.y;
-                                options.cropwidth = processor.options.width;
-                                options.cropheight = processor.options.height;
-                                options.gravity = 'NorthWest';
-
-                                fnName = 'crop';
-                            }
-                            else if (processor.type === 'stretch') {
-                                options.width = processor.options.width;
-                                options.height = processor.options.height;
-                                options.x = 0;
-                                options.y = 0;
-                                options.cropwidth = processor.options.width;
-                                options.cropheight = processor.options.height;
-                                options.gravity = 'Center';
-                                options.fill = true;
-
-                                fnName = 'rescrop';
-                            }
-                            else if (processor.type === 'fit') {
-                                options.width = processor.options.width;
-                                options.height = processor.options.height;
-
-                                fnName = 'resize';
-                            }
-
-                            if (fnName) {
-                                options.src = targetFilePath;
-                                options.dst = destFilePath;
-
-                                if (ctxInternal.imageObj) {
-                                    options.src = destFilePath;
-                                    options.dst = destFilePath;
-                                }
-
-                                easyimg[fnName](options).then(function (image) {
-                                    ctxInternal.imageObj = image;
-                                    ctxInternal.imageDst = destFilePath;
-
-                                    nextInternal();
-                                }, function (err) {
-                                    ctxInternal.error(500, err);
-                                });
-                            }
-                            else {
-                                nextInternal();
-                            }
-                        }
-                    });
-
-                });
-
-                cropProcessors.push({
-                    process: function (ctxInternal) {
-                        fs.readFile(destFilePath, function (readErr, img) {
-                            if (readErr) {
-                                ctx.error(500, readErr);
-                            }
-                            else {
-                                ctx.res.writeHead(200, { 'Content-Type': 'image/' + ctxInternal.imageObj.type.toLowerCase() });
-                                ctx.res.write(img);
-                                ctx.res.end();
-                            }
-                        });
-                    }
-                });
-
-                var first = _.first(cropProcessors);
-                first.process(ctx, next);
-            }
-        });
-    }
-    catch (err) {
-        ctx.error(500, err);
-    }
-
-};
 
 var Router = function (server) {
     this.server = server;
+    this.transformer = new ImageTransformer({
+        tmp: server.getPath('www/public/tmp/')
+    });
 };
 
 Router.prototype.route = function (ctx, next) {
@@ -162,7 +29,14 @@ Router.prototype.route = function (ctx, next) {
                     else {
                         var parsedProcessors = JSON.parse(decodeURIComponent(ctx.uri.query.processors));
                         if (parsedProcessors) {
-                            renderImage(self.server, ctx, filePath, parsedProcessors);
+                            self.transformer.transform(self.server.getPath('www/public' + filePath), parsedProcessors, function (err, info, image) {
+                                if (err)
+                                    return ctx.error(500, err);
+
+                                ctx.res.writeHead(200, { 'Content-Type': 'image/' + info.type.toLowerCase() });
+                                ctx.res.write(image);
+                                ctx.res.end();
+                            });
                         }
                         else {
                             ctx.error(500);
@@ -175,7 +49,14 @@ Router.prototype.route = function (ctx, next) {
                         next();
                     }
                     else {
-                        renderImage(self.server, ctx, filePath, imageType.processors);
+                        self.transformer.transform(self.server.getPath('www/public' + filePath), imageType.processors, function (err, info, image) {
+                            if (err)
+                                return ctx.error(500, err);
+
+                            ctx.res.writeHead(200, { 'Content-Type': 'image/' + info.type.toLowerCase() });
+                            ctx.res.write(image);
+                            ctx.res.end();
+                        });
                     }
                 }
             }

@@ -1,0 +1,30 @@
+{
+    "type": "object",
+    "properties": {
+        "timestamp": {
+            "type": "number",
+            "required": true
+        },
+		"role": {
+            "type": "string",
+            "required": true
+        },
+		"type": {
+			"type": "string",
+			"enum": ["Default", "Primary", "Success", "Info", "Warning", "Danger"]
+		},
+		"text": {
+            "type": "string",
+            "required": true
+        },
+		"read": {
+            "type": "array",
+            "required": true,
+			"items": {
+				"type": "objectId",
+				"required": true
+			},
+			"uniqueItems":  true
+        }
+    }
+}

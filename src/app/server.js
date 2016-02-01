@@ -2,13 +2,25 @@ var express = require('express');
 var session = require('express-session');
 var MongoStore = require('express-session-mongo');
 var Messager = require('./messager.js');
-var Logger = require('./logger.js');
 var dbproxy = require('mongodb-proxy');
 var data = require('./data.js');
 var io = require('socket.io');
 var extend = require('extend');
+var log4js = require('log4js');
 var Cache = require('./cache.js');
 var _ = require('underscore');
+
+log4js.configure({
+    appenders: [{
+          type: 'console'
+      }, {
+          type: 'file',
+          filename: 'console.log',
+          category: 'jsnbt',
+          maxLogSize: 20480
+      }
+    ]
+});
 
 function Server(app, options) {
     var optsHost = options.host;
@@ -55,8 +67,6 @@ function Server(app, options) {
 
     this.cache = new Cache();
 
-    this.logger = new Logger(this);
-
     this.app = app;
     
     this.express = express();
@@ -68,9 +78,15 @@ Server.prototype.require = function () {
     return result;
 }
 
+Server.prototype.getLogger = function (name) {
+    return log4js.getLogger(name || 'jsnbt');
+};
+
 Server.prototype.start = function () {
     var self = this;
 
+    var logger = this.getLogger();
+    
     var server = this.express.listen(this.options.port);
 
     this.sockets = io.listen(server, {
@@ -101,7 +117,7 @@ Server.prototype.start = function () {
     var router = new require('./router.js')(self, self.express);
     router.start();
 
-    this.logger.info('jsnbt server is listening on:' + self.options.port);
+    logger.info('jsnbt server is listening on:' + self.options.port);
 };
 
 module.exports = function (app, options) {

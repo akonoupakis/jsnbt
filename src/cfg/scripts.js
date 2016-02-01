@@ -144,6 +144,9 @@ module.exports = [{
         '/admin/js/core/cms/panels/pnlLogin.js',
         '/admin/js/core/cms/panels/pnlRegistration.js',
 
+        '/admin/js/core/cms/widgets/wgtWelcome.js',
+        '/admin/js/core/cms/widgets/wgtMessages.js',
+
         '/admin/js/core/cms/providers/$data.js',
         '/admin/js/core/cms/providers/$jsnbt.js',
         '/admin/js/core/cms/providers/$logger.js',

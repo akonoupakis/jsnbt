@@ -1,3 +1,5 @@
+/*global process, __dirname */
+
 var gulp = require('gulp');
 var del = require('del');
 var preprocess = require('gulp-preprocess');
@@ -836,3 +838,5 @@ gulp.task('prod', function (callback) {
     );
 
 });
+
+module.exports = gulp;

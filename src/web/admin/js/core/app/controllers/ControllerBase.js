@@ -115,7 +115,7 @@
 
                     var deferred = this.ctor.$q.defer();
 
-                    if (this.scope.current && this.scope.breadcrumb)
+                    if (this.scope.current)
                         this.scope.current.setBreadcrumb(breadcrumb);
 
                     deferred.resolve();

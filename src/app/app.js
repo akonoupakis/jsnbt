@@ -3,14 +3,13 @@ var path = require('path');
 var extend = require('extend');
 var root = require('server-root');
 var validation = require('json-validation');
+var log4js = require('log4js');
 var _ = require('underscore');
 
 var Environment = {
     Development: 'dev',
     Production: 'prod'
 };
-
-var logger = require('./logger.js')(this);
 
 var configSchema = require('../cfg/schema.json');
 
@@ -381,6 +380,8 @@ App.prototype.register = function (module, config) {
 App.prototype.init = function (config) {
     var self = this;
     
+    var logger = log4js.getLogger('jsnbt');
+
     var defOpts = {
         title: self.title
     };
@@ -391,7 +392,7 @@ App.prototype.init = function (config) {
     this.title = opts.title;
         
     if (!fs.existsSync(root.getPath('www')))
-       throw new Error('deployment directory not found! run grunt!');
+       throw new Error('deployment directory not found! run gulp!');
 
     var coreModule = {
         domain: 'core',
@@ -450,7 +451,7 @@ App.prototype.init = function (config) {
 
 App.prototype.createServer = function (options) {
     if (!fs.existsSync(root.getPath('www')))
-        throw new Error('deployment directory not found! run grunt!');
+        throw new Error('deployment directory not found! run gulp!');
 
     var mode = fs.readFileSync('www/mode', {
         encoding: 'utf8'
@@ -482,7 +483,7 @@ App.prototype.createServer = function (options) {
 
 App.prototype.createMigrator = function (options) {
     if (!fs.existsSync(root.getPath('www')))
-        throw new Error('deployment directory not found! run grunt!');
+        throw new Error('deployment directory not found! run gulp!');
 
     var mode = fs.readFileSync('www/mode', {
         encoding: 'utf8'

@@ -41,7 +41,6 @@
                                                 });
                                             }
                                             else {
-                                            
                                                 deferred.reject(error);
                                             }
                                         }

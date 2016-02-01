@@ -115,8 +115,8 @@ FileManager.prototype.delete = function (paths, cb) {
     var root = 'files';
 
     var fullPath = path.join(self.server.getPath('www'), 'public', root, normalize(paths));
-    fs.exists(fullPath, function (err, res) {
-        if (!err) {
+    fs.exists(fullPath, function (exists) {
+        if (exists) {
             fs.remove(fullPath, function (rErr, rRes) {
                 return cb(null, true);
             });
@@ -133,9 +133,9 @@ FileManager.prototype.create = function (dir, fileName, cb) {
     var root = 'files';
 
     var fullPath = path.join(self.server.getPath('www'), 'public', root, normalize(dir));
-    fs.exists(fullPath, function (err, res) {
-        if (err)
-            return cb(err);
+    fs.exists(fullPath, function (exists) {
+        if(!exists)
+            return cb(new Error('file group does not exist: ' + dir));
         
         fs.mkdirs(path.join(fullPath, fileName), function (mErr, mRes) {
             cb(null, true);
@@ -151,16 +151,10 @@ FileManager.prototype.move = function (from, to, cb) {
     var fullPath = path.join(self.server.getPath('www'), 'public', root, normalize(from));
     var fullNewPath = path.join(self.server.getPath('www'), 'public', root, normalize(to));
 
-    fs.exists(fullPath, function (err, res) {
-        if (err)
-            return cb(err);
-
-        if (res) {
-            fs.exists(fullNewPath, function (rErr, rRes) {
-                if (rErr)
-                    return cb(rErr);
-
-                if (!rRes) {
+    fs.exists(fullPath, function (exists) {
+        if (exists) {
+            fs.exists(fullNewPath, function (exists2) {
+                if (!exists2) {
                     fs.copy(fullPath, fullNewPath, function (cErr, cRes) {
                         if (cErr)
                             return cb(cErr);

@@ -4,185 +4,229 @@
     "use strict";
 
     angular.module("jsnbt")
-        .controller('AppController', function ($scope, $q, $jsnbt, $context, $data, $text, $url, $image) {
-            
-            // hold the page and pointer objects as is from the db
-            var page = null;
-            var pointer = null;
+        .controller('AppController', ['$scope', '$q', '$jsnbt', '$context', '$data', '$text', '$url', '$image',
+            function ($scope, $q, $jsnbt, $context, $data, $text, $url, $image) {
 
-            // hold the $context parameters available in $scope
-            $scope.language = $context.language;
-            $scope.layoutId = $context.layout;
-            $scope.pageId = $context.pageId;
-            $scope.pointerId = $context.pointerId;
+                var page = null;
+                var pointer = null;
 
-            // hold the localized resources available in $scope.
-            $scope.text = {};
+                $scope.language = $context.language;
+                $scope.layoutIds = $context.layouts;
+                $scope.pageId = $context.pageId;
+                $scope.pointerId = $context.pointerId;
 
-            // hold the flattened objects that will be injected into $scope
-            $scope.layout = null;
-            $scope.page = null;            
-            $scope.pointer = null;
+                $scope.text = {};
 
-            // hold the page and pointer urls (for viewing only)
-            $scope.pageUrl = null;
-            $scope.pointerUrl = null;
+                $scope.node = {
+                    page: null,
+                    pointer: null
+                };
 
-            // hold the page children so that we make a simple node loop, building the target urls for every item
-            $scope.children = [];
-                        
-            $scope.languages = [];
-            $scope.localizedUrls = [];
+                $scope.nodes = [];
 
-            // method to be triggered on ng-init. 
-            // the arguments would be either key or group names to filter on jsnbt.db.texts
-            // the results will form an object with grouped text entries as intended from the data structure
-            $scope.setTexts = function () {
-                var textKeys = _.filter(arguments, function (x) { return typeof(x) === 'string' });
-                if (textKeys.length > 0) {
-                    $text.get($context.language, textKeys).then(function (response) {
-                        $.extend(true, $scope.text, response);
-                    }).catch(function (error) {
-                        throw error;
-                    });
-                }
-            };
+                $scope.hierarchy = [];
+                $scope.breadcrumb = [];
 
-            // quick method to flat a node object for a specific language
-            $scope.flat = function (node) {
-                var newObj = {};
-                node = node || {};
-                if (node.content && node.content.localized && node.content.localized[$scope.language])
-                    $.extend(true, newObj, node.content.localized[$scope.language]);
+                $scope.containers = $jsnbt.containers;
 
-                if (node.content && node.content.localized)
-                    delete node.content.localized;
+                $scope.layout = {};
+                $scope.page = null;
+                $scope.pointer = null;
 
-                if (node.content)
-                    $.extend(true, newObj, node.content);
+                $scope.pageUrl = null;
+                $scope.pointerUrl = null;
 
-                if (node.url)
-                    newObj.url = node.url[$scope.language];
-                
-                return newObj;
-            }
-            
-            $scope.getImageSrc = function (image) {
-                if (image && _.isObject(image) && image.src !== '' && _.isArray(image.gen))
-                    return $image.build(image.src, image.gen);
-                else
-                    return;
-            }
-
-            // quick method to get the available languages for the site
-            var getAvailableLanguages = function () {
-                var deferred = $q.defer();
-
-                if ($jsnbt.localization.enabled) {
-                    // if the site is marked as multi-language
-                    $data.languages.get({ active: true }).then(function (languageResults) {
-                        var langaugeCodes = _.pluck(languageResults, 'code');
-                        deferred.resolve(langaugeCodes);
-                    }, function (languageError) {
-                        deferred.reject(languageError);
-                    });
-                }
-                else {
-                    // or is marked to have a single language, where is defined on $jsnbt.localization.locale;
-                    deferred.resolve([$jsnbt.localization.locale]);
-                }
-                
-                return deferred.promise;
-            };
-
-            // get languages
-            getAvailableLanguages().then(function (languageCodes) {
-
-                $scope.languages = languageCodes;
-
-                // get layout
-                if ($scope.layoutId && $scope.layoutId !== '') {
-                    $data.layouts.get({ layout: $scope.layoutId }).then(function (results) {
-                        var layout = _.first(results);
-                        if (layout)
-                            $scope.layout = $scope.flat(layout);
-
-                        console.log('layout', $scope.layout);
-                    });
-                }
-
-                // get page and pointer nodes
-                $data.nodes.get({
-                    id: {
-                        $in: [
-                            $scope.pageId,
-                            $scope.pointerId
-                        ] 
+                $scope.setTexts = function () {
+                    var textKeys = _.filter(arguments, function (x) { return typeof (x) === 'string' });
+                    if (textKeys.length > 0) {
+                        $text.get($context.language, textKeys).then(function (response) {
+                            $.extend(true, $scope.text, response);
+                        }, function (error) {
+                            throw error;
+                        });
                     }
-                }).then(function (results) {
-                    var pageResult = _.find(results, function (x) { return x.id === $scope.pageId; });
-                    var pointerResult = _.find(results, function (x) { return x.id === $scope.pointerId; });
-                    
-                    if (pageResult) {
-                        // assign local page variable
-                        page = pageResult;
-                        // assign $scope page variable
-                        $scope.page = $scope.flat(pageResult);
-                        // assign $scope pageUrl variable
-                        $scope.pageUrl = $url.build($scope.language, pageResult, pointerResult);
+                };
 
-                        $($scope.languages).each(function (li, lang) {
-                            if (lang !== $scope.language) {
-                                var targetLink = $url.build(lang, pageResult, pointerResult);
-                                if(targetLink){
-                                    $scope.localizedUrls.push({
-                                        language: lang,
-                                        url: targetLink
-                                    });
-                                }
-                            }
+                $scope.flat = function (node) {
+                    var newObj = {};
+                    node = node || {};
+                    if (node.content && node.content.localized && node.content.localized[$scope.language])
+                        $.extend(true, newObj, node.content.localized[$scope.language]);
+
+                    if (node.content && node.content.localized)
+                        delete node.content.localized;
+
+                    if (node.content)
+                        $.extend(true, newObj, node.content);
+
+                    newObj.title = (node.title || {})[$scope.language];
+
+                    return newObj;
+                }
+
+                $scope.queue = [];
+
+                var loadLayouts = function () {
+                    var deferred = $q.defer();
+
+                    if ($scope.layoutIds && $scope.layoutIds.length > 0) {
+                        $data.layouts.get({ layout: { $in: $scope.layoutIds } }).then(function (results) {
+                            deferred.resolve(results);
+                        }).catch(function (ex) {
+                            deferred.reject(ex);
+                        });
+                    }
+                    else {
+                        deferred.resolve();
+                    }
+
+                    return deferred.promise;
+                };
+
+                var loadPage = function () {
+                    var deferred = $q.defer();
+
+                    $data.nodes.get({
+                        id: {
+                            $in: [
+                                $scope.pageId,
+                                $scope.pointerId
+                            ]
+                        }
+                    }).then(function (results) {
+                        var pageResult = _.find(results, function (x) { return x.id === $scope.pageId; });
+                        var pointerResult = _.find(results, function (x) { return x.id === $scope.pointerId; });
+
+                        deferred.resolve({
+                            page: pageResult,
+                            pointer: pointerResult
+                        });
+
+                    }).catch(function (error) {
+                        deferred.reject(error);
+                    });
+
+                    return deferred.promise;
+                };
+
+                $scope.load = function (fn) {
+                    $scope.queue.push(fn);
+                };
+
+                $scope.loadNodes = function (ids) {
+                    var deferred = $q.defer();
+
+                    var targetIds = [];
+                    if (_.isString(ids)) {
+                        targetIds.push(ids);
+                    }
+                    if (_.isArray(ids)) {
+                        _.each(ids, function (x) {
+                            targetIds.push(x);
                         });
                     }
 
-                    if (pointerResult) {
-                        // assign local pointer variable
-                        pointer = pointerResult;
-                        // assign $scope pointer variable
-                        $scope.pointer = $scope.flat(pointerResult);
-                        // assign $scope pointerUrl variable
-                        $scope.pointerUrl = $url.build($scope.language, pointerResult);
-                    }
-                }, function (error) {
-                    throw error;
-                }).then(function () {
-                    if (page) {
-                        // get page children
-                        $data.nodes.get({
-                            parent: page.id,
-                            domain: page.domain
-                        }).then(function (childrenResults) {
-                            // fill $scope.children array with some data for our loop
-                            $(childrenResults).each(function (c, child) {
-                                var childUrl = $url.build($scope.language, child, pointer);
-                                var childFlat = $scope.flat(child);
+                    var filteredIds = _.filter(targetIds, function (x) {
+                        return !_.any($scope.nodes, function (y) { return y.id === x; });
+                    });
 
-                                $scope.children.push({
-                                    id: child.id,
-                                    name: child.name,
-                                    url: childUrl,
-                                    content: childFlat
-                                })
+                    if (filteredIds.length > 0) {
+
+                        var getOptions = {
+                            id: {
+                                $in: filteredIds
+                            }
+                        };
+
+                        getOptions['active.' + $scope.language] = true;
+
+                        $data.nodes.get(getOptions).then(function (nodes) {
+
+                            _.each(nodes, function (node) {
+                                if (!_.any($scope.nodes, function (y) { return y.id === node.id; }))
+                                    $scope.nodes.push(node);
                             });
 
-                        }, function (childrenError) {
-                            throw childrenError;
+                            deferred.resolve(nodes);
+                        }).catch(function (error) {
+                            deferred.reject(error);
                         });
                     }
-                });
-            }, function (languageError) {
-                throw languageError;
-            });
+                    else {
+                        deferred.resolve();
+                    }
 
-        });
+                    return deferred.promise;
+                };
+
+                $scope.link = function (node, pointer) {
+                    return $url.build($scope.language, node, pointer || $scope.node.pointer);
+                };
+
+                $scope.init = function () {
+                    var deferred = $q.defer();
+                    $q.all([loadLayouts(), loadPage()]).then(function (results) {
+                        var layouts = results[0];
+                        var pageObj = results[1];
+
+                        _.each(layouts, function (layout) {
+                            $scope.layout[layout.layout] = $scope.flat(layout);
+                        });
+
+                        if (pageObj.page) {
+                            $scope.node.page = pageObj.page;
+                            $scope.page = $scope.flat(pageObj.page);
+
+                            $scope.nodes.push(pageObj.page);
+                        }
+
+                        if (pageObj.pointer) {
+                            $scope.node.pointer = pageObj.pointer;
+                            $scope.pointer = $scope.flat(pageObj.pointer);
+
+                            $scope.nodes.push(pageObj.pointer);
+                        }
+
+                        var nodeIds = _.filter($context.hierarchy, function (x) { return x !== undefined; });
+                        $scope.loadNodes(nodeIds).then(function () {
+
+                            $q.all(_.map($scope.queue, function (x) { return x(); })).then(function () {
+                                deferred.resolve();
+                            }).catch(function (error) {
+                                deferred.reject(error);
+                            });
+
+                            $scope.hierarchy = _.map($context.hierarchy, function (x) {
+                                return _.find($scope.nodes, function (y) {
+                                    return y.id === x;
+                                });
+                            });
+
+                            var hierarchyPointer = null;
+                            var hierarchyPointerPrevious = false;
+                            _.each($scope.hierarchy, function (hNode) {
+                                if (hNode.entity === 'pointer') {
+                                    hierarchyPointer = hNode;
+                                    hierarchyPointerPrevious = true;
+                                }
+                                else {
+                                    $scope.breadcrumb.push({
+                                        url: $scope.link(hNode, hierarchyPointer),
+                                        name: hierarchyPointerPrevious ? hierarchyPointer.title[$scope.language] : hNode.title[$scope.language]
+                                    });
+                                    hierarchyPointerPrevious = false;
+                                }
+                            });
+
+                        }).catch(function (error) {
+                            deferred.reject(error);
+                        });
+                    });
+
+                    return deferred.promise;
+                };
+
+            }]);
+
 
 })();

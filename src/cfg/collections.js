@@ -81,6 +81,11 @@ module.exports = [{
     },
     default: require('./collections/texts/default.json')
 }, {
+    name: "messages",
+    schema: require("./collections/messages/schema.json"),
+    permissions: require("./collections/messages/permissions.json"),
+    default: require('./collections/messages/default.json')
+}, {
     name: "users",
     schema: require("./collections/users/schema.json"),
     permissions: false,

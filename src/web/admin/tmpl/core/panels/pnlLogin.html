@@ -1,16 +1,70 @@
-﻿<form name="loginForm" method="post" ng-submit="login()" class="col-md-12">
-    <div class="row username">
-        <ctrl-text ng-model="username" ng-required="true" ng-label="email"></ctrl-text>
-    </div>
-    <div class="row password">
-        <ctrl-password ng-model="password" ng-required="true" ng-label="password"></ctrl-password>
-    </div>
-
-    <div class="row" style="text-align:right">
-        <div class="btn-group">
-            <button type="submit" class="btn btn-primary">login</button>
+﻿<div>
+    <form ng-if="step === 'login'" ng-controller="PanelLoginController" name="loginForm" method="post" ng-submit="submit()" class="login-container-login col-md-12">
+        <div class="row username">
+            <ctrl-text ng-model="data.login.username" ng-disabled="submitting" ng-required="true" ng-label="email"></ctrl-text>
         </div>
-    </div>
-    
-    <p class="text-danger failed" ng-show="failed">unsuccessful login attempt</p>
-</form>
+        <div class="row password">
+            <ctrl-password ng-model="data.login.password" ng-disabled="submitting" ng-required="true" ng-label="password"></ctrl-password>
+        </div>
+
+        <div class="row">
+            <a class="button-area-lnk" href="javascript:;" ng-click="forgotPassword()">I forgot my password</a>
+            <div class="btn-group" style="float:right">
+                <button type="submit" class="btn btn-primary" ng-disabled="submitting">login</button>
+            </div>
+        </div>
+
+        <p class="text-danger failed" ng-show="failed">unsuccessful login attempt</p>
+    </form>
+    <form ng-if="step === 'forgot'" ng-controller="PanelLoginForgotPasswordController" name="forgotPasswordForm" method="post" ng-submit="submit()" class="login-container-forgot col-md-12">
+        <p class="row"><b>forgot your password?</b></p>
+        <p class="row">fill in your email and we'll send you a password reset code</p>
+        <div class="row username">
+            <ctrl-text ng-model="data.forgot.username" ng-required="true" ng-disabled="submitting" ng-label="email"></ctrl-text>
+        </div>
+        <div class="row">
+            <a class="button-area-lnk" href="javascript:;" ng-click="backToLogin()">back to login</a>
+            <div class="btn-group" style="float:right">
+                <button type="submit" class="btn btn-primary" ng-disabled="submitting">submit</button>
+            </div>
+        </div>
+
+        <p class="text-danger failed" ng-show="failed">process could not complete</p>
+    </form>
+    <form ng-if="step === 'reset'" ng-controller="PanelLoginResetPasswordController" name="resetPasswordForm" method="post" ng-submit="submit()" class="login-container-reset col-md-12">
+        <p class="row">a password reset code has been sent to <b>{{data.reset.username}}</b></p>
+
+        <div class="row code">
+            <ctrl-text ng-model="data.reset.code" ng-required="true" ng-disabled="submitting" ng-label="code"></ctrl-text>
+        </div>
+
+        <div class="row password">
+            <ctrl-password ng-model="data.reset.password" ng-required="true" ng-disabled="submitting" ng-valid="!invalidPasswordComparison" ng-label="password"></ctrl-password>
+        </div>
+
+        <div class="row password">
+            <ctrl-password ng-model="data.reset.passwordConfirmation" ng-required="true" ng-disabled="submitting" ng-validate="validatePasswordConfirm" ng-label="password confirmation"></ctrl-password>
+            <span class="validation-error whole centered" ng-show="invalidPasswordComparison">passwords do not match</span>
+        </div>
+
+        <div class="row">
+            <a class="button-area-lnk" href="javascript:;" ng-click="backToLogin()">back to login</a>
+            <div class="btn-group" style="float:right">
+                <button type="submit" class="btn btn-primary" ng-disabled="submitting">submit</button>
+            </div>
+        </div>
+
+        <p class="text-danger failed" ng-show="failed">password could not be resetted</p>
+    </form>
+    <form ng-if="step === 'changed'" ng-controller="PanelLoginChangedPasswordController" name="changedPasswordForm" method="post" ng-submit="submit()" class="login-container-changed col-md-12">
+        <p class="text-success">your password has been successfuly changed</p>
+
+        <div class="row">
+            <div class="btn-group" style="float:right">
+                <button type="submit" class="btn btn-primary">ok</button>
+            </div>
+        </div>
+
+        <p class="text-danger failed" ng-show="failed">unsuccessful login attempt</p>
+    </form>
+</div>

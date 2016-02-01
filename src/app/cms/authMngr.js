@@ -1,5 +1,5 @@
 var moment = require('moment');
-var md5 = require('MD5');
+var md5 = require('md5');
 var extend = require('extend');
 var random = new require("random-js")();
 var _ = require('underscore');
@@ -384,21 +384,34 @@ AuthManager.prototype.requestEmailChange = function (userId, email, cb) {
 
 AuthManager.prototype.submitEmailChange = function (userId, code, cb) {
 
-    var store = server.db.createStore('users');
-    store.find({ id: userId, 'emailChange.code': code }, function (err, res) {
+    var store = this.server.db.createStore('users');
+    store.get(function (x) {
+        x.query({
+            id: userId,
+            'emailChange.code': code
+        });
+        x.single();
+    }, function (err, res) {
         if (err)
             return cb(err);
 
-        if (_.isObject(res) && res.id) {
+        if (res) {
             var now = moment(new Date());
             var then = moment(res.emailChange.expiresAt);
 
             if (then.isAfter(now)) {
-                store.update(userId, { $set: { username: res.emailChange.email }, $unset: { emailChange: '' } }, function (err, res) {
+                var newEmail = res.emailChange.email
+                store.put(function(x) {
+                    x.query(userId);
+                    x.data({
+                        $set: { username: newEmail },
+                        $unset: { emailChange: '' }
+                    });
+                }, function (err, res) {
                     if (err)
                         return cb(err);
 
-                    cb(null, true, res.emailChange.email);
+                    cb(null, true, newEmail);
                 });
             }
             else {
@@ -412,12 +425,120 @@ AuthManager.prototype.submitEmailChange = function (userId, code, cb) {
 
 };
 
-AuthManager.prototype.requestPasswordReset = function (cb) {
-    cb();
+AuthManager.prototype.requestPasswordReset = function (email, cb) {
+    var self = this;
+
+    var store = this.server.db.createStore('users');
+    store.get(function (x) {
+        x.query({
+            username: email
+        });
+        x.single();
+    }, function (err, res) {
+        if (err)
+            return cb(err);
+
+        if (res) {
+
+            var code = random.string(6, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+            var expiresAt = moment(new Date()).add(5, 'minutes')._d.getTime();
+
+            var templateCode = 'password-reset';
+            self.server.messager.mail.getTemplate(templateCode, function (tmplErr, tmpl) {
+                if (tmplErr)
+                    return cb(tmplErr);
+
+                self.server.messager.mail.getModel(templateCode, function (modelErr, model) {
+                    if (modelErr)
+                        return cb(modelErr);
+
+                    model.code = code;
+                    model.email = email;
+                    model.firstName = res.firstName;
+                    model.lastName = res.lastName;
+
+                    self.server.messager.mail.parseTemplate(tmpl, model, function (parseErr, parsedTmpl) {
+                        if (parseErr)
+                            return cb(parseErr);
+
+                        self.server.messager.mail.getSender(function (senderErr, sender) {
+                            if (senderErr)
+                                return cb(senderErr);
+
+                            sender.send({
+                                to: email,
+                                subject: parsedTmpl.subject,
+                                body: parsedTmpl.body
+                            }, function (sendErr, response) {
+                                if (sendErr)
+                                    return cb(sendErr);
+
+                                store.put(function (x) {
+                                    x.query(res.id);
+                                    x.data({
+                                        passwordReset: {
+                                            code: code,
+                                            expiresAt: expiresAt
+                                        }
+                                    });
+                                }, function (err, res) {
+                                    if (err)
+                                        return cb(err);
+
+                                    cb(null, true);
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+
+        }
+        else {
+            return cb(new Error('email not found'));
+        }
+    });
 };
 
-AuthManager.prototype.submitPasswordReset = function (cb) {
-    cb();
+AuthManager.prototype.submitPasswordReset = function (email, code, password, cb) {
+    var store = this.server.db.createStore('users');
+    store.get(function (x) {
+        x.query({
+            username: email,
+            'passwordReset.code': code
+        });
+        x.single();
+    }, function (err, res) {
+        if (err)
+            return cb(err);
+
+        if (res) {
+            var now = moment(new Date());
+            var then = moment(res.passwordReset.expiresAt);
+
+            if (then.isAfter(now)) {
+                var newHash = md5(password);
+                store.put(function (x) {
+                    x.query(res.id);
+                    x.data({
+                        $set: { password: newHash },
+                        $unset: { passwordReset: '' }
+                    });
+                }, function (err, res) {
+                    if (err)
+                        return cb(err);
+
+                    cb(null, true);
+                });
+            }
+            else {
+                cb(null, false);
+            }
+        }
+        else {
+            cb(null, false);
+        }
+    });
 };
 
 module.exports = function (server) {
