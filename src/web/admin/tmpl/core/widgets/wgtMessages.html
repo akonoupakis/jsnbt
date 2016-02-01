@@ -1,0 +1,6 @@
+﻿<div>
+    <div ng-repeat="message in messages" class="alert alert-{{message.type.toLowerCase()}} alert-dismissible" role="alert">
+        <button type="button" class="close" ng-click="dismiss(message)"><span aria-hidden="true">&times;</span></button>
+        <strong>{{message.type}}</strong> {{message.text}}
+    </div>
+</div>
