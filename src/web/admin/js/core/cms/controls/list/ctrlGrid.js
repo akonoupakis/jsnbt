@@ -67,6 +67,11 @@
 
                     scope.data = scope.$parent.ngModel;
 
+                    scope.sort = {
+                        name: undefined,
+                        direction: 'asc'
+                    };
+
                     scope.$parent.$watch('ngModel', function (newValue, prevValue) {
                         scope.data = newValue;
                     });
@@ -84,9 +89,42 @@
                 restrict: 'E',
                 replace: true,
                 transclude: true,
-                template: '<th ng-transclude></th>',
+                scope: {
+                    ngSortName: '@'
+                },
+                template: '<th><span ng-class="{sorter: ngSortName, ascending: direction === \'asc\', descending: direction === \'desc\'}" ng-transclude ng-click="sort()"></span></th>',
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl-grid-header-column');
+
+                    scope.direction = undefined;
+                    scope.sort = function () {
+                        if (scope.$parent.$parent.sort.name === scope.ngSortName) {
+                            if (scope.$parent.$parent.sort.direction === 'asc')
+                                scope.$parent.$parent.sort.direction = 'desc';
+                            else
+                                scope.$parent.$parent.sort.direction = 'asc';
+                        }
+                        else {
+                            scope.$parent.$parent.sort.name = scope.ngSortName;
+                            scope.$parent.$parent.sort.direction = 'asc';
+                        }
+
+                        scope.direction = scope.$parent.$parent.sort.direction;
+
+                        var prev = scope.$$prevSibling;
+                        while (prev) {
+                            prev.direction = undefined;
+                            prev = prev.$$prevSibling;
+                        };
+
+                        var next = scope.$$nextSibling;
+                        while (next) {
+                            next.direction = undefined;
+                            next = next.$$nextSibling;
+                        };
+
+                        scope.$parent.$parent.fn.sort(scope.ngSortName, scope.$parent.$parent.sort.direction);
+                    };
                 }
             };
 
@@ -186,7 +224,7 @@
             };
 
         }])
-       .directive('ctrlGridInfiniteScroll', [function () {
+        .directive('ctrlGridInfiniteScroll', [function () {
 
            return {
                restrict: 'E',
@@ -224,7 +262,7 @@
            };
 
        }])
-      .directive('ctrlGridEmpty', [function () {
+        .directive('ctrlGridEmpty', [function () {
 
           return {
               restrict: 'E',
