@@ -11,7 +11,7 @@
     <div class="col-sm-12">
         <ctrl-grid class="table-striped" ng-model="model" ng-fn="gridFn" ng-language="defaults.language">
             <ctrl-grid-header>
-                <ctrl-grid-header-column ng-sort-name="lastName" ng-filter-type="string" ng-filter-name="lastName">surname {{$direction}}</ctrl-grid-header-column>
+                <ctrl-grid-header-column ng-sort-name="lastName" ng-filter-type="string" ng-filter-name="lastName">surname</ctrl-grid-header-column>
                 <ctrl-grid-header-column ng-sort-name="firstName">forename</ctrl-grid-header-column>
                 <ctrl-grid-header-column ng-sort-name="username">email</ctrl-grid-header-column>
                 <ctrl-grid-header-column></ctrl-grid-header-column>
@@ -21,16 +21,16 @@
                 <ctrl-grid-empty>no users</ctrl-grid-empty>
             </ctrl-grid-footer>
             <ctrl-grid-body>
-                <ctrl-grid-column>
+                <ctrl-grid-column class="col-md-3">
                     {{ model.lastName }}
                 </ctrl-grid-column>
-                <ctrl-grid-column>
+                <ctrl-grid-column class="col-md-3">
                     {{ model.firstName }}
                 </ctrl-grid-column>
-                <ctrl-grid-column>
+                <ctrl-grid-column class="col-md-5">
                     {{ model.username }}
                 </ctrl-grid-column>
-                <ctrl-grid-buttons-column>
+                <ctrl-grid-buttons-column class="col-md-1">
                     <button title="edit" class="btn btn-default glyphicon glyphicon-edit" ng-disabled="!fn.canEdit(model)" ng-click="fn.edit(model)" />
                 </ctrl-grid-buttons-column>
             </ctrl-grid-body>
