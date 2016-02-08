@@ -55,10 +55,47 @@
                 return deferred.promise;
             };
 
-            PagedDataService.get = function (fn, query, start, limit, selected) {
+            PagedDataService.get = function (options) {
                 var deferred = $q.defer();
 
-                getData(fn, query, start, limit, selected).then(function (results) {
+                var optsQuery = {};
+                $.extend(true, optsQuery, options.query);
+
+                if (options.sorter && options.sorter.name && options.sorter.direction) {
+                    var sort = {};
+                    sort[options.sorter.name] = options.sorter.direction === 'asc' ? 1 : -1;
+                    optsQuery['$sort'] = sort
+                }
+
+                if (_.isArray(options.filters)) {
+                    var filters = [];
+                    _.each(options.filters, function (filter) {
+                        if (filter.name && filter.type === 'string' && _.isArray(filter.texts)) {
+                            if (filter.texts.length > 0) {
+                                _.each(filter.texts, function (filterText) {
+                                    if (filterText.text !== undefined && filterText.text.trim() !== '') {
+
+                                        var filtOpts = {};
+                                        filtOpts[filter.name] = {
+                                            $regex: filterText.text,
+                                            $options: 'i'
+                                        }
+
+                                        filters.push(filtOpts);
+                                    }
+                                });
+                            }
+                        }
+                    });
+
+                    if (filters.length > 0) {
+                        $.extend(true, optsQuery, {
+                            $and: filters
+                        });
+                    }
+                }
+
+                getData(options.fn, optsQuery, options.start, options.limit, options.selected).then(function (results) {
                     deferred.resolve(results);
                 }).catch(function (error) {
                     deferred.reject(error);

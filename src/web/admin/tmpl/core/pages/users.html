@@ -11,9 +11,9 @@
     <div class="col-sm-12">
         <ctrl-grid class="table-striped" ng-model="model" ng-fn="gridFn" ng-language="defaults.language">
             <ctrl-grid-header>
-                <ctrl-grid-header-column ng-sort-name="lastName" ng-filter-type="string" ng-filter-name="lastName">surname</ctrl-grid-header-column>
-                <ctrl-grid-header-column ng-sort-name="firstName">forename</ctrl-grid-header-column>
-                <ctrl-grid-header-column ng-sort-name="username">email</ctrl-grid-header-column>
+                <ctrl-grid-header-column ng-sort-name="'lastName'" ng-filter-type="string" ng-filter-name="'lastName'">surname</ctrl-grid-header-column>
+                <ctrl-grid-header-column ng-sort-name="'firstName'" ng-filter-type="string" ng-filter-name="'firstName'">forename</ctrl-grid-header-column>
+                <ctrl-grid-header-column ng-sort-name="'username'" ng-filter-type="string" ng-filter-name="'username'">email</ctrl-grid-header-column>
                 <ctrl-grid-header-column></ctrl-grid-header-column>
             </ctrl-grid-header>
             <ctrl-grid-footer>

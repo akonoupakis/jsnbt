@@ -90,14 +90,69 @@
                 replace: true,
                 transclude: true,
                 scope: {
-                    ngSortName: '@'
+                    ngSortName: '=',
+                    ngFilterType: '@',
+                    ngFilterName: '='
                 },
-                template: '<th><span ng-class="{sorter: ngSortName, ascending: direction === \'asc\', descending: direction === \'desc\'}" ng-transclude ng-click="sort()"></span></th>',
+                template: '<th> \
+                    <span ng-class="{sorter: ngSortName, ascending: direction === \'asc\', descending: direction === \'desc\'}" ng-transclude ng-click="sort()"> \
+                    </span> \
+                    <popover ng-if="ngFilterType && ngFilterName" class="filter glyphicon glyphicon-filter" ng-class="{ filtered: filtered() }"> \
+                    <div class="ctrl-grid-filter-box ctrl-grid-filter-box-string" ng-class="{ filtered: filtered() }" ng-show="ngFilterType == \'string\'"> \
+                        <div ng-repeat="f in filter.texts track by $index" class="filter-box"> \
+                            <span class="glyphicon glyphicon-font"></span> \
+                            <input type="text" ng-model="f.text" /> \
+                            <span class="filter-close glyphicon glyphicon-remove-circle" ng-click="removeFilter($index)"></span> \
+                        </div> \
+                        <div> \
+                            <span class="glyphicon glyphicon-font"></span> \
+                            <input type="text" ng-disabled="true" /> \
+                            <span class="filter-add glyphicon glyphicon-remove-circle" ng-click="addFilter()"></span> \
+                        </div> \
+                    </div> \
+                    </popover> \
+                </th>',
                 link: function (scope, element, attrs) {
                     element.addClass('ctrl-grid-header-column');
 
+                    var getSorter = function () {
+                        return {
+                            name: scope.$parent.$parent.sort.name,
+                            direction: scope.$parent.$parent.sort.direction
+                        };
+                    };
+
+                    var getFilters = function () {
+                        var filters = [];
+
+                        var prev = scope.$$prevSibling;
+                        while (prev) {
+                            if (prev.ngFilterType && prev.ngFilterName && prev.filtered()) {
+                                filters.push(prev.filter);
+                            }
+                            prev = prev.$$prevSibling;
+                        };
+
+                        if (scope.ngFilterType && scope.ngFilterName && scope.filtered()) {
+                            filters.push(scope.filter);
+                        };
+
+                        var next = scope.$$nextSibling;
+                        while (next) {
+                            if (next.ngFilterType && next.ngFilterName && next.filtered()) {
+                                filters.push(next.filter);
+                            }
+                            next = next.$$nextSibling;
+                        };
+
+                        return filters;
+                    };
+
                     scope.direction = undefined;
                     scope.sort = function () {
+                        if (!scope.ngSortName)
+                            return;
+
                         if (scope.$parent.$parent.sort.name === scope.ngSortName) {
                             if (scope.$parent.$parent.sort.direction === 'asc')
                                 scope.$parent.$parent.sort.direction = 'desc';
@@ -123,8 +178,45 @@
                             next = next.$$nextSibling;
                         };
 
-                        scope.$parent.$parent.fn.sort(scope.ngSortName, scope.$parent.$parent.sort.direction);
+                        scope.$parent.$parent.fn.load(getFilters(), getSorter());
                     };
+
+                    scope.filter = {};
+
+                    if (scope.ngFilterType && scope.ngFilterName) {
+                        scope.filter.type = scope.ngFilterType;
+                        scope.filter.name = scope.ngFilterName;
+                        
+                        if (scope.ngFilterType === 'string') {
+                            scope.filter.texts = [];
+
+                            scope.$watch('filter.texts', function (newValue, prevValue) {
+                                scope.$parent.$parent.fn.load(getFilters(), getSorter());
+                            }, true);
+                            
+                            scope.filtered = function () {
+                                return scope.filter.texts !== undefined && scope.filter.texts.length > 0;
+                            };
+
+                            scope.removeFilter = function (index) {
+                                var newValue = [];
+
+                                $(scope.filter.texts).each(function (i, item) {
+                                    if (i !== index) {
+                                        newValue.push(item);
+                                    }
+                                });
+
+                                scope.filter.texts = newValue;
+                            };
+
+                            scope.addFilter = function () {
+                                scope.filter.texts.push({
+                                    text: ''
+                                });
+                            };
+                        }
+                    }
                 }
             };
 

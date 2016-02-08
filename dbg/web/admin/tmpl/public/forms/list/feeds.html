@@ -1,0 +1,13 @@
+﻿<div class="row" id="page-content-link" data-scrollspy="link">
+    <ctrl-text class="col-sm-7" ng-model="model.content.url" ng-required="true" ng-label="link"></ctrl-text>
+    <ctrl-date-picker class="col-sm-3" ng-model="model.content.date" ng-time="true" ng-required="true" ng-label="date"></ctrl-date-picker>
+    <ctrl-numeric class="col-sm-2" ng-model="model.content.number" ng-required="true" ng-label="no"></ctrl-numeric>
+</div>
+<div class="row" id="page-content-source" data-scrollspy="source">
+    <ctrl-text class="col-sm-5" ng-model="model.content.source" ng-required="true" ng-label="source"></ctrl-text>
+    <ctrl-text class="col-sm-5" ng-model="model.content.category" ng-required="true" ng-label="category"></ctrl-text>
+    <ctrl-check class="col-sm-2" ng-model="model.content.online" ng-label="online"></ctrl-check>
+</div>
+<div class="row" id="page-content-desc" data-scrollspy="description">
+    <ctrl-html class="col-sm-12" ng-model="model.content.description" ng-height="200" ng-max-height="400" ng-required="true" ng-label="description"></ctrl-html>
+</div> 

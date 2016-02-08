@@ -21,12 +21,17 @@
     };
     DataSelectorController.prototype = Object.create(jsnbt.controllers.ListSelectorModalControllerBase.prototype);
 
-    DataSelectorController.prototype.load = function () {
+    DataSelectorController.prototype.load = function (filters, sorter) {
         var deferred = this.ctor.$q.defer();    
 
-        this.ctor.PagedDataService.get(this.ctor.$jsnbt.db.data.get, {
-            domain: this.scope.domain,
-            list: this.scope.list
+        this.ctor.PagedDataService.get({
+            fn: this.ctor.$jsnbt.db.data.get,
+            query: {
+                domain: this.scope.domain,
+                list: this.scope.list
+            },
+            filters: filters,
+            sorter: sorter
         }).then(function (response) {
             
             deferred.resolve(response);

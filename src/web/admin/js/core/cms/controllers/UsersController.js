@@ -6,6 +6,8 @@
     var UsersController = function ($scope, $rootScope, $location, $logger, $q, $jsnbt, PagedDataService) {
         jsnbt.controllers.ListControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
+        var self = this;
+
         var logger = $logger.create('UsersController');
 
         $scope.canCreate = function () {
@@ -17,21 +19,12 @@
         };
 
         $scope.gridFn = {
-
-            sort: function (name, direction) {
-                var sort = {};
-                sort[name] = direction === 'asc' ? 1 : -1;
-                PagedDataService.get($jsnbt.db.users.get, {
-                    $sort: sort
-                }).then(function (response) {
+            load: function (filters, sorter) {
+                self.load(filters, sorter).then(function (response) {
                     $scope.model = response;
                 }).catch(function (error) {
                     throw error;
                 });
-            },
-
-            filter: function (filters) {
-
             },
 
             canEdit: function (user) {
@@ -50,10 +43,15 @@
     };
     UsersController.prototype = Object.create(jsnbt.controllers.ListControllerBase.prototype);
 
-    UsersController.prototype.load = function () {
+    UsersController.prototype.load = function (filters, sorter) {
         var deferred = this.ctor.$q.defer();
-
-        this.ctor.PagedDataService.get(this.ctor.$jsnbt.db.users.get, { }).then(function (response) {
+        
+        this.ctor.PagedDataService.get({
+            fn: this.ctor.$jsnbt.db.users.get,
+            query: { },
+            filters: filters,
+            sorter: sorter
+        }).then(function (response) {
             deferred.resolve(response);
         }).catch(function (error) {
             deferred.reject(error);
