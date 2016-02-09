@@ -1,0 +1,45 @@
+﻿<div class="row title-container">
+    <div class="col-sm-12">
+        <span ng-click="back()" class="glyphicon glyphicon-arrow-left back-button"></span>
+        <h1 class="title">{{ title }}</h1>
+        <div class="buttons">
+            <button title="create new" class="btn btn-default glyphicon glyphicon-plus-sign" type="button" value="create" ng-disabled="!canCreate()" ng-click="create()"></button>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <ctrl-grid class="table-striped" ng-model="model" ng-fn="gridFn" ng-language="defaults.language">
+            <ctrl-grid-header>
+                <ctrl-grid-header-column class="col-sm-1" ng-sort-name="'content.number'" ng-filter-type="number" ng-filter-name="'content.number'">no</ctrl-grid-header-column>
+                <ctrl-grid-header-column class="col-sm-3" ng-sort-name="'content.date'" ng-filter-type="date" ng-filter-name="'content.date'">date</ctrl-grid-header-column>
+                <ctrl-grid-header-column class="col-sm-6" ng-sort-name="'title.' + defaults.language" ng-filter-type="string" ng-filter-name="'title.' + defaults.language">title</ctrl-grid-header-column>
+                <ctrl-grid-header-column class="col-sm-1" ng-sort-name="'content.online'" ng-filter-type="boolean" ng-filter-name="'content.online'">online</ctrl-grid-header-column>
+                <ctrl-grid-header-column></ctrl-grid-header-column>
+            </ctrl-grid-header>
+            <ctrl-grid-footer>
+                <ctrl-grid-infinite-scroll></ctrl-grid-infinite-scroll>
+                <ctrl-grid-empty>no data</ctrl-grid-empty>
+            </ctrl-grid-footer>
+            <ctrl-grid-body>
+                <ctrl-grid-column class="col-sm-1">
+                    {{ model.content.number }}
+                </ctrl-grid-column>
+                <ctrl-grid-column class="col-sm-3">
+                    {{ model.content.date | date:'DD/MM/YYYY HH:mm' }}
+                </ctrl-grid-column>
+                <ctrl-grid-column class="col-sm-6">
+                    {{ model.title[language] }}
+                </ctrl-grid-column>
+                <ctrl-grid-column class="col-sm-1">
+                    <input type="checkbox" ng-disabled="true" ng-model="model.content.online" />
+                </ctrl-grid-column>
+                <ctrl-grid-buttons-column>
+                    <button title="edit" class="btn btn-default glyphicon glyphicon-edit btn-sm" ng-disabled="!fn.canEdit(model)" ng-click="fn.edit(model)" />
+                    <button title="delete" class="btn btn-default glyphicon glyphicon-remove btn-sm" ng-disabled="!fn.canDelete(model)" ng-click="fn.delete(model)" />
+                </ctrl-grid-buttons-column>
+            </ctrl-grid-body>
+        </ctrl-grid>
+    </div>
+</div>

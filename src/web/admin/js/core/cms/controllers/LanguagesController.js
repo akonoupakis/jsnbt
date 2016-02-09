@@ -159,13 +159,18 @@
     };
     LanguagesController.prototype = Object.create(jsnbt.controllers.ListControllerBase.prototype);
 
-    LanguagesController.prototype.load = function () {
+    LanguagesController.prototype.load = function (filters, sorter) {
         var deferred = this.ctor.$q.defer();
 
-        this.ctor.PagedDataService.get(this.ctor.$jsnbt.db.languages.get, {
-            $sort: {
-                name: 1
-            }
+        this.ctor.PagedDataService.get({
+            fn: this.ctor.$jsnbt.db.languages.get,
+            query: {
+                $sort: {
+                    name: 1
+                }
+            },
+            filters: filters,
+            sorter: sorter
         }).then(function (response) {
             deferred.resolve(response);
         }).catch(function (error) {

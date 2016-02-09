@@ -11,4 +11,10 @@ module.exports = [{
         role: 'admin',
         crud: ['C', 'R']
     }]
+}, {
+    id: 'feeds',
+    name: 'Feeds',
+    list: '/admin/tmpl/public/forms/list/feedsList.html',
+    form: '/admin/tmpl/public/forms/list/feeds.html',
+    localized: false
 }];

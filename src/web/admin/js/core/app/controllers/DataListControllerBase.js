@@ -20,7 +20,7 @@
 
                     $scope.id = $routeParams.list;
                     $scope.list = undefined;
-
+                    
                     $scope.loadingOptions = {};
 
                     this.enqueue('preloading', '', function () {
@@ -28,6 +28,10 @@
 
                         $scope.list = _.find($jsnbt.lists, function (x) { return x.domain === $scope.domain && x.id === ($scope.listId || $scope.id); });
                         self.setTitle($scope.list.name);
+
+                        if ($scope.list.list) {
+                            $scope.template = $scope.list.list;
+                        }
 
                         $.extend(true, $scope.loadingOptions, {
                             domain: $scope.domain,
@@ -51,6 +55,14 @@
                     };
 
                     $scope.gridFn = $scope.gridFn || {};
+
+                    $scope.gridFn.load = function (filters, sorter) {
+                        self.load(filters, sorter).then(function (response) {
+                            $scope.model = response;
+                        }).catch(function (error) {
+                            throw error;
+                        });
+                    };
 
                     $scope.gridFn.canEdit = function (row) {
                         return AuthService.isAuthorized($scope.current.user, 'data:' + row.domain + ':' + row.list, 'U');
@@ -81,10 +93,15 @@
                 };
                 DataListControllerBase.prototype = Object.create(controllers.ListControllerBase.prototype);
 
-                DataListControllerBase.prototype.load = function () {
+                DataListControllerBase.prototype.load = function (filters, sorter) {
                     var deferred = this.ctor.$q.defer();
 
-                    this.ctor.PagedDataService.get(this.ctor.$jsnbt.db.data.get, this.scope.loadingOptions).then(function (response) {
+                    this.ctor.PagedDataService.get({
+                        fn: this.ctor.$jsnbt.db.data.get,
+                        query: this.scope.loadingOptions,
+                        filters: filters,
+                        sorter: sorter
+                    }).then(function (response) {
                         deferred.resolve(response);
                     }).catch(function (error) {
                         deferred.reject(error);

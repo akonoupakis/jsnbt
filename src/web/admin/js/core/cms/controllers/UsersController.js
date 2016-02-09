@@ -3,8 +3,10 @@
 (function () {
     "use strict";
 
-    var UsersController = function ($scope, $rootScope, $location, $logger, $q, PagedDataService) {
+    var UsersController = function ($scope, $rootScope, $location, $logger, $q, $jsnbt, PagedDataService) {
         jsnbt.controllers.ListControllerBase.apply(this, $rootScope.getBaseArguments($scope));
+
+        var self = this;
 
         var logger = $logger.create('UsersController');
 
@@ -17,6 +19,13 @@
         };
 
         $scope.gridFn = {
+            load: function (filters, sorter) {
+                self.load(filters, sorter).then(function (response) {
+                    $scope.model = response;
+                }).catch(function (error) {
+                    throw error;
+                });
+            },
 
             canEdit: function (user) {
                 return true;
@@ -34,13 +43,14 @@
     };
     UsersController.prototype = Object.create(jsnbt.controllers.ListControllerBase.prototype);
 
-    UsersController.prototype.load = function () {
+    UsersController.prototype.load = function (filters, sorter) {
         var deferred = this.ctor.$q.defer();
-
-        this.ctor.PagedDataService.get(this.ctor.$jsnbt.db.users.get, {
-            $sort: {
-                lastName: 1
-            }
+        
+        this.ctor.PagedDataService.get({
+            fn: this.ctor.$jsnbt.db.users.get,
+            query: { },
+            filters: filters,
+            sorter: sorter
         }).then(function (response) {
             deferred.resolve(response);
         }).catch(function (error) {
@@ -51,5 +61,5 @@
     };
 
     angular.module("jsnbt")
-        .controller('UsersController', ['$scope', '$rootScope', '$location', '$logger', '$q', 'PagedDataService', UsersController]);
+        .controller('UsersController', ['$scope', '$rootScope', '$location', '$logger', '$q', '$jsnbt', 'PagedDataService', UsersController]);
 })(); 

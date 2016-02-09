@@ -55,14 +55,19 @@
     };
     TextsController.prototype = Object.create(jsnbt.controllers.ListControllerBase.prototype);
 
-    TextsController.prototype.load = function () {
+    TextsController.prototype.load = function (filters, sorter) {
         var deferred = this.ctor.$q.defer();
 
-        this.ctor.PagedDataService.get(this.ctor.$jsnbt.db.texts.get, {
-            $sort: {
-                group: 1,
-                key: 1
-            }
+        this.ctor.PagedDataService.get({
+            fn: this.ctor.$jsnbt.db.texts.get, 
+            query: {
+                $sort: {
+                    group: 1,
+                    key: 1
+                }
+            },
+            filters: filters,
+            sorter: sorter
         }).then(function (response) {
             deferred.resolve(response);
         }).catch(function (error) {

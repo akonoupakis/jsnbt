@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('wgtMessages', ['$rootScope', '$data', function ($rootScope, $data) {
+        .directive('wgtMessages', ['$rootScope', '$data', 'AuthService', function ($rootScope, $data, AuthService) {
 
             var MessagesWidget = function (scope, element, attrs) {
                 element.addClass('wgt-messages');
@@ -18,7 +18,7 @@
                     },
                     $sort: { timestamp: 1 }
                 }).then(function (response) {
-                    scope.messages = response;
+                    scope.messages = _.filter(response, function (x) { return AuthService.isInRole(scope.current.user, x.role); });
                 }).catch(function (ex) {
                     throw ex;
                 });
