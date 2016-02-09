@@ -12,10 +12,10 @@
     <div class="col-sm-12">
         <ctrl-grid class="table-striped" ng-model="model" ng-fn="gridFn" ng-language="defaults.language">
             <ctrl-grid-header>
-                <ctrl-grid-header-column ng-sort-name="'content.number'">no</ctrl-grid-header-column>
-                <ctrl-grid-header-column ng-sort-name="'content.date'">date</ctrl-grid-header-column>
-                <ctrl-grid-header-column ng-sort-name="'title.' + language" ng-filter-type="string" ng-filter-name="'title.' + language">title</ctrl-grid-header-column>
-                <ctrl-grid-header-column ng-sort-name="'content.online'">online</ctrl-grid-header-column>
+                <ctrl-grid-header-column class="col-sm-1" ng-sort-name="'content.number'" ng-filter-type="number" ng-filter-name="'content.number'">no</ctrl-grid-header-column>
+                <ctrl-grid-header-column class="col-sm-3" ng-sort-name="'content.date'" ng-filter-type="date" ng-filter-name="'content.date'">date</ctrl-grid-header-column>
+                <ctrl-grid-header-column class="col-sm-6" ng-sort-name="'title.' + defaults.language" ng-filter-type="string" ng-filter-name="'title.' + defaults.language">title</ctrl-grid-header-column>
+                <ctrl-grid-header-column class="col-sm-1" ng-sort-name="'content.online'" ng-filter-type="boolean" ng-filter-name="'content.online'">online</ctrl-grid-header-column>
                 <ctrl-grid-header-column></ctrl-grid-header-column>
             </ctrl-grid-header>
             <ctrl-grid-footer>

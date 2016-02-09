@@ -54,6 +54,10 @@
 
 .ctrl-grid-filter-box .filter-close, .ctrl-grid-filter-box .filter-add {
     cursor: pointer;
+    display: inline-block;
+    margin-left: 4px;
+    float: right;
+    margin-top: 5px;
 }
 
 .ctrl-grid-filter-box .filter-add {
@@ -65,4 +69,54 @@
 
 .ctrl-grid-filter-box .filter-box {
     margin-bottom: 3px;
+}
+
+.ctrl-grid-filter-box .filter-expression {
+    width: 22px;
+    float: left;
+    display: block;
+    position: relative;
+    font-size: 20px;
+    cursor: default;
+    margin-left: -4px;
+    letter-spacing: -2px;
+}
+
+.ctrl-grid-filter-box.ctrl-grid-filter-box-boolean .checkbox-wrapper {
+    text-rendering: auto;
+    color: initial;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-transform: none;
+    text-indent: 0px;
+    text-shadow: none;
+    display: inline-block;
+    text-align: start;
+    margin: 0em 0em 0em 0em;
+    font: 13.3333px Arial;
+    -webkit-appearance: textfield;
+    background-color: white;
+    border-image-source: initial;
+    border-image-slice: initial;
+    border-image-width: initial;
+    border-image-outset: initial;
+    border-image-repeat: initial;
+    -webkit-rtl-ordering: logical;
+    -webkit-user-select: text;
+    cursor: auto;
+    padding: 1px;
+    border: 2px inset;
+    padding: 1px 0px;
+    width: 174px;
+}
+.ctrl-grid-filter-box.ctrl-grid-filter-box-boolean .checkbox-wrapper input {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.ctrl-grid-filter-box.ctrl-grid-filter-box-date .bootstrap-datetimepicker-widget {
+    margin: 0;
+    padding: 0;
+    top: 0 !important;
+    left: 0 !important;
 }

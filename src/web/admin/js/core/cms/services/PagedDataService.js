@@ -70,20 +70,62 @@
                 if (_.isArray(options.filters)) {
                     var filters = [];
                     _.each(options.filters, function (filter) {
-                        if (filter.name && filter.type === 'string' && _.isArray(filter.texts)) {
-                            if (filter.texts.length > 0) {
-                                _.each(filter.texts, function (filterText) {
-                                    if (filterText.text !== undefined && filterText.text.trim() !== '') {
-
-                                        var filtOpts = {};
-                                        filtOpts[filter.name] = {
-                                            $regex: filterText.text,
-                                            $options: 'i'
-                                        }
-
-                                        filters.push(filtOpts);
+                        if (filter.name && (filter.type === 'number' || filter.type ==='date') && _.isArray(filter.expressions) && filter.expressions.length > 0) {
+                            _.each(filter.expressions, function (expression) {
+                                if (expression.term !== undefined && expression.term !== null && expression.term !== NaN) {
+                                    var filtOpts = {};
+                                    if (expression.expression === '=') {
+                                        filtOpts[filter.name] = expression.term;
                                     }
-                                });
+                                    else if (expression.expression === '!=') {
+                                        filtOpts[filter.name] = {
+                                            $ne: expression.term
+                                        };
+                                    }
+                                    else if (expression.expression === '>=') {
+                                        filtOpts[filter.name] = {
+                                            $gte: expression.term
+                                        };
+                                    }
+                                    else if (expression.expression === '>') {
+                                        filtOpts[filter.name] = {
+                                            $gt: expression.term
+                                        };
+                                    }
+                                    else if (expression.expression === '<') {
+                                        filtOpts[filter.name] = {
+                                            $lt: expression.term
+                                        };
+                                    }
+                                    else if (expression.expression === '=<') {
+                                        filtOpts[filter.name] = {
+                                            $lte: expression.term
+                                        };
+                                    }
+                                    filters.push(filtOpts);
+                                }
+                            });
+                        }
+                        else if (filter.name && filter.type === 'string' && _.isArray(filter.expressions) && filter.expressions.length > 0) {
+                            _.each(filter.expressions, function (expression) {
+                                if (expression.term !== undefined && expression.term.trim() !== '') {
+                                    var filtOpts = {};
+                                    filtOpts[filter.name] = {
+                                        $regex: expression.expression === '!=' ? '^(?!.*' + expression.term + ')' : expression.term,
+                                        $options: 'i'
+                                    }
+
+                                    filters.push(filtOpts);
+                                }
+                            });
+                        }
+                        else if (filter.name && filter.type === 'boolean' && _.isArray(filter.expressions) && filter.expressions.length > 0) {
+                            var firstExpression = _.first(filter.expressions);
+                            if (firstExpression) {
+                                var filterValue = firstExpression.expression === '!=' ? !firstExpression.term : firstExpression.term;
+                                var filtOpts = {};
+                                filtOpts[filter.name] = filterValue;
+                                filters.push(filtOpts);
                             }
                         }
                     });
