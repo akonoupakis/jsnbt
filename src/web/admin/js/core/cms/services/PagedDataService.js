@@ -73,36 +73,89 @@
                         if (filter.name && (filter.type === 'number' || filter.type ==='date') && _.isArray(filter.expressions) && filter.expressions.length > 0) {
                             _.each(filter.expressions, function (expression) {
                                 if (expression.term !== undefined && expression.term !== null && expression.term !== NaN) {
-                                    var filtOpts = {};
                                     if (expression.expression === '=') {
-                                        filtOpts[filter.name] = expression.term;
+                                        if (filter.type === 'number') {
+                                            var filtOpts = {};
+                                            filtOpts[filter.name] = expression.term;
+                                            filters.push(filtOpts);
+                                        }
+                                        else if (filter.type === 'date') {
+
+                                            var dateFrom = new Date(expression.term);
+                                            var dateTo = moment(dateFrom).add(1, 'day')._d;
+
+                                            var dateFromObj = {};
+                                            dateFromObj[filter.name] = {
+                                                $gte: dateFrom.getTime()
+                                            };
+                                            filters.push(dateFromObj);
+
+                                            var dateToObj = {};
+                                            dateToObj[filter.name] = {
+                                                $lt: dateTo.getTime()
+                                            };
+                                            filters.push(dateToObj);
+                                        }
                                     }
                                     else if (expression.expression === '!=') {
-                                        filtOpts[filter.name] = {
-                                            $ne: expression.term
-                                        };
+                                        if (filter.type === 'number') {
+                                            var filtOpts = {};
+                                            filtOpts[filter.name] = {
+                                                $ne: expression.term
+                                            };
+                                            filters.push(filtOpts);
+                                        }
+                                        else if (filter.type === 'date') {
+                                            var dateLess = new Date(expression.term);
+                                            var dateGreater = moment(dateLess).add(1, 'day')._d;
+                                            
+                                            var dFilters = [];
+
+                                            var dateLessObj = {};
+                                            dateLessObj[filter.name] = {
+                                                $lt: dateLess.getTime()
+                                            };
+                                            dFilters.push(dateLessObj);
+
+                                            var dateGreaterObj = {};
+                                            dateGreaterObj[filter.name] = {
+                                                $gte: dateGreater.getTime()
+                                            };
+                                            dFilters.push(dateGreaterObj);
+
+                                            filters.push({
+                                                $or: dFilters
+                                            });
+                                        }
                                     }
                                     else if (expression.expression === '>=') {
+                                        var filtOpts = {};
                                         filtOpts[filter.name] = {
                                             $gte: expression.term
                                         };
+                                        filters.push(filtOpts);
                                     }
                                     else if (expression.expression === '>') {
+                                        var filtOpts = {};
                                         filtOpts[filter.name] = {
                                             $gt: expression.term
                                         };
+                                        filters.push(filtOpts);
                                     }
                                     else if (expression.expression === '<') {
+                                        var filtOpts = {};
                                         filtOpts[filter.name] = {
                                             $lt: expression.term
                                         };
+                                        filters.push(filtOpts);
                                     }
                                     else if (expression.expression === '=<') {
+                                        var filtOpts = {};
                                         filtOpts[filter.name] = {
                                             $lte: expression.term
                                         };
+                                        filters.push(filtOpts);
                                     }
-                                    filters.push(filtOpts);
                                 }
                             });
                         }
