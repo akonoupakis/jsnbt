@@ -128,7 +128,7 @@
                             <span class="filter-close glyphicon glyphicon-remove-circle" ng-click="removeFilter($index)"></span> \
                         </div> \
                         <div> \
-                            <span class="filter-expression">A</span> \
+                            <span class="filter-expression">D</span> \
                             <input type="text" ng-disabled="true" /> \
                             <span class="filter-add glyphicon glyphicon-remove-circle" ng-click="addFilter()"></span> \
                         </div> \
@@ -293,7 +293,7 @@
                             };
                         }
                         else if (scope.ngFilterType === 'date') {
-                            expressions = ['>=', '>', '<', '=<'];
+                            expressions = ['=', '!=', '>=', '>', '<', '=<'];
                 
                             scope.filtered = function () {
                                 return scope.filter.expressions !== undefined && scope.filter.expressions.length > 0;
@@ -324,18 +324,16 @@
                                 $timeout(function () {
                                     var expressionIndex = scope.filter.expressions.length - 1;
                                     var pickerElement = $('.ctrl-grid-filter-box-date .filter-box:eq(' + (expressionIndex) + ') > input');
-                                    pickerElement.datetimepicker({
-                                        format: 'DD/MM/YYYY HH:mm',
-                                        ignoreReadonly: true,
-                                        useCurrent: false
-                                    });
-
-                                    pickerElement.on("dp.change", function (e) {
+                                    pickerElement.datepicker({
+                                        autoclose: true,
+                                        format: 'dd/mm/yyyy',
+                                        orientation: 'top'
+                                    }).on('changeDate', function (e) {
                                         if (e.date) {
-                                            var time = e.date._d.getTime();
+                                            var time = e.date.getTime();
                                             if (scope.filter.expressions[expressionIndex].term !== time) {
                                                 scope.filter.expressions[expressionIndex].term = time;
-                                                scope.filter.expressions[expressionIndex].date = moment(e.date._d).format('DD/MM/YYYY');
+                                                scope.filter.expressions[expressionIndex].date = moment(e.date).format('DD/MM/YYYY');
                                             }
                                         }
                                         else {
