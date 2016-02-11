@@ -9,7 +9,7 @@ var Migrator = function (server) {
 Migrator.prototype.start = function () {
     var self = this;
 
-    var logger = this.server.getLogger();
+    var logger = this.server.getLogger('jsnbt-migrator');
     
     var migrations = [];
     var migrationsCount = 0;
@@ -52,7 +52,7 @@ Migrator.prototype.start = function () {
                                     error(err);
                                 }
                                 else {
-                                    self.server.logger.info('migration processed: ' + migration.module + ', ' + migration.name);
+                                    logger.info('migration processed: ' + migration.module + ', ' + migration.name);
                                     migrationsCount++;
                                     runMigration();
                                 }
@@ -71,7 +71,7 @@ Migrator.prototype.start = function () {
 
         }
         else {
-            self.server.logger.info('total migrations processed: ' + migrationsCount);
+            logger.info('total migrations processed: ' + migrationsCount);
             done();
         }
     };

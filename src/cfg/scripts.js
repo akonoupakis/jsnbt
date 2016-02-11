@@ -12,6 +12,7 @@ module.exports = [{
         '/admin/js/core/lib/angular/angular.route.js',
         '/admin/js/core/lib/angular/angular.sanitize.js',
         '/admin/js/core/lib/angular/angular.strap.js',
+        '/admin/js/core/lib/angular/angular-paging.js',
         '/admin/js/core/lib/cropper/cropper.js',
         '/admin/js/core/lib/jquery/jquery-inViewport.js',
         '/admin/js/core/lib/jquery/jquery-ui.js',

@@ -36,8 +36,14 @@
 
                         var data = {
                             items: [],
+                            total: 0,
                             more: function () {
                                 return getData(fn, query, start + limit, limit, selected);
+                            },
+                            get: function (pageNumber) {
+                                var getStart = (pageNumber - 1) * limit;
+                                var getLimit = getStart + limit;
+                                return getData(fn, query, getStart, getLimit, selected);
                             }
                         };
 
@@ -47,10 +53,28 @@
                             data.items.push(result);
                         });
 
-                        deferred.resolve(data);
+                        if (data.items.length > 0) {
+                            var countQry = {};
+                            $.extend(true, countQry, qry);
+                            delete countQry.$sort;
+                            delete countQry.$skip;
+                            delete countQry.$limit;
+                            fn.count.apply(fn.count, [countQry, function (countErr, countResult) {
+                                if (countErr) {
+                                    deferred.reject(countErr);
+                                }
+                                else {
+                                    data.total = countResult;
+                                    deferred.resolve(data);
+                                }
+                            }]);
+                        }
+                        else {
+                            deferred.resolve(data);
+                        }
                     }
                 }];
-                fn.apply(fn, params);
+                fn.get.apply(fn.get, params);
 
                 return deferred.promise;
             };
