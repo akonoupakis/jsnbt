@@ -42,6 +42,8 @@
                     this.selectMode = $scope.ngSelectMode;
                     this.language = $scope.ngLanguage;
 
+                    this.currentPage = 1;
+
                     $scope.$watch('ngLanguage', function (value) {
                         self.language = value;
                     });
@@ -220,6 +222,7 @@
                         };
 
                         ctrlGrid.ended = false;
+                        ctrlGrid.currentPage = 1;
                         scope.$parent.$parent.fn.load(getFilters(), getSorter());
                     };
 
@@ -235,6 +238,7 @@
 
                             scope.$watch('filter.expressions', function (newValue, prevValue) {
                                 ctrlGrid.ended = false;
+                                ctrlGrid.currentPage = 1;
                                 scope.$parent.$parent.fn.load(getFilters(), getSorter());
                             }, true);
 
@@ -266,6 +270,7 @@
                     
                             scope.$watch('filter.expressions', function (newValue, prevValue) {
                                 ctrlGrid.ended = false;
+                                ctrlGrid.currentPage = 1;
                                 scope.$parent.$parent.fn.load(getFilters(), getSorter());
                             }, true);
                             
@@ -311,6 +316,7 @@
                                 scope.filter.expressions = newValue;
 
                                 ctrlGrid.ended = false;
+                                ctrlGrid.currentPage = 1;
                                 scope.$parent.$parent.fn.load(getFilters(), getSorter());
                             };
 
@@ -342,6 +348,7 @@
                                         }
 
                                         ctrlGrid.ended = false;
+                                        ctrlGrid.currentPage = 1;
                                         scope.$parent.$parent.fn.load(getFilters(), getSorter());
                                     });
                                 });
@@ -352,6 +359,7 @@
 
                             scope.$watch('filter.expressions', function (newValue, prevValue) {
                                 ctrlGrid.ended = false;
+                                ctrlGrid.currentPage = 1;
                                 scope.$parent.$parent.fn.load(getFilters(), getSorter());
                             }, true);
 
@@ -393,6 +401,7 @@
                             }
 
                             ctrlGrid.ended = false;
+                            ctrlGrid.currentPage = 1;
                             scope.$parent.$parent.fn.load(getFilters(), getSorter());
                         };
                     }
@@ -535,7 +544,51 @@
                }
            };
 
-       }])
+        }])
+        .directive('ctrlGridPager', [function () {
+
+            return {
+                require: '^ctrlGrid',
+                restrict: 'E',
+                replace: true,
+                template: '<div><div class="pager-loading-bar"><img src="img/core/loading.gif" /></div><div class="pager-wrapper" paging page="grid.currentPage" page-size="pageSize" total="total" paging-action="setPage(\'Paging Clicked\', page, pageSize, total)" hide-if-empty="true" show-prev-next="true" show-first-last="true"></div></div>',
+                link: function (scope, element, attrs, ctrlGrid) {
+                    element.addClass('ctrl-grid-pager');
+
+                    ctrlGrid.ended = false;
+
+                    scope.loading = false;
+
+                    scope.grid = ctrlGrid;
+                    scope.pageSize = 50;
+
+                    scope.$parent.$watch('data.total', function (newValue) {
+                        scope.total = newValue;
+                    });
+
+                    scope.setPage = function (event, pageNo, pageSize, totalCount) {
+                        if (typeof (scope.$parent.data.get) === 'function' && !scope.loading) {
+                            scope.$parent.data.items = [];
+                            scope.$parent.$parent.loading = true;
+                            scope.$parent.data.get(pageNo).then(function (response) {
+                                $(response.items).each(function (i, item) {
+                                    item.$parent = scope.$parent.data;
+                                    scope.$parent.data.items.push(item);
+                                });
+                                scope.$parent.data.total = totalCount;
+                                ctrlGrid.currentPage = pageNo;
+                                scope.$parent.$parent.loading = false;
+                            }).catch(function (error) {
+                                scope.$parent.$parent.loading = false;
+                                throw error;
+                            });
+                        }
+                    };
+                    
+                }
+            };
+
+        }])
         .directive('ctrlGridEmpty', [function () {
 
           return {

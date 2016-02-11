@@ -14,6 +14,7 @@
     modules.push('flow');
     modules.push('angular-redactor');
     modules.push('ngTagsInput');
+    modules.push('bw.paging');
 
     for (var moduleDomain in jsnbt.modules) {
         if (jsnbt.modules[moduleDomain].domain !== 'public' && jsnbt.modules[moduleDomain].name)

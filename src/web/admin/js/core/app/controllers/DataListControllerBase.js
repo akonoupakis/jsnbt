@@ -97,7 +97,7 @@
                     var deferred = this.ctor.$q.defer();
 
                     this.ctor.PagedDataService.get({
-                        fn: this.ctor.$jsnbt.db.data.get,
+                        fn: this.ctor.$jsnbt.db.data,
                         query: this.scope.loadingOptions,
                         filters: filters,
                         sorter: sorter

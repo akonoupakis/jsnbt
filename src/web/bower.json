@@ -27,7 +27,8 @@
 	"gmaps": "0.4.21",
 	"ng-tags-input": "3.0.0",
 	"jshashes": "1.0.5",
-	"webui-popover": "1.2.3"
+	"webui-popover": "1.2.3",
+	"angular-paging": "2.1.0"
   },
   "deploy": {
     "jquery": {
@@ -370,6 +371,16 @@
           "src": "webui-popover-1.2.3/dist/jquery.webui-popover.css",
           "dest": [
             "admin/css/core/lib/jquery.webui-popover.css"
+          ]
+        }
+      ]
+	},
+	"angular-paging": {
+	   "files": [
+        {
+          "src": "angular-paging-2.1.0/dist/paging.js",
+          "dest": [
+            "admin/js/core/lib/angular/angular-paging.js"
           ]
         }
       ]
