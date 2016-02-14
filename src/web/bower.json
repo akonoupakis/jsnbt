@@ -21,9 +21,9 @@
 	"imperavi-redactor": "10.0.9",
 	"angular-redactor": "1.1.5",
 	"bootstrap-datepicker": "1.4.0",
+	"bootstrap-timepicker": "0.5.2",
 	"moment": "2.10.6",
 	"moment-timezone": "0.4.0",
-	"eonasdan-bootstrap-datetimepicker": "4.17.37",
 	"gmaps": "0.4.21",
 	"ng-tags-input": "3.0.0",
 	"jshashes": "1.0.5",
@@ -287,6 +287,22 @@
         }
       ]
 	},
+	"bootstrap-timepicker": {
+	   "files": [
+        {
+          "src": "bootstrap-timepicker-0.5.2/js/bootstrap-timepicker.js",
+          "dest": [
+            "admin/js/core/lib/bootstrap/bootstrap.timepicker.js"
+          ]
+        },
+        {
+          "src": "bootstrap-timepicker-0.5.2/css/bootstrap-timepicker.css",
+          "dest": [
+            "admin/css/core/lib/bootstrap/bootstrap-timepicker.css"
+          ]
+        }
+      ]
+	},
 	"moment": {
       "files": [
         {
@@ -307,22 +323,6 @@
         }
       ]
     },
-	"eonasdan-bootstrap-datetimepicker": {
-	   "files": [
-        {
-          "src": "eonasdan-bootstrap-datetimepicker-4.17.37/src/js/bootstrap-datetimepicker.js",
-          "dest": [
-            "admin/js/core/lib/bootstrap-datetimepicker.js"
-          ]
-        },
-		 {
-          "src": "eonasdan-bootstrap-datetimepicker-4.17.37/build/css/bootstrap-datetimepicker.css",
-          "dest": [
-            "admin/css/core/lib/bootstrap/bootstrap-datetimepicker.css"
-          ]
-        }
-      ]
-	},
 	"gmaps": {
       "files": [
         {
