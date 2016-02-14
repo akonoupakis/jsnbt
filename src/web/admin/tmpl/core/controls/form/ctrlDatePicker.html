@@ -2,8 +2,9 @@
     <div class="form-group" ng-class="{ 'has-error': !ngDisabled && !valid, 'has-feedback': !ngDisabled && !valid }">
         <label ng-show="ngLabel" class="control-label" for="txt{{id}}">{{ngLabel}}<small ng-show="ngTip">({{ngTip}})</small></label>
         <div class="form-control-feedback-container">
-            <div class="input-group">
-                <input type="text" class="form-control" ng-model="model" ng-blur="leftInput($event)" />
+            <div class="input-group" ng-class="{ timed: ngTime }">
+                <input type="text" class="form-control dpicker" ng-model="modelD" ng-blur="leftInput($event)" />
+                <input type="text" class="form-control tpicker" ng-model="modelT" ng-show="ngTime" ng-disabled="!ngTime" />
                 <div class="input-group-btn">
                     <button class="btn btn-default glyphicon glyphicon-th" type="button" ng-click="select()" ng-disabled="ngDisabled"></button>
                     <button class="btn btn-default glyphicon glyphicon-remove" type="button" ng-click="clear()" ng-show="!ngRequired" ng-disabled="ngDisabled || !model"></button>

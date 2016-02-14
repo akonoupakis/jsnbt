@@ -59,7 +59,7 @@
         var deferred = this.ctor.$q.defer();
 
         this.ctor.PagedDataService.get({
-            fn: this.ctor.$jsnbt.db.texts.get, 
+            fn: this.ctor.$jsnbt.db.texts, 
             query: {
                 $sort: {
                     group: 1,

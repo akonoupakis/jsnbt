@@ -19,6 +19,7 @@ module.exports = [{
         '/admin/js/core/lib/jquery/jquery.scrollTo.js',
         '/admin/js/core/lib/ng-flow/ng-flow.js',
         '/admin/js/core/lib/bootstrap/bootstrap.datepicker.js',
+        '/admin/js/core/lib/bootstrap/bootstrap.timepicker.js',
         '/admin/js/core/lib/ngInfiniteScroll/ngInfiniteScroll.js',
         '/admin/js/core/lib/redactor/a-redactor.js',
         '/admin/js/core/lib/redactor/b-angular-redactor.js',
@@ -26,7 +27,6 @@ module.exports = [{
         '/admin/js/core/lib/underscore/underscore.string.js',
         '/admin/js/core/lib/moment.js',
         '/admin/js/core/lib/moment-timezone.js',
-        '/admin/js/core/lib/bootstrap-datetimepicker.js',
         '/admin/js/core/lib/ng-tags-input.js',
         '/admin/js/core/lib/jshashes.js',
         '/admin/js/core/lib/jquery.webui-popover.js'

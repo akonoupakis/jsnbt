@@ -31,45 +31,50 @@
                 }
 
                 $timeout(function () {
+                    $('.input-group > input.dpicker', element).datepicker({
+                        autoclose: true,
+                        format: 'dd/mm/yyyy',
+                        orientation: 'top'
+                    }).on('changeDate', function (e) {
+                        if (e.date) {
+                            var storedDate = new Date(scope.ngModel);
+                            storedDate.setDate(e.date.getDate());
+                            storedDate.setMonth(e.date.getMonth());
+                            storedDate.setFullYear(e.date.getFullYear());
+                            var storedTime = storedDate.getTime();
 
-                    if (scope.ngTime) {
-                        $('.input-group > input', element).datetimepicker({
-                            format: 'DD/MM/YYYY HH:mm',
-                            ignoreReadonly: true,
-                            useCurrent: false
-                        });
-
-                        $('.input-group > input', element).on("dp.change", function (e) {
-                            if (e.date) {
-                                var time = e.date._d.getTime();
-                                if (scope.ngModel !== time) {
-                                    scope.ngModel = time;
-                                    scope.changed();
-
-                                    self.validate();
-                                }
-                            }
-                            else {
-                               
-                                scope.ngModel = undefined;
+                            if (scope.ngModel !== storedTime) {
+                                scope.ngModel = storedTime;
                                 scope.changed();
 
                                 self.validate();
                             }
+                        }
+                        else {
+                            scope.ngModel = undefined;
+                            scope.changed();
+
+                            self.validate();
+                        }
+                    });
+
+                    if (scope.ngTime) {
+                        $('.input-group > input.tpicker', element).timepicker({
+                            defaultTime: false,
+                            autoclose: true,
+                            orientation: { x: 'auto', y: 'top' },
+                            showMeridian: false
                         });
 
-                        $('.input-group > input', element).data("DateTimePicker").date(new Date(scope.ngModel));
-                    }
-                    else {
-                        $('.input-group > input', element).datepicker({
-                            autoclose: true,
-                            format: 'dd/mm/yyyy',
-                            orientation: 'top'
-                        }).on('changeDate', function (e) {
-                            if (e.date) {
-                                var time = e.date.getTime();
-                                if (scope.ngModel !== time) {
-                                    scope.ngModel = time;
+                        $('.input-group > input.tpicker', element).on("changeTime.timepicker", function (e) {
+                            if (e.time) {
+                                var storedDate = scope.ngModel && !isNaN(scope.ngModel) ? new Date(scope.ngModel) : new Date();
+                                storedDate.setHours(e.time.hours);
+                                storedDate.setMinutes(e.time.minutes);
+                                var storedTime = storedDate.getTime();
+
+                                if (scope.ngModel !== storedTime) {
+                                    scope.ngModel = storedTime;
                                     scope.changed();
 
                                     self.validate();
@@ -86,20 +91,18 @@
                 });
 
                 scope.select = function () {
+                    $('.input-group > input.dpicker', element).datepicker('show');
+
                     if (scope.ngTime) {
-                        $('.input-group > input', element).data("DateTimePicker").show();
-                    }
-                    else {
-                        $('.input-group > input', element).datepicker('show');
-                    }
+                        $('.input-group > input.tpicker', element).timepicker('showWidget');
+                    }                    
                 };
 
                 scope.clear = function () {
+                    $('.input-group > input.dpicker', element).datepicker('clearDates');
+
                     if (scope.ngTime) {
-                        $('.input-group > input', element).data("DateTimePicker").clear();
-                    }
-                    else {
-                        $('.input-group > input', element).datepicker('clearDates');
+                        $('.input-group > input.tpicker', element).timepicker('clearDates');
                     }
                 };
 
@@ -107,25 +110,23 @@
                     if (val) {
                         var date = new Date(val);
                         if (date) {
-                            if (scope.ngTime) {
-                                scope.model = moment(date).format('DD/MM/YYYY HH:mm');
-                            }
-                            else {
-                                scope.model = moment(date).format('DD/MM/YYYY');
-                            }
+                            scope.modelD = moment(date).format('DD/MM/YYYY');
+                            scope.modelT = moment(date).format('HH:mm');
                         }
                         else {
-                            scope.model = undefined;
+                            scope.modelD = undefined;
+                            scope.modelT = undefined;
                         }
                     } else {
-                        scope.model = undefined;
+                        scope.modelD = undefined;
+                        scope.modelT = undefined;
                     }
                 });
 
                 this.init().then(function () {
                     if (scope.ngAutoFocus === true) {
                         setTimeout(function () {
-                            element.find('.input-group .form-control').focus();
+                            element.find('.input-group .dpicker').focus();
                         }, 200);
                     }
                 });
@@ -141,7 +142,10 @@
                     if (valid && self.isValidating()) {
 
                         if (self.scope.ngRequired) {
-                            valid = !!self.scope.model && self.scope.model !== '';
+                            valid = !!self.scope.modelD && self.scope.modelD !== '';
+                            if (valid && self.scope.ngTime) {
+                                valid = !!self.scope.modelT && self.scope.modelT !== '';
+                            }
                         }
 
                     }
