@@ -5,7 +5,7 @@
     "use strict";
 
     angular.module('jsnbt')
-        .directive('ctrlBreadcrumb', ['$rootScope', '$location', function ($rootScope, $location) {
+        .directive('ctrlBreadcrumb', ['$rootScope', function ($rootScope) {
 
             var BreadcrumbControl = function (scope, element, attrs) {
                 jsnbt.controls.ControlBase.apply(this, $rootScope.getBaseArguments(scope, element, attrs));
@@ -14,7 +14,7 @@
                 element.addClass('ctrl-breadcrumb');
 
                 scope.previousTo = function (path) {
-                    $location.previous(path);
+                    scope.$parent.route.previous(path);
                 };
 
                 scope.visible = function (item) {

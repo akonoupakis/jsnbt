@@ -3,7 +3,7 @@
 (function () {
     "use strict";
 
-    var ModulesController = function ($scope, $rootScope, $location, $q, $logger, $jsnbt, AuthService) {
+    var ModulesController = function ($scope, $rootScope, $q, $logger, $jsnbt, AuthService) {
         jsnbt.controllers.ListControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var logger = $logger.create('ModulesController');
@@ -20,7 +20,7 @@
             },
 
             open: function (module) {
-                $location.next('/modules/' + module.domain);
+                $scope.route.next('/modules/' + module.domain);
             }
 
         };
@@ -54,5 +54,5 @@
     };
 
     angular.module("jsnbt")
-        .controller('ModulesController', ['$scope', '$rootScope', '$location', '$q', '$logger', '$jsnbt', 'AuthService', ModulesController]);
+        .controller('ModulesController', ['$scope', '$rootScope', '$q', '$logger', '$jsnbt', 'AuthService', ModulesController]);
 })(); 

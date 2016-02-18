@@ -9,7 +9,7 @@
 
             controllers.TreeControllerBase = (function (TreeControllerBase) {
 
-                TreeControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                TreeControllerBase = function ($scope, $rootScope, $router, $logger, $q, $timeout, $data, $jsnbt, RouteService, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
                     controllers.ControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
                     $scope.localization = true;

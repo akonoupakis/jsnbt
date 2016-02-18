@@ -9,7 +9,6 @@ module.exports = [{
         '/admin/js/core/lib/angular/angular-bootstrap-tpls.js',
         '/admin/js/core/lib/angular/angular-ui-sortable.js',
         '/admin/js/core/lib/angular/angular.animate.js',
-        '/admin/js/core/lib/angular/angular.route.js',
         '/admin/js/core/lib/angular/angular.sanitize.js',
         '/admin/js/core/lib/angular/angular.strap.js',
         '/admin/js/core/lib/angular/angular-paging.js',
@@ -59,6 +58,7 @@ module.exports = [{
         '/admin/js/core/app/controls/FormControlBase.js',
         '/admin/js/core/app/controls/ListControlBase.js',
         '/admin/js/core/app/routes/ViewRouter.js',
+        '/admin/js/core/ngPathRouter/ngPathRouter.js',
 
 
         '/admin/js/core/cms/main.js',
@@ -152,6 +152,7 @@ module.exports = [{
         '/admin/js/core/cms/providers/$jsnbt.js',
         '/admin/js/core/cms/providers/$logger.js',
         '/admin/js/core/cms/providers/$queue.js',
+        //'/admin/js/core/cms/providers/$router.js',
 
         '/admin/js/core/cms/services/AuthService.js',
         '/admin/js/core/cms/services/FileService.js',
@@ -168,6 +169,7 @@ module.exports = [{
         '/admin/js/core/cms/utils/errSrc.js',
         '/admin/js/core/cms/utils/lkRepeat.js',
         '/admin/js/core/cms/utils/ngModelTransclude.js',
+        //'/admin/js/core/cms/utils/view.js',
 
         '/admin/js/init.js'
     ]

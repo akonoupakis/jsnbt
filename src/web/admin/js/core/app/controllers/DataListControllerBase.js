@@ -9,7 +9,7 @@
 
             controllers.DataListControllerBase = (function (DataListControllerBase) {
 
-                DataListControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                DataListControllerBase = function ($scope, $rootScope, $router, $logger, $q, $timeout, $data, $jsnbt, RouteService, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
                     controllers.ListControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
                     var self = this;
@@ -18,7 +18,7 @@
 
                     $scope.localization = true;
 
-                    $scope.id = $routeParams.list;
+                    $scope.id = $scope.route.current.params.list;
                     $scope.list = undefined;
                     
                     $scope.loadingOptions = {};
@@ -51,7 +51,7 @@
                     };
 
                     $scope.create = function () {
-                        $location.next(_.last($scope.current.breadcrumb.items).url + '/new');
+                        $scope.route.next(_.last($scope.current.breadcrumb.items).url + '/new');
                     };
 
                     $scope.gridFn = $scope.gridFn || {};
@@ -69,7 +69,7 @@
                     };
 
                     $scope.gridFn.edit = function (row) {
-                        $location.next(_.last($scope.current.breadcrumb.items).url + '/' + row.id);
+                        $scope.route.next(_.last($scope.current.breadcrumb.items).url + '/' + row.id);
                     };
 
                     $scope.gridFn.canDelete = function (row) {

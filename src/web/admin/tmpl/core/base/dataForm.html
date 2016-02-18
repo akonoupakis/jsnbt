@@ -39,7 +39,7 @@
             <hr />
         </div>
 
-        <div ng-show="template" ng-include="template"></div>
+        <div ng-include="route.current.template || route.current.baseTemplate"></div>
 
         <hr />
 

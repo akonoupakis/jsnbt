@@ -3,7 +3,7 @@
 (function () {
     "use strict";
 
-    var TextsController = function ($scope, $rootScope, $location, $logger, $q, $data, PagedDataService, ModalService, AuthService) {
+    var TextsController = function ($scope, $rootScope, $logger, $q, $data, PagedDataService, ModalService, AuthService) {
         jsnbt.controllers.ListControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var self = this;
@@ -15,7 +15,7 @@
         };
 
         $scope.create = function () {
-            $location.next('/content/texts/new');
+            $scope.route.next('/content/texts/new');
         };
 
         $scope.gridFn = {
@@ -25,7 +25,7 @@
             },
 
             edit: function (row) {
-                $location.next('/content/texts/' + row.id);
+                $scope.route.next('/content/texts/' + row.id);
             },
 
             canDelete: function (row) {
@@ -78,5 +78,5 @@
     };
 
     angular.module("jsnbt")
-        .controller('TextsController', ['$scope', '$rootScope', '$location', '$logger', '$q', '$data', 'PagedDataService', 'ModalService', 'AuthService', TextsController]);
+        .controller('TextsController', ['$scope', '$rootScope', '$logger', '$q', '$data', 'PagedDataService', 'ModalService', 'AuthService', TextsController]);
 })();

@@ -3,7 +3,7 @@
 (function () {
     "use strict";
 
-    var UsersController = function ($scope, $rootScope, $location, $logger, $q, $jsnbt, PagedDataService) {
+    var UsersController = function ($scope, $rootScope, $logger, $q, $jsnbt, PagedDataService) {
         jsnbt.controllers.ListControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var self = this;
@@ -15,7 +15,7 @@
         };
 
         $scope.create = function () {
-            $location.next('/users/new');
+            $scope.route.next('/users/new');
         };
 
         $scope.gridFn = {
@@ -32,7 +32,7 @@
             },
 
             edit: function (user) {
-                $location.next('/users/' + user.id);
+                $scope.route.next('/users/' + user.id);
             }
 
         };
@@ -61,5 +61,5 @@
     };
 
     angular.module("jsnbt")
-        .controller('UsersController', ['$scope', '$rootScope', '$location', '$logger', '$q', '$jsnbt', 'PagedDataService', UsersController]);
+        .controller('UsersController', ['$scope', '$rootScope', '$logger', '$q', '$jsnbt', 'PagedDataService', UsersController]);
 })(); 

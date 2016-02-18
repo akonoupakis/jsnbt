@@ -3,7 +3,7 @@
 (function () {
     "use strict";
 
-    var AppController = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
+    var AppController = function ($scope, $rootScope, $router, $logger, $q, $timeout, $data, $jsnbt, RouteService, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
         jsnbt.controllers.Controller.apply(this, $rootScope.getBaseArguments($scope));
 
         var logger = $logger.create('AppController');
@@ -15,7 +15,7 @@
         $scope.current.restoreFn = undefined;
 
         $scope.goto = function (path) {
-            $location.goto(path);
+            $scope.route.navigate(path);
         };
 
         $scope.getNodeBreadcrumb = function (node, prefix) {
@@ -76,7 +76,7 @@
         $scope.$on(AUTH_EVENTS.loginSuccess, function (sender, user) {
             $scope.current.setUser(user);
 
-            if ($route.current.$$route && $route.current.$$route.section && !AuthService.isAuthorized(user, $route.current.$$route.section)) {
+            if ($scope.route.current && $scope.route.current.section && !AuthService.isAuthorized(user, $scope.route.current.section)) {
                 $scope.current.denied = true;
             }
             else {
@@ -87,9 +87,73 @@
             }
         });
 
+        $scope.route = RouteService.create({
+            redirect: true
+        });
+ 
+        $scope.route.on('success', function () {
+            $('body').scrollTo($('body'), { duration: 400 });
+        });
+
+        $rootScope.initiated = $rootScope.initiated || false;
+        $rootScope.users = 0;
+
+        $rootScope.$on('$locationChangeStart', function (event, next) {
+            $rootScope.$broadcast(ROUTE_EVENTS.routeStarted);
+
+            AuthService.get().then(function (user) {
+                $rootScope.$broadcast(ROUTE_EVENTS.routeCompleted);
+                if (!AuthService.isInRole(user, 'admin')) {
+                    $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated, function () {
+                        $scope.route.reload();
+                    });
+                }
+                else {
+                    $rootScope.$broadcast(AUTH_EVENTS.authenticated, user);
+                    var currentSection = $scope.route.current && $scope.route.current.section;
+                    if (currentSection) {
+                        if (!AuthService.isAuthorized(user, currentSection)) {
+                            $rootScope.$broadcast(AUTH_EVENTS.accessDenied);
+                        }
+                    }
+                }
+            }, function () {
+                event.preventDefault();
+
+                if (!$rootScope.initiated) {
+
+                    AuthService.count().then(function (count) {
+                        $rootScope.$broadcast(ROUTE_EVENTS.routeCompleted);
+
+                        if (count === 0) {
+                            $rootScope.$broadcast(AUTH_EVENTS.noUsers, function () {
+                                $scope.route.reload();
+                            });
+                        }
+                        else {
+                            $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated, function () {
+                                $scope.route.reload();
+                            });
+                        }
+
+                        $rootScope.initiated = true;
+                    }).catch(function (error) {
+                        throw error;
+                    });
+                }
+                else {
+                    $rootScope.$broadcast(ROUTE_EVENTS.routeCompleted);
+
+                    $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated, function () {
+                        $route.reload();
+                    });
+                }
+
+            });
+        });
     };
     AppController.prototype = Object.create(jsnbt.controllers.Controller.prototype);
 
     angular.module("jsnbt")
-        .controller('AppController', ['$scope', '$rootScope', '$route', '$routeParams', '$location', '$logger', '$q', '$timeout', '$data', '$jsnbt', 'LocationService', 'ScrollSpyService', 'AuthService', 'TreeNodeService', 'PagedDataService', 'ModalService', 'CONTROL_EVENTS', 'AUTH_EVENTS', 'DATA_EVENTS', 'ROUTE_EVENTS', AppController]);
+        .controller('AppController', ['$scope', '$rootScope', '$router', '$logger', '$q', '$timeout', '$data', '$jsnbt', 'RouteService', 'LocationService', 'ScrollSpyService', 'AuthService', 'TreeNodeService', 'PagedDataService', 'ModalService', 'CONTROL_EVENTS', 'AUTH_EVENTS', 'DATA_EVENTS', 'ROUTE_EVENTS', AppController]);
 })();

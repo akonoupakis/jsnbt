@@ -4,7 +4,7 @@
 
         <ctrl-breadcrumb ng-if="breadcrumb" ng-model="current.breadcrumb.items" ng-title="current.breadcrumb.title"></ctrl-breadcrumb>
         
-        <div ng-include="template"></div>
+        <div ng-include="route.current.template || route.current.baseTemplate"></div>
 
     </section>
 

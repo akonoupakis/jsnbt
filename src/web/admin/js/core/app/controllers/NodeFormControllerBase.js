@@ -9,7 +9,7 @@
 
             controllers.NodeFormControllerBase = (function (NodeFormControllerBase) {
 
-                NodeFormControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                NodeFormControllerBase = function ($scope, $rootScope, $router, $logger, $q, $timeout, $data, $jsnbt, RouteService, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
                     controllers.FormControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
                     var self = this;
@@ -80,7 +80,7 @@
 
                     $scope.editPointee = function () {
                         $data.nodes.get($scope.model.pointer.nodeId).then(function (targetNode) {
-                            $location.next($jsnbt.entities[targetNode.entity].getEditUrl(targetNode, '/content/nodes'));
+                            $scope.route.next($jsnbt.entities[targetNode.entity].getEditUrl(targetNode, '/content/nodes'));
                         }, function (ex) {
                             throw ex;
                         });

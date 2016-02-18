@@ -9,7 +9,7 @@
 
             controls.ControlBase = (function (ControlBase) {
 
-                ControlBase = function (scope, element, attrs, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                ControlBase = function (scope, element, attrs, $rootScope, $router, $logger, $q, $timeout, $data, $jsnbt, RouteService, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
 
                     this.scope = scope;
                     this.element = element;
@@ -17,14 +17,13 @@
 
                     this.ctor = {
                         $rootScope: $rootScope,
-                        $route: $route,
-                        $routeParams: $routeParams,
-                        $location: $location,
+                        $router: $router,
                         $logger: $logger,
                         $q: $q,
                         $timeout: $timeout,
                         $data: $data,
                         $jsnbt: $jsnbt,
+                        RouteService: RouteService,
                         LocationService: LocationService,
                         ScrollSpyService: ScrollSpyService,
                         AuthService: AuthService,

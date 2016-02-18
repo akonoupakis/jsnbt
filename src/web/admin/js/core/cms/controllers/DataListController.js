@@ -3,7 +3,7 @@
 (function () {
     "use strict";
 
-    var DataListController = function ($scope, $rootScope, $routeParams, $location, $logger, $q, $data, $jsnbt, PagedDataService, ModalService, LocationService) {
+    var DataListController = function ($scope, $rootScope, $logger, $q, $data, $jsnbt, PagedDataService, ModalService, LocationService) {
         jsnbt.controllers.DataListControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         $scope.domain = 'public';
@@ -17,5 +17,5 @@
     DataListController.prototype = Object.create(jsnbt.controllers.DataListControllerBase.prototype);
 
     angular.module("jsnbt")
-        .controller('DataListController', ['$scope', '$rootScope', '$routeParams', '$location', '$logger', '$q', '$data', '$jsnbt', 'PagedDataService', 'ModalService', 'LocationService', DataListController]);
+        .controller('DataListController', ['$scope', '$rootScope', '$logger', '$q', '$data', '$jsnbt', 'PagedDataService', 'ModalService', 'LocationService', DataListController]);
 })();

@@ -3,11 +3,11 @@
 (function () {
     "use strict";
 
-    var LanguageController = function ($scope, $rootScope, $routeParams, $location, $timeout, $q, $logger, $data, ScrollSpyService, LocationService, CONTROL_EVENTS) {
+    var LanguageController = function ($scope, $rootScope, $timeout, $q, $logger, $data, ScrollSpyService, LocationService, CONTROL_EVENTS) {
         jsnbt.controllers.FormControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var logger = $logger.create('LanguageController');
-
+        
         $scope.localization = false;
 
         $scope.data = undefined;
@@ -128,5 +128,5 @@
     };
 
     angular.module("jsnbt")
-        .controller('LanguageController', ['$scope', '$rootScope', '$routeParams', '$location', '$timeout', '$q', '$logger', '$data', 'ScrollSpyService', 'LocationService', 'CONTROL_EVENTS', LanguageController]);
+        .controller('LanguageController', ['$scope', '$rootScope', '$timeout', '$q', '$logger', '$data', 'ScrollSpyService', 'LocationService', 'CONTROL_EVENTS', LanguageController]);
 })();

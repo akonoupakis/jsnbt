@@ -3,7 +3,7 @@
 (function () {
     "use strict";
 
-    var SettingsController = function ($scope, $rootScope, $location, $route, $timeout, $q, $logger, $data, $jsnbt, ScrollSpyService, LocationService, CONTROL_EVENTS) {
+    var SettingsController = function ($scope, $rootScope, $timeout, $q, $logger, $data, $jsnbt, ScrollSpyService, LocationService, CONTROL_EVENTS) {
         jsnbt.controllers.SettingsControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var self = this;
@@ -173,5 +173,5 @@
     };
 
     angular.module("jsnbt")
-        .controller('SettingsController', ['$scope', '$rootScope', '$location', '$route', '$timeout', '$q', '$logger', '$data', '$jsnbt', 'ScrollSpyService', 'LocationService', 'CONTROL_EVENTS', SettingsController]);
+        .controller('SettingsController', ['$scope', '$rootScope', '$timeout', '$q', '$logger', '$data', '$jsnbt', 'ScrollSpyService', 'LocationService', 'CONTROL_EVENTS', SettingsController]);
 })(); 

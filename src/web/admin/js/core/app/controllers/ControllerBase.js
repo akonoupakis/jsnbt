@@ -9,7 +9,7 @@
 
             controllers.ControllerBase = (function (ControllerBase) {
 
-                ControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                ControllerBase = function ($scope, $rootScope, $router, $logger, $q, $timeout, $data, $jsnbt, RouteService, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
 
                     var logger = $logger.create('ControllerBase');
 
@@ -21,14 +21,13 @@
 
                     this.ctor = {
                         $rootScope: $rootScope,
-                        $route: $route,
-                        $routeParams: $routeParams,
-                        $location: $location,
+                        $router: $router,
                         $logger: $logger,
                         $q: $q,
                         $timeout: $timeout,
                         $data: $data,
                         $jsnbt: $jsnbt,
+                        RouteService: RouteService,
                         LocationService: LocationService,
                         ScrollSpyService: ScrollSpyService,
                         AuthService: AuthService,
@@ -44,10 +43,6 @@
 
                     this.queue = {};
 
-                    if (_.isObject($route.current) && _.isObject($route.current.$$route) && _.isObject($route.current.$$route.scope))
-                        for (var scopeProperty in $route.current.$$route.scope) 
-                            $scope[scopeProperty] = $route.current.$$route.scope[scopeProperty];
-                    
                     $scope.localization = false;
                     $scope.languages = [];
 
@@ -57,23 +52,11 @@
                         $scope.current.breadcrumb.items.pop();
                         var lastItem = _.last($scope.current.breadcrumb.items);
                         if (lastItem) {
-                            $location.previous(lastItem.url);
+                            $scope.route.previous(lastItem.url);
                         }
                         else {
                             logger.warn('previous breadcrumb item not found. implement the back() function to override');
                         }
-                    };
-
-                    $scope.goto = function (path) {
-                        $location.goto(path);
-                    };
-
-                    $scope.previous = function (path) {
-                        $location.previous(path);
-                    };
-
-                    $scope.next = function (path) {
-                        $location.next(path);
                     };
 
                     $scope.$on(CONTROL_EVENTS.register, function (sender, control) {
@@ -104,7 +87,7 @@
                 ControllerBase.prototype.getBreadcrumb = function () {
                     var deferred = this.ctor.$q.defer();
 
-                    var breadcrumb = this.ctor.LocationService.getBreadcrumb();
+                    var breadcrumb = this.ctor.LocationService.getBreadcrumb(this.scope.route.current);
 
                     deferred.resolve(breadcrumb);
 

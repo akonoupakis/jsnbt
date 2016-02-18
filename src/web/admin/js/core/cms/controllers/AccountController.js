@@ -3,7 +3,7 @@
 (function () {
     "use strict";
 
-    var AccountController = function ($scope, $rootScope, $routeParams, $location, $timeout, $q, $logger, $data, $jsnbt, ScrollSpyService, LocationService, AuthService, ModalService, CONTROL_EVENTS) {
+    var AccountController = function ($scope, $rootScope, $timeout, $q, $logger, $data, $jsnbt, ScrollSpyService, LocationService, AuthService, ModalService, CONTROL_EVENTS) {
         jsnbt.controllers.FormControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var self = this;
@@ -96,5 +96,5 @@
     };
 
     angular.module("jsnbt")
-        .controller('AccountController', ['$scope', '$rootScope', '$routeParams', '$location', '$timeout', '$q', '$logger', '$data', '$jsnbt', 'ScrollSpyService', 'LocationService', 'AuthService', 'ModalService', 'CONTROL_EVENTS', AccountController]);
+        .controller('AccountController', ['$scope', '$rootScope', '$timeout', '$q', '$logger', '$data', '$jsnbt', 'ScrollSpyService', 'LocationService', 'AuthService', 'ModalService', 'CONTROL_EVENTS', AccountController]);
 })();

@@ -9,7 +9,7 @@
 
             controllers.FormControllerBase = (function (FormControllerBase) {
 
-                FormControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                FormControllerBase = function ($scope, $rootScope, $router, $logger, $q, $timeout, $data, $jsnbt, RouteService, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
                     controllers.ControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
                     var self = this;
@@ -18,8 +18,8 @@
 
                     $scope.localization = true;
 
-                    this.id = $routeParams.id;
-                    $scope.id = $routeParams.id;
+                    this.id =  $scope.route.current.params.id;
+                    $scope.id = $scope.route.current.params.id;
 
                     $scope.found = undefined;
 
@@ -88,11 +88,11 @@
                                             self.push(item).then(function (pushed) {
                                                 if (pushed) {
                                                     if (self.isNew()) {
-                                                        var currentUrlParts = $location.$$path.split('/');
+                                                        var currentUrlParts = $scope.route.current.path.split('/');
                                                         currentUrlParts.pop();
                                                         var currentUrl = currentUrlParts.join('/');
                                                         var targetUrl = currentUrl + '/' + pushed.id;
-                                                        $location.goto(targetUrl);
+                                                        $sope.route.navigate(targetUrl);
                                                     }
                                                     else {
                                                         self.load().then(function (loaded) {

@@ -3,7 +3,7 @@
 (function () {
     "use strict";
 
-    var ContentController = function ($scope, $rootScope, $jsnbt, $location, $logger, $templateCache) {
+    var ContentController = function ($scope, $rootScope, $jsnbt, $logger, $templateCache) {
         jsnbt.controllers.ControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var logger = $logger.create('ContentController');
@@ -75,5 +75,5 @@
     ContentController.prototype = Object.create(jsnbt.controllers.ControllerBase.prototype);
 
     angular.module("jsnbt")
-        .controller('ContentController', ['$scope', '$rootScope', '$jsnbt', '$location', '$logger', '$templateCache', ContentController]);
+        .controller('ContentController', ['$scope', '$rootScope', '$jsnbt', '$logger', '$templateCache', ContentController]);
 })();
