@@ -8,7 +8,7 @@
             var LocationService = {};
             
             LocationService.getBreadcrumb = function (route) {
-                var paths = _.string.trim(route.path, '/').split('/');
+                var paths = _.string.trim(route ? route.path : '/', '/').split('/');
                 var breadcrumbs = [];
                 var urlPart = '';
 

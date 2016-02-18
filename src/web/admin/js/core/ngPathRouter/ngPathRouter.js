@@ -152,6 +152,24 @@
         });
     };
 
+    Route.prototype.reload = function () {
+        var self = this;
+
+        this.direction = '';
+
+        self.trigger('start', []);
+        navigate(this.options, this.current ? this.current.path : '/', function (err, route) {
+            if (err) {
+                self.current = undefined;
+                self.trigger('error', [err]);
+            }
+            else {
+                self.current = route;
+                self.trigger('success', [route]);
+            }
+        });
+    };
+
     Route.prototype.on = function (name, fn) {
         if (this.events[name]) {
             this.events[name].push(fn);
@@ -281,7 +299,7 @@
                         cleanupLastView();
                 });
 
-                scopeRoute.init($location.path());
+                scopeRoute.init($location.path() || '/');
 
                 function cleanupLastView() {
                     if (previousLeaveAnimation) {
@@ -298,6 +316,8 @@
                             $animate.addClass(currentElement, 'animate-next');
                         else if (scopeRoute.direction === 'rtl')
                             $animate.addClass(currentElement, 'animate-prev');
+                        else
+                            $animate.addClass(currentElement, 'animate-fade');
 
                         previousLeaveAnimation = $animate.leave(currentElement);
                         previousLeaveAnimation.then(function () {
@@ -307,6 +327,8 @@
                                 $animate.removeClass(currentElement, 'animate-next');
                             else if (scopeRoute.direction === 'rtl')
                                 $animate.removeClass(currentElement, 'animate-prev');
+                            else 
+                                $animate.removeClass(currentElement, 'animate-fade');
                         });
                         currentElement = null;
                     }
@@ -323,12 +345,16 @@
                                 $animate.addClass(clone, 'animate-next');
                             else if (scopeRoute.direction === 'rtl')
                                 $animate.addClass(clone, 'animate-prev');
+                            else
+                                $animate.addClass(clone, 'animate-fade');
 
                             $animate.enter(clone, null, currentElement || $element).then(function onNgViewEnter() {
                                 if (scopeRoute.direction === 'ltr')
                                     $animate.removeClass(clone, 'animate-next');
                                 else if (scopeRoute.direction === 'rtl')
                                     $animate.removeClass(clone, 'animate-prev');
+                                else
+                                    $animate.removeClass(clone, 'animate-fade');
                             });
 
                             cleanupLastView();
