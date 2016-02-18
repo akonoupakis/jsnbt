@@ -82,6 +82,8 @@
     Route.prototype.init = function (path) {
         var self = this;
 
+        this.direction = '';
+
         self.trigger('start', []);
         navigate(this.options, path, function (err, route) {
             if (err) {
@@ -98,9 +100,7 @@
     Route.prototype.navigate = function (path) {
         var self = this;
 
-        this.direction = undefined;
-        this.coming = false;
-        this.leaving = false;
+        this.direction = '';
 
         self.trigger('start', []);
         navigate(this.options, path, function (err, route) {
@@ -112,14 +112,6 @@
                 self.current = route;
                 self.trigger('success', [route]);
             }
-
-            setTimeout(function () {
-                //if (self.coming) {
-                self.direction = '';
-                self.leaving = false;
-                self.coming = false;
-                //}
-            }, 1000);
         });
     };
 
@@ -127,12 +119,8 @@
         var self = this;
 
         this.direction = 'rtl';
-        this.coming = false;
-        this.leaving = true;
 
         self.trigger('start', []);
-
-        this.coming = true;
 
         navigate(this.options, path, function (err, route) {
             if (err) {
@@ -143,14 +131,6 @@
                 self.current = route;
                 self.trigger('success', [route]);
             }
-
-            setTimeout(function () {
-                if (self.coming) {
-                    self.direction = '';
-                    self.leaving = false;
-                    self.coming = false;
-                }
-            }, 1000);
         });
     };
 
@@ -158,13 +138,7 @@
         var self = this;
 
         this.direction = 'ltr';
-        this.coming = false;
-        this.leaving = false;
-
-        //    if ($scope.route.leaving) {
-        //        $scope.route.coming = true;
-        //    }
-
+        
         self.trigger('start', []);
         navigate(this.options, path, function (err, route) {
             if (err) {
@@ -175,14 +149,6 @@
                 self.current = route;
                 self.trigger('success', [route]);
             }
-
-            setTimeout(function () {
-                if (self.coming) {
-                    self.direction = '';
-                    self.leaving = false;
-                    self.coming = false;
-                }
-            }, 1000);
         });
     };
 
@@ -287,8 +253,8 @@
 
     };
 
-    routerViewFactory.$inject = ['$anchorScroll', '$animate', '$location'];
-    function routerViewFactory($anchorScroll, $animate, $location) {
+    routerViewFactory.$inject = ['$animate', '$location'];
+    function routerViewFactory($animate, $location) {
         return {
             restrict: 'E',
             terminal: true,
@@ -306,9 +272,7 @@
 
                 var currentScope,
                     currentElement,
-                    previousLeaveAnimation,
-                    autoScrollExp = attr.autoscroll,
-                    onloadExp = attr.onload || '';
+                    previousLeaveAnimation;
 
                 scopeRoute.on('success', function (route) {
                     if (route)
@@ -330,9 +294,19 @@
                         currentScope = null;
                     }
                     if (currentElement) {
+                        if (scopeRoute.direction === 'ltr')
+                            $animate.addClass(currentElement, 'animate-next');
+                        else if (scopeRoute.direction === 'rtl')
+                            $animate.addClass(currentElement, 'animate-prev');
+
                         previousLeaveAnimation = $animate.leave(currentElement);
                         previousLeaveAnimation.then(function () {
                             previousLeaveAnimation = null;
+
+                            if (scopeRoute.direction === 'ltr')
+                                $animate.removeClass(currentElement, 'animate-next');
+                            else if (scopeRoute.direction === 'rtl')
+                                $animate.removeClass(currentElement, 'animate-prev');
                         });
                         currentElement = null;
                     }
@@ -344,18 +318,24 @@
                         var newScope = scope.$new();
                         
                         var clone = $transclude(newScope, function (clone) {
+
+                            if (scopeRoute.direction === 'ltr')
+                                $animate.addClass(clone, 'animate-next');
+                            else if (scopeRoute.direction === 'rtl')
+                                $animate.addClass(clone, 'animate-prev');
+
                             $animate.enter(clone, null, currentElement || $element).then(function onNgViewEnter() {
-                                if (angular.isDefined(autoScrollExp)
-                                  && (!autoScrollExp || scope.$eval(autoScrollExp))) {
-                                    $anchorScroll();
-                                }
+                                if (scopeRoute.direction === 'ltr')
+                                    $animate.removeClass(clone, 'animate-next');
+                                else if (scopeRoute.direction === 'rtl')
+                                    $animate.removeClass(clone, 'animate-prev');
                             });
+
                             cleanupLastView();
                         });
 
                         currentElement = clone;
                         currentScope = newScope;
-                        currentScope.$eval(onloadExp);
                     } else {
                         cleanupLastView();
                     }
@@ -386,6 +366,7 @@
                 }
 
                 scope.viewTemplate = scopeRoute.current.baseTemplate || scopeRoute.current.template;
+
                 $element.html('<div ng-include="viewTemplate"></div>');
 
                 var link = $compile($element.contents());

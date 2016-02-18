@@ -13,11 +13,7 @@
         $scope.current.initiated = false;
         
         $scope.current.restoreFn = undefined;
-
-        $scope.goto = function (path) {
-            $scope.route.navigate(path);
-        };
-
+        
         $scope.getNodeBreadcrumb = function (node, prefix) {
             return TreeNodeService.getBreadcrumb(node, $scope.defaults.language, prefix);
         };
@@ -90,7 +86,7 @@
         $scope.route = RouteService.create({
             redirect: true
         });
- 
+
         $scope.route.on('success', function () {
             $('body').scrollTo($('body'), { duration: 400 });
         });
