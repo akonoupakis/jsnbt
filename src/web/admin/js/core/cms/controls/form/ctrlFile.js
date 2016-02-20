@@ -43,6 +43,7 @@
                     ModalService.open(function (x) {
                         x.title('select a file');
                         x.path('/content/files');
+                        x.maximized();
                         x.scope({
                             selected: scope.ngModel,
                             group: fileGroup,

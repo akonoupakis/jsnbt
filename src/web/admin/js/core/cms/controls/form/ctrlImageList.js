@@ -70,6 +70,7 @@
                         x.title('select and crop the image you want');
                         x.controller('ImageSelectorController');
                         x.template('tmpl/core/modals/imageSelector.html');
+                        x.maximized();
                         x.scope({
                             selected: item,
                             group: fileGroup,
@@ -96,6 +97,7 @@
                         x.title('crop ' + item.src);
                         x.controller('ImageSelectorController');
                         x.template('tmpl/core/modals/imageSelector.html');
+                        x.maximized();
                         x.scope({
                             selected: item,
                             group: fileGroup,
@@ -121,6 +123,7 @@
                         x.title('select and crop the image you want');
                         x.controller('ImageSelectorController');
                         x.template('tmpl/core/modals/imageSelector.html');
+                        x.maximized();
                         x.scope({                  
                             group: fileGroup,
                             mode: 'single',

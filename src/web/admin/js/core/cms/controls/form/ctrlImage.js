@@ -45,6 +45,7 @@
                         x.title('select and crop the image you want');
                         x.controller('ImageSelectorController');
                         x.template('tmpl/core/modals/imageSelector.html');
+                        x.maximized();
                         x.scope({
                             selected: scope.ngModel,
                             group: fileGroup,
@@ -65,6 +66,7 @@
                         x.title('crop ' + scope.ngModel.src);
                         x.controller('ImageSelectorController');
                         x.template('tmpl/core/modals/imageSelector.html');
+                        x.maximized();
                         x.scope({
                             selected: scope.ngModel,
                             group: fileGroup,

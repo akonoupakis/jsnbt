@@ -65,6 +65,7 @@
                     ModalService.open(function (x) {
                         x.title('select the file you want');
                         x.path('/content/files');
+                        x.maximized();
                         x.scope({
                             selected: item,
                             group: fileGroup,
@@ -85,6 +86,7 @@
                     ModalService.open(function (x) {
                         x.title('select the files you want');
                         x.path('/content/files');
+                        x.maximized();
                         x.scope({
                             group: fileGroup,
                             mode: 'multiple',

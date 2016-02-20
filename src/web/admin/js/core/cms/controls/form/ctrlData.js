@@ -70,6 +70,7 @@
                     ModalService.open(function (x) {
                         x.title('select a data item');
                         x.path(scope.ngRoute || '/content/data/' + list.id);
+                        x.maximized();
                         x.scope({
                             selector: 'data',
                             domain: scope.ngDomain

@@ -104,6 +104,7 @@
                     ModalService.open(function (x) {
                         x.title('select a content node');
                         x.path(scope.ngRoute || '/content/nodes');
+                        x.maximized();
                         x.scope({
                             selector: 'node',
                             domain: scope.ngDomain
@@ -129,6 +130,7 @@
                     ModalService.open(function (x) {
                         x.title('select the content nodes you want');
                         x.path(scope.ngRoute || '/content/nodes');
+                        x.maximized();
                         x.scope({
                             selector: 'node',
                             domain: scope.ngDomain
@@ -154,6 +156,7 @@
                         ModalService.open(function (x) {
                             x.title('select a content node');
                             x.path(scope.ngRoute || '/content/nodes');
+                            x.maximized();
                             x.scope({
                                 selector: 'node',
                                 domain: scope.ngDomain
@@ -187,6 +190,7 @@
                         ModalService.open(function (x) {
                             x.title('select the content nodes you want');
                             x.path(scope.ngRoute || '/content/nodes');
+                            x.maximized();
                             x.scope({
                                 selector: 'node',
                                 domain: scope.ngDomain
