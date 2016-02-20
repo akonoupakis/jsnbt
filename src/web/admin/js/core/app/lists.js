@@ -14,9 +14,9 @@
                         selected: selected,
                         domain: list.domain,
                         list: list.id,
-                        mode: mode,
-                        options: options || {}
+                        mode: mode
                     });
+                    fn.scope(options || {});
                 };
 
             });

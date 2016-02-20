@@ -16,7 +16,7 @@
                         domain: this.domain,
                         mode: mode
                     });
-                    fn.scope(options);
+                    fn.scope(options || {});
                 };
             }
 
@@ -28,7 +28,7 @@
                         domain: 'core',
                         mode: mode
                     });
-                    fn.scope(options);
+                    fn.scope(options || {});
                 };
 
                 return coreModule;
