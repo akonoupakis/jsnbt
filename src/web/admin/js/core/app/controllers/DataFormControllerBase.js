@@ -30,7 +30,7 @@
                         $scope.localized = $scope.application.localization.enabled && ($scope.list.localized === undefined || $scope.list.localized === true);
 
                         $scope.template = $scope.list.form;
-
+                        
                         deferred.resolve();
 
                         return deferred.promise;

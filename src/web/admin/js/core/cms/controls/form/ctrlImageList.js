@@ -66,7 +66,7 @@
                 scope.edit = function (index) {
                     var item = scope.ngModel[index];
 
-                    ModalService.select(function (x) {
+                    ModalService.open(function (x) {
                         x.title('select and crop the image you want');
                         x.controller('ImageSelectorController');
                         x.template('tmpl/core/modals/imageSelector.html');
@@ -92,7 +92,7 @@
                 scope.crop = function (index) {
                     var item = scope.ngModel[index];
 
-                    ModalService.select(function (x) {
+                    ModalService.open(function (x) {
                         x.title('crop ' + item.src);
                         x.controller('ImageSelectorController');
                         x.template('tmpl/core/modals/imageSelector.html');
@@ -117,7 +117,7 @@
 
                 scope.add = function () {
 
-                    ModalService.select(function (x) {
+                    ModalService.open(function (x) {
                         x.title('select and crop the image you want');
                         x.controller('ImageSelectorController');
                         x.template('tmpl/core/modals/imageSelector.html');

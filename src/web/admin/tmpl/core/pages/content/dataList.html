@@ -1,6 +1,6 @@
 ﻿<div class="row title-container">
     <div class="col-sm-12">
-        <span ng-click="back()" class="glyphicon glyphicon-arrow-left back-button"></span>
+        <span ng-click="back()" ng-show="!modal" class="glyphicon glyphicon-arrow-left back-button"></span>
         <h1 class="title">{{ title }}</h1>
         <div class="buttons">
             <button title="create new" class="btn btn-default glyphicon glyphicon-plus-sign" type="button" value="create" ng-disabled="!canCreate()" ng-click="create()"></button>
@@ -10,9 +10,9 @@
 
 <div class="row">
     <div class="col-sm-12">
-        <ctrl-grid class="table-striped" ng-model="model" ng-fn="gridFn" ng-language="defaults.language">
+        <ctrl-grid class="table-striped" ng-model="model" ng-selectable="modal !== false" ng-select-mode="modal.mode" ng-fn="gridFn" ng-language="defaults.language">
             <ctrl-grid-header>
-                <ctrl-grid-header-column>name</ctrl-grid-header-column>
+                <ctrl-grid-header-column class="col-sm-11" ng-sort-name="'title.' + defaults.language" ng-filter-type="string" ng-filter-name="'title.' + defaults.language">name</ctrl-grid-header-column>
                 <ctrl-grid-header-column></ctrl-grid-header-column>
             </ctrl-grid-header>
             <ctrl-grid-footer>
@@ -20,7 +20,7 @@
                 <ctrl-grid-empty>no data</ctrl-grid-empty>
             </ctrl-grid-footer>
             <ctrl-grid-body>
-                <ctrl-grid-column>
+                <ctrl-grid-column class="col-sm-11">
                     {{ model.title[language] }}
                 </ctrl-grid-column>
                 <ctrl-grid-buttons-column>

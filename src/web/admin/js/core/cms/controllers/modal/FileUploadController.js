@@ -8,8 +8,8 @@
 
         var logger = $logger.create('FileUploadController');
 
-        if (!$scope.path)
-            throw new Error('$scope.path not defined in FileUploadController');
+        if (!$scope.modal.path)
+            throw new Error('$scope.modal.path not defined in FileUploadController');
 
         $scope.errors = [];
         $scope.validate = function (file) {

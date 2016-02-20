@@ -8,16 +8,20 @@
 
         var logger = $logger.create('FileSystemEditorController');
 
-        if (!$scope.group)
-            throw new Error('$scope.group not defined in FileSystemEditorController');
+        if (!$scope.modal.group)
+            throw new Error('$scope.modal.group not defined in FileSystemEditorController');
 
-        if (!$scope.data)
-            throw new Error('$scope.data not defined in FileSystemEditorController');
+        if (!$scope.modal.data)
+            throw new Error('$scope.modal.data not defined in FileSystemEditorController');
         
+        $scope.root = function () {
+            TreeNodeService.setSelected($scope.nodes, []);
+        };
+
         this.enqueue('loaded', '', function () {
             var deferred = $q.defer();
 
-            $scope.name = $scope.data.type === 'folder' ? $scope.data.name : $scope.data.name.substring(0, $scope.data.name.length - $scope.data.ext.length);
+            $scope.name = $scope.modal.data.type === 'folder' ? $scope.modal.data.name : $scope.modal.data.name.substring(0, $scope.modal.data.name.length - $scope.modal.data.ext.length);
             $scope.ngModel = $scope.name;
 
             deferred.resolve();
@@ -28,7 +32,7 @@
         this.enqueue('set', '', function (data) {
             var deferred = $q.defer();
 
-            TreeNodeService.setSelected(data, [self.scope.data.dir]);
+            TreeNodeService.setSelected(data, [self.scope.modal.data.dir]);
 
             deferred.resolve();
 
@@ -47,16 +51,16 @@
         var self = this;
 
         var restricted = [];
-        if (this.scope.data.type === 'folder')
-            restricted.push(this.scope.data.path);
+        if (this.scope.modal.data.type === 'folder')
+            restricted.push(this.scope.modal.data.path);
 
         this.ctor.TreeNodeService.getFolders({
-            path: this.scope.data.dir,
+            path: this.scope.modal.data.dir,
             restricted: restricted
         }).then(function (response) {
 
             var nodes = response;
-            var groupNode = _.find(response[0].children, function (x) { return x.name == self.scope.group; });
+            var groupNode = _.find(response[0].children, function (x) { return x.name == self.scope.modal.group; });
             nodes = groupNode.children;
             deferred.resolve(nodes);
 
@@ -85,8 +89,8 @@
         var deferred = this.ctor.$q.defer();
 
         var selectedFolder = _.first(this.ctor.TreeNodeService.getSelected(this.scope.nodes));
-        var targetPath = (selectedFolder ? selectedFolder : '/' + this.scope.group);
-        var selectedPath = targetPath + '/' + this.scope.ngModel + this.scope.data.ext;
+        var targetPath = (selectedFolder ? selectedFolder : '/' + this.scope.modal.group);
+        var selectedPath = targetPath + '/' + this.scope.ngModel + this.scope.modal.data.ext;
 
         deferred.resolve(this.scope.ngModel !== '' ? selectedPath : '');
 

@@ -13,7 +13,7 @@
         $scope.localization = false;
         
         $scope.changeEmail = function () {
-            ModalService.select(function (x) {
+            ModalService.form(function (x) {
                 x.title('change email');
                 x.controller('EmailChangeController');
                 x.template('tmpl/core/modals/emailEditor.html');
@@ -24,15 +24,15 @@
                     }
                 });
             }).then(function (response) {
-                $scope.model.username = response.email;
-                $scope.current.user.username = response.email;
+                $scope.model.username = response;
+                $scope.current.user.username = response;
             }).catch(function (error) {
                 logger.error(error);
             });
         };
 
         $scope.changePassword = function () {
-            ModalService.select(function (x) {
+            ModalService.form(function (x) {
                 x.title('change password');
                 x.controller('PasswordChangeController');
                 x.template('tmpl/core/modals/passwordEditor.html');

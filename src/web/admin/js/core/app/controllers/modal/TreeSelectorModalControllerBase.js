@@ -26,7 +26,7 @@
                         $scope.mode = 'single';
 
                     this.enqueue('set', '', function (data) {
-                        self.setSelected($scope.selected);
+                        self.setSelected($scope.modal.selected);
                     });
 
                     $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
@@ -52,11 +52,11 @@
 
                 TreeSelectorModalControllerBase.prototype.setSelected = function (selected) {
                     if (selected)
-                        this.ctor.TreeNodeService.setSelected(this.scope.model, this.scope.mode === 'multiple' ? selected : [selected]);
+                        this.ctor.TreeNodeService.setSelected(this.scope.model, this.scope.modal.mode === 'multiple' ? selected : [selected]);
                 };
 
                 TreeSelectorModalControllerBase.prototype.getSelected = function () {
-                    var selected = this.scope.mode === 'single' ? _.first(this.ctor.TreeNodeService.getSelected(this.scope.model)) : this.ctor.TreeNodeService.getSelected(this.scope.model);
+                    var selected = this.scope.modal.mode === 'single' ? _.first(this.ctor.TreeNodeService.getSelected(this.scope.model)) : this.ctor.TreeNodeService.getSelected(this.scope.model);
                     return selected;
                 };
 

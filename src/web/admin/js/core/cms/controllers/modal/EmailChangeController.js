@@ -74,7 +74,7 @@
         return deferred.promise;
     };
 
-    EmailChangeController.prototype.push = function (data) {
+    EmailChangeController.prototype.publish = function (data) {
         var self = this;
 
         var deferred = this.ctor.$q.defer();
@@ -84,7 +84,7 @@
         this.ctor.AuthService.submitEmailChangeCode(data.email, data.code).then(function (response) {
             if (response) {
                 self.scope.invalidCode = false;
-                deferred.resolve(true);
+                deferred.resolve(data.email);
             }
             else {
                 self.scope.invalidCode = true;

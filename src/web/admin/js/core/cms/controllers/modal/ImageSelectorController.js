@@ -7,16 +7,14 @@
         var self = this;
 
         var logger = $logger.create('ImageSelectorController');
-
-        $scope.mode = 'single';
-
-        $scope.step = $scope.step || 1;
+        
+        $scope.modal.step = $scope.modal.step || 1;
 
         $scope.ngModel = {};
-        if ($scope.selected && typeof ($scope.selected) === 'object' && $scope.selected.src && $scope.selected.gen)
-            $.extend(true, $scope.ngModel, $scope.selected);
+        if ($scope.modal.selected && typeof ($scope.modal.selected) === 'object' && $scope.modal.selected.src && $scope.modal.selected.gen)
+            $.extend(true, $scope.ngModel, $scope.modal.selected);
 
-        $scope.fileGroup = $scope.group ? $scope.group : 'public';
+        $scope.fileGroup = $scope.modal.group ? $scope.modal.group : 'public';
 
         $scope.path = '/';
 
@@ -28,12 +26,12 @@
 
         $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
             $scope.$broadcast(CONTROL_EVENTS.valueRequested);
-            if ($scope.step === 1 && $scope.height && $scope.width) {
+            if ($scope.modal.step === 1 && $scope.modal.height && $scope.modal.width) {
                 $scope.ngModel.gen = [];
-                $scope.step++;
+                $scope.modal.step++;
             }
             else {
-                $scope.selected = $scope.ngModel;
+                $scope.modal.selected = $scope.ngModel;
                 $scope.$emit(MODAL_EVENTS.valueSubmitted, $scope.ngModel);
             }
         });
@@ -44,11 +42,11 @@
             $scope.ngModel.gen = [];
             $scope.ngModel.src = selected;
 
-            if ($scope.step === 1 && $scope.height && $scope.width) {
-                $scope.step++;
+            if ($scope.modal.step === 1 && $scope.modal.height && $scope.modal.width) {
+                $scope.modal.step++;
             }
             else {
-                $scope.selected = $scope.ngModel;
+                $scope.modal.selected = $scope.ngModel;
                 $scope.$emit(MODAL_EVENTS.valueSubmitted, $scope.ngModel);
             }
         });

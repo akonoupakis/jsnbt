@@ -1,6 +1,6 @@
 ﻿<div class="modal-upload container-fluid file-upload" flow-prevent-drop>
 
-    <div class="row" flow-init="{target: '/jsnbt-upload?path=' + path}" flow-file-added="validate($file)" flow-files-submitted="$flow.upload()" flow-drag-enter="dropClass='drag-over'" flow-drag-leave="dropClass=''">
+    <div class="row" flow-init="{target: '/jsnbt-upload?path=' + modal.path}" flow-file-added="validate($file)" flow-files-submitted="$flow.upload()" flow-drag-enter="dropClass='drag-over'" flow-drag-leave="dropClass=''">
 
         <div class="drop" flow-drop ng-class="dropClass">
             drag and drop any files here
@@ -9,7 +9,7 @@
         <div class="contents">
             <div ng-repeat="error in errors" class="transfer-box">
                 <div class="row">
-                    <div class="col-md-11">
+                    <div class="col-sm-10">
                         <div class="progress progress-striped upload-error">
                             <div class="progress-bar" role="progressbar"
                                  aria-valuenow="0"
@@ -20,7 +20,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-sm-2">
                         <button title="Delete" class="btn btn-default btn-sm glyphicon glyphicon-remove" ng-click="error.delete()"></button>
                     </div>
                 </div>
@@ -28,7 +28,7 @@
 
             <div ng-repeat="file in $flow.files" class="transfer-box">
                 <div class="row">
-                    <div class="col-md-11">
+                    <div class="col-sm-10">
                         <div class="progress progress-striped" ng-class="{active: file.isUploading()}">
                             <div class="progress-bar" role="progressbar"
                                  aria-valuenow="{{file.progress() * 100}}"
@@ -40,7 +40,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-sm-2">
                         <button title="Delete" class="btn btn-default btn-sm glyphicon glyphicon-remove" ng-click="file.cancel()"></button>
                     </div>
                 </div>

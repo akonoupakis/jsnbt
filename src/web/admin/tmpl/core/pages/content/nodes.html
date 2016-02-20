@@ -1,6 +1,6 @@
 ﻿<div class="row title-container">
     <div class="col-sm-12">
-        <span ng-click="back()" class="glyphicon glyphicon-arrow-left back-button"></span>
+        <span ng-click="back()" ng-show="!modal" class="glyphicon glyphicon-arrow-left back-button"></span>
         <h1 class="title">nodes</h1>
         <div class="buttons">
             <button title="create new" class="btn btn-default glyphicon glyphicon-plus-sign" type="button" value="create" ng-disabled="!canCreate()" ng-click="create()"></button>
@@ -10,7 +10,7 @@
 
 <div class="row">
     <div class="col-sm-12">
-        <ctrl-tree ng-model="model[0].children" ng-domain="domain" ng-fn="treeFn" ng-language="defaults.language">
+        <ctrl-tree ng-model="model[0].children" ng-domain="domain" ng-selectable="modal !== false" ng-select-mode="modal.mode" ng-fn="treeFn" ng-language="defaults.language">
             <ctrl-tree-node>
                 <ctrl-tree-node-content>{{ model.title[language] }}</ctrl-tree-node-content>
                 <ctrl-tree-node-buttons>

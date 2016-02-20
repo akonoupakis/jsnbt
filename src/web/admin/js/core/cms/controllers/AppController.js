@@ -5,9 +5,9 @@
 
     var AppController = function ($scope, $rootScope, $router, $logger, $q, $timeout, $data, $jsnbt, RouteService, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
         jsnbt.controllers.Controller.apply(this, $rootScope.getBaseArguments($scope));
-
+        
         var logger = $logger.create('AppController');
-       
+
         $scope.current.users = false;
         $scope.current.denied = false;
         $scope.current.initiated = false;
@@ -83,18 +83,11 @@
             }
         });
 
-        $scope.route = RouteService.create({
-            redirect: true
+        $scope.route.on('start', function () {
+            checkUser();
         });
-
-        $scope.route.on('success', function () {
-            $('body').scrollTo($('body'), { duration: 400 });
-        });
-
-        $rootScope.initiated = $rootScope.initiated || false;
-        $rootScope.users = 0;
-
-        $rootScope.$on('$locationChangeStart', function (event, next) {
+                
+        var checkUser = function () {
             $rootScope.$broadcast(ROUTE_EVENTS.routeStarted);
 
             AuthService.get().then(function (user) {
@@ -146,10 +139,36 @@
                 }
 
             });
-        });
+        };
     };
     AppController.prototype = Object.create(jsnbt.controllers.Controller.prototype);
 
     angular.module("jsnbt")
         .controller('AppController', ['$scope', '$rootScope', '$router', '$logger', '$q', '$timeout', '$data', '$jsnbt', 'RouteService', 'LocationService', 'ScrollSpyService', 'AuthService', 'TreeNodeService', 'PagedDataService', 'ModalService', 'CONTROL_EVENTS', 'AUTH_EVENTS', 'DATA_EVENTS', 'ROUTE_EVENTS', AppController]);
+
+
+    var PageController = function ($scope, $rootScope, $router, $logger, $q, $timeout, $data, $jsnbt, RouteService, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
+        
+        $scope.route.on('success', function () {
+            $('body').scrollTo($('body'), { duration: 400 });
+        });
+
+    };
+
+    angular.module("jsnbt")
+        .controller('PageController', ['$scope', '$rootScope', '$router', '$logger', '$q', '$timeout', '$data', '$jsnbt', 'RouteService', 'LocationService', 'ScrollSpyService', 'AuthService', 'TreeNodeService', 'PagedDataService', 'ModalService', 'CONTROL_EVENTS', 'AUTH_EVENTS', 'DATA_EVENTS', 'ROUTE_EVENTS', PageController]);
+
+    var ModalPageController = function ($scope, $rootScope, $router, $logger, $q, $timeout, $data, $jsnbt, RouteService, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
+        AppController.apply(this, $rootScope.getBaseArguments($scope));
+
+        $scope.route.on('success', function () {
+            var modalElement = $('.modal:last > .modal-dialog > .modal-content > div > .modal-body');
+            modalElement.scrollTo(modalElement, { duration: 600 });
+        });
+
+    };
+    ModalPageController.prototype = Object.create(AppController.prototype);
+
+    angular.module("jsnbt")
+        .controller('ModalPageController', ['$scope', '$rootScope', '$router', '$logger', '$q', '$timeout', '$data', '$jsnbt', 'RouteService', 'LocationService', 'ScrollSpyService', 'AuthService', 'TreeNodeService', 'PagedDataService', 'ModalService', 'CONTROL_EVENTS', 'AUTH_EVENTS', 'DATA_EVENTS', 'ROUTE_EVENTS', ModalPageController]);
 })();

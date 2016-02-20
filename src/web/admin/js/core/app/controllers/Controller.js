@@ -11,6 +11,8 @@
 
                 Controller = function ($scope, $rootScope, $router, $logger, $q, $timeout, $data, $jsnbt, RouteService, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
                     
+                    $scope.modal = $scope.modal;
+
                     $scope.root = true;
 
                     $scope.application = {
@@ -169,6 +171,9 @@
                         setApplicationLanguages();
                     });
 
+                    $scope.route = RouteService.create({
+                        redirect: $scope.modal ? false : true
+                    });
 
                     var initiated = false;
                     $scope.init = function () {

@@ -52,11 +52,13 @@
         }
 
         parseRoute(path, function (err, route) {
+            
             if (err)
                 return cb(err);
 
             if (route) {
                 commitRoute(route, function (commitedErr, commitedRoute) {
+                    commitedRoute.path = path;
                     cb(commitedErr, commitedRoute);
                 });
             }
@@ -218,12 +220,11 @@
 
         this.when = function (path, route) {
             var routeCopy = angular.copy(route);
-            routeCopy.path = path;
-           
+
             routes[path] = angular.extend(
-              routeCopy,
-              path && pathRegExp(path, routeCopy)
-            );
+            routeCopy,
+            path && pathRegExp(path, routeCopy)
+          );
 
             if (path) {
                 var redirectPath = (path[path.length - 1] == '/')
@@ -299,7 +300,12 @@
                         cleanupLastView();
                 });
 
-                scopeRoute.init($location.path() || '/');
+                if (scope.modal) {
+                    scopeRoute.init(scope.modal.path);
+                }
+                else {
+                    scopeRoute.init($location.path() || '/');
+                }
 
                 function cleanupLastView() {
                     if (previousLeaveAnimation) {
@@ -316,8 +322,6 @@
                             $animate.addClass(currentElement, 'animate-next');
                         else if (scopeRoute.direction === 'rtl')
                             $animate.addClass(currentElement, 'animate-prev');
-                        else
-                            $animate.addClass(currentElement, 'animate-fade');
 
                         previousLeaveAnimation = $animate.leave(currentElement);
                         previousLeaveAnimation.then(function () {
@@ -327,8 +331,6 @@
                                 $animate.removeClass(currentElement, 'animate-next');
                             else if (scopeRoute.direction === 'rtl')
                                 $animate.removeClass(currentElement, 'animate-prev');
-                            else 
-                                $animate.removeClass(currentElement, 'animate-fade');
                         });
                         currentElement = null;
                     }
@@ -345,16 +347,12 @@
                                 $animate.addClass(clone, 'animate-next');
                             else if (scopeRoute.direction === 'rtl')
                                 $animate.addClass(clone, 'animate-prev');
-                            else
-                                $animate.addClass(clone, 'animate-fade');
 
                             $animate.enter(clone, null, currentElement || $element).then(function onNgViewEnter() {
                                 if (scopeRoute.direction === 'ltr')
                                     $animate.removeClass(clone, 'animate-next');
                                 else if (scopeRoute.direction === 'rtl')
                                     $animate.removeClass(clone, 'animate-prev');
-                                else
-                                    $animate.removeClass(clone, 'animate-fade');
                             });
 
                             cleanupLastView();

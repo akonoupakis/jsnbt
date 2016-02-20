@@ -58,10 +58,11 @@
                 });
 
                 scope.select = function () {
-                    ModalService.select(function(x) {
+                    ModalService.open(function(x) {
                         x.title('select a container item');
                         x.controller('ContainerSelectorController');
                         x.template('tmpl/core/modals/containerSelector.html');
+                        x.maximized();
                         x.scope({
                             selected: scope.ngModel,
                             mode: 'single'

@@ -18,8 +18,8 @@
 
                     $scope.localization = true;
 
-                    this.id =  $scope.route.current.params.id;
-                    $scope.id = $scope.route.current.params.id;
+                    this.id = $scope.route && $scope.route.current.params.id;
+                    $scope.id = this.id;
 
                     $scope.found = undefined;
 
@@ -422,10 +422,12 @@
 
                     controllers.ControllerBase.prototype.getBreadcrumb.apply(this, arguments).then(function (breadcrumb) {
 
-                        if (self.isNew()) {
-                            breadcrumb[breadcrumb.length - 1].name = 'new';
-                        } else {
-                            breadcrumb[breadcrumb.length - 1].name = self.scope.title;
+                        if (self.scope.breadcrumb) {
+                            if (self.isNew()) {
+                                breadcrumb[breadcrumb.length - 1].name = 'new';
+                            } else {
+                                breadcrumb[breadcrumb.length - 1].name = self.scope.title;
+                            }
                         }
 
                         deferred.resolve(breadcrumb);

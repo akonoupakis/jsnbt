@@ -40,10 +40,9 @@
                 });
                 
                 scope.select = function () {
-                    ModalService.select(function (x) {
+                    ModalService.open(function (x) {
                         x.title('select a file');
-                        x.controller('FileSelectorController');
-                        x.template('tmpl/core/modals/fileSelector.html');
+                        x.path('/content/files');
                         x.scope({
                             selected: scope.ngModel,
                             group: fileGroup,

@@ -87,7 +87,7 @@
                 ControllerBase.prototype.getBreadcrumb = function () {
                     var deferred = this.ctor.$q.defer();
 
-                    var breadcrumb = this.ctor.LocationService.getBreadcrumb(this.scope.route.current);
+                    var breadcrumb = this.ctor.LocationService.getBreadcrumb(this.scope.route && this.scope.route.current);
 
                     deferred.resolve(breadcrumb);
 
@@ -98,7 +98,7 @@
 
                     var deferred = this.ctor.$q.defer();
 
-                    if (this.scope.current)
+                    if (this.scope.current && this.scope.route)
                         this.scope.current.setBreadcrumb(breadcrumb);
 
                     deferred.resolve();
@@ -130,6 +130,7 @@
                     var self = this;
 
                     var proceed = function () {
+                        
                         self.getBreadcrumb().then(function (breadcrumb) {
                             self.setBreadcrumb(breadcrumb).then(function () {
                                 deferred.resolve();

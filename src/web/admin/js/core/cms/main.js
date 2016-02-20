@@ -161,6 +161,6 @@
 
             $rootScope.initiated = $rootScope.initiated || false;
             $rootScope.users = 0;
-
+            
         }]);
 })();

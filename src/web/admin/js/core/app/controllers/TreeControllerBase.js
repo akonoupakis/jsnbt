@@ -12,12 +12,33 @@
                 TreeControllerBase = function ($scope, $rootScope, $router, $logger, $q, $timeout, $data, $jsnbt, RouteService, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
                     controllers.ControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
+                    var self = this;
+
                     $scope.localization = true;
 
                     $scope.found = undefined;
 
                     $scope.model = [];
 
+                    if ($scope.modal && $scope.modal.selector === 'node') {
+                        this.enqueue('set', '', function (data) {
+                            self.setSelected($scope.modal.selected);
+                        });
+
+                        $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
+                            self.requested();
+                        });
+
+                        $scope.$on(CONTROL_EVENTS.valueSelected, function (sender, selected) {
+                            sender.stopPropagation();
+                            self.selected(selected);
+                        });
+
+                        $scope.$on(CONTROL_EVENTS.valueSubmitted, function (sender, selected) {
+                            sender.stopPropagation();
+                            self.submitted(selected);
+                        });
+                    }
                 };
                 TreeControllerBase.prototype = Object.create(controllers.ControllerBase.prototype);
 
@@ -30,19 +51,46 @@
                 };
 
                 TreeControllerBase.prototype.load = function () {
+                    var self = this;
+
                     var deferred = this.ctor.$q.defer();
 
-                    this.ctor.TreeNodeService.getNodes({
-                        identifier: this.scope.cacheKey,
-                        domain: this.scope.domain,
-                        entities: this.scope.entities,
-                        parentId: '',
-                        parentIds: []
-                    }).then(function (response) {
-                        deferred.resolve(response);
-                    }).catch(function (error) {
-                        deferred.reject(error);
-                    });
+                    var loadFn = function (parentIds) {
+                        self.ctor.TreeNodeService.getNodes({
+                            identifier: self.scope.cacheKey,
+                            domain: self.scope.domain,
+                            entities: self.scope.modal && self.scope.modal.entities ? self.scope.modal.entities : self.scope.entities,
+                            parentId: '',
+                            parentIds: parentIds || []
+                        }).then(function (response) {
+                            deferred.resolve(response);
+                        }).catch(function (error) {
+                            deferred.reject(error);
+                        });
+                    };
+
+                    if ((self.scope.modal && self.scope.modal.mode === 'single' && self.scope.modal.selected) || (self.scope.modal.mode === 'multiple' && self.scope.modal.selected && self.scope.modal.selected.length > 0)) {
+                        var selectedQry = self.scope.modal.mode === 'multiple' ? { id: { $in: self.scope.modal.selected } } : { id: { $in: [self.scope.modal.selected] } };
+
+                        self.ctor.$data.nodes.get(selectedQry).then(function (nodes) {
+                            var parentIds = [];
+                            $(nodes).each(function (n, node) {
+                                var nodeParentIds = node.hierarchy.reverse().slice(1).reverse();
+                                $(nodeParentIds).each(function (np, nodeParent) {
+                                    if (parentIds.indexOf(nodeParent) === -1)
+                                        parentIds.push(nodeParent);
+                                });
+                            });
+
+                            loadFn(parentIds);
+                        }).catch(function (ex) {
+                            deferred.reject(ex);
+                        });
+
+                    }
+                    else {
+                        loadFn();
+                    }
 
                     return deferred.promise;
                 };
@@ -69,6 +117,31 @@
                         if (node.parent.childCount === 0)
                             node.parent.collapsed = true;
                     }
+                };
+
+                TreeControllerBase.prototype.select = function (selected) {
+                    return selected.id;
+                };
+
+                TreeControllerBase.prototype.setSelected = function (selected) {
+                    this.ctor.TreeNodeService.setSelected(this.scope.model, this.scope.modal && this.scope.modal.mode === 'multiple' ? selected : [selected]);
+                };
+
+                TreeControllerBase.prototype.getSelected = function () {
+                    var selected = this.scope.modal && this.scope.modal.mode === 'single' ? _.first(this.ctor.TreeNodeService.getSelected(this.scope.model)) : this.ctor.TreeNodeService.getSelected(this.scope.model);
+                    return selected;
+                };
+
+                TreeControllerBase.prototype.requested = function () {
+                    if (this.scope.modal) {
+                        var selected = this.getSelected();
+                        this.scope.$emit(this.ctor.MODAL_EVENTS.valueSubmitted, selected);
+                    }
+                };
+
+                TreeControllerBase.prototype.selected = function (selected) {
+                    if (this.scope.modal)
+                        this.scope.$emit(this.ctor.MODAL_EVENTS.valueSubmitted, this.select(selected));
                 };
 
                 TreeControllerBase.prototype.init = function () {

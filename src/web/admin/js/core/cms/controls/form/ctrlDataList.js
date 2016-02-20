@@ -103,10 +103,13 @@
                         return x.id === scope.ngListId;
                     });
 
-                    ModalService.select(function (x) {
+                    ModalService.open(function (x) {
                         x.title('select the data item you want');
-                        x.controller('DataSelectorController');
-                        x.template('tmpl/core/modals/dataSelector.html');
+                        x.path(scope.ngRoute || '/content/data/' + list.id);
+                        x.scope({
+                            selector: 'data',
+                            domain: scope.ngDomain
+                        });
                         list.lookupData(x, 'single', item);
                     }).then(function (result) {
                         scope.ngModel[index] = result;
@@ -124,10 +127,13 @@
                         return x.id === scope.ngListId;
                     });
 
-                    ModalService.select(function (x) {
+                    ModalService.open(function (x) {
                         x.title('select the data items you want');
-                        x.controller('DataSelectorController');
-                        x.template('tmpl/core/modals/dataSelector.html');
+                        x.path(scope.ngRoute || '/content/data/' + list.id);
+                        x.scope({
+                            selector: 'data',
+                            domain: scope.ngDomain
+                        });
                         list.lookupData(x, 'multiple');
                     }).then(function (results) {
                         if (!scope.ngModel)
@@ -256,6 +262,7 @@
                 scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
                     ngLanguage: '=',
                     ngDomain: '=',
+                    ngRoute: '@',
                     ngListId: '=',
                     ngMaxLength: '='
                 }),

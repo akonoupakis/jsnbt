@@ -379,8 +379,7 @@
                     results.push(node.id);
 
                 $(node.children).each(function (n, child) {
-                    if (child.selected)
-                        results.push(child.id);
+                    getNodeSelected(child, results);
                 });
             };
 

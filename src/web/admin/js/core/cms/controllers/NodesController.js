@@ -10,9 +10,7 @@
         
         var logger = $logger.create('NodesController');
 
-        $scope.cacheKey = 'content:nodes';
-        $scope.prefix = '/content/nodes';
-        $scope.offset = 2;
+        $scope.cacheKey = ($scope.modal ? 'modal:' : '') +  'content:nodes';
     
         $scope.canCreate = function () {
             return AuthService.isAuthorized($scope.current.user, 'nodes', 'C');

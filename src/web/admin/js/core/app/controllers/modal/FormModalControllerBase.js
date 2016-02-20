@@ -30,9 +30,9 @@
                                     if (validationResults) {
                                         var model = self.get();
                                         self.run('publishing', [model]).then(function () {
-                                            self.push(model).then(function (pushed) {
+                                            self.publish(model).then(function (pushed) {
                                                 if (pushed) {
-                                                    $scope.$emit(MODAL_EVENTS.valueSubmitted, model);
+                                                    $scope.$emit(MODAL_EVENTS.valueSubmitted, pushed);
                                                 }
                                                 else {
                                                     self.failed(new Error('save unsuccessful'));

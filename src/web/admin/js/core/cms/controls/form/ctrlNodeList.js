@@ -93,7 +93,7 @@
                     }
                 });
                 
-                var moduleLookup = function (entities) {
+                var moduleLookup = function (entities, selected) {
                     var deferred = $q.defer();
 
                     var opts = {};
@@ -101,14 +101,14 @@
                         entities: entities
                     }, scope.ngOptions);
                                         
-                    ModalService.select(function (x) {
+                    ModalService.open(function (x) {
                         x.title('select a content node');
-                        x.controller('NodeSelectorController');
-                        x.template('tmpl/core/modals/nodeSelector.html');
+                        x.path(scope.ngRoute || '/content/nodes');
                         x.scope({
+                            selector: 'node',
                             domain: scope.ngDomain
                         });
-                        $jsnbt.modules[scope.ngDomain].lookupNode(x, 'single', scope.ngModel, opts);
+                        $jsnbt.modules[scope.ngDomain].lookupNode(x, 'single', selected, opts);
                     }).then(function (selectedNodeId) {
                         deferred.resolve(selectedNodeId);
                     }).catch(function (error) {
@@ -126,11 +126,11 @@
                         entities: entities
                     }, scope.ngOptions);
 
-                    ModalService.select(function (x) {
+                    ModalService.open(function (x) {
                         x.title('select the content nodes you want');
-                        x.controller('NodeSelectorController');
-                        x.template('tmpl/core/modals/nodeSelector.html');
+                        x.path(scope.ngRoute || '/content/nodes');
                         x.scope({
+                            selector: 'node',
                             domain: scope.ngDomain
                         });
                         $jsnbt.modules[scope.ngDomain].lookupNode(x, 'multiple', selected || scope.ngModel, opts);
@@ -143,24 +143,22 @@
                     return deferred.promise;
                 };
 
-                var entityLookup = function (entity) {
+                var entityLookup = function (entity, selected) {
                     var deferred = $q.defer();
 
                     if (typeof ($jsnbt.entities[entity].lookupNode) === 'function') {
                         var opts = $.extend({
                             entities: [entity]
                         }, scope.ngOptions);
-
-                        var modalOpts = 
-
-                        ModalService.select(function (x) {
+                        
+                        ModalService.open(function (x) {
                             x.title('select a content node');
-                            x.controller('NodeSelectorController');
-                            x.template('tmpl/core/modals/nodeSelector.html');
+                            x.path(scope.ngRoute || '/content/nodes');
                             x.scope({
+                                selector: 'node',
                                 domain: scope.ngDomain
                             });
-                            $jsnbt.entities[entity].lookupNode(x, 'single', scope.ngModel, opts);
+                            $jsnbt.entities[entity].lookupNode(x, 'single', selected, opts);
                         }).then(function (selectedNodeId) {
                             deferred.resolve(selectedNodeId);
                         }).catch(function (error) {
@@ -186,11 +184,11 @@
                             entities: [entity]
                         }, scope.ngOptions);
 
-                        ModalService.select(function (x) {
+                        ModalService.open(function (x) {
                             x.title('select the content nodes you want');
-                            x.controller('NodeSelectorController');
-                            x.template('tmpl/core/modals/nodeSelector.html');
+                            x.path(scope.ngRoute || '/content/nodes');
                             x.scope({
+                                selector: 'node',
                                 domain: scope.ngDomain
                             });
                             $jsnbt.entities[entity].lookupNode(x, 'multiple', selected || scope.ngModel, opts);
@@ -218,7 +216,7 @@
                         if (scope.ngEntities.length === 1) {
 
                             var entity = _.first(scope.ngEntities);
-                            entityLookup(entity).then(function (selectedNodeId) {
+                            entityLookup(entity, item).then(function (selectedNodeId) {
                                 scope.ngModel[index] = selectedNodeId;
                                 scope.ngModel = scope.ngModel.slice(0);
 
@@ -228,7 +226,7 @@
                             });
                         }
                         else {
-                            moduleLookup(scope.ngEntities).then(function (selectedNodeId) {
+                            moduleLookup(scope.ngEntities, item).then(function (selectedNodeId) {
                                 scope.ngModel[index] = selectedNodeId;
                                 scope.ngModel = scope.ngModel.slice(0);
 
@@ -239,7 +237,7 @@
                         }
                     }
                     else {
-                        moduleLookup().then(function (selectedNodeId) {
+                        moduleLookup(undefined, item).then(function (selectedNodeId) {
                             scope.ngModel[index] = selectedNodeId;
                             scope.ngModel = scope.ngModel.slice(0);
 
@@ -422,6 +420,7 @@
                 scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
                     ngLanguage: '=',
                     ngDomain: '=',
+                    ngRoute: '@',
                     ngOptions: '=',
                     ngMaxLength: '='
                 }),

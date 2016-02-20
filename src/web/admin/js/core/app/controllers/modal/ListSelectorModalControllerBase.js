@@ -19,14 +19,8 @@
                     $scope.breadcrumb = false;
                     $scope.domain = domain;
 
-                    if (!$scope.mode)
-                        $scope.mode = 'single';
-
-                    if (['single', 'multiple'].indexOf($scope.mode) === -1)
-                        $scope.mode = 'single';
-
                     this.enqueue('set', '', function (data) {
-                        self.setSelected($scope.selected);
+                        self.setSelected($scope.modal.selected);
                     });
 
                     $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
@@ -51,11 +45,11 @@
 
                 ListSelectorModalControllerBase.prototype.setSelected = function (selected) {
                     if (selected)
-                        this.ctor.PagedDataService.setSelected(this.get(), this.scope.mode === 'multiple' ? selected : [selected], 'id');
+                        this.ctor.PagedDataService.setSelected(this.get(), this.scope.modal.mode === 'multiple' ? selected : [selected], 'id');
                 };
 
                 ListSelectorModalControllerBase.prototype.getSelected = function () {
-                    var selected = this.scope.mode === 'single' ? _.first(this.ctor.PagedDataService.getSelected(this.get(), 'id')) : this.ctor.PagedDataService.getSelected(this.get(), 'id');
+                    var selected = this.scope.modal.mode === 'single' ? _.first(this.ctor.PagedDataService.getSelected(this.get(), 'id')) : this.ctor.PagedDataService.getSelected(this.get(), 'id');
                     return selected;
                 };
 

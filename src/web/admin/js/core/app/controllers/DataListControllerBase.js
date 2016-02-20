@@ -46,6 +46,26 @@
                         return deferred.promise;
                     });
                     
+                    if ($scope.modal && $scope.modal.selector === 'data') {
+                        this.enqueue('set', '', function (data) {
+                            self.setSelected($scope.modal.selected);
+                        });
+
+                        $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
+                            self.requested();
+                        });
+
+                        $scope.$on(CONTROL_EVENTS.valueSelected, function (sender, selected) {
+                            sender.stopPropagation();
+                            self.selected(selected);
+                        });
+
+                        $scope.$on(CONTROL_EVENTS.valueSubmitted, function (sender, selected) {
+                            sender.stopPropagation();
+                            self.submitted(selected);
+                        });
+                    }
+
                     $scope.canCreate = function () {
                         return AuthService.isAuthorized($scope.current.user, 'data:' + $scope.domain + ':' + $scope.id, 'C');
                     };
@@ -108,6 +128,32 @@
                     });
 
                     return deferred.promise;
+                };
+
+                DataListControllerBase.prototype.select = function (selected) {
+                    return selected.id;
+                };
+
+                DataListControllerBase.prototype.setSelected = function (selected) {
+                    if (selected)
+                        this.ctor.PagedDataService.setSelected(this.get(), this.scope.modal && this.scope.modal.mode === 'multiple' ? selected : [selected], 'id');
+                };
+
+                DataListControllerBase.prototype.getSelected = function () {
+                    var selected = this.scope.modal && this.scope.modal.mode === 'single' ? _.first(this.ctor.PagedDataService.getSelected(this.get(), 'id')) : this.ctor.PagedDataService.getSelected(this.get(), 'id');
+                    return selected;
+                };
+
+                DataListControllerBase.prototype.requested = function () {
+                    if (this.scope.modal) {
+                        var selected = this.getSelected();
+                        this.scope.$emit(this.ctor.MODAL_EVENTS.valueSubmitted, selected);
+                    }
+                };
+
+                DataListControllerBase.prototype.selected = function (selected) {
+                    if (this.scope.modal)
+                        this.scope.$emit(this.ctor.MODAL_EVENTS.valueSubmitted, this.select(selected));
                 };
 
                 DataListControllerBase.prototype.getBreadcrumb = function () {

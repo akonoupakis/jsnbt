@@ -45,6 +45,7 @@ module.exports = [{
         '/admin/js/core/app/controllers/TreeControllerBase.js',
         '/admin/js/core/app/controllers/FormControllerBase.js',
         '/admin/js/core/app/controllers/DataListControllerBase.js',
+        '/admin/js/core/app/controllers/FilesControllerBase.js',
         '/admin/js/core/app/controllers/DataFormControllerBase.js',
         '/admin/js/core/app/controllers/NodeFormControllerBase.js',
         '/admin/js/core/app/controllers/SettingsControllerBase.js',
@@ -98,13 +99,10 @@ module.exports = [{
         '/admin/js/core/cms/controllers/modal/PromptController.js',
         '/admin/js/core/cms/controllers/modal/ErrorPromptController.js',
         '/admin/js/core/cms/controllers/modal/ContainerSelectorController.js',
-        '/admin/js/core/cms/controllers/modal/DataSelectorController.js',
         '/admin/js/core/cms/controllers/modal/DeletePromptController.js',
-        '/admin/js/core/cms/controllers/modal/FileSelectorController.js',
         '/admin/js/core/cms/controllers/modal/FileSystemEditorController.js',
         '/admin/js/core/cms/controllers/modal/FileUploadController.js',
         '/admin/js/core/cms/controllers/modal/ImageSelectorController.js',
-        '/admin/js/core/cms/controllers/modal/NodeSelectorController.js',
         '/admin/js/core/cms/controllers/modal/PasswordChangeController.js',
         '/admin/js/core/cms/controllers/modal/EmailChangeController.js',
         
@@ -152,7 +150,6 @@ module.exports = [{
         '/admin/js/core/cms/providers/$jsnbt.js',
         '/admin/js/core/cms/providers/$logger.js',
         '/admin/js/core/cms/providers/$queue.js',
-        //'/admin/js/core/cms/providers/$router.js',
 
         '/admin/js/core/cms/services/AuthService.js',
         '/admin/js/core/cms/services/FileService.js',
@@ -169,7 +166,6 @@ module.exports = [{
         '/admin/js/core/cms/utils/errSrc.js',
         '/admin/js/core/cms/utils/lkRepeat.js',
         '/admin/js/core/cms/utils/ngModelTransclude.js',
-        //'/admin/js/core/cms/utils/view.js',
 
         '/admin/js/init.js'
     ]

@@ -70,12 +70,12 @@
                     $.extend(true, opts, {
                         entities: entities
                     }, scope.ngOptions);
-
-                    ModalService.select(function (x) {
+                    
+                    ModalService.open(function (x) {
                         x.title('select a content node');
-                        x.controller('NodeSelectorController');
-                        x.template('tmpl/core/modals/nodeSelector.html');
+                        x.path(scope.ngRoute || '/content/nodes');
                         x.scope({
+                            selector: 'node',
                             domain: scope.ngDomain
                         });
                         $jsnbt.modules[scope.ngDomain].lookupNode(x, 'single', scope.ngModel, opts);
@@ -96,11 +96,11 @@
                             entities: [entity]
                         }, scope.ngOptions);
 
-                        ModalService.select(function (x) {
+                        ModalService.open(function (x) {
                             x.title('select a content node');
-                            x.controller('NodeSelectorController');
-                            x.template('tmpl/core/modals/nodeSelector.html');
+                            x.path(scope.ngRoute || '/content/nodes');
                             x.scope({
+                                selector: 'node',
                                 domain: scope.ngDomain
                             });
                             $jsnbt.entities[entity].lookupNode(x, 'single', scope.ngModel, opts);
@@ -210,6 +210,7 @@
                 scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
                     ngLanguage: '=',
                     ngDomain: '=',
+                    ngRoute: '@',
                     ngEntities: '=',
                     ngOptions: '='
                 }),

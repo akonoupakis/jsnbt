@@ -1,12 +1,14 @@
-﻿<div class="row" id="user-email">
-    <ctrl-text class="col-sm-10" ng-model="model.email" ng-required="true" ng-validate="validateEmail" ng-valid="!emailExists" ng-disabled="requested" ng-label="email"></ctrl-text>
-    <div class="col-sm-2">
-        <button type="button" class="btn btn-primary" style="margin-top: 24px" ng-disabled="requested || !model.email || requesting" ng-click="requestCode()">request code</button>
+﻿<div class="container-fluid">
+    <div class="row" id="user-email">
+        <ctrl-text class="col-sm-10" ng-model="model.email" ng-required="true" ng-validate="validateEmail" ng-valid="!emailExists" ng-disabled="requested" ng-label="email"></ctrl-text>
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-primary" style="margin-top: 24px" ng-disabled="requested || !model.email || requesting" ng-click="requestCode()">request code</button>
+        </div>
+        <span class="validation-error whole centered" ng-show="emailExists">email already exist</span>
     </div>
-    <span class="validation-error whole centered" ng-show="emailExists">email already exist</span>
-</div>
-<div class="row" id="user-code" ng-show="requested">
-    <p class="col-sm-12">you have been sent a confirmation code to your current email to confirm this change</p>
-    <ctrl-text class="col-sm-12" ng-model="model.code" ng-required="true" ng-disabled="submitted" ng-label="confirmation code"></ctrl-text>
-    <span class="validation-error whole centered" ng-show="invalidCode">the code is invalid</span>
+    <div class="row" id="user-code" ng-show="requested">
+        <p class="col-sm-12">you have been sent a confirmation code to your current email to confirm this change</p>
+        <ctrl-text class="col-sm-12" ng-model="model.code" ng-required="true" ng-disabled="submitted" ng-label="confirmation code"></ctrl-text>
+        <span class="validation-error whole centered" ng-show="invalidCode">the code is invalid</span>
+    </div>
 </div>

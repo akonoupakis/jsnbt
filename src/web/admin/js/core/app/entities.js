@@ -31,9 +31,9 @@
                         fn.scope({
                             selected: selected,
                             domain: this.domain,
-                            mode: mode,
-                            options: options
+                            mode: mode
                         });
+                        fn.scope(options);
                     };
                 }
             }

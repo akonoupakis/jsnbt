@@ -28,7 +28,9 @@
                 replace: true,
                 scope: $.extend(true, jsnbt.controls.ControlBase.prototype.properties, {
                     ngModel: '=',
-                    ngTitle: '='
+                    ngTitle: '=',
+                    ngLinkableOffset: '=',
+                    ngVisibleOffset: '='
                 }),
                 link: function (scope, element, attrs) {
                     return new BreadcrumbControl(scope, element, attrs);

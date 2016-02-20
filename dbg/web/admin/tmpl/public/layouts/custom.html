@@ -9,7 +9,7 @@
 <div class="row" id="layout-customR" data-scrollspy="custom required">
     <ctrl-custom class="col-sm-12" ng-model="model.content.customR" ng-required="true" ng-label="custom required">
         <div class="row">
-            <ctrl-text class="col-sm-6" ng-required="ngRequired" ng-model="model.alpha" ng-label="label one"></ctrl-text>
+            <ctrl-text class="col-sm-6" ng-required="ngRequired" ng-model="model.alpha" ng-label="alpha"></ctrl-text>
             <ctrl-text class="col-sm-6" ng-required="ngRequired" ng-model="model.vita" ng-label="vita"></ctrl-text>
         </div>
     </ctrl-custom>
@@ -17,7 +17,7 @@
 <div class="row" id="layout-customs" data-scrollspy="customs">
     <ctrl-custom-list class="col-sm-12" ng-model="model.content.customs" ng-label="customs">
         <div class="row">
-            <ctrl-text class="col-sm-6" ng-model="model.alpha" ng-label="label one"></ctrl-text>
+            <ctrl-text class="col-sm-6" ng-model="model.alpha" ng-label="alpha"></ctrl-text>
             <ctrl-text class="col-sm-6" ng-model="model.vita" ng-label="vita"></ctrl-text>
         </div>
     </ctrl-custom-list>
@@ -25,8 +25,8 @@
 <div class="row" id="layout-customsR" data-scrollspy="customs required">
     <ctrl-custom-list class="col-sm-12" ng-model="model.content.customsR" ng-required="true" ng-max-length="2" ng-label="customs required (max length: 2)">
         <div class="row">
-            <ctrl-text class="col-sm-6" ng-required="true" ng-model="model.alpha"></ctrl-text>
-            <ctrl-text class="col-sm-6" ng-model="model.vita"></ctrl-text>
+            <ctrl-text class="col-sm-6" ng-required="true" ng-model="model.alpha" ng-label="alpha"></ctrl-text>
+            <ctrl-text class="col-sm-6" ng-model="model.vita" ng-label="vita"></ctrl-text>
         </div>
     </ctrl-custom-list>
 </div>
