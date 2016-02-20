@@ -18,8 +18,8 @@
 <body ng-controller="AppController" ng-class="{ overflowed: (current.initiated && !current.user && current.users) || (current.initiated && !current.user && !current.users) || (current.initiated && current.denied)}">
     <header ng-include="'tmpl/core/common/header.html'"></header>
 
-    <router-view ng-route="route" ng-controller="PageController" class="page" ng-show="current.initiated && !current.denied"></router-view>
-
+    <router-view ng-controller="PageController" route-id="routeId" class="page" ng-show="current.initiated && !current.denied"></router-view>
+    
     <div ng-controller="LoginController" ng-if="current.initiated && !current.user && current.users" ng-include="'tmpl/core/common/login.html'"></div>
     <div ng-controller="RegistrationController" ng-if="current.initiated && !current.user && !current.users" ng-include="'tmpl/core/common/first-user.html'"></div>
     <div ng-controller="DeniedController" ng-if="current.initiated && current.denied" ng-include="'tmpl/core/common/denied.html'"></div>

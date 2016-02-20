@@ -9,7 +9,7 @@
 
             controllers.TreeControllerBase = (function (TreeControllerBase) {
 
-                TreeControllerBase = function ($scope, $rootScope, $router, $logger, $q, $timeout, $data, $jsnbt, RouteService, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                TreeControllerBase = function ($scope, $rootScope, $router, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
                     controllers.ControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
                     var self = this;
@@ -69,7 +69,7 @@
                         });
                     };
 
-                    if ((self.scope.modal && self.scope.modal.mode === 'single' && self.scope.modal.selected) || (self.scope.modal.mode === 'multiple' && self.scope.modal.selected && self.scope.modal.selected.length > 0)) {
+                    if ((self.scope.modal && self.scope.modal.mode === 'single' && self.scope.modal.selected) || (self.scope.modal && self.scope.modal.mode === 'multiple' && self.scope.modal.selected && self.scope.modal.selected.length > 0)) {
                         var selectedQry = self.scope.modal.mode === 'multiple' ? { id: { $in: self.scope.modal.selected } } : { id: { $in: [self.scope.modal.selected] } };
 
                         self.ctor.$data.nodes.get(selectedQry).then(function (nodes) {

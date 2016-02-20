@@ -9,7 +9,7 @@
 
             controllers.Controller = (function (Controller) {
 
-                Controller = function ($scope, $rootScope, $router, $logger, $q, $timeout, $data, $jsnbt, RouteService, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                Controller = function ($scope, $rootScope, $router, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
                     
                     $scope.modal = $scope.modal;
 
@@ -171,8 +171,18 @@
                         setApplicationLanguages();
                     });
 
-                    $scope.route = RouteService.create({
+                    $router.$index = $router.$index || 0;
+                    $router.$index++;
+
+                    $scope.routeId = 'route-' + $router.$index;
+                    
+                    $scope.route = $router.create($scope.routeId, {
+                        path: $scope.modal ? $scope.modal.path : ($location.path() || '/'),
                         redirect: $scope.modal ? false : true
+                    });
+
+                    $scope.$on('$destroy', function () {
+                        $router.dispose($scope.routeId);
                     });
 
                     var initiated = false;

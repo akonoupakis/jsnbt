@@ -81,8 +81,10 @@
         };
     };
 
-    Route.prototype.init = function (path) {
+    Route.prototype.init = function () {
         var self = this;
+
+        var path = this.options.path || '/';
 
         this.direction = '';
 
@@ -186,8 +188,19 @@
         }
     };
     
-    var $routerProvider = function() {
-        
+    var $routesProvider = function () {
+
+        this.$get = [function () {
+
+            return {
+             
+            }
+
+        }];
+    };
+
+    var $routerProvider = function () {
+
         function pathRegExp(path, opts) {
             var insensitive = true, //opts.caseInsensitiveMatch,
                 ret = {
@@ -239,7 +252,7 @@
 
             return this;
         };
-        
+
         this.otherwise = function (params) {
             if (typeof params === 'string') {
                 params = { redirectTo: params };
@@ -248,32 +261,38 @@
             return this;
         };
 
-        this.$get = [function () {
+        this.$get = ['$routes', function ($routes) {
 
-        }];
+            return {
 
-    }
+                create: function (name, options) {
+                    if ($routes[name])
+                        throw new Error('route name already exists: ' + name);
 
-    var RouteService = function () {
+                    $routes[name] = new Route(options);
+                    return $routes[name];
+                },
 
-        this.$get = [function () {
+                get: function (name) {
+                    if (!$routes[name])
+                        throw new Error('route name not found: ' + name);
 
-            var RouteServiceResult = {
+                    return $routes[name];
+                },
 
-                create: function (options) {
-                    return new Route(options);
+                dispose: function (name) {
+                    delete $routes[name];
                 }
 
-            };
-
-            return RouteServiceResult;
+            }
 
         }];
 
     };
 
-    routerViewFactory.$inject = ['$animate', '$location'];
-    function routerViewFactory($animate, $location) {
+
+    routerViewFactory.$inject = ['$animate', '$location', '$router'];
+    function routerViewFactory($animate, $location, $router) {
         return {
             restrict: 'E',
             terminal: true,
@@ -282,133 +301,130 @@
             transclude: 'element',
             link: function (scope, $element, attr, ctrl, $transclude) {
 
-                var routeString = attr.ngRoute || 'route';
+                scope.$watch(attr.routeId, function (routeId) {
+                    
+                    var scopeRoute = $router.get(routeId);
+                    
+                    var currentScope,
+                        currentElement,
+                        previousLeaveAnimation;
 
-                var scopeRoute = scope[routeString];
+                    scopeRoute.on('success', function (route) {
+                        if (route)
+                            update(route);
+                        else
+                            cleanupLastView();
+                    });
 
-                if (!scopeRoute)
-                    throw new Error('route not defined in controller');
+                    scopeRoute.init();
 
-                var currentScope,
-                    currentElement,
-                    previousLeaveAnimation;
-
-                scopeRoute.on('success', function (route) {
-                    if (route)
-                        update(route);
-                    else
-                        cleanupLastView();
-                });
-
-                if (scope.modal) {
-                    scopeRoute.init(scope.modal.path);
-                }
-                else {
-                    scopeRoute.init($location.path() || '/');
-                }
-
-                function cleanupLastView() {
-                    if (previousLeaveAnimation) {
-                        $animate.cancel(previousLeaveAnimation);
-                        previousLeaveAnimation = null;
-                    }
-
-                    if (currentScope) {
-                        currentScope.$destroy();
-                        currentScope = null;
-                    }
-                    if (currentElement) {
-                        if (scopeRoute.direction === 'ltr')
-                            $animate.addClass(currentElement, 'animate-next');
-                        else if (scopeRoute.direction === 'rtl')
-                            $animate.addClass(currentElement, 'animate-prev');
-
-                        previousLeaveAnimation = $animate.leave(currentElement);
-                        previousLeaveAnimation.then(function () {
+                    function cleanupLastView() {
+                        if (previousLeaveAnimation) {
+                            $animate.cancel(previousLeaveAnimation);
                             previousLeaveAnimation = null;
+                        }
 
+                        if (currentScope) {
+                            currentScope.$destroy();
+                            currentScope = null;
+                        }
+                        if (currentElement) {
                             if (scopeRoute.direction === 'ltr')
-                                $animate.removeClass(currentElement, 'animate-next');
+                                $animate.addClass(currentElement, 'animate-next');
                             else if (scopeRoute.direction === 'rtl')
-                                $animate.removeClass(currentElement, 'animate-prev');
-                        });
-                        currentElement = null;
-                    }
-                }
+                                $animate.addClass(currentElement, 'animate-prev');
 
-                function update(route) {
-                    var templateUrl = route.baseTemplate || route.template;
-                    if (templateUrl) {
-                        var newScope = scope.$new();
-                        
-                        var clone = $transclude(newScope, function (clone) {
+                            previousLeaveAnimation = $animate.leave(currentElement);
+                            previousLeaveAnimation.then(function () {
+                                previousLeaveAnimation = null;
 
-                            if (scopeRoute.direction === 'ltr')
-                                $animate.addClass(clone, 'animate-next');
-                            else if (scopeRoute.direction === 'rtl')
-                                $animate.addClass(clone, 'animate-prev');
-
-                            $animate.enter(clone, null, currentElement || $element).then(function onNgViewEnter() {
                                 if (scopeRoute.direction === 'ltr')
-                                    $animate.removeClass(clone, 'animate-next');
+                                    $animate.removeClass(currentElement, 'animate-next');
                                 else if (scopeRoute.direction === 'rtl')
-                                    $animate.removeClass(clone, 'animate-prev');
+                                    $animate.removeClass(currentElement, 'animate-prev');
+                            });
+                            currentElement = null;
+                        }
+                    }
+
+                    function update(route) {
+                        var templateUrl = route.baseTemplate || route.template;
+                        if (templateUrl) {
+                            var newScope = scope.$new();
+
+                            var clone = $transclude(newScope, function (clone) {
+
+                                if (scopeRoute.direction === 'ltr')
+                                    $animate.addClass(clone, 'animate-next');
+                                else if (scopeRoute.direction === 'rtl')
+                                    $animate.addClass(clone, 'animate-prev');
+
+                                $animate.enter(clone, null, currentElement || $element).then(function onNgViewEnter() {
+                                    if (scopeRoute.direction === 'ltr')
+                                        $animate.removeClass(clone, 'animate-next');
+                                    else if (scopeRoute.direction === 'rtl')
+                                        $animate.removeClass(clone, 'animate-prev');
+                                });
+
+                                cleanupLastView();
                             });
 
+                            currentElement = clone;
+                            currentScope = newScope;
+                        } else {
                             cleanupLastView();
-                        });
-
-                        currentElement = clone;
-                        currentScope = newScope;
-                    } else {
-                        cleanupLastView();
+                        }
                     }
-                }
+
+                });
+                
             }
         };
     }
 
-    routerViewFillContentFactory.$inject = ['$compile', '$controller'];
-    function routerViewFillContentFactory($compile, $controller) {
+    routerViewFillContentFactory.$inject = ['$compile', '$controller', '$router'];
+    function routerViewFillContentFactory($compile, $controller, $router) {
         return {
             restrict: 'E',
             priority: -400,
             replace: true,
             link: function (scope, $element, attr) {
                 
-                var routeString = attr.ngRoute || 'route';
+                scope.$watch(attr.routeId, function (routeId) {
 
-                var scopeRoute = scope[routeString];
+                    var scopeRoute = $router.get(routeId);
 
-                if (_.isObject(scopeRoute) && _.isObject(scopeRoute.current)) {
-                    if (_.isObject(scopeRoute.current.scope))
-                        for (var scopeProperty in scopeRoute.current.scope)
-                            scope[scopeProperty] = scopeRoute.current.scope[scopeProperty];
+                    if (_.isObject(scopeRoute) && _.isObject(scopeRoute.current)) {
+                        if (_.isObject(scopeRoute.current.scope))
+                            for (var scopeProperty in scopeRoute.current.scope)
+                                scope[scopeProperty] = scopeRoute.current.scope[scopeProperty];
 
-                    scope.domain = scopeRoute.current.domain;
-                    scope.section = scopeRoute.current.section;
-                }
+                        scope.domain = scopeRoute.current.domain;
+                        scope.section = scopeRoute.current.section;
+                    }
 
-                scope.viewTemplate = scopeRoute.current.baseTemplate || scopeRoute.current.template;
+                    scope.viewTemplate = scopeRoute.current.baseTemplate || scopeRoute.current.template;
 
-                $element.html('<div ng-include="viewTemplate"></div>');
+                    $element.html('<div ng-include="viewTemplate"></div>');
 
-                var link = $compile($element.contents());
+                    var link = $compile($element.contents());
 
-                var controller = $controller(scopeRoute.current.controller, { $scope: scope });
-                $element.data('$ngControllerController', controller);
+                    var controller = $controller(scopeRoute.current.controller, { $scope: scope });
+                    $element.data('$ngControllerController', controller);
 
-                link(scope);
+                    link(scope);
+
+                });
             },
             template: '<div></div>'
         };
     }
 
     angular.module('ngPathRouter', ['ng'])
-            .provider('$router', $routerProvider)
-            .provider('RouteService', RouteService)
-            .directive('routerView', routerViewFactory)
-            .directive('routerView', routerViewFillContentFactory);
+        .provider('$routes', $routesProvider)
+        .provider('$router', $routerProvider)
+        .directive('routerView', routerViewFactory)
+        .directive('routerView', routerViewFillContentFactory);
 
 
 })(window, window.angular);

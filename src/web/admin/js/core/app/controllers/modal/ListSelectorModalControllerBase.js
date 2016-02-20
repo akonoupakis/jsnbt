@@ -9,7 +9,7 @@
 
             controllers.ListSelectorModalControllerBase = (function (ListSelectorModalControllerBase) {
 
-                ListSelectorModalControllerBase = function ($scope, $rootScope, $router, $logger, $q, $timeout, $data, $jsnbt, RouteService, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                ListSelectorModalControllerBase = function ($scope, $rootScope, $router, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
                     var domain = $scope.domain;
 
                     controllers.ListControllerBase.apply(this, $rootScope.getBaseArguments($scope));

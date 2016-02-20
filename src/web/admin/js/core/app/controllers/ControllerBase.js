@@ -9,7 +9,7 @@
 
             controllers.ControllerBase = (function (ControllerBase) {
 
-                ControllerBase = function ($scope, $rootScope, $router, $logger, $q, $timeout, $data, $jsnbt, RouteService, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                ControllerBase = function ($scope, $rootScope, $router, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
 
                     var logger = $logger.create('ControllerBase');
 
@@ -22,12 +22,12 @@
                     this.ctor = {
                         $rootScope: $rootScope,
                         $router: $router,
+                        $location: $location,
                         $logger: $logger,
                         $q: $q,
                         $timeout: $timeout,
                         $data: $data,
                         $jsnbt: $jsnbt,
-                        RouteService: RouteService,
                         LocationService: LocationService,
                         ScrollSpyService: ScrollSpyService,
                         AuthService: AuthService,
