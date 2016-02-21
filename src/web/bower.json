@@ -119,18 +119,6 @@
     "bootstrap": {
       "files": [
         {
-          "src": "bootstrap-3.3.5/dist/css/bootstrap.css",
-          "dest": [
-            "admin/css/core/lib/bootstrap/css/bootstrap.css"
-          ]
-        },
-        {
-          "src": "bootstrap-3.3.5/dist/css/bootstrap.css.map",
-          "dest": [
-            "admin/css/core/lib/bootstrap/css/bootstrap.css.map"
-          ]
-        },
-        {
           "src": "bootstrap-3.3.5/dist/js/bootstrap.js",
           "dest": [
             "admin/js/core/lib/bootstrap.js"
@@ -150,12 +138,6 @@
     "bootstrap-switch": {
       "files": [
         {
-          "src": "bootstrap-switch-3.0.2/dist/css/bootstrap3/bootstrap-switch.css",
-          "dest": [
-            "admin/css/core/lib/bootstrap/bootstrap.switch.css"
-          ]
-        },
-        {
           "src": "bootstrap-switch-3.0.2/dist/js/bootstrap-switch.js",
           "dest": [
             "admin/js/core/lib/bootstrap/bootstrap.switch.js"
@@ -170,12 +152,6 @@
           "dest": [
             "admin/js/core/lib/bootstrap/bootstrap.datepicker.js"
           ]
-        },
-        {
-          "src": "bootstrap-datepicker-1.4.0/dist/css/bootstrap-datepicker.css",
-          "dest": [
-            "admin/css/core/lib/bootstrap/bootstrap-datepicker.css"
-          ]
         }
       ]
 	},
@@ -185,12 +161,6 @@
           "src": "bootstrap-timepicker-0.5.2/js/bootstrap-timepicker.js",
           "dest": [
             "admin/js/core/lib/bootstrap/bootstrap.timepicker.js"
-          ]
-        },
-        {
-          "src": "bootstrap-timepicker-0.5.2/css/bootstrap-timepicker.css",
-          "dest": [
-            "admin/css/core/lib/bootstrap/bootstrap-timepicker.css"
           ]
         }
       ]
@@ -223,12 +193,6 @@
           "dest": [
             "admin/js/core/lib/jquery/jquery.cropper.js"
           ]
-        },
-        {
-          "src": "cropper-0.7.9/dist/cropper.css",
-          "dest": [
-            "admin/css/core/lib/cropper.css"
-          ]
         }
       ]
     },    
@@ -239,12 +203,6 @@
           "dest": [
             "admin/js/core/lib/jquery/jquery.redactor.js"
           ]
-        }, 
-		{
-          "src": "imperavi-redactor-10.0.9/redactor/redactor.css",
-          "dest": [
-            "admin/css/core/lib/redactor.css"
-          ]
         }
       ]
     },
@@ -254,12 +212,6 @@
           "src": "webui-popover-1.2.3/dist/jquery.webui-popover.js",
           "dest": [
             "admin/js/core/lib/jquery/jquery.webui-popover.js"
-          ]
-        },
-		{
-          "src": "webui-popover-1.2.3/dist/jquery.webui-popover.css",
-          "dest": [
-            "admin/css/core/lib/jquery.webui-popover.css"
           ]
         }
       ]
@@ -378,12 +330,6 @@
           "src": "ng-tags-input-3.0.0/ng-tags-input.js",
           "dest": [
             "admin/js/core/lib/angular/ng-tags-input.js"
-          ]
-        },
-		{
-          "src": "ng-tags-input-3.0.0/ng-tags-input.css",
-          "dest": [
-            "admin/css/core/lib/ng-tags-input.css"
           ]
         }
       ]
