@@ -28,6 +28,8 @@
                     }
                 };
 
+                //scope.data.login = { username: 'konoupakis@gmail.com', password: 'asdasd' };
+
                 scope.forgotPassword = function () {
                     scope.step = 'forgot';
                 };

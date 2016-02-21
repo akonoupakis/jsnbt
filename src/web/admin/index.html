@@ -15,13 +15,13 @@
     <% _.each(styles, function(file) { %>
     <link rel="stylesheet" href="<%= file %>" /><% }); %>
 </head>
-<body ng-controller="AppController" ng-class="{ overflowed: (current.initiated && !current.user && current.users) || (current.initiated && !current.user && !current.users) || (current.initiated && current.denied)}">
+<body ng-controller="AppController" class="app-loading" ng-class="{ 'app-loading': current.initiating, overflowed: (!current.user && current.users) || (!current.user && !current.users) }">
     <header ng-include="'tmpl/core/common/header.html'"></header>
 
-    <router-view ng-controller="PageController" route-id="routeId" class="page" ng-show="current.initiated && !current.denied"></router-view>
-    
-    <div ng-controller="LoginController" ng-if="current.initiated && !current.user && current.users" ng-include="'tmpl/core/common/login.html'"></div>
-    <div ng-controller="RegistrationController" ng-if="current.initiated && !current.user && !current.users" ng-include="'tmpl/core/common/first-user.html'"></div>
+    <router-view ng-controller="PageController" route-id="routeId" class="page" ng-if="current.user"></router-view>
+
+    <div ng-controller="LoginController" ng-if="!current.user && current.users" ng-include="'tmpl/core/common/login.html'"></div>
+    <div ng-controller="RegistrationController" ng-if="!current.user && !current.users" ng-include="'tmpl/core/common/first-user.html'"></div>
 
     <% _.each(scripts, function(file) { %>
     <script type="text/javascript" src="<%= file %>"></script><% }); %>

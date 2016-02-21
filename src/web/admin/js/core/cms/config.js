@@ -4,11 +4,10 @@
     "use strict";
 
     angular.module('jsnbt')
-    .config(['$routerProvider', '$jsnbtProvider', 'flowFactoryProvider', function ($routerProvider, $jsnbtProvider, flowFactoryProvider) {
+        .config(['$routerProvider',
+            function ($routerProvider) {
 
-        $jsnbtProvider.setSettings(jsnbt);
-
-        if ($('.error-page').length === 1)
+        if ($('body > .error-page').length > 0)
             return;
 
         var router = new jsnbt.ViewRouter('core', $routerProvider);
@@ -155,12 +154,5 @@
             x.controller('NotFoundController');
         });
 
-    }])
-    .run(['$rootScope', '$router', '$logger', '$q', '$timeout', '$data', '$jsnbt', 'LocationService', 'ScrollSpyService', 'AuthService', 'TreeNodeService', 'PagedDataService', 'ModalService', 'CONTROL_EVENTS', 'AUTH_EVENTS', 'DATA_EVENTS', 'ROUTE_EVENTS', 
-        function ($rootScope, $router, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS) {
-
-            $rootScope.initiated = $rootScope.initiated || false;
-            $rootScope.users = 0;
-            
-        }]);
+    }]);
 })();

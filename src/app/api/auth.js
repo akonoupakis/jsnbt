@@ -245,8 +245,14 @@ AuthApi.prototype.login = function (ctx, fields) {
 };
 
 AuthApi.prototype.logout = function (ctx, fields) {
+    var self = this;
+
     var authMngr = require('../cms/authMngr.js')(this.server);
+
     authMngr.invalidate(function () {
+        var userId = ctx.req.session.uid;
+        self.server.sockets.emit('logoff', userId);
+
         delete ctx.req.session.uid;
         delete ctx.req.session.user;
         ctx.req.session.save(function () {

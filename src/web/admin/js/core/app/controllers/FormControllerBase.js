@@ -21,8 +21,6 @@
                     this.id = $scope.route && $scope.route.current.params.id;
                     $scope.id = this.id;
 
-                    $scope.found = undefined;
-
                     this.new = $scope.id === 'new' || _.str.startsWith($scope.id, 'new-');
                     $scope.model = undefined;
 

@@ -7,11 +7,15 @@
 
         jsnbt.controllers = (function (controllers) {
 
-            controllers.Controller = (function (Controller) {
+            controllers.AppControllerBase = (function (AppControllerBase) {
 
-                Controller = function ($scope, $rootScope, $router, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                AppControllerBase = function ($scope, $rootScope, $router, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
                     
                     $scope.modal = $scope.modal;
+
+                    if (!$scope.modal && $location.path() === '') {
+                        $location.path('/');
+                    }
 
                     $scope.root = true;
 
@@ -31,6 +35,9 @@
                     $scope.current = {
 
                         user: undefined,
+                        users: false,
+                        initiating: true,
+                        restoreFn: undefined,
                         breadcrumb: {
                             title: 'you are here: ',
                             items: []
@@ -171,6 +178,58 @@
                         setApplicationLanguages();
                     });
 
+                    $scope.getNodeBreadcrumb = function (node, prefix) {
+                        return TreeNodeService.getBreadcrumb(node, $scope.defaults.language, prefix);
+                    };
+
+                    $scope.current.login = function (username, password) {
+                        AuthService.login(username, password).then(function (user) {
+                            $rootScope.$broadcast(AUTH_EVENTS.loginSuccess, user);
+                        }).catch(function (error) {
+                            $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
+                        });
+                    };
+
+                    $scope.current.logout = function () {
+                        AuthService.logout().then(function () {
+                            $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
+                        });
+                    };
+
+                    $scope.isAuthorized = function (section) {
+                        return AuthService.isAuthorized($scope.current.user, section);
+                    };
+
+                    $scope.$on(AUTH_EVENTS.noUsers, function (sender, fn) {
+                        $scope.current.users = false;
+                    });
+
+                    $scope.$on(AUTH_EVENTS.userCreated, function (sender, fn) {
+                        $scope.current.users = true;
+                    });
+
+                    $scope.$on(AUTH_EVENTS.authenticated, function (sender, user) {
+                        $scope.current.users = true;
+                        $scope.current.setUser(user);
+                        $scope.current.initiating = false;
+                    });
+
+                    $scope.$on(AUTH_EVENTS.notAuthenticated, function (sender, fn) {
+                        $scope.current.users = true;
+                        $scope.current.setUser(null);
+                        $scope.current.initiating = false;
+                        $scope.current.restoreFn = fn;
+                    });
+
+                    $scope.$on(AUTH_EVENTS.loginSuccess, function (sender, user) {
+                        $scope.current.setUser(user);
+
+                        if (typeof ($scope.current.restoreFn) === 'function') {
+                            $scope.current.restoreFn();
+                        }
+                    });
+
+
                     $router.$index = $router.$index || 0;
                     $router.$index++;
 
@@ -179,6 +238,74 @@
                     $scope.route = $router.create($scope.routeId, {
                         path: $scope.modal ? $scope.modal.path : ($location.path() || '/'),
                         redirect: $scope.modal ? false : true
+                    });
+
+                    $rootScope.$on('$locationChangeStart', function (event, next) {
+                        if (($location.path() || '/') !== ($scope.route && $scope.route.current && $scope.route.current.path))
+                            $scope.route.navigate($location.path() || '/');
+                    });
+
+                    $scope.route.on('success', function () {
+                        if (!$scope.current.user) {
+                            AuthService.get().then(function (user) {
+                                if (!AuthService.isInRole(user, 'admin')) {
+                                    $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated, function () {
+                                        $scope.route.reload();
+                                    });
+                                }
+                                else {
+                                    $rootScope.$broadcast(AUTH_EVENTS.authenticated, user);
+                                }
+                            }, function () {
+                                event.preventDefault();
+
+                                if (!$rootScope.initiated) {
+                                    AuthService.count().then(function (count) {
+
+                                        if (count === 0) {
+                                            $rootScope.$broadcast(AUTH_EVENTS.noUsers, function () {
+                                                $scope.route.reload();
+                                            });
+                                        }
+                                        else {
+                                            $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated, function () {
+                                                $scope.route.reload();
+                                            });
+                                        }
+
+                                        $rootScope.initiated = true;
+                                    }).catch(function (error) {
+                                        throw error;
+                                    });
+                                }
+                                else {
+                                    $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated, function () {
+                                        $scope.route.reload();
+                                    });
+                                }
+
+                            });
+                        }
+                        else {
+                            if (!AuthService.isInRole($scope.current.user, 'admin')) {
+                                $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated, function () {
+                                    $scope.route.reload();
+                                });
+                            }
+                            else {
+                                $rootScope.$broadcast(AUTH_EVENTS.authenticated, $scope.current.user);
+                            }
+                        }
+                    });
+
+                    $jsnbt.on('logoff', function (userId) {
+                        if ($scope.current.user && $scope.current.user.id === userId) {
+                            $timeout(function () {
+                                $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated, function () {
+                                    $scope.route.reload();
+                                });
+                            });
+                        }
                     });
 
                     $scope.$on('$destroy', function () {
@@ -213,9 +340,9 @@
                     }
                 };
                 
-                return Controller;
+                return AppControllerBase;
 
-            })(controllers.Controller || {});
+            })(controllers.AppControllerBase || {});
 
             return controllers;
 

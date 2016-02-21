@@ -42,7 +42,9 @@
                     };
 
                     this.queue = {};
-                    this.denied = false;
+
+                    $scope.denied = false;
+                    $scope.found = true;
 
                     $scope.localization = false;
                     $scope.languages = [];
