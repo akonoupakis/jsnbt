@@ -15,7 +15,7 @@
     <% _.each(styles, function(file) { %>
     <link rel="stylesheet" href="<%= file %>" /><% }); %>
 </head>
-<body ng-controller="AppController">
+<body>
     <div class="error-page" ng-include="'tmpl/core/common/404.html'"></div>
     
     <% _.each(scripts, function(file) { %>
