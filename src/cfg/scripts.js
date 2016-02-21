@@ -8,6 +8,7 @@ module.exports = [{
         '/admin/js/core/lib/angular/angular-bootstrap.js',
         '/admin/js/core/lib/angular/angular-bootstrap-tpls.js',
         '/admin/js/core/lib/angular/angular-ui-sortable.js',
+        '/admin/js/core/lib/angular/angular-path-router.js',
         '/admin/js/core/lib/angular/angular.animate.js',
         '/admin/js/core/lib/angular/angular.sanitize.js',
         '/admin/js/core/lib/angular/angular.strap.js',
@@ -59,8 +60,6 @@ module.exports = [{
         '/admin/js/core/app/controls/FormControlBase.js',
         '/admin/js/core/app/controls/ListControlBase.js',
         '/admin/js/core/app/routes/ViewRouter.js',
-        '/admin/js/core/ngPathRouter/ngPathRouter.js',
-
 
         '/admin/js/core/cms/main.js',
 
