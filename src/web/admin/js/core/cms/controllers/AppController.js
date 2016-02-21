@@ -9,7 +9,6 @@
         var logger = $logger.create('AppController');
 
         $scope.current.users = false;
-        $scope.current.denied = false;
         $scope.current.initiated = false;
         
         $scope.current.restoreFn = undefined;
@@ -54,32 +53,20 @@
 
         $scope.$on(AUTH_EVENTS.authenticated, function (sender, user) {
             $scope.current.users = true;
-            $scope.current.denied = false;
             $scope.current.setUser(user);
         });
 
         $scope.$on(AUTH_EVENTS.notAuthenticated, function (sender, fn) {
             $scope.current.users = true;
-            $scope.current.denied = false;
             $scope.current.setUser(null);
             $scope.current.restoreFn = fn;
-        });
-
-        $scope.$on(AUTH_EVENTS.accessDenied, function (sender) {
-            $scope.current.denied = true;
         });
 
         $scope.$on(AUTH_EVENTS.loginSuccess, function (sender, user) {
             $scope.current.setUser(user);
 
-            if ($scope.route.current && $scope.route.current.section && !AuthService.isAuthorized(user, $scope.route.current.section)) {
-                $scope.current.denied = true;
-            }
-            else {
-                $scope.current.denied = false;
-                if (typeof ($scope.current.restoreFn) === 'function') {
-                    $scope.current.restoreFn();
-                }
+            if (typeof ($scope.current.restoreFn) === 'function') {
+                $scope.current.restoreFn();
             }
         });
 
@@ -87,6 +74,11 @@
             checkUser();
         });
         
+        $rootScope.$on('$locationChangeStart', function (event, next) {
+            if ($location.path() !== $scope.route.current.path) 
+                $scope.route.navigate($location.path());
+        });
+
         var checkUser = function () {
             $rootScope.$broadcast(ROUTE_EVENTS.routeStarted);
 
@@ -99,12 +91,6 @@
                 }
                 else {
                     $rootScope.$broadcast(AUTH_EVENTS.authenticated, user);
-                    var currentSection = $scope.route.current && $scope.route.current.section;
-                    if (currentSection) {
-                        if (!AuthService.isAuthorized(user, currentSection)) {
-                            $rootScope.$broadcast(AUTH_EVENTS.accessDenied);
-                        }
-                    }
                 }
             }, function () {
                 event.preventDefault();

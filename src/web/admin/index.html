@@ -22,7 +22,6 @@
     
     <div ng-controller="LoginController" ng-if="current.initiated && !current.user && current.users" ng-include="'tmpl/core/common/login.html'"></div>
     <div ng-controller="RegistrationController" ng-if="current.initiated && !current.user && !current.users" ng-include="'tmpl/core/common/first-user.html'"></div>
-    <div ng-controller="DeniedController" ng-if="current.initiated && current.denied" ng-include="'tmpl/core/common/denied.html'"></div>
 
     <% _.each(scripts, function(file) { %>
     <script type="text/javascript" src="<%= file %>"></script><% }); %>

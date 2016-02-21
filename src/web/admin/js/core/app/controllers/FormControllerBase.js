@@ -344,69 +344,75 @@
 
                     controllers.ControllerBase.prototype.init.apply(this, arguments).then(function () {
 
-                        if (self.scope.application) {
-                            self.scope.localized = self.scope.application.localization.enabled;
-                            self.scope.language = self.scope.application.localization.enabled ? (self.scope.defaults.language ? self.scope.defaults.language : (_.first(self.scope.application.languages) || {  }).code) : self.scope.defaults.language;
-                        }
+                        if (!self.scope.denied) {
 
-                        self.run('preloading').then(function () {
-                            self.preload().then(function () {
-                                self.run('preloaded').then(function () {
-                                    self.run('loading').then(function () {
-                                        self.load().then(function (response) {
-                                            self.scope.found = true;
-                                            self.run('loaded', [response]).then(function () {
-                                                self.run('setting', [response]).then(function () {
-                                                    self.set(response).then(function (setted) {
-                                                        self.run('set', [setted]).then(function () {
-                                                            self.run('watch').then(function () {
-                                                                self.getBreadcrumb().then(function (breadcrumb) {
-                                                                    self.setBreadcrumb(breadcrumb).then(function () {
-                                                                        self.setSpy(200);
-                                                                        deferred.resolve(setted);
-                                                                    }).catch(function (setBreadcrumbError) {
-                                                                        deferred.reject(setBreadcrumbError);
+                            if (self.scope.application) {
+                                self.scope.localized = self.scope.application.localization.enabled;
+                                self.scope.language = self.scope.application.localization.enabled ? (self.scope.defaults.language ? self.scope.defaults.language : (_.first(self.scope.application.languages) || {}).code) : self.scope.defaults.language;
+                            }
+
+                            self.run('preloading').then(function () {
+                                self.preload().then(function () {
+                                    self.run('preloaded').then(function () {
+                                        self.run('loading').then(function () {
+                                            self.load().then(function (response) {
+                                                self.scope.found = true;
+                                                self.run('loaded', [response]).then(function () {
+                                                    self.run('setting', [response]).then(function () {
+                                                        self.set(response).then(function (setted) {
+                                                            self.run('set', [setted]).then(function () {
+                                                                self.run('watch').then(function () {
+                                                                    self.getBreadcrumb().then(function (breadcrumb) {
+                                                                        self.setBreadcrumb(breadcrumb).then(function () {
+                                                                            self.setSpy(200);
+                                                                            deferred.resolve(setted);
+                                                                        }).catch(function (setBreadcrumbError) {
+                                                                            deferred.reject(setBreadcrumbError);
+                                                                        });
+                                                                    }).catch(function (getBreadcrumbError) {
+                                                                        deferred.reject(getBreadcrumbError);
                                                                     });
-                                                                }).catch(function (getBreadcrumbError) {
-                                                                    deferred.reject(getBreadcrumbError);
+                                                                }).catch(function (watchError) {
+                                                                    deferred.reject(watchError);
                                                                 });
-                                                            }).catch(function (watchError) {
-                                                                deferred.reject(watchError);
+                                                            }).catch(function (setError) {
+                                                                deferred.reject(setError);
                                                             });
-                                                        }).catch(function (setError) {
-                                                            deferred.reject(setError);
+                                                        }).catch(function (settedError) {
+                                                            deferred.reject(settedError);
                                                         });
-                                                    }).catch(function (settedError) {
-                                                        deferred.reject(settedError);
+                                                    }).catch(function (settingError) {
+                                                        deferred.reject(settingError);
                                                     });
-                                                }).catch(function (settingError) {
-                                                    deferred.reject(settingError);
+                                                }).catch(function (loadedError) {
+                                                    deferred.reject(loadedError);
                                                 });
-                                            }).catch(function (loadedError) {
-                                                deferred.reject(loadedError);
+                                            }).catch(function (loadError) {
+                                                var parsedLoadError = _.isString(loadError) ? JSON.parse(loadError) : loadError;
+                                                if (_.isObject(parsedLoadError) && parsedLoadError.statusCode === 404) {
+                                                    self.scope.found = false;
+                                                    deferred.resolve();
+                                                }
+                                                else {
+                                                    deferred.reject(loadError);
+                                                }
                                             });
-                                        }).catch(function (loadError) {
-                                            var parsedLoadError = _.isString(loadError) ? JSON.parse(loadError) : loadError;
-                                            if (_.isObject(parsedLoadError) && parsedLoadError.statusCode === 404) {
-                                                self.scope.found = false;
-                                                deferred.resolve();
-                                            }
-                                            else {
-                                                deferred.reject(loadError);
-                                            }
+                                        }).catch(function (loadingError) {
+                                            deferred.reject(loadingError);
                                         });
-                                    }).catch(function (loadingError) {
-                                        deferred.reject(loadingError);
+                                    }, function (preloadedError) {
+                                        deferred.reject(preloadedError);
                                     });
-                                }, function (preloadedError) {
-                                    deferred.reject(preloadedError);
+                                }).catch(function (preloadError) {
+                                    deferred.reject(preloadError);
                                 });
-                            }).catch(function (preloadError) {
-                                deferred.reject(preloadError);
+                            }).catch(function (preloadingError) {
+                                deferred.reject(preloadingError);
                             });
-                        }).catch(function (preloadingError) {
-                            deferred.reject(preloadingError);
-                        });
+                        }
+                        else {
+                            deferred.resolve();
+                        }
 
                     }).catch(function (initError) {
                         deferred.reject(initError);

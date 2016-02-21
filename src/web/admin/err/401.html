@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html lang="<%= language %>">
+<head>
+    <base href="<%= baseHref %>" />
+    <meta charset="utf-8" />
+
+    <meta name="robots" content="noindex,nofollow" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title><%= meta.title %></title>
+    <meta name="keywords" content="<%= meta.keywords %>" />
+    <meta name="description" content="<%= meta.description %>" />
+
+    <% _.each(styles, function(file) { %>
+    <link rel="stylesheet" href="<%= file %>" /><% }); %>
+</head>
+<body ng-controller="AppController">
+    <div class="error-page" ng-include="'tmpl/core/common/denied.html'"></div>
+    
+    <% _.each(scripts, function(file) { %>
+    <script type="text/javascript" src="<%= file %>"></script><% }); %>
+
+    <!-- @if NODE_ENV='PRODUCTION' -->
+    <script type="text/javascript" src="tmpl.js"></script>
+    <!-- @endif -->
+</body>
+</html>

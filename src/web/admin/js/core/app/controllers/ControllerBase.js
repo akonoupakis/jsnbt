@@ -42,6 +42,7 @@
                     };
 
                     this.queue = {};
+                    this.denied = false;
 
                     $scope.localization = false;
                     $scope.languages = [];
@@ -82,6 +83,28 @@
                     if (this.queue[queue]) {
                         this.queue[queue] = _.filter(this.queue[queue], function (x) { return x.key !== key });
                     }
+                };
+
+                ControllerBase.prototype.authorize = function () {
+                    var deferred = this.ctor.$q.defer();
+
+                    if (this.scope.current.user) {
+                        var currentSection = this.scope.route.current && this.scope.route.current.section;
+                        if (currentSection) {
+                            var authorized = this.ctor.AuthService.isAuthorized(this.scope.current.user, currentSection);
+                            this.scope.denied = !authorized;
+                            deferred.resolve(authorized);
+                        }
+                        else {
+                            deferred.resolve(true);
+                        }
+                    }
+                    else {
+                        this.scope.denied = true;
+                        deferred.resolve(false);
+                    }
+
+                    return deferred.promise;
                 };
 
                 ControllerBase.prototype.getBreadcrumb = function () {
@@ -130,20 +153,24 @@
                     var self = this;
 
                     var proceed = function () {
-                        
-                        self.getBreadcrumb().then(function (breadcrumb) {
-                            self.setBreadcrumb(breadcrumb).then(function () {
-                                deferred.resolve();
+                        self.authorize().then(function (authorized) {
+                            self.getBreadcrumb().then(function (breadcrumb) {
+                                self.setBreadcrumb(breadcrumb).then(function () {
+                                    deferred.resolve();
+                                }).catch(function (ex) {
+                                    deferred.reject(ex);
+                                });
                             }).catch(function (ex) {
                                 deferred.reject(ex);
                             });
+                        }).catch(function (ex) {
+                            deferred.reject(ex);
                         });
                     };
 
                     self.scope.languages = self.scope.application.languages;
               
                     if (self.scope.$parent && self.scope.root && typeof (self.scope.$parent.init) === 'function') {
-                        self.ctor.$rootScope.controller = self;
 
                         self.scope.$parent.init().then(function () {
                             proceed();

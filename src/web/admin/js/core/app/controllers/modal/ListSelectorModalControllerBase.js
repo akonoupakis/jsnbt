@@ -65,21 +65,7 @@
                 ListSelectorModalControllerBase.prototype.submitted = function (selected) {
                    
                 };
-
-                ListSelectorModalControllerBase.prototype.init = function () {
-                    var deferred = this.ctor.$q.defer();
-
-                    this.ctor.$rootScope.controller = this;
-
-                    controllers.ListControllerBase.prototype.init.apply(this, arguments).then(function () {
-                        deferred.resolve();
-                    }).catch(function (ex) {
-                        deferred.reject(ex);
-                    });
-
-                    return deferred.promise;
-                };
-
+                
                 return ListSelectorModalControllerBase;
 
             })(controllers.ListSelectorModalControllerBase || {});

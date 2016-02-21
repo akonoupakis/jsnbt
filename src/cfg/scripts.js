@@ -72,7 +72,6 @@ module.exports = [{
         '/admin/js/core/cms/controllers/AppController.js',
         '/admin/js/core/cms/controllers/LoginController.js',
         '/admin/js/core/cms/controllers/RegistrationController.js',
-        '/admin/js/core/cms/controllers/DeniedController.js',
         '/admin/js/core/cms/controllers/NotFoundController.js',
         '/admin/js/core/cms/controllers/AccountController.js',
         '/admin/js/core/cms/controllers/DashboardController.js',

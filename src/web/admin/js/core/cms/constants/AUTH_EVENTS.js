@@ -13,7 +13,6 @@
             notAuthenticated: 'auth-not-authenticated',
             notAuthorized: 'auth-not-authorized',
             noUsers: 'auth-no-users',
-            userCreated: 'auth-user-created',
-            accessDenied: 'auth-access-denied'
+            userCreated: 'auth-user-created'
         });
 })();

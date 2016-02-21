@@ -11,10 +11,6 @@
                 var deferred = $q.defer();
 
                 var modalCtrl = function ($scope, $modalInstance) {
-                    //angular.extend($scope, options.scope);
-
-                    this.parentController = $rootScope.controller;
-
                     var me = this;
 
                     $scope.modal = $.extend(true, {}, {
@@ -48,7 +44,6 @@
                         $scope.selected = value;
 
                         if (value !== undefined && value !== '') {
-                            $rootScope.controller = me.parentController;
                             $modalInstance.close(value);
                         }
                     });
@@ -58,7 +53,6 @@
                     };
 
                     $scope.cancel = function () {
-                        $rootScope.controller = me.parentController;
                         $modalInstance.dismiss('cancel');
                     };
                 };

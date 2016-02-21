@@ -1,4 +1,4 @@
-﻿<div ng-show="found === true" ng-class="{ 'container': !modal, 'container-fluid': modal }" class="affix-area form-buttons-container">
+﻿<div ng-show="found && !denied" ng-class="{ 'container': !modal, 'container-fluid': modal }" class="affix-area form-buttons-container">
     <div class="row">
         <div ng-class="{ 'col-sm-10': !modal, 'col-sm-12': modal }">
             <div class="affix-container">
@@ -14,7 +14,7 @@
     </div>
 </div>
 
-<div ng-show="found === true" ng-class="{ 'container': !modal, 'container-fluid': modal }">
+<div ng-show="found && !denied" ng-class="{ 'container': !modal, 'container-fluid': modal }">
 
     <section class="scrollspy-container" ng-class="{ 'col-sm-10': !modal, 'col-sm-12': modal }" data-scrollspy>
 
@@ -166,4 +166,5 @@
 
 </div>
 
-<div ng-if="found === false" ng-class="{ 'container': !modal, 'container-fluid': modal }" class="error-page" ng-include="'tmpl/core/common/404.html'"></div>
+<div ng-if="!found && !denied" class="centered" ng-include="'tmpl/core/base/partials/404.html'"></div>
+<div ng-if="denied" class="centered" ng-include="'tmpl/core/base/partials/denied.html'"></div>
