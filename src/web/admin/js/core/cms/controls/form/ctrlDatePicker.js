@@ -157,6 +157,15 @@
                 return deferred.promise;
             };
 
+            DatePickerControl.prototype.destroy = function () {
+                jsnbt.controls.ControlBase.prototype.destroy.apply(this, arguments);
+
+                this.element.find('.input-group > input.dpicker').datepicker('destroy');
+                if (scope.ngTime) 
+                    this.element.find('.input-group > input.tpicker').timepicker('destroy');
+            };
+
+
             return {
                 restrict: 'E',
                 replace: true,

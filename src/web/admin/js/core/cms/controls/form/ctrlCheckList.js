@@ -165,6 +165,12 @@
                 return deferred.promise;
             };
 
+            CheckListControl.prototype.destroy = function () {
+                jsnbt.controls.ControlBase.prototype.destroy.apply(this, arguments);
+
+                this.element.find('.bootstrap-switch').bootstrapSwitch('destroy');
+            };
+
             return {
                 restrict: 'E',
                 replace: true,
