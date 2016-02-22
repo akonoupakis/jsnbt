@@ -164,6 +164,10 @@
                 transclude(childScope, function (clone, innerScope) {
                     element.find('.transcluded').empty();
                     element.find('.transcluded').append(clone);
+
+                    scope.$on('$destroy', function () {
+                        childScope.$destroy();
+                    });
                 });
 
                 this.init();

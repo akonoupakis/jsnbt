@@ -37,6 +37,7 @@
                         MODAL_EVENTS: MODAL_EVENTS
                     };
 
+                    scope.$on('destroy', this.destroy);
                 };
 
                 ControlBase.prototype.properties = {};
@@ -46,6 +47,10 @@
                         if (!_.isEqual(targetScope[targetKey], newValue))
                             targetScope[targetKey] = newValue;
                     }, true);
+                };
+
+                ControlBase.prototype.destroy = function () {
+
                 };
 
                 return ControlBase;

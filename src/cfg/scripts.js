@@ -9,17 +9,17 @@ module.exports = [{
         '/admin/js/core/lib/moment.js',
         '/admin/js/core/lib/moment-timezone.js',
         '/admin/js/core/lib/jshashes.js',
-
-        '/admin/js/core/lib/bootstrap/bootstrap.switch.js',
-        '/admin/js/core/lib/bootstrap/bootstrap.datepicker.js',
-        '/admin/js/core/lib/bootstrap/bootstrap.timepicker.js',
-
+        
         '/admin/js/core/lib/jquery/jquery-inViewport.js',
         '/admin/js/core/lib/jquery/jquery-ui.js',
         '/admin/js/core/lib/jquery/jquery.scrollTo.js',
         '/admin/js/core/lib/jquery/jquery.cropper.js',
         '/admin/js/core/lib/jquery/jquery.redactor.js',
         '/admin/js/core/lib/jquery/jquery.webui-popover.js',
+
+        '/admin/js/core/lib/bootstrap/bootstrap.switch.js',
+        '/admin/js/core/lib/bootstrap/bootstrap.datepicker.js',
+        '/admin/js/core/lib/bootstrap/bootstrap.timepicker.js',
 
         '/admin/js/core/lib/angular/ui-bootstrap.js',
         '/admin/js/core/lib/angular/ui-bootstrap-tpls.js',

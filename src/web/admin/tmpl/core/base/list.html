@@ -4,7 +4,7 @@
 
         <ctrl-breadcrumb ng-show="breadcrumb" ng-class="{ 'container': !modal, 'container-fluid': modal }" ng-linkable-offset="modal.offset" ng-model="current.breadcrumb.items" ng-title="current.breadcrumb.title"></ctrl-breadcrumb>
 
-        <div ng-include="route.current.template || route.current.baseTemplate"></div>
+        <div ng-include="template || (route.current.template || route.current.baseTemplate)"></div>
         
     </section>
 

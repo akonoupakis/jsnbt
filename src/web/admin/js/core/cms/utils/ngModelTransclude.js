@@ -19,7 +19,8 @@
                 $transclude(innerScope, function (clone) {
                     $element.empty();
                     $element.append(clone);
-                    $element.on('$destroy', function () {
+
+                    $scope.$on('$destroy', function () {
                         innerScope.$destroy();
                     });
                 });

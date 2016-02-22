@@ -68,6 +68,7 @@
                         self.controls.push(control);
                     });
                     
+                    $scope.$on('destroy', this.destroy);
                 };
 
                 ControllerBase.prototype.enqueue = function (queue, key, fn) {
@@ -185,6 +186,10 @@
                     }
 
                     return deferred.promise;
+                };
+
+                ControllerBase.prototype.destroy = function () {
+
                 };
 
                 return ControllerBase;

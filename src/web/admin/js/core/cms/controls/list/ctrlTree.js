@@ -40,6 +40,10 @@
 
                      scope.transcludeFn(childScope, function (clone, innerScope) {
                          element.append(clone);
+
+                         scope.$on('$destroy', function () {
+                             childScope.$destroy();
+                         });
                      });
                  });
              });
@@ -79,8 +83,8 @@
              template: '<li class="dd-item" ng-class="{ \'dd-collapsed\': model.collapsed, \'loading\': model.loading }" ng-transclude></li>',
              compile: function (elem, attrs, transclude) {
 
-                 return function (scope, lElem, lAttrs) {
-                     lElem.addClass('ctrl-tree-node');
+                 return function (scope, element, lAttrs) {
+                     element.addClass('ctrl-tree-node');
 
                      var transcludeFn = scope.$parent.transcludeFn;
 
@@ -89,13 +93,13 @@
                      });
 
                      scope.$watch('model.children', function (value) {
-                         lElem.empty();
+                         element.empty();
 
                          transclude(scope, function (clone, innerScope) {
-                             lElem.append($compile(angular.element('<button type="button" class="dd-collapse" ng-show="model.expandable && !model.root && model.childCount !== 0" ng-click="model.collapse()">Collapse</button>'))(innerScope));
-                             lElem.append($compile(angular.element('<button type="button" class="dd-expand" ng-show="model.expandable && !model.root && model.childCount !== 0" ng-click="model.expand()">Expand</button>'))(innerScope));
-                             lElem.append($compile(angular.element('<img class="dd-loading" src="img/core/node-loading.gif" />'))(innerScope));
-                             lElem.append(clone);
+                             element.append($compile(angular.element('<button type="button" class="dd-collapse" ng-show="model.expandable && !model.root && model.childCount !== 0" ng-click="model.collapse()">Collapse</button>'))(innerScope));
+                             element.append($compile(angular.element('<button type="button" class="dd-expand" ng-show="model.expandable && !model.root && model.childCount !== 0" ng-click="model.expand()">Expand</button>'))(innerScope));
+                             element.append($compile(angular.element('<img class="dd-loading" src="img/core/node-loading.gif" />'))(innerScope));
+                             element.append(clone);
 
                              var childScope = scope.$new();
                              childScope.ngModel = value;
@@ -110,7 +114,11 @@
 
                              var collectionElement = angular.element('<ctrl-tree ng-model="ngModel" ng-domain="ngDomain" ng-root="ngRoot" ng-selectable="ngSelectable" ng-select-mode="ngSelectMode" ng-select-pointee="ngSelectPointee" ng-transclude-fn="ngTranscludeFn" ng-fn="ngFn" ng-language="ngLanguage"></ctrl-tree>');
                              var compiled = $compile(collectionElement)(childScope);
-                             lElem.append(compiled);
+                             element.append(compiled);
+
+                             scope.$on('$destroy', function () {
+                                 childScope.$destroy();
+                             });
                          });
                      });
 

@@ -3,24 +3,23 @@
 	"gmaps": "0.4.21",
         
     "jquery": "2.1.3",
-    "angular": "1.3.15",
 	"underscore": "1.7.0",
     "underscore.string": "2.3.3",
+	"angular": "1.3.15",
+    "bootstrap": "3.3.5",
 	"moment": "2.10.6",
 	"moment-timezone": "0.4.0",
 	"jshashes": "1.0.5",
     
-    "bootstrap": "3.3.5",
-    
-    "bootstrap-switch": "3.0.2",
-    "bootstrap-datepicker": "1.4.0",
-	"bootstrap-timepicker": "0.5.2",
-        
     "jquery-ui": "1.11.4",
     "jquery.scrollTo": "1.4.14",
     "cropper": "0.7.9",
     "imperavi-redactor": "10.0.9",
     "webui-popover": "1.2.3",
+
+    "bootstrap-switch": "3.0.2",
+    "bootstrap-datepicker": "1.4.0",
+	"bootstrap-timepicker": "0.5.2",
     
 	"angular-bootstrap": "0.11.2",    
     "angular-path-router": "1.0.2",
@@ -55,16 +54,6 @@
         }
       ]
     },
-    "angular": {
-      "files": [
-        {
-          "src": "angular-1.3.15/angular.js",
-          "dest": [
-            "admin/js/core/lib/angular.js"
-          ]
-        }
-      ]
-    },
     "underscore": {
       "files": [
         {
@@ -81,6 +70,34 @@
           "src": "underscore.string-2.3.3/lib/underscore.string.js",
           "dest": [
             "admin/js/core/lib/underscore.string.js"
+          ]
+        }
+      ]
+    },
+	"angular": {
+      "files": [
+        {
+          "src": "angular-1.3.15/angular.js",
+          "dest": [
+            "admin/js/core/lib/angular.js"
+          ]
+        }
+      ]
+    },
+	"bootstrap": {
+      "files": [
+        {
+          "src": "bootstrap-3.3.5/dist/js/bootstrap.js",
+          "dest": [
+            "admin/js/core/lib/bootstrap.js"
+          ]
+        }
+      ],
+      "folders": [
+		{
+          "src": "bootstrap-3.3.5/dist/fonts",
+          "dest": [
+            "admin/fonts"
           ]
         }
       ]
@@ -111,56 +128,6 @@
           "src": "jshashes-1.0.5/hashes.js",
           "dest": [
             "admin/js/core/lib/jshashes.js"
-          ]
-        }
-      ]
-	},
-    
-    "bootstrap": {
-      "files": [
-        {
-          "src": "bootstrap-3.3.5/dist/js/bootstrap.js",
-          "dest": [
-            "admin/js/core/lib/bootstrap.js"
-          ]
-        }
-      ],
-      "folders": [
-		{
-          "src": "bootstrap-3.3.5/dist/fonts",
-          "dest": [
-            "admin/fonts"
-          ]
-        }
-      ]
-    },
-
-    "bootstrap-switch": {
-      "files": [
-        {
-          "src": "bootstrap-switch-3.0.2/dist/js/bootstrap-switch.js",
-          "dest": [
-            "admin/js/core/lib/bootstrap/bootstrap.switch.js"
-          ]
-        }
-      ]
-    },
-    "bootstrap-datepicker": {
-	   "files": [
-        {
-          "src": "bootstrap-datepicker-1.4.0/dist/js/bootstrap-datepicker.js",
-          "dest": [
-            "admin/js/core/lib/bootstrap/bootstrap.datepicker.js"
-          ]
-        }
-      ]
-	},
-	"bootstrap-timepicker": {
-	   "files": [
-        {
-          "src": "bootstrap-timepicker-0.5.2/js/bootstrap-timepicker.js",
-          "dest": [
-            "admin/js/core/lib/bootstrap/bootstrap.timepicker.js"
           ]
         }
       ]
@@ -217,6 +184,36 @@
       ]
 	},
     
+    "bootstrap-switch": {
+      "files": [
+        {
+          "src": "bootstrap-switch-3.0.2/dist/js/bootstrap-switch.js",
+          "dest": [
+            "admin/js/core/lib/bootstrap/bootstrap.switch.js"
+          ]
+        }
+      ]
+    },
+    "bootstrap-datepicker": {
+	   "files": [
+        {
+          "src": "bootstrap-datepicker-1.4.0/dist/js/bootstrap-datepicker.js",
+          "dest": [
+            "admin/js/core/lib/bootstrap/bootstrap.datepicker.js"
+          ]
+        }
+      ]
+	},
+	"bootstrap-timepicker": {
+	   "files": [
+        {
+          "src": "bootstrap-timepicker-0.5.2/js/bootstrap-timepicker.js",
+          "dest": [
+            "admin/js/core/lib/bootstrap/bootstrap.timepicker.js"
+          ]
+        }
+      ]
+	},
 
     "angular-bootstrap": {
       "files": [

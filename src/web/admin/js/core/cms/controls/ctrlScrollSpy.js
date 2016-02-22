@@ -60,6 +60,10 @@
             };
             ScrollSpyControl.prototype = Object.create(jsnbt.controls.ControlBase.prototype);
 
+            ScrollSpyControl.prototype.destroy = function () {
+                jsnbt.controls.ControlBase.prototype.destroy.apply(this, arguments);
+            };
+
             return {
                 restrict: 'E',
                 replace: true,

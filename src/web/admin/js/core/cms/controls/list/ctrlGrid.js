@@ -351,6 +351,10 @@
                                         ctrlGrid.currentPage = 1;
                                         scope.$parent.$parent.fn.load(getFilters(), getSorter());
                                     });
+
+                                    scope.$on('$destroy', function () {
+                                        pickerElement.datepicker('destroy');
+                                    });
                                 });
                             };
                         }
