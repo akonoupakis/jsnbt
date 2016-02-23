@@ -108,7 +108,7 @@
                 <ctrl-select class="col-sm-12" ng-model="model.template" ng-disabled="!entity.properties.template" ng-required="true" ng-options="templates[model.entity]" ng-default="true" ng-value-field="id" ng-name-field="name" ng-label="template"></ctrl-select>
             </div>
 
-            <hr ng-show="entity.properties.template" />
+            <hr ng-show="entity.properties.template" />            
 
             <div ng-include="template"></div>
             <hr ng-show="template" />

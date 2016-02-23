@@ -162,12 +162,30 @@
 
 
                     this.enqueue('set', '', function (node) {
+                        var deferred = $q.defer();
+
                         if (node && _.isObject(node.active)) {
                             _.each($scope.application.languages, function (lang) {
                                 if (node.active[lang.code] === undefined)
                                     node.active[lang.code] = false;
                             });
                         }
+
+                        deferred.resolve();
+
+                        return deferred.promise;
+                    });
+
+                    this.enqueue('set', '', function (node) {
+                        var deferred = $q.defer();
+
+                        self.setTemplate().then(function () {
+                            deferred.resolve();
+                        }).catch(function (tmplEx) {
+                            deferred.reject(tmplEx);
+                        });
+
+                        return deferred.promise;
                     });
 
                     this.enqueue('set', '', function (node) {
@@ -766,11 +784,27 @@
                     return deferred.promise;
                 };
 
+                NodeFormControllerBase.prototype.setTemplate = function () {
+                    var deferred = this.ctor.$q.defer();
+
+                    if (this.scope.route && this.scope.route.current) {
+                        this.scope.template = this.scope.route.current.template;
+                    }
+                    else {
+                        this.scope.template = undefined;
+                    }
+
+                    deferred.resolve();
+
+                    return deferred.promise;
+                };
+
                 NodeFormControllerBase.prototype.setTemplateForm = function () {
                     var deferred = this.ctor.$q.defer();
 
                     if (this.scope.model && this.scope.model.entity !== 'pointer') {
                         var jtmpl = this.ctor.$jsnbt.templates[this.scope.model.template];
+
                         if (jtmpl) {
                             this.scope.form = jtmpl.form;
                         }
