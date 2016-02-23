@@ -58,7 +58,7 @@
                     var loadFn = function (parentIds) {
                         self.ctor.TreeNodeService.getNodes({
                             identifier: self.scope.cacheKey,
-                            domain: self.scope.domain,
+                            domain: self.scope.modal && self.scope.modal.domain ? self.scope.modal.domain : self.scope.domain,
                             entities: self.scope.modal && self.scope.modal.entities ? self.scope.modal.entities : self.scope.entities,
                             parentId: '',
                             parentIds: parentIds || []
@@ -150,6 +150,7 @@
                     var self = this;
 
                     controllers.ControllerBase.prototype.init.apply(this, arguments).then(function () {
+                        self.scope.loading = true;
 
                         self.run('preloading').then(function () {
                             self.preload().then(function () {
@@ -162,46 +163,59 @@
                                                     self.set(response).then(function (setted) {
                                                         self.run('set', [setted]).then(function () {
                                                             self.run('watch').then(function () {
+                                                                self.scope.loading = false;
                                                                 deferred.resolve(setted);
                                                             }).catch(function (watchError) {
+                                                                self.scope.loading = false;
                                                                 deferred.reject(watchError);
                                                             });
                                                         }).catch(function (setError) {
+                                                            self.scope.loading = false;
                                                             deferred.reject(setError);
                                                         });
                                                     }).catch(function (settedError) {
+                                                        self.scope.loading = false;
                                                         deferred.reject(settedError);
                                                     });
                                                 }).catch(function (settingError) {
+                                                    self.scope.loading = false;
                                                     deferred.reject(settingError);
                                                 });
                                             }).catch(function (loadedError) {
+                                                self.scope.loading = false;
                                                 deferred.reject(loadedError);
                                             });
                                         }).catch(function (loadError) {
                                             var parsedLoadError = _.isString(loadError) ? JSON.parse(loadError) : loadError;
                                             if (_.isObject(parsedLoadError) && parsedLoadError.statusCode === 404) {
                                                 self.scope.found = false;
+                                                self.scope.loading = false;
                                                 deferred.resolve();
                                             }
                                             else {
+                                                self.scope.loading = false;
                                                 deferred.reject(loadError);
                                             }
                                         });
                                     }).catch(function (loadingError) {
+                                        self.scope.loading = false;
                                         deferred.reject(loadingError);
                                     });
                                 }, function (preloadedError) {
+                                    self.scope.loading = false;
                                     deferred.reject(preloadedError);
                                 });
                             }).catch(function (preloadError) {
+                                self.scope.loading = false;
                                 deferred.reject(preloadError);
                             });
                         }).catch(function (preloadingError) {
+                            self.scope.loading = false;
                             deferred.reject(preloadingError);
                         });
 
                     }).catch(function (initError) {
+                        self.scope.loading = false;
                         deferred.reject(initError);
                     });
 

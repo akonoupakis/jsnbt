@@ -1,4 +1,4 @@
-﻿<div ng-if="found && !denied" ng-class="{ 'container': !modal, 'container-fluid': modal }">
+﻿<div ng-if="found && !denied" ng-show="!loading" ng-class="{ 'container': !modal, 'container-fluid': modal }">
 
     <section class="col-md-12">
 
@@ -10,5 +10,5 @@
 
 </div>
 
-<div ng-if="!found && !denied" class="centered" ng-include="'tmpl/core/base/partials/404.html'"></div>
-<div ng-if="denied" class="centered" ng-include="'tmpl/core/base/partials/denied.html'"></div>
+<div ng-if="!found && !denied" ng-show="!loading" class="centered" ng-include="'tmpl/core/base/partials/404.html'"></div>
+<div ng-if="denied" ng-show="!loading" class="centered" ng-include="'tmpl/core/base/partials/denied.html'"></div>

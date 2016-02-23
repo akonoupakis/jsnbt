@@ -341,6 +341,7 @@
                     var self = this;
 
                     controllers.ControllerBase.prototype.init.apply(this, arguments).then(function () {
+                        self.scope.loading = true;
 
                         if (!self.scope.denied) {
 
@@ -363,56 +364,72 @@
                                                                     self.getBreadcrumb().then(function (breadcrumb) {
                                                                         self.setBreadcrumb(breadcrumb).then(function () {
                                                                             self.setSpy(200);
+                                                                            self.scope.loading = false;
                                                                             deferred.resolve(setted);
                                                                         }).catch(function (setBreadcrumbError) {
+                                                                            self.scope.loading = false;
                                                                             deferred.reject(setBreadcrumbError);
                                                                         });
                                                                     }).catch(function (getBreadcrumbError) {
+                                                                        self.scope.loading = false;
                                                                         deferred.reject(getBreadcrumbError);
                                                                     });
                                                                 }).catch(function (watchError) {
+                                                                    self.scope.loading = false;
                                                                     deferred.reject(watchError);
                                                                 });
                                                             }).catch(function (setError) {
+                                                                self.scope.loading = false;
                                                                 deferred.reject(setError);
                                                             });
                                                         }).catch(function (settedError) {
+                                                            self.scope.loading = false;
                                                             deferred.reject(settedError);
                                                         });
                                                     }).catch(function (settingError) {
+                                                        self.scope.loading = false;
                                                         deferred.reject(settingError);
                                                     });
                                                 }).catch(function (loadedError) {
+                                                    self.scope.loading = false;
                                                     deferred.reject(loadedError);
                                                 });
                                             }).catch(function (loadError) {
                                                 var parsedLoadError = _.isString(loadError) ? JSON.parse(loadError) : loadError;
                                                 if (_.isObject(parsedLoadError) && parsedLoadError.statusCode === 404) {
                                                     self.scope.found = false;
+                                                    self.scope.loading = false;
                                                     deferred.resolve();
                                                 }
                                                 else {
+                                                    self.scope.loading = false;
                                                     deferred.reject(loadError);
                                                 }
                                             });
                                         }).catch(function (loadingError) {
+                                            self.scope.loading = false;
                                             deferred.reject(loadingError);
                                         });
                                     }, function (preloadedError) {
+                                        self.scope.loading = false;
                                         deferred.reject(preloadedError);
                                     });
                                 }).catch(function (preloadError) {
+                                    self.scope.loading = false;
                                     deferred.reject(preloadError);
                                 });
                             }).catch(function (preloadingError) {
+                                self.scope.loading = false;
                                 deferred.reject(preloadingError);
                             });
                         }
                         else {
+                            self.scope.loading = false;
                             deferred.resolve();
                         }
 
                     }).catch(function (initError) {
+                        self.scope.loading = false;
                         deferred.reject(initError);
                     });
 

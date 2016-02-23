@@ -45,6 +45,7 @@
 
                     $scope.denied = false;
                     $scope.found = true;
+                    $scope.loading = true;
 
                     $scope.localization = false;
                     $scope.languages = [];
@@ -159,14 +160,18 @@
                         self.authorize().then(function (authorized) {
                             self.getBreadcrumb().then(function (breadcrumb) {
                                 self.setBreadcrumb(breadcrumb).then(function () {
+                                    self.scope.loading = false;
                                     deferred.resolve();
                                 }).catch(function (ex) {
+                                    self.scope.loading = false;
                                     deferred.reject(ex);
                                 });
                             }).catch(function (ex) {
+                                self.scope.loading = false;
                                 deferred.reject(ex);
                             });
                         }).catch(function (ex) {
+                            self.scope.loading = false;
                             deferred.reject(ex);
                         });
                     };
@@ -178,10 +183,12 @@
                         self.scope.$parent.init().then(function () {
                             proceed();
                         }).catch(function (ex) {
+                            self.scope.loading = false;
                             deferred.reject(ex);
                         });
                     }
                     else {
+                        self.scope.loading = false;
                         deferred.resolve();
                     }
 

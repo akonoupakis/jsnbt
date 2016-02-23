@@ -1,4 +1,4 @@
-﻿<div ng-if="found && !denied" ng-class="{ 'container': !modal, 'container-fluid': modal }" class="affix-area form-buttons-container">
+﻿<div ng-if="found && !denied" ng-show="!loading" ng-class="{ 'container': !modal, 'container-fluid': modal }" class="affix-area form-buttons-container">
     <div class="row">
         <div ng-class="{ 'col-sm-10': !modal, 'col-sm-12': modal }">
             <div class="affix-container">
@@ -14,7 +14,7 @@
     </div>
 </div>
 
-<div ng-if="found && !denied" ng-class="{ 'container': !modal, 'container-fluid': modal }">
+<div ng-if="found && !denied" ng-show="!loading" ng-class="{ 'container': !modal, 'container-fluid': modal }">
 
     <section class="scrollspy-container" ng-class="{ 'col-sm-10': !modal, 'col-sm-12': modal }" data-scrollspy>
 
@@ -108,7 +108,7 @@
                 <ctrl-select class="col-sm-12" ng-model="model.template" ng-disabled="!entity.properties.template" ng-required="true" ng-options="templates[model.entity]" ng-default="true" ng-value-field="id" ng-name-field="name" ng-label="template"></ctrl-select>
             </div>
 
-            <hr ng-show="entity.properties.template" />            
+            <hr ng-show="entity.properties.template" />
 
             <div ng-include="template"></div>
             <hr ng-show="template" />
@@ -166,5 +166,5 @@
 
 </div>
 
-<div ng-if="!found && !denied" class="centered" ng-include="'tmpl/core/base/partials/404.html'"></div>
-<div ng-if="denied" class="centered" ng-include="'tmpl/core/base/partials/denied.html'"></div>
+<div ng-if="!found && !denied" ng-show="!loading" class="centered" ng-include="'tmpl/core/base/partials/404.html'"></div>
+<div ng-if="denied" ng-show="!loading" class="centered" ng-include="'tmpl/core/base/partials/denied.html'"></div>

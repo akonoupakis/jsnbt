@@ -1,4 +1,4 @@
-﻿<div ng-if="found && !denied" ng-class="{ 'container': !modal, 'container-fluid': modal }" class="affix-area form-buttons-container">
+﻿<div ng-if="found && !denied" ng-show="!loading" ng-class="{ 'container': !modal, 'container-fluid': modal }" class="affix-area form-buttons-container">
     <div class="row ">
         <div ng-class="{ 'col-sm-10': !modal, 'col-sm-12': modal }">
             <div class="affix-container">
@@ -14,13 +14,13 @@
     </div>
 </div>
 
-<div ng-if="found && !denied" ng-class="{ 'container': !modal, 'container-fluid': modal }">
+<div ng-if="found && !denied" ng-show="!loading" ng-class="{ 'container': !modal, 'container-fluid': modal }">
 
     <section class="scrollspy-container" ng-class="{ 'col-sm-10': !modal, 'col-sm-12': modal }" data-scrollspy>
 
         <ctrl-breadcrumb ng-show="breadcrumb" ng-linkable-offset="modal.offset" ng-model="current.breadcrumb.items" ng-title="current.breadcrumb.title"></ctrl-breadcrumb>
 
-        <div ng-include="route.current.template || route.current.baseTemplate"></div>        
+        <div ng-include="route.current.template || route.current.baseTemplate"></div>
 
     </section>
 
@@ -30,5 +30,5 @@
 
 </div>
 
-<div ng-if="!found && !denied" class="centered" ng-include="'tmpl/core/base/partials/404.html'"></div>
-<div ng-if="denied" class="centered" ng-include="'tmpl/core/base/partials/denied.html'"></div>
+<div ng-if="!found && !denied" ng-show="!loading" class="centered" ng-include="'tmpl/core/base/partials/404.html'"></div>
+<div ng-if="denied" ng-show="!loading" class="centered" ng-include="'tmpl/core/base/partials/denied.html'"></div>
