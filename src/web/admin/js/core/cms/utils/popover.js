@@ -26,6 +26,10 @@
                         element.webuiPopover('hide');
                     };
                 });
+
+                scope.$on('$destroy', function () {
+                    element.webuiPopover('destroy');
+                });
             },
             template: '<div></div>'
         }

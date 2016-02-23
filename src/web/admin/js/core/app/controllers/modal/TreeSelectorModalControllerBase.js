@@ -9,7 +9,7 @@
 
             controllers.TreeSelectorModalControllerBase = (function (TreeSelectorModalControllerBase) {
 
-                TreeSelectorModalControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                TreeSelectorModalControllerBase = function ($scope, $rootScope, $router, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
                     var domain = $scope.domain;
 
                     controllers.TreeControllerBase.apply(this, $rootScope.getBaseArguments($scope));
@@ -26,7 +26,7 @@
                         $scope.mode = 'single';
 
                     this.enqueue('set', '', function (data) {
-                        self.setSelected($scope.selected);
+                        self.setSelected($scope.modal.selected);
                     });
 
                     $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
@@ -52,11 +52,11 @@
 
                 TreeSelectorModalControllerBase.prototype.setSelected = function (selected) {
                     if (selected)
-                        this.ctor.TreeNodeService.setSelected(this.scope.model, this.scope.mode === 'multiple' ? selected : [selected]);
+                        this.ctor.TreeNodeService.setSelected(this.scope.model, this.scope.modal.mode === 'multiple' ? selected : [selected]);
                 };
 
                 TreeSelectorModalControllerBase.prototype.getSelected = function () {
-                    var selected = this.scope.mode === 'single' ? _.first(this.ctor.TreeNodeService.getSelected(this.scope.model)) : this.ctor.TreeNodeService.getSelected(this.scope.model);
+                    var selected = this.scope.modal.mode === 'single' ? _.first(this.ctor.TreeNodeService.getSelected(this.scope.model)) : this.ctor.TreeNodeService.getSelected(this.scope.model);
                     return selected;
                 };
 
@@ -72,21 +72,7 @@
                 TreeSelectorModalControllerBase.prototype.submitted = function (selected) {
 
                 };
-
-                TreeSelectorModalControllerBase.prototype.init = function () {
-                    var deferred = this.ctor.$q.defer();
-
-                    this.ctor.$rootScope.controller = this;
-
-                    controllers.TreeControllerBase.prototype.init.apply(this, arguments).then(function () {
-                        deferred.resolve();
-                    }).catch(function (ex) {
-                        deferred.reject(ex);
-                    });
-
-                    return deferred.promise;
-                };
-
+                
                 return TreeSelectorModalControllerBase;
 
             })(controllers.TreeSelectorModalControllerBase || {});

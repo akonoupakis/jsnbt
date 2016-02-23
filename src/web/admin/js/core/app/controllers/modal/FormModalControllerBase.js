@@ -9,7 +9,7 @@
 
             controllers.FormModalControllerBase = (function (FormModalControllerBase) {
 
-                FormModalControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                FormModalControllerBase = function ($scope, $rootScope, $router, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
                     controllers.FormControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
                     var self = this;
@@ -30,9 +30,9 @@
                                     if (validationResults) {
                                         var model = self.get();
                                         self.run('publishing', [model]).then(function () {
-                                            self.push(model).then(function (pushed) {
+                                            self.publish(model).then(function (pushed) {
                                                 if (pushed) {
-                                                    $scope.$emit(MODAL_EVENTS.valueSubmitted, model);
+                                                    $scope.$emit(MODAL_EVENTS.valueSubmitted, pushed);
                                                 }
                                                 else {
                                                     self.failed(new Error('save unsuccessful'));
@@ -65,21 +65,7 @@
 
                     return deferred.promise;
                 };
-
-                FormModalControllerBase.prototype.init = function () {
-                    var deferred = this.ctor.$q.defer();
-
-                    this.ctor.$rootScope.controller = this;
-
-                    controllers.FormControllerBase.prototype.init.apply(this, arguments).then(function () {
-                        deferred.resolve();
-                    }).catch(function (ex) {
-                        deferred.reject(ex);
-                    });
-
-                    return deferred.promise;
-                };
-
+                
                 return FormModalControllerBase;
 
             })(controllers.FormModalControllerBase || {});

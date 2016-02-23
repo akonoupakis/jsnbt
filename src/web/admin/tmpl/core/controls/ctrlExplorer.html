@@ -2,11 +2,14 @@
     <div class="breadcrumb">
         <span class="guide">path: </span>
         <ul>
-            <li ng-repeat="item in breadcrumb"><a href="javascript:;" ng-click="open(item.url)" ng-class="{ active: item.active }">{{item.name}}</a></li>
+            <li ng-repeat="item in breadcrumb">
+                <a ng-if="!item.active" href=" javascript:;" ng-click="open(item.url)">{{item.name}}</a>
+                <span ng-if="item.active" data-url="{{item.url}}" class="active">{{item.name}}</span>
+            </li>
         </ul>
     </div>
 
-    <div class="row explorer-controls" ng-show="!ngSelectable">
+    <div class="row explorer-controls">
         <div class="col-sm-6">
             <label class="control-label">new folder</label>
             <div class="input-group">
@@ -36,7 +39,7 @@
                 <div class="name">{{item.name}}</div>
                 <div class="size" ng-show="item.type === 'file'">{{item.size}} kb</div>
             </td>
-            <td class="buttons" ng-show="!ngSelectable">
+            <td class="buttons">
                 <button title="edit" class="btn btn-default btn-sm glyphicon glyphicon-edit" ng-click="edit(item)"></button>
                 <button title="delete" class="btn btn-default btn-sm glyphicon glyphicon-remove" ng-click="delete(item)"></button>
             </td>

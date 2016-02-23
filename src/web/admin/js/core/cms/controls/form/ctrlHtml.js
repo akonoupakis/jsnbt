@@ -21,6 +21,7 @@
 
                 $timeout(function () {
                     var $editor = $('#' + editorId);
+                    self.editor = $editor;
 
                     var updating = false;
 
@@ -99,6 +100,12 @@
                 });
 
                 return deferred.promise;
+            };
+
+            HtmlControl.prototype.destroy = function () {
+                jsnbt.controls.ControlBase.prototype.destroy.apply(this, arguments);
+
+                this.editor.redactor('destroy');
             };
 
             return {

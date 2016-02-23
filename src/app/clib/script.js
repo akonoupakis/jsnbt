@@ -150,6 +150,12 @@ var Script = function (app) {
             file += '\t \'use strict\';\n';
             file += '\t \n';
 
+            file += '\t jsnbt.on = PROXY.on;;\n';
+            file += '\t jsnbt.once = PROXY.once;;\n';
+            file += '\t jsnbt.off = PROXY.off;;\n';
+
+            file += '\t \n';
+
             Object.keys(jsnbtObj).forEach(function (key) {
                 file += '\t jsnbt["' + key + '"] = ' + JSON.stringify(jsnbtObj[key], null, '\t') + '; \n\n';
             });

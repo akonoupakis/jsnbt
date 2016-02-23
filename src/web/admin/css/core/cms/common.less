@@ -17,6 +17,15 @@ body.overflowed {
     overflow: hidden;
 }
 
+body.app-loading {
+    visibility: hidden;
+    background: transparent url(../../admin/img/core/loading.gif) center center no-repeat;
+}
+
+.centered {
+    text-align: center;
+}
+
 .login-dialog {
     position: fixed;
     background-color: #FFFFFF;
@@ -109,7 +118,7 @@ body.overflowed {
 }
 
 
-.container-fluid.affix-area {
+.container-fluid.affix-area, .container.affix-area {
     position: fixed;
     z-index: 3;
     top: 0;
@@ -117,13 +126,18 @@ body.overflowed {
     right: 0;
 }
 .form-buttons-container .affix-container {
-    float: right;
     padding: 10px;
     background-color: #FFFFFF;
     position: absolute;
-    right: 0;
+    right: 30px;
+    float:right;
     margin-top:220px;
 }
+
+.modal .form-buttons-container .affix-container {
+    margin-top:115px;
+}
+
 .form-buttons-container .buttons {
     text-align: right;
 }
@@ -147,3 +161,23 @@ body.overflowed {
 .row .validation-error.centered {
     text-align: center;
 }
+
+.large-modal-container .modal-dialog {
+    width: 80vw !important;
+}
+
+.large-modal-container .modal-body {
+    height: 65vh; 
+    overflow: auto;
+    
+    padding-left: 0;
+    padding-right: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.large-modal-container .modal-body > .bootbox-body > .page {
+    padding: 0;
+    top: auto;
+}
+

@@ -7,7 +7,7 @@
                 <input type="text" class="form-control tpicker" ng-model="modelT" ng-show="ngTime" ng-disabled="!ngTime" />
                 <div class="input-group-btn">
                     <button class="btn btn-default glyphicon glyphicon-th" type="button" ng-click="select()" ng-disabled="ngDisabled"></button>
-                    <button class="btn btn-default glyphicon glyphicon-remove" type="button" ng-click="clear()" ng-show="!ngRequired" ng-disabled="ngDisabled || !model"></button>
+                    <button class="btn btn-default glyphicon glyphicon-remove" type="button" ng-click="clear()" ng-show="!ngRequired" ng-disabled="ngDisabled || !modelD || !modelT"></button>
                 </div>
             </div>
             <span ng-show="!ngDisabled && !valid" class="glyphicon glyphicon-ban-circle form-control-feedback" tooltip="value is required"></span>

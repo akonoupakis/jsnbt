@@ -1,36 +1,49 @@
 {
 "dependencies": {
+	"gmaps": "0.4.21",
+        
     "jquery": "2.1.3",
-    "angular": "1.3.15",
-    "angular-route": "1.3.15",
-    "angular-animate": "1.3.15",
-	"angular-motion": "0.3.4",
-    "angular-sanitize": "1.3.15",
-    "underscore": "1.7.0",
+	"underscore": "1.7.0",
     "underscore.string": "2.3.3",
+	"angular": "1.3.15",
     "bootstrap": "3.3.5",
-    "bootstrap-switch": "3.0.2",
-    "angular-bootstrap": "0.11.2",
-    "angular-strap": "2.1.6",
-    "jquery.scrollTo": "1.4.14",
-    "jquery-ui": "1.11.4",
-    "angular-ui-sortable": "0.13.3",
-    "ngInfiniteScroll": "1.1.2",
-    "ng-flow": "2.6.1",
-    "cropper": "0.7.9",
-	"imperavi-redactor": "10.0.9",
-	"angular-redactor": "1.1.5",
-	"bootstrap-datepicker": "1.4.0",
-	"bootstrap-timepicker": "0.5.2",
 	"moment": "2.10.6",
 	"moment-timezone": "0.4.0",
-	"gmaps": "0.4.21",
-	"ng-tags-input": "3.0.0",
 	"jshashes": "1.0.5",
-	"webui-popover": "1.2.3",
-	"angular-paging": "2.1.0"
+    
+    "jquery-ui": "1.11.4",
+    "jquery.scrollTo": "1.4.14",
+    "cropper": "0.7.9",
+    "imperavi-redactor": "10.0.9",
+    "webui-popover": "1.2.3",
+
+    "bootstrap-switch": "3.0.2",
+    "bootstrap-datepicker": "1.4.0",
+	"bootstrap-timepicker": "0.5.2",
+    
+	"angular-bootstrap": "0.11.2",    
+    "angular-path-router": "1.0.2",
+    "angular-animate": "1.3.15",
+    "angular-sanitize": "1.3.15",
+    "angular-strap": "2.1.6",
+    "angular-ui-sortable": "0.13.3",
+    "angular-redactor": "1.1.5",
+    "angular-paging": "2.1.0",
+    "ngInfiniteScroll": "1.1.2",
+    "ng-flow": "2.6.1",
+	"ng-tags-input": "3.0.0"
   },
   "deploy": {
+	"gmaps": {
+      "files": [
+        {
+          "src": "gmaps-0.4.21/gmaps.js",
+          "dest": [
+            "admin/js/core/lib/gmaps.js"
+          ]
+        }
+      ]
+    },      
     "jquery": {
       "files": [
         {
@@ -41,7 +54,27 @@
         }
       ]
     },
-    "angular": {
+    "underscore": {
+      "files": [
+        {
+          "src": "underscore-1.7.0/underscore.js",
+          "dest": [
+            "admin/js/core/lib/underscore.js"
+          ]
+        }
+      ]
+    },
+    "underscore.string": {
+      "files": [
+        {
+          "src": "underscore.string-2.3.3/lib/underscore.string.js",
+          "dest": [
+            "admin/js/core/lib/underscore.string.js"
+          ]
+        }
+      ]
+    },
+	"angular": {
       "files": [
         {
           "src": "angular-1.3.15/angular.js",
@@ -51,56 +84,55 @@
         }
       ]
     },
-    "angular-route": {
+	"bootstrap": {
       "files": [
         {
-          "src": "angular-route-1.3.15/angular-route.js",
+          "src": "bootstrap-3.3.5/dist/js/bootstrap.js",
           "dest": [
-            "admin/js/core/lib/angular/angular.route.js"
+            "admin/js/core/lib/bootstrap.js"
+          ]
+        }
+      ],
+      "folders": [
+		{
+          "src": "bootstrap-3.3.5/dist/fonts",
+          "dest": [
+            "admin/fonts"
           ]
         }
       ]
     },
-    "angular-animate": {
+	"moment": {
       "files": [
         {
-          "src": "angular-animate-1.3.15/angular-animate.js",
+          "src": "moment-2.10.6/min/moment.min.js",
           "dest": [
-            "admin/js/core/lib/angular/angular.animate.js"
+            "admin/js/core/lib/moment.js"
           ]
         }
       ]
     },
-    "angular-sanitize": {
+	"moment-timezone": {
       "files": [
         {
-          "src": "angular-sanitize-1.3.15/angular-sanitize.js",
+          "src": "moment-timezone-0.4.0/builds/moment-timezone-with-data.js",
           "dest": [
-            "admin/js/core/lib/angular/angular.sanitize.js"
+            "admin/js/core/lib/moment-timezone.js"
           ]
         }
       ]
-    },
-    "angular-strap": {
-      "files": [
+    },    
+    "jshashes": {
+	   "files": [
         {
-          "src": "angular-strap-2.1.6/dist/angular-strap.js",
+          "src": "jshashes-1.0.5/hashes.js",
           "dest": [
-            "admin/js/core/lib/angular/angular.strap.js"
+            "admin/js/core/lib/jshashes.js"
           ]
         }
       ]
-    },
-    "angular-ui-sortable": {
-      "files": [
-        {
-          "src": "angular-ui-sortable-0.13.3/sortable.js",
-          "dest": [
-            "admin/js/core/lib/angular/angular-ui-sortable.js"
-          ]
-        }
-      ]
-    },
+	},
+        
     "jquery-ui": {
       "files": [
         {
@@ -121,70 +153,39 @@
         }
       ]
     },
-    "underscore": {
+    "cropper": {
       "files": [
         {
-          "src": "underscore-1.7.0/underscore.js",
+          "src": "cropper-0.7.9/dist/cropper.js",
           "dest": [
-            "admin/js/core/lib/underscore/underscore.js"
+            "admin/js/core/lib/jquery/jquery.cropper.js"
+          ]
+        }
+      ]
+    },    
+	"imperavi-redactor": {
+      "files": [
+        {
+          "src": "imperavi-redactor-10.0.9/redactor/redactor.js",
+          "dest": [
+            "admin/js/core/lib/jquery/jquery.redactor.js"
           ]
         }
       ]
     },
-    "underscore.string": {
-      "files": [
+	"webui-popover": {
+	   "files": [
         {
-          "src": "underscore.string-2.3.3/lib/underscore.string.js",
+          "src": "webui-popover-1.2.3/dist/jquery.webui-popover.js",
           "dest": [
-            "admin/js/core/lib/underscore/underscore.string.js"
+            "admin/js/core/lib/jquery/jquery.webui-popover.js"
           ]
         }
       ]
-    },
-    "bootstrap": {
-      "files": [
-        {
-          "src": "bootstrap-3.3.5/dist/css/bootstrap.css",
-          "dest": [
-            "admin/css/core/lib/bootstrap/css/bootstrap.css"
-          ]
-        },
-        {
-          "src": "bootstrap-3.3.5/dist/css/bootstrap.css.map",
-          "dest": [
-            "admin/css/core/lib/bootstrap/css/bootstrap.css.map"
-          ]
-        },
-        {
-          "src": "bootstrap-3.3.5/dist/css/bootstrap.min.css",
-          "dest": [
-            "admin/css/core/lib/bootstrap/css/bootstrap.min.css"
-          ]
-        },
-        {
-          "src": "bootstrap-3.3.5/dist/js/bootstrap.js",
-          "dest": [
-            "admin/js/core/lib/bootstrap/bootstrap.js"
-          ]
-        }
-      ],
-      "folders": [
-		{
-          "src": "bootstrap-3.3.5/dist/fonts",
-          "dest": [
-            "admin/fonts"
-          ]
-        }
-      ]
-    },
+	},
+    
     "bootstrap-switch": {
       "files": [
-        {
-          "src": "bootstrap-switch-3.0.2/dist/css/bootstrap3/bootstrap-switch.css",
-          "dest": [
-            "admin/css/core/lib/bootstrap/css/bootstrap.switch.css"
-          ]
-        },
         {
           "src": "bootstrap-switch-3.0.2/dist/js/bootstrap-switch.js",
           "dest": [
@@ -193,96 +194,12 @@
         }
       ]
     },
-    "angular-bootstrap": {
-      "files": [
-        {
-          "src": "angular-bootstrap-0.11.2/ui-bootstrap.js",
-          "dest": [
-            "admin/js/core/lib/angular/angular-bootstrap.js"
-          ]
-        },
-		{
-          "src": "angular-bootstrap-0.11.2/ui-bootstrap-tpls.js",
-          "dest": [
-            "admin/js/core/lib/angular/angular-bootstrap-tpls.js"
-          ]
-        }
-      ]
-    },
-    "ngInfiniteScroll": {
-      "files": [
-        {
-          "src": "ngInfiniteScroll-1.1.2/build/ng-infinite-scroll.js",
-          "dest": [
-            "admin/js/core/lib/ngInfiniteScroll/ngInfiniteScroll.js"
-          ]
-        }
-      ]
-    },
-    "ng-flow": {
-      "files": [
-        {
-          "src": "ng-flow-2.6.1/dist/ng-flow-standalone.js",
-          "dest": [
-            "admin/js/core/lib/ng-flow/ng-flow.js"
-          ]
-        }
-      ]
-    },
-	"imperavi-redactor": {
-      "files": [
-        {
-          "src": "imperavi-redactor-10.0.9/redactor/redactor.js",
-          "dest": [
-            "admin/js/core/lib/redactor/a-redactor.js"
-          ]
-        }, 
-		{
-          "src": "imperavi-redactor-10.0.9/redactor/redactor.css",
-          "dest": [
-            "admin/css/core/lib/redactor/redactor.css"
-          ]
-        }
-      ]
-    },
-	"angular-redactor": {
-      "files": [
-        {
-          "src": "angular-redactor-1.1.5/angular-redactor.js",
-          "dest": [
-            "admin/js/core/lib/redactor/b-angular-redactor.js"
-          ]
-        }
-      ]
-    },
-    "cropper": {
-      "files": [
-        {
-          "src": "cropper-0.7.9/dist/cropper.js",
-          "dest": [
-            "admin/js/core/lib/cropper/cropper.js"
-          ]
-        },
-        {
-          "src": "cropper-0.7.9/dist/cropper.css",
-          "dest": [
-            "admin/css/core/lib/cropper/cropper.css"
-          ]
-        }
-      ]
-    },
-	"bootstrap-datepicker": {
+    "bootstrap-datepicker": {
 	   "files": [
         {
           "src": "bootstrap-datepicker-1.4.0/dist/js/bootstrap-datepicker.js",
           "dest": [
             "admin/js/core/lib/bootstrap/bootstrap.datepicker.js"
-          ]
-        },
-        {
-          "src": "bootstrap-datepicker-1.4.0/dist/css/bootstrap-datepicker.css",
-          "dest": [
-            "admin/css/core/lib/bootstrap/bootstrap-datepicker.css"
           ]
         }
       ]
@@ -294,87 +211,86 @@
           "dest": [
             "admin/js/core/lib/bootstrap/bootstrap.timepicker.js"
           ]
-        },
-        {
-          "src": "bootstrap-timepicker-0.5.2/css/bootstrap-timepicker.css",
-          "dest": [
-            "admin/css/core/lib/bootstrap/bootstrap-timepicker.css"
-          ]
         }
       ]
 	},
-	"moment": {
+
+    "angular-bootstrap": {
       "files": [
         {
-          "src": "moment-2.10.6/min/moment.min.js",
+          "src": "angular-bootstrap-0.11.2/ui-bootstrap.js",
           "dest": [
-            "admin/js/core/lib/moment.js"
-          ]
-        }
-      ]
-    },
-	"moment-timezone": {
-      "files": [
-        {
-          "src": "moment-timezone-0.4.0/builds/moment-timezone-with-data.js",
-          "dest": [
-            "admin/js/core/lib/moment-timezone.js"
-          ]
-        }
-      ]
-    },
-	"gmaps": {
-      "files": [
-        {
-          "src": "gmaps-0.4.21/gmaps.js",
-          "dest": [
-            "admin/js/core/lib/gmaps.js"
-          ]
-        }
-      ]
-    },
-	"ng-tags-input": {
-      "files": [
-        {
-          "src": "ng-tags-input-3.0.0/ng-tags-input.js",
-          "dest": [
-            "admin/js/core/lib/ng-tags-input.js"
+            "admin/js/core/lib/angular/ui-bootstrap.js"
           ]
         },
 		{
-          "src": "ng-tags-input-3.0.0/ng-tags-input.css",
+          "src": "angular-bootstrap-0.11.2/ui-bootstrap-tpls.js",
           "dest": [
-            "admin/css/core/lib/ng-tags-input.css"
+            "admin/js/core/lib/angular/ui-bootstrap-tpls.js"
+          ]
+        }
+      ]
+    },            
+    "angular-path-router": {
+      "files": [
+        {
+          "src": "angular-path-router-1.0.2/ng-path-router.js",
+          "dest": [
+            "admin/js/core/lib/angular/ng-path-router.js"
           ]
         }
       ]
     },
-	"jshashes": {
-	   "files": [
+    "angular-animate": {
+      "files": [
         {
-          "src": "jshashes-1.0.5/hashes.js",
+          "src": "angular-animate-1.3.15/angular-animate.js",
           "dest": [
-            "admin/js/core/lib/jshashes.js"
+            "admin/js/core/lib/angular/angular-animate.js"
           ]
         }
       ]
-	},
-	"webui-popover": {
-	   "files": [
+    },
+    "angular-sanitize": {
+      "files": [
         {
-          "src": "webui-popover-1.2.3/dist/jquery.webui-popover.js",
+          "src": "angular-sanitize-1.3.15/angular-sanitize.js",
           "dest": [
-            "admin/js/core/lib/jquery.webui-popover.js"
-          ]
-        },
-		{
-          "src": "webui-popover-1.2.3/dist/jquery.webui-popover.css",
-          "dest": [
-            "admin/css/core/lib/jquery.webui-popover.css"
+            "admin/js/core/lib/angular/angular-sanitize.js"
           ]
         }
       ]
-	},
+    },
+    "angular-strap": {
+      "files": [
+        {
+          "src": "angular-strap-2.1.6/dist/angular-strap.js",
+          "dest": [
+            "admin/js/core/lib/angular/angular-strap.js"
+          ]
+        }
+      ]
+    },
+    "angular-ui-sortable": {
+      "files": [
+        {
+          "src": "angular-ui-sortable-0.13.3/sortable.js",
+          "dest": [
+            "admin/js/core/lib/angular/angular-ui-sortable.js"
+          ]
+        }
+      ]
+    },
+	"angular-redactor": {
+      "files": [
+        {
+          "src": "angular-redactor-1.1.5/angular-redactor.js",
+          "dest": [
+            "admin/js/core/lib/angular/angular-redactor.js"
+          ]
+        }
+      ]
+    },
 	"angular-paging": {
 	   "files": [
         {
@@ -384,6 +300,36 @@
           ]
         }
       ]
-	}
+	},
+    "ngInfiniteScroll": {
+      "files": [
+        {
+          "src": "ngInfiniteScroll-1.1.2/build/ng-infinite-scroll.js",
+          "dest": [
+            "admin/js/core/lib/angular/ng-infinite-scroll.js"
+          ]
+        }
+      ]
+    },
+    "ng-flow": {
+      "files": [
+        {
+          "src": "ng-flow-2.6.1/dist/ng-flow-standalone.js",
+          "dest": [
+            "admin/js/core/lib/angular/ng-flow.js"
+          ]
+        }
+      ]
+    },
+	"ng-tags-input": {
+      "files": [
+        {
+          "src": "ng-tags-input-3.0.0/ng-tags-input.js",
+          "dest": [
+            "admin/js/core/lib/angular/ng-tags-input.js"
+          ]
+        }
+      ]
+    }
   }
 }

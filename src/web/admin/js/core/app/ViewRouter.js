@@ -2,50 +2,38 @@
     "use strict";
     
     (function (jsnbt) {
-
+   
         jsnbt.ViewRouter = (function (ViewRouter) {
-
-            var defaultOptions = {
-                controller: undefined,
-                domain: undefined,
-                section: undefined,
-                scope: {
-                    domain: undefined,
-                    section: undefined,
-                    prefix: ''
-                }
-            };
 
             var createRoutingMethods = function (domain) {
 
-                var routingOptions = {};
-                $.extend(true, routingOptions, defaultOptions, {
+                var routingOptions = {
                     domain: domain,
+                    section: undefined,
+                    controller: undefined,
+                    baseTemplate: undefined,
+                    template: undefined,
                     scope: {
-                        domain: domain
-                    }
-                });
+
+                    },
+                    redirectTo: undefined
+                };
 
                 var routingMethods = {};
-
                 routingMethods.controller = function (controller) {
                     routingOptions.controller = controller;
                 };
 
-                routingMethods.baseTemplate = function (baseTmpl) {
-                    routingOptions.templateUrl = baseTmpl;
+                routingMethods.baseTemplate = function (template) {
+                    routingOptions.baseTemplate = template;
                 };
 
-                routingMethods.template = function (tmpl) {
-                    if (!routingOptions.templateUrl)
-                        routingOptions.templateUrl = tmpl;
-                    else
-                        routingOptions.tmpl = tmpl;
+                routingMethods.template = function (template) {
+                    routingOptions.template = template;
                 };
                 
                 routingMethods.section = function (section) {
                     routingOptions.section = section;
-                    routingOptions.scope.section = domain;
                 };
 
                 routingMethods.scope = function (scope) {
@@ -57,29 +45,26 @@
                 };
 
                 routingMethods.get = function () {
-                    if (routingOptions.tmpl)
-                        routingOptions.scope.template = routingOptions.tmpl;
-
                     return routingOptions;
                 };
 
                 return routingMethods;
 
             };
-
+            
             ViewRouter = function (domain, provider) {
                 this.domain = domain;
                 this.provider = provider;
-            }
+            };
 
             ViewRouter.prototype.when = function (path, fn) {
-                
+
                 var routingMethods = createRoutingMethods(this.domain);
                 if (typeof (fn) === 'function')
                     fn(routingMethods);
 
-                var options = routingMethods.get();
-                this.provider.when(path, options);
+                var route = routingMethods.get();
+                this.provider.when(path, route);
             };
 
             ViewRouter.prototype.otherwise = function (fn) {
@@ -88,14 +73,14 @@
                 if (typeof (fn) === 'function')
                     fn(routingMethods);
 
-                var options = routingMethods.get();
-                this.provider.otherwise(options);
+                var route = routingMethods.get();
+                this.provider.otherwise(route);
             };
 
             return ViewRouter;
 
-        })(jsnbt.ViewRouter || {});
-        
+        })(jsnbt.ViewRouter);
+
         return jsnbt;
 
     })(jsnbt || {});

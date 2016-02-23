@@ -9,7 +9,7 @@
 
             controllers.ControllerBase = (function (ControllerBase) {
 
-                ControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                ControllerBase = function ($scope, $rootScope, $router, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
 
                     var logger = $logger.create('ControllerBase');
 
@@ -21,8 +21,7 @@
 
                     this.ctor = {
                         $rootScope: $rootScope,
-                        $route: $route,
-                        $routeParams: $routeParams,
+                        $router: $router,
                         $location: $location,
                         $logger: $logger,
                         $q: $q,
@@ -44,10 +43,10 @@
 
                     this.queue = {};
 
-                    if (_.isObject($route.current) && _.isObject($route.current.$$route) && _.isObject($route.current.$$route.scope))
-                        for (var scopeProperty in $route.current.$$route.scope) 
-                            $scope[scopeProperty] = $route.current.$$route.scope[scopeProperty];
-                    
+                    $scope.denied = false;
+                    $scope.found = true;
+                    $scope.loading = true;
+
                     $scope.localization = false;
                     $scope.languages = [];
 
@@ -57,23 +56,11 @@
                         $scope.current.breadcrumb.items.pop();
                         var lastItem = _.last($scope.current.breadcrumb.items);
                         if (lastItem) {
-                            $location.previous(lastItem.url);
+                            $scope.route.previous(lastItem.url);
                         }
                         else {
                             logger.warn('previous breadcrumb item not found. implement the back() function to override');
                         }
-                    };
-
-                    $scope.goto = function (path) {
-                        $location.goto(path);
-                    };
-
-                    $scope.previous = function (path) {
-                        $location.previous(path);
-                    };
-
-                    $scope.next = function (path) {
-                        $location.next(path);
                     };
 
                     $scope.$on(CONTROL_EVENTS.register, function (sender, control) {
@@ -82,6 +69,7 @@
                         self.controls.push(control);
                     });
                     
+                    $scope.$on('destroy', this.destroy);
                 };
 
                 ControllerBase.prototype.enqueue = function (queue, key, fn) {
@@ -101,10 +89,32 @@
                     }
                 };
 
+                ControllerBase.prototype.authorize = function () {
+                    var deferred = this.ctor.$q.defer();
+
+                    if (this.scope.current.user) {
+                        var currentSection = this.scope.route.current && this.scope.route.current.section;
+                        if (currentSection) {
+                            var authorized = this.ctor.AuthService.isAuthorized(this.scope.current.user, currentSection);
+                            this.scope.denied = !authorized;
+                            deferred.resolve(authorized);
+                        }
+                        else {
+                            deferred.resolve(true);
+                        }
+                    }
+                    else {
+                        this.scope.denied = true;
+                        deferred.resolve(false);
+                    }
+
+                    return deferred.promise;
+                };
+
                 ControllerBase.prototype.getBreadcrumb = function () {
                     var deferred = this.ctor.$q.defer();
 
-                    var breadcrumb = this.ctor.LocationService.getBreadcrumb();
+                    var breadcrumb = this.ctor.LocationService.getBreadcrumb(this.scope.route && this.scope.route.current);
 
                     deferred.resolve(breadcrumb);
 
@@ -115,7 +125,7 @@
 
                     var deferred = this.ctor.$q.defer();
 
-                    if (this.scope.current)
+                    if (this.scope.current && this.scope.route)
                         this.scope.current.setBreadcrumb(breadcrumb);
 
                     deferred.resolve();
@@ -147,31 +157,46 @@
                     var self = this;
 
                     var proceed = function () {
-                        self.getBreadcrumb().then(function (breadcrumb) {
-                            self.setBreadcrumb(breadcrumb).then(function () {
-                                deferred.resolve();
+                        self.authorize().then(function (authorized) {
+                            self.getBreadcrumb().then(function (breadcrumb) {
+                                self.setBreadcrumb(breadcrumb).then(function () {
+                                    self.scope.loading = false;
+                                    deferred.resolve();
+                                }).catch(function (ex) {
+                                    self.scope.loading = false;
+                                    deferred.reject(ex);
+                                });
                             }).catch(function (ex) {
+                                self.scope.loading = false;
                                 deferred.reject(ex);
                             });
+                        }).catch(function (ex) {
+                            self.scope.loading = false;
+                            deferred.reject(ex);
                         });
                     };
 
                     self.scope.languages = self.scope.application.languages;
               
                     if (self.scope.$parent && self.scope.root && typeof (self.scope.$parent.init) === 'function') {
-                        self.ctor.$rootScope.controller = self;
 
                         self.scope.$parent.init().then(function () {
                             proceed();
                         }).catch(function (ex) {
+                            self.scope.loading = false;
                             deferred.reject(ex);
                         });
                     }
                     else {
+                        self.scope.loading = false;
                         deferred.resolve();
                     }
 
                     return deferred.promise;
+                };
+
+                ControllerBase.prototype.destroy = function () {
+
                 };
 
                 return ControllerBase;

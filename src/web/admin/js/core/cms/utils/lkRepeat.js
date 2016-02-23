@@ -44,6 +44,10 @@
                                     block.el = clone;
                                     block.scope = childScope;
                                     elements.push(block);
+
+                                    $scope.$on('$destroy', function () {
+                                        childScope.$destroy();
+                                    });
                                 });
 
                             };

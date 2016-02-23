@@ -20,6 +20,10 @@
                     element.bind('error', function () {
                         element.attr('src', attrs.errSrc);
                     });
+
+                    scope.$on('$destroy', function () {
+                        element.unbind('error');
+                    });
                 }
             }
 

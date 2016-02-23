@@ -9,7 +9,7 @@
 
             controllers.PromptModalControllerBase = (function (PromptModalControllerBase) {
 
-                PromptModalControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                PromptModalControllerBase = function ($scope, $rootScope, $router, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
                     controllers.ControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
                     var self = this;
@@ -25,21 +25,7 @@
                     });
                 };
                 PromptModalControllerBase.prototype = Object.create(controllers.ControllerBase.prototype);
-
-                PromptModalControllerBase.prototype.init = function () {
-                    var deferred = this.ctor.$q.defer();
-
-                    this.ctor.$rootScope.controller = this;
-
-                    controllers.ControllerBase.prototype.init.apply(this, arguments).then(function () {
-                        deferred.resolve();
-                    }).catch(function (ex) {
-                        deferred.reject(ex);
-                    });
-
-                    return deferred.promise;
-                };
-
+                
                 return PromptModalControllerBase;
 
             })(controllers.PromptModalControllerBase || {});

@@ -9,7 +9,7 @@
 
             controllers.ConfirmModalControllerBase = (function (ConfirmModalControllerBase) {
 
-                ConfirmModalControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                ConfirmModalControllerBase = function ($scope, $rootScope, $router, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
                     controllers.ControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
                     var self = this;
@@ -25,20 +25,6 @@
                     });
                 };
                 ConfirmModalControllerBase.prototype = Object.create(controllers.ControllerBase.prototype);
-
-                ConfirmModalControllerBase.prototype.init = function () {
-                    var deferred = this.ctor.$q.defer();
-
-                    this.ctor.$rootScope.controller = this;
-
-                    controllers.ControllerBase.prototype.init.apply(this, arguments).then(function () {
-                        deferred.resolve();
-                    }).catch(function (ex) {
-                        deferred.reject(ex);
-                    });
-
-                    return deferred.promise;
-                };
 
                 return ConfirmModalControllerBase;
 

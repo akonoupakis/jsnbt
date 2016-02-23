@@ -20,12 +20,15 @@
                 scope.model = undefined;
                 
                 scope.leftInput = function (e) {
+                    
                     $timeout(function () {
                         if ($(e.currentTarget).val() === '') {
-                            scope.ngModel = undefined;
-                            scope.changed();
+                            if (scope.ngModel !== undefined) {
+                                scope.ngModel = undefined;
+                                scope.changed();
 
-                            self.validate();
+                                self.validate();
+                            }
                         }
                     }, 200);
                 }
@@ -43,6 +46,7 @@
                             storedDate.setFullYear(e.date.getFullYear());
                             var storedTime = storedDate.getTime();
 
+                        
                             if (scope.ngModel !== storedTime) {
                                 scope.ngModel = storedTime;
                                 scope.changed();
@@ -51,10 +55,12 @@
                             }
                         }
                         else {
-                            scope.ngModel = undefined;
-                            scope.changed();
+                            if (scope.ngModel !== undefined) {
+                                scope.ngModel = undefined;
+                                scope.changed();
 
-                            self.validate();
+                                self.validate();
+                            }
                         }
                     });
 
@@ -81,10 +87,12 @@
                                 }
                             }
                             else {
-                                scope.ngModel = undefined;
-                                scope.changed();
+                                if (scope.ngModel !== undefined) {
+                                    scope.ngModel = undefined;
+                                    scope.changed();
 
-                                self.validate();
+                                    self.validate();
+                                }
                             }
                         });
                     }
@@ -102,7 +110,7 @@
                     $('.input-group > input.dpicker', element).datepicker('clearDates');
 
                     if (scope.ngTime) {
-                        $('.input-group > input.tpicker', element).timepicker('clearDates');
+                        $('.input-group > input.tpicker', element).timepicker('clear');
                     }
                 };
 
@@ -156,6 +164,15 @@
 
                 return deferred.promise;
             };
+
+            DatePickerControl.prototype.destroy = function () {
+                jsnbt.controls.ControlBase.prototype.destroy.apply(this, arguments);
+
+                this.element.find('.input-group > input.dpicker').datepicker('destroy');
+                if (scope.ngTime) 
+                    this.element.find('.input-group > input.tpicker').timepicker('destroy');
+            };
+
 
             return {
                 restrict: 'E',

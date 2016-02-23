@@ -3,13 +3,13 @@
 (function () {
     "use strict";
     
-    var LanguagesController = function ($scope, $rootScope, $location, $q, $logger, $data, PagedDataService, ModalService, AuthService) {
+    var LanguagesController = function ($scope, $rootScope, $q, $logger, $data, PagedDataService, ModalService, AuthService) {
         jsnbt.controllers.ListControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var self = this;
         
         var logger = $logger.create('LanguagesController');
-
+        
         $scope.available = false;
 
         this.enqueue('loaded', '', function (data) {
@@ -27,7 +27,7 @@
         };
 
         $scope.create = function () {
-            $location.next('/content/languages/new');
+            $scope.route.next('/content/languages/new');
         };
 
         $scope.gridFn = {
@@ -37,7 +37,7 @@
             },
 
             edit: function (language) {
-                $location.next('/content/languages/' + language.id);
+                $scope.route.next('/content/languages/' + language.id);
             },
 
             setDefault: function (language) {
@@ -181,5 +181,5 @@
     };
 
     angular.module("jsnbt")
-        .controller('LanguagesController', ['$scope', '$rootScope', '$location', '$q', '$logger', '$data', 'PagedDataService', 'ModalService', 'AuthService', LanguagesController]);
+        .controller('LanguagesController', ['$scope', '$rootScope', '$q', '$logger', '$data', 'PagedDataService', 'ModalService', 'AuthService', LanguagesController]);
 })();

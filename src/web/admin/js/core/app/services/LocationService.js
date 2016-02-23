@@ -4,11 +4,11 @@
     "use strict";
 
     angular.module("jsnbt")
-        .factory('LocationService', ['$location', function ($location) {
+        .factory('LocationService', [function () {
             var LocationService = {};
             
-            LocationService.getBreadcrumb = function () {
-                var paths = _.string.trim($location.$$path, '/').split('/');
+            LocationService.getBreadcrumb = function (route) {
+                var paths = _.string.trim(route ? route.path : '/', '/').split('/');
                 var breadcrumbs = [];
                 var urlPart = '';
 

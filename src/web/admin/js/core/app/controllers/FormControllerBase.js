@@ -9,7 +9,7 @@
 
             controllers.FormControllerBase = (function (FormControllerBase) {
 
-                FormControllerBase = function ($scope, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                FormControllerBase = function ($scope, $rootScope, $router, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
                     controllers.ControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
                     var self = this;
@@ -18,10 +18,8 @@
 
                     $scope.localization = true;
 
-                    this.id = $routeParams.id;
-                    $scope.id = $routeParams.id;
-
-                    $scope.found = undefined;
+                    this.id = $scope.route && $scope.route.current.params.id;
+                    $scope.id = this.id;
 
                     this.new = $scope.id === 'new' || _.str.startsWith($scope.id, 'new-');
                     $scope.model = undefined;
@@ -88,11 +86,11 @@
                                             self.push(item).then(function (pushed) {
                                                 if (pushed) {
                                                     if (self.isNew()) {
-                                                        var currentUrlParts = $location.$$path.split('/');
+                                                        var currentUrlParts = $scope.route.current.path.split('/');
                                                         currentUrlParts.pop();
                                                         var currentUrl = currentUrlParts.join('/');
                                                         var targetUrl = currentUrl + '/' + pushed.id;
-                                                        $location.goto(targetUrl);
+                                                        $sope.route.navigate(targetUrl);
                                                     }
                                                     else {
                                                         self.load().then(function (loaded) {
@@ -343,72 +341,95 @@
                     var self = this;
 
                     controllers.ControllerBase.prototype.init.apply(this, arguments).then(function () {
+                        self.scope.loading = true;
 
-                        if (self.scope.application) {
-                            self.scope.localized = self.scope.application.localization.enabled;
-                            self.scope.language = self.scope.application.localization.enabled ? (self.scope.defaults.language ? self.scope.defaults.language : (_.first(self.scope.application.languages) || {  }).code) : self.scope.defaults.language;
+                        if (!self.scope.denied) {
+
+                            if (self.scope.application) {
+                                self.scope.localized = self.scope.application.localization.enabled;
+                                self.scope.language = self.scope.application.localization.enabled ? (self.scope.defaults.language ? self.scope.defaults.language : (_.first(self.scope.application.languages) || {}).code) : self.scope.defaults.language;
+                            }
+
+                            self.run('preloading').then(function () {
+                                self.preload().then(function () {
+                                    self.run('preloaded').then(function () {
+                                        self.run('loading').then(function () {
+                                            self.load().then(function (response) {
+                                                self.scope.found = true;
+                                                self.run('loaded', [response]).then(function () {
+                                                    self.run('setting', [response]).then(function () {
+                                                        self.set(response).then(function (setted) {
+                                                            self.run('set', [setted]).then(function () {
+                                                                self.run('watch').then(function () {
+                                                                    self.getBreadcrumb().then(function (breadcrumb) {
+                                                                        self.setBreadcrumb(breadcrumb).then(function () {
+                                                                            self.setSpy(200);
+                                                                            self.scope.loading = false;
+                                                                            deferred.resolve(setted);
+                                                                        }).catch(function (setBreadcrumbError) {
+                                                                            self.scope.loading = false;
+                                                                            deferred.reject(setBreadcrumbError);
+                                                                        });
+                                                                    }).catch(function (getBreadcrumbError) {
+                                                                        self.scope.loading = false;
+                                                                        deferred.reject(getBreadcrumbError);
+                                                                    });
+                                                                }).catch(function (watchError) {
+                                                                    self.scope.loading = false;
+                                                                    deferred.reject(watchError);
+                                                                });
+                                                            }).catch(function (setError) {
+                                                                self.scope.loading = false;
+                                                                deferred.reject(setError);
+                                                            });
+                                                        }).catch(function (settedError) {
+                                                            self.scope.loading = false;
+                                                            deferred.reject(settedError);
+                                                        });
+                                                    }).catch(function (settingError) {
+                                                        self.scope.loading = false;
+                                                        deferred.reject(settingError);
+                                                    });
+                                                }).catch(function (loadedError) {
+                                                    self.scope.loading = false;
+                                                    deferred.reject(loadedError);
+                                                });
+                                            }).catch(function (loadError) {
+                                                var parsedLoadError = _.isString(loadError) ? JSON.parse(loadError) : loadError;
+                                                if (_.isObject(parsedLoadError) && parsedLoadError.statusCode === 404) {
+                                                    self.scope.found = false;
+                                                    self.scope.loading = false;
+                                                    deferred.resolve();
+                                                }
+                                                else {
+                                                    self.scope.loading = false;
+                                                    deferred.reject(loadError);
+                                                }
+                                            });
+                                        }).catch(function (loadingError) {
+                                            self.scope.loading = false;
+                                            deferred.reject(loadingError);
+                                        });
+                                    }, function (preloadedError) {
+                                        self.scope.loading = false;
+                                        deferred.reject(preloadedError);
+                                    });
+                                }).catch(function (preloadError) {
+                                    self.scope.loading = false;
+                                    deferred.reject(preloadError);
+                                });
+                            }).catch(function (preloadingError) {
+                                self.scope.loading = false;
+                                deferred.reject(preloadingError);
+                            });
+                        }
+                        else {
+                            self.scope.loading = false;
+                            deferred.resolve();
                         }
 
-                        self.run('preloading').then(function () {
-                            self.preload().then(function () {
-                                self.run('preloaded').then(function () {
-                                    self.run('loading').then(function () {
-                                        self.load().then(function (response) {
-                                            self.scope.found = true;
-                                            self.run('loaded', [response]).then(function () {
-                                                self.run('setting', [response]).then(function () {
-                                                    self.set(response).then(function (setted) {
-                                                        self.run('set', [setted]).then(function () {
-                                                            self.run('watch').then(function () {
-                                                                self.getBreadcrumb().then(function (breadcrumb) {
-                                                                    self.setBreadcrumb(breadcrumb).then(function () {
-                                                                        self.setSpy(200);
-                                                                        deferred.resolve(setted);
-                                                                    }).catch(function (setBreadcrumbError) {
-                                                                        deferred.reject(setBreadcrumbError);
-                                                                    });
-                                                                }).catch(function (getBreadcrumbError) {
-                                                                    deferred.reject(getBreadcrumbError);
-                                                                });
-                                                            }).catch(function (watchError) {
-                                                                deferred.reject(watchError);
-                                                            });
-                                                        }).catch(function (setError) {
-                                                            deferred.reject(setError);
-                                                        });
-                                                    }).catch(function (settedError) {
-                                                        deferred.reject(settedError);
-                                                    });
-                                                }).catch(function (settingError) {
-                                                    deferred.reject(settingError);
-                                                });
-                                            }).catch(function (loadedError) {
-                                                deferred.reject(loadedError);
-                                            });
-                                        }).catch(function (loadError) {
-                                            var parsedLoadError = _.isString(loadError) ? JSON.parse(loadError) : loadError;
-                                            if (_.isObject(parsedLoadError) && parsedLoadError.statusCode === 404) {
-                                                self.scope.found = false;
-                                                deferred.resolve();
-                                            }
-                                            else {
-                                                deferred.reject(loadError);
-                                            }
-                                        });
-                                    }).catch(function (loadingError) {
-                                        deferred.reject(loadingError);
-                                    });
-                                }, function (preloadedError) {
-                                    deferred.reject(preloadedError);
-                                });
-                            }).catch(function (preloadError) {
-                                deferred.reject(preloadError);
-                            });
-                        }).catch(function (preloadingError) {
-                            deferred.reject(preloadingError);
-                        });
-
                     }).catch(function (initError) {
+                        self.scope.loading = false;
                         deferred.reject(initError);
                     });
 
@@ -422,10 +443,12 @@
 
                     controllers.ControllerBase.prototype.getBreadcrumb.apply(this, arguments).then(function (breadcrumb) {
 
-                        if (self.isNew()) {
-                            breadcrumb[breadcrumb.length - 1].name = 'new';
-                        } else {
-                            breadcrumb[breadcrumb.length - 1].name = self.scope.title;
+                        if (self.scope.breadcrumb) {
+                            if (self.isNew()) {
+                                breadcrumb[breadcrumb.length - 1].name = 'new';
+                            } else {
+                                breadcrumb[breadcrumb.length - 1].name = self.scope.title;
+                            }
                         }
 
                         deferred.resolve(breadcrumb);

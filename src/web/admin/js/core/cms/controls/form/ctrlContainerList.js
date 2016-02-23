@@ -92,10 +92,11 @@
                 scope.edit = function (index) {
                     var item = scope.ngModel[index];
 
-                    ModalService.select(function (x) {
+                    ModalService.open(function (x) {
                         x.title('select the container item you want');
                         x.controller('ContainerSelectorController');
                         x.template('tmpl/core/modals/containerSelector.html');
+                        x.maximized();
                         x.scope({
                             selected: item,
                             mode: 'single'
@@ -111,10 +112,11 @@
                 };
 
                 scope.add = function () {
-                    ModalService.select(function (x) {
+                    ModalService.open(function (x) {
                         x.title('select the container items you want');
                         x.controller('ContainerSelectorController');
                         x.template('tmpl/core/modals/containerSelector.html');
+                        x.maximized();
                         x.scope({
                             mode: 'multiple'
                         });

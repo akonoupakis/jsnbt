@@ -18,19 +18,16 @@
 
                 scope.$watch('ngModel.src', function (newValue) {
                     if (newValue) {
-                        var $image = element.find("img");
+                        var image = element.find("img");
 
                         var cropGen = _.first(scope.ngModel.gen || []);
 
-                        if (element.find('.cropper-container').length > 0)
-                            $image.cropper('destroy');
-
-                        $image.cropper({
+                        image.cropper({
                             aspectRatio: scope.ngWidth / scope.ngHeight,
                             rotatable: false,
                             built: function () {
                                 if (cropGen && cropGen.options) {
-                                    $image.cropper('setData', {
+                                    image.cropper('setData', {
                                         x: cropGen.options.x,
                                         y: cropGen.options.y,
                                         width: cropGen.options.width,
@@ -64,6 +61,14 @@
                 });
             };
             ImageCropperControl.prototype = Object.create(jsnbt.controls.ControlBase.prototype);
+
+            ImageCropperControl.prototype.destroy = function () {
+                jsnbt.controls.ControlBase.prototype.destroy.apply(this, arguments);
+
+                var image = this.element.find("img");
+                image.cropper('destroy');
+
+            };
 
             return {
                 restrict: 'E',

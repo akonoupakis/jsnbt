@@ -62,10 +62,10 @@
                 scope.edit = function (index) {
                     var item = scope.ngModel[index];
 
-                    ModalService.select(function (x) {
+                    ModalService.open(function (x) {
                         x.title('select the file you want');
-                        x.controller('FileSelectorController');
-                        x.template('tmpl/core/modals/FileSelector.html');
+                        x.path('/content/files');
+                        x.maximized();
                         x.scope({
                             selected: item,
                             group: fileGroup,
@@ -83,10 +83,10 @@
                 };
 
                 scope.add = function () {
-                    ModalService.select(function (x) {
+                    ModalService.open(function (x) {
                         x.title('select the files you want');
-                        x.controller('FileSelectorController');
-                        x.template('tmpl/core/modals/FileSelector.html');
+                        x.path('/content/files');
+                        x.maximized();
                         x.scope({
                             group: fileGroup,
                             mode: 'multiple',

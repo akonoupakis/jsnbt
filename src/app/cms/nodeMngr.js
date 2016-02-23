@@ -338,7 +338,7 @@ NodeManager.prototype.resolveUrl = function (url, cb) {
 
             getHomePage(self.server, function (homeNodeErr, homeNode) {
                 if (homeNodeErr)
-                    return cb(resolvedNodeError);
+                    return cb(homeNodeErr);
                 
                 if (homeNode) {
                     var nodesStore = self.server.db.createStore('nodes');

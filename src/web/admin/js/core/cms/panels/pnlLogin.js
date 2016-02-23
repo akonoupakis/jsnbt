@@ -27,7 +27,7 @@
                         passwordConfirmation: ''
                     }
                 };
-
+                
                 scope.forgotPassword = function () {
                     scope.step = 'forgot';
                 };

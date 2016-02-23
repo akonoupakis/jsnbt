@@ -3,7 +3,7 @@
 (function () {
     "use strict";
 
-    var DataController = function ($scope, $rootScope, $logger, $location, $jsnbt, $q) {
+    var DataController = function ($scope, $rootScope, $logger, $jsnbt, $q) {
         jsnbt.controllers.ListControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var logger = $logger.create('DataController');
@@ -11,7 +11,7 @@
         $scope.gridFn = {
 
             open: function (item) {
-                $location.next('/content/data/' + item.id);
+                $scope.route.next('/content/data/' + item.id);
             }
 
         };
@@ -36,5 +36,5 @@
     };
 
     angular.module("jsnbt")
-        .controller('DataController', ['$scope', '$rootScope', '$logger', '$location', '$jsnbt', '$q', DataController]);
+        .controller('DataController', ['$scope', '$rootScope', '$logger', '$jsnbt', '$q', DataController]);
 })();

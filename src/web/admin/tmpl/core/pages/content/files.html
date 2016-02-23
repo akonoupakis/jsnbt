@@ -1,4 +1,4 @@
-﻿<div class="row title-container">
+﻿<div class="row title-container" ng-show="!modal">
     <div class="col-sm-12">
         <span ng-click="back()" class="glyphicon glyphicon-arrow-left back-button"></span>
         <h1 class="title">files</h1>
@@ -6,5 +6,5 @@
 </div>
 
 <div class="row">
-    <ctrl-explorer class="col-sm-12"></ctrl-explorer>
+    <ctrl-explorer class="col-sm-12" ng-selectable="modal !== false" ng-select-mode="modal.mode" ng-path="path" ng-group="fileGroup" ng-selected="modal.selected" ng-extensions="modal.extensions"></ctrl-explorer>
 </div>

@@ -49,7 +49,7 @@
         return deferred.promise;
     };
 
-    PasswordChangeController.prototype.push = function (data) {
+    PasswordChangeController.prototype.publish = function (data) {
         var self = this;
 
         var deferred = this.ctor.$q.defer();

@@ -3,23 +3,21 @@
 (function () {
     "use strict";
     
-    var NodesController = function ($scope, $rootScope, $location, $jsnbt, $logger, $data, ModalService, AuthService) {
+    var NodesController = function ($scope, $rootScope, $jsnbt, $logger, $data, ModalService, AuthService) {
         jsnbt.controllers.TreeControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var self = this;
         
         var logger = $logger.create('NodesController');
 
-        $scope.cacheKey = 'content:nodes';
-        $scope.prefix = '/content/nodes';
-        $scope.offset = 2;
+        $scope.cacheKey = ($scope.modal ? 'modal:' : '') +  'content:nodes';
     
         $scope.canCreate = function () {
             return AuthService.isAuthorized($scope.current.user, 'nodes', 'C');
         };
 
         $scope.create = function () {
-            $location.next('/content/nodes/new');
+            $scope.route.next('/content/nodes/new');
         };
 
         $scope.treeFn = {
@@ -48,12 +46,12 @@
             create: function (node) {
                 var targetEntity = $jsnbt.entities[node.domain === 'core' && node.entity === 'pointer' ? node.pointer.entity : node.entity];
                 if (node.domain === 'core' && node.entity === 'pointer') {
-                    $location.next($jsnbt.entities[node.pointer.entity].getCreateUrl({
+                    $scope.route.next($jsnbt.entities[node.pointer.entity].getCreateUrl({
                         id: node.pointer.nodeId
                     }, $scope.prefix));
                 }
                 else {
-                    $location.next(targetEntity.getCreateUrl(node, $scope.prefix));
+                    $scope.route.next(targetEntity.getCreateUrl(node, $scope.prefix));
                 }
             },
 
@@ -63,7 +61,7 @@
 
             edit: function (node) {
                 var editUrl = $jsnbt.entities[node.entity].getEditUrl(node, $scope.prefix);
-                $location.next(editUrl);
+                $scope.route.next(editUrl);
             },
 
             canDelete: function (node) {
@@ -135,13 +133,13 @@
                 var targetEntity = $jsnbt.entities[node.domain === 'core' && node.entity === 'pointer' ? node.pointer.entity : node.entity];
                 if (node.domain === 'core' && node.entity === 'pointer') {
                     $data.nodes.get(node.pointer.nodeId).then(function (response) {
-                        $location.next(targetEntity.getViewUrl(response, $scope.prefix));
+                        $scope.route.next(targetEntity.getViewUrl(response, $scope.prefix));
                     }, function (ex) {
                         throw ex;
                     });
                 }
                 else {
-                    $location.next(targetEntity.getViewUrl(node, $scope.prefix));
+                    $scope.route.next(targetEntity.getViewUrl(node, $scope.prefix));
                 }
             }
 
@@ -155,5 +153,5 @@
     NodesController.prototype = Object.create(jsnbt.controllers.TreeControllerBase.prototype);
 
     angular.module("jsnbt")
-        .controller('NodesController', ['$scope', '$rootScope', '$location', '$jsnbt', '$logger', '$data', 'ModalService', 'AuthService', NodesController]);
+        .controller('NodesController', ['$scope', '$rootScope', '$jsnbt', '$logger', '$data', 'ModalService', 'AuthService', NodesController]);
 })();

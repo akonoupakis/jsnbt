@@ -1,13 +1,14 @@
-﻿<div ng-show="found === true" class="container">
+﻿<div ng-if="found && !denied" ng-show="!loading" ng-class="{ 'container': !modal, 'container-fluid': modal }">
 
     <section class="col-md-12">
 
-        <ctrl-breadcrumb ng-show="breadcrumb" ng-model="current.breadcrumb.items" ng-title="current.breadcrumb.title"></ctrl-breadcrumb>
+        <ctrl-breadcrumb ng-show="breadcrumb" ng-class="{ 'container': !modal, 'container-fluid': modal }" ng-linkable-offset="modal.offset" ng-model="current.breadcrumb.items" ng-title="current.breadcrumb.title"></ctrl-breadcrumb>
 
-        <div ng-include="template"></div>
+        <div ng-include="template || (route.current.template || route.current.baseTemplate)"></div>
 
     </section>
 
 </div>
 
-<div ng-if="found === false" class="container error-page" ng-include="'tmpl/core/common/404.html'"></div>
+<div ng-if="!found && !denied" ng-show="!loading" class="centered" ng-include="'tmpl/core/base/partials/404.html'"></div>
+<div ng-if="denied" ng-show="!loading" class="centered" ng-include="'tmpl/core/base/partials/denied.html'"></div>

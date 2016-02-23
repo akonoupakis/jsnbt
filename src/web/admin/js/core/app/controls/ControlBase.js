@@ -9,7 +9,7 @@
 
             controls.ControlBase = (function (ControlBase) {
 
-                ControlBase = function (scope, element, attrs, $rootScope, $route, $routeParams, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                ControlBase = function (scope, element, attrs, $rootScope, $router, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
 
                     this.scope = scope;
                     this.element = element;
@@ -17,8 +17,7 @@
 
                     this.ctor = {
                         $rootScope: $rootScope,
-                        $route: $route,
-                        $routeParams: $routeParams,
+                        $router: $router,
                         $location: $location,
                         $logger: $logger,
                         $q: $q,
@@ -38,6 +37,7 @@
                         MODAL_EVENTS: MODAL_EVENTS
                     };
 
+                    scope.$on('destroy', this.destroy);
                 };
 
                 ControlBase.prototype.properties = {};
@@ -47,6 +47,10 @@
                         if (!_.isEqual(targetScope[targetKey], newValue))
                             targetScope[targetKey] = newValue;
                     }, true);
+                };
+
+                ControlBase.prototype.destroy = function () {
+
                 };
 
                 return ControlBase;

@@ -53,6 +53,12 @@
             };
             CheckControl.prototype = Object.create(jsnbt.controls.FormControlBase.prototype);
             
+            CheckControl.prototype.destroy = function () {
+                jsnbt.controls.ControlBase.prototype.destroy.apply(this, arguments);
+
+                this.element.find('input[type="checkbox"]').bootstrapSwitch('destroy');
+            };
+
             return {
                 restrict: 'E',
                 replace: true,

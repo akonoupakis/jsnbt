@@ -1,10 +1,10 @@
-﻿<div class="container">
+﻿<div ng-show="!loading" ng-class="{ 'container': !modal, 'container-fluid': modal }">
 
     <section class="col-md-12">
 
-        <ctrl-breadcrumb ng-if="breadcrumb" ng-model="current.breadcrumb.items" ng-title="current.breadcrumb.title"></ctrl-breadcrumb>
-        
-        <div ng-include="template"></div>
+        <ctrl-breadcrumb ng-if="breadcrumb" ng-linkable-offset="modal.offset" ng-model="current.breadcrumb.items" ng-title="current.breadcrumb.title"></ctrl-breadcrumb>
+
+        <div ng-include="route.current.template || route.current.baseTemplate"></div>
 
     </section>
 

@@ -227,7 +227,7 @@ gulp.task('installBowerComponents', function (done) {
                         return (x.name + '-' + x.version) === folder;
                     })) {
                         gutil.log('bower: deleting obsolete ' + folder);
-                        del.sync('./bower_components/' + folder);
+                        del.sync(server.getPath('bower_components/' + folder));
                         gutil.log('bower: deleted obsolete ' + folder);
                     }
                 }
