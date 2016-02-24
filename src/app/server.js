@@ -22,6 +22,10 @@ log4js.configure({
     ]
 });
 
+/**
+ * Represents a server instance.
+ * @constructor
+ */
 function Server(app, options) {
     var optsHost = options.host;
     if (options.host)
@@ -67,16 +71,23 @@ function Server(app, options) {
 
     this.cache = new Cache();
 
+    /** @member {Object} */
     this.app = app;
     
     this.express = express();
 }
 Server.prototype = Object.create(express.prototype);
 
+/**
+ * require in relevant path.
+ * @param {string} path - path of the required script.
+ */
 Server.prototype.require = function () {
     var result = require.apply(require, arguments);
     return result;
 }
+
+
 
 Server.prototype.getLogger = function (name) {
     return log4js.getLogger(name || 'jsnbt');
