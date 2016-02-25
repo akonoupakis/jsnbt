@@ -37,14 +37,14 @@ var shouldRenderCrawled = function (server, ctx) {
     }
 
     if (!prerender)
-        if (ctx.uri.query.prerender)
-            if (authMngr.isInRole(ctx.user, 'admin'))
+        if (ctx.uri.query.prerender === 'true')
+            if (authMngr.isInRole(ctx.req.session.user, 'admin'))
                 prerender = true;
-
+    
     return prerender;
 };
 
-var getCrawled = function (server, cb) {
+var getCrawled = function (server, ctx, cb) {
     var targetUrl = new jsuri(_.str.rtrim(ctx.uri.getBaseHref(), '/') + ctx.uri.url).deleteQueryParam('prerender').toString();
 
     var crawler = require('./crawler.js')(server);
@@ -181,14 +181,12 @@ Context.prototype.view = function () {
     else {
         var errorRenderer = new ErrorRenderer(this.server);
         if (shouldRenderCrawled(this.server, this))
-            getCrawled(this.server, function (err, res) {
+            getCrawled(this.server, self, function (err, res) {
                 if (err) {
                     errorRenderer.render(this, 500, err);
                 }
                 else {
-                    ctx.writeHead(200, { "Content-Type": "text/html" });
-                    ctx.write(res);
-                    ctx.end();
+                    self.html(res);
                 }
             });
         else {
