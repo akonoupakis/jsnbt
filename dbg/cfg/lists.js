@@ -3,7 +3,7 @@ module.exports = [{
     name: 'Telephones',
     form: '/tmpl/public/forms/list/telephones.html'
 }, {
-    id: 'telephones2',
+    id: 'telephoness',
     name: 'Telephones 2',
     form: '/tmpl/public/forms/list/telephones.html',
     localized: false,
