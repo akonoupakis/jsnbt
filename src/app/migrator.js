@@ -1,5 +1,3 @@
-var fs = require('fs');
-
 var _ = require('underscore');
 
 var Migrator = function (server) {
@@ -37,27 +35,31 @@ Migrator.prototype.start = function () {
                     runMigration();
                 }
                 else {
-                    if (result.count === 0) {
-                        migration.fn.process(self.server, function () {
-
-                            migrationsStore.post(function (x) {
-                                x.data({
-                                    module: migration.module,
-                                    name: migration.name,
-                                    processedOn: new Date().getTime()
+                    if (result === 0) {
+                        migration.fn(self.server, function (err) {
+                            if (err) {
+                                logger.error(err);
+                                error(err);
+                            }
+                            else {
+                                migrationsStore.post(function (x) {
+                                    x.data({
+                                        module: migration.module,
+                                        name: migration.name,
+                                        processedOn: new Date().getTime()
+                                    });
+                                }, function (err, response) {
+                                    if (err) {
+                                        logger.error(err);
+                                        error(err);
+                                    }
+                                    else {
+                                        logger.info('migration processed: ' + migration.module + ', ' + migration.name);
+                                        migrationsCount++;
+                                        runMigration();
+                                    }
                                 });
-                            }, function (err, response) {
-                                if (err) {
-                                    logger.error(err);
-                                    error(err);
-                                }
-                                else {
-                                    logger.info('migration processed: ' + migration.module + ', ' + migration.name);
-                                    migrationsCount++;
-                                    runMigration();
-                                }
-                            });
-
+                            }
                         }, function (err) {
                             logger.error(err);
                             error(err);
@@ -76,34 +78,17 @@ Migrator.prototype.start = function () {
         }
     };
     
-    var migrationsPath = 'www/migrations';
-
-    if (fs.existsSync(self.server.getPath(migrationsPath))) {
-        var packageItems = fs.readdirSync(self.server.getPath(migrationsPath));
-        _.each(packageItems, function (packageItem) {
-            var packageItemPath = migrationsPath + '/' + packageItem;
-            if (fs.lstatSync(self.server.getPath(packageItemPath)).isDirectory()) {
-                var packageMigrationItems = fs.readdirSync(self.server.getPath(packageItemPath));
-
-                _.each(packageMigrationItems, function (packageMigrationItem) {
-                    var packageMigrationItemPath = migrationsPath + '/' + packageItem + '/' + packageMigrationItem;
-                    if (fs.lstatSync(self.server.getPath(packageMigrationItemPath)).isFile()) {
-
-                        try {
-                            migrations.push({
-                                module: packageItem,
-                                name: packageMigrationItem,
-                                fn: require(self.server.getPath(packageMigrationItemPath))
-                            });
-                        }
-                        catch (err) {
-                            logger.error(err);
-                        }
-                    }
+    _.each(self.server.app.modules.all, function (module) {
+        if (_.isArray(module.migrations)) {
+            _.each(module.migrations, function (migration) {
+                migrations.push({
+                    module: module.domain,
+                    name: migration.name,
+                    fn: migration.process
                 });
-            }
-        });
-    }
+            });
+        }
+    });
 
     logger.info('server is updating migrations');
     runMigration();

@@ -1,7 +1,7 @@
 ﻿;(function () {
     "use strict";
 
-    var FileSystemEditorController = function ($scope, $rootScope, $logger, $q, TreeNodeService, CONTROL_EVENTS, MODAL_EVENTS) {
+    var FileSystemEditorController = function ($scope, $rootScope, $logger, $q, FileService, CONTROL_EVENTS, MODAL_EVENTS) {
         jsnbt.controllers.FormModalControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var self = this;
@@ -15,7 +15,7 @@
             throw new Error('$scope.modal.data not defined in FileSystemEditorController');
         
         $scope.root = function () {
-            TreeNodeService.setSelected($scope.nodes, []);
+            FileService.setSelected($scope.nodes, []);
         };
 
         this.enqueue('loaded', '', function () {
@@ -32,7 +32,7 @@
         this.enqueue('set', '', function (data) {
             var deferred = $q.defer();
 
-            TreeNodeService.setSelected(data, [self.scope.modal.data.dir]);
+            FileService.setSelected(data, [self.scope.modal.data.dir]);
 
             deferred.resolve();
 
@@ -54,11 +54,10 @@
         if (this.scope.modal.data.type === 'folder')
             restricted.push(this.scope.modal.data.path);
 
-        this.ctor.TreeNodeService.getFolders({
+        this.ctor.FileService.getFolders({
             path: this.scope.modal.data.dir,
             restricted: restricted
         }).then(function (response) {
-
             var nodes = response;
             var groupNode = _.find(response[0].children, function (x) { return x.name == self.scope.modal.group; });
             nodes = groupNode.children;
@@ -88,7 +87,7 @@
     FileSystemEditorController.prototype.publish = function (data) {
         var deferred = this.ctor.$q.defer();
 
-        var selectedFolder = _.first(this.ctor.TreeNodeService.getSelected(this.scope.nodes));
+        var selectedFolder = _.first(this.ctor.FileService.getSelected(this.scope.nodes));
         var targetPath = (selectedFolder ? selectedFolder : '/' + this.scope.modal.group);
         var selectedPath = targetPath + '/' + this.scope.ngModel + this.scope.modal.data.ext;
 
@@ -98,5 +97,5 @@
     };
 
     angular.module("jsnbt")
-        .controller('FileSystemEditorController', ['$scope', '$rootScope', '$logger', '$q', 'TreeNodeService', 'CONTROL_EVENTS', 'MODAL_EVENTS', FileSystemEditorController]);
+        .controller('FileSystemEditorController', ['$scope', '$rootScope', '$logger', '$q', 'FileService', 'CONTROL_EVENTS', 'MODAL_EVENTS', FileSystemEditorController]);
 })();

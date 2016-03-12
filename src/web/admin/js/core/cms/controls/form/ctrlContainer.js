@@ -64,6 +64,7 @@
                         x.template('tmpl/core/modals/containerSelector.html');
                         x.maximized();
                         x.scope({
+                            selector: 'container',
                             selected: scope.ngModel,
                             mode: 'single'
                         });

@@ -44,7 +44,7 @@
             }
         }
         var data = {
-            items: modules,
+            items: _.sortBy(modules, function (x) { return x.domain }),
             more: function () { }
         };
 

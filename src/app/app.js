@@ -109,6 +109,10 @@ App.prototype.register = function (module, config) {
     var moduleConfig = typeof (module.getConfig) === 'function' ? module.getConfig() : {};
 
     var validator = new validation.JSONValidation();
+    validator.validateFunction = function (value) {
+        return typeof (value) === 'function';
+    };
+
     var validationResult = validator.validate(moduleConfig, configSchema);
     if (!validationResult.ok) {
         var validationErrors = validationResult.path + ': ' + validationResult.errors.join(' - ');
@@ -199,6 +203,7 @@ App.prototype.register = function (module, config) {
         allowed: [],
         treeNode: true,
         localized: true,
+        ordered: false,
 
         properties: {
             title: true,
@@ -336,6 +341,8 @@ App.prototype.register = function (module, config) {
         }
     }
     
+    module.migrations = moduleConfig.migrations;
+
     if (module.domain === 'public' || module.domain === 'core') {
         applyArray('templates', 'id');
     }

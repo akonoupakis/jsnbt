@@ -2,7 +2,7 @@
     "use strict";
 
     var ImageSelectorController = function ($scope, $rootScope, $logger, MODAL_EVENTS, CONTROL_EVENTS) {
-        jsnbt.controllers.ListSelectorModalControllerBase.apply(this, $rootScope.getBaseArguments($scope));
+        jsnbt.controllers.ListControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var self = this;
 
@@ -61,7 +61,7 @@
         });
 
     };
-    ImageSelectorController.prototype = Object.create(jsnbt.controllers.ListSelectorModalControllerBase.prototype);
+    ImageSelectorController.prototype = Object.create(jsnbt.controllers.ListControllerBase.prototype);
 
     ImageSelectorController.prototype.load = function () {
         var deferred = this.ctor.$q.defer();

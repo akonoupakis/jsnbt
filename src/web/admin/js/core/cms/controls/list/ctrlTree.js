@@ -24,8 +24,9 @@
              var root = scope.ngRoot === undefined || scope.ngRoot === true;
              scope.root = root;
 
-             scope.$watch('ngModel', function (data) {
+             scope.$watchCollection('ngModel', function (data) {
                  element.empty();
+                 
                  $(data).each(function (i, node) {
                      var childScope = scope.$new();
                      childScope.model = node;
@@ -37,6 +38,12 @@
                      childScope.ngFn = scope.ngFn;
                      childScope.ngLanguage = scope.language;
                      childScope.ngRoot = false;
+                     childScope.ngSortableEntities = _.union(['root'], scope.ngSortableEntities);
+
+                     if ((scope.ngSortableEntities || []).indexOf(node.entity) !== -1)
+                         childScope.ngSortable = scope.ngSortable;
+                     else
+                         childScope.ngSortable = false;
 
                      scope.transcludeFn(childScope, function (clone, innerScope) {
                          element.append(clone);
@@ -63,14 +70,17 @@
                  ngFn: '=',
                  ngRoot: '='
              }),
-             template: '<ol class="dd-list" ng-class="{ \'dd-list-root\': root, \'dd-selectable\': root && ngSelectable }"></ol>',
+             controller: function ($scope) {
+                 this.scope = $scope;
+             },
              compile: function (elem, attrs, transclude) {
                  return function (scope, lElem, lAttrs) {
                      var control = new TreeControl(scope, lElem, lAttrs, transclude);
                      scope.$emit(CONTROL_EVENTS.register, control);
                      return control;
                  }
-             }
+             },
+             template: '<ol class="dd-list" ng-class="{ \'dd-list-root\': root, \'dd-selectable\': root && ngSelectable }"></ol>'
          };
 
      }])
@@ -92,31 +102,36 @@
                          scope.fn = value;
                      });
 
-                     scope.$watch('model.children', function (value) {
+                     scope.$watchCollection('model.children', function (value) {
                          element.empty();
 
+                         element.get(0).model = scope.model;
+
                          transclude(scope, function (clone, innerScope) {
+                             //if (scope.$parent.ngSortable && (scope.ngSortableEntities || []).indexOf(scope.model.parent.entity) !== -1)
+                             //    element.append($compile(angular.element('<span class="dd-sortable"><span class="glyphicon glyphicon-move"></span></span>'))(innerScope));
+
                              element.append($compile(angular.element('<button type="button" class="dd-collapse" ng-show="model.expandable && !model.root && model.childCount !== 0" ng-click="model.collapse()">Collapse</button>'))(innerScope));
                              element.append($compile(angular.element('<button type="button" class="dd-expand" ng-show="model.expandable && !model.root && model.childCount !== 0" ng-click="model.expand()">Expand</button>'))(innerScope));
                              element.append($compile(angular.element('<img class="dd-loading" src="img/core/node-loading.gif" />'))(innerScope));
                              element.append(clone);
 
-                             var childScope = scope.$new();
+                             var childScope = innerScope.$new();
                              childScope.ngModel = value;
-                             childScope.ngDomain = scope.$parent.ngDomain;
-                             childScope.ngSelectable = scope.$parent.ngSelectable;
-                             childScope.ngSelectMode = scope.$parent.ngSelectMode;
-                             childScope.ngSelectPointee = scope.$parent.ngSelectPointee;
-                             childScope.ngLanguage = scope.$parent.language;
+                             childScope.ngDomain = innerScope.$parent.ngDomain;
+                             childScope.ngSelectable = innerScope.$parent.ngSelectable;
+                             childScope.ngSelectMode = innerScope.$parent.ngSelectMode;
+                             childScope.ngSelectPointee = innerScope.$parent.ngSelectPointee;
+                             childScope.ngLanguage = innerScope.$parent.language;
                              childScope.ngTranscludeFn = transcludeFn;
                              childScope.ngRoot = false;
-                             childScope.ngFn = scope.$parent.ngFn;
-
+                             childScope.ngFn = innerScope.$parent.ngFn;
+                             
                              var collectionElement = angular.element('<ctrl-tree ng-model="ngModel" ng-domain="ngDomain" ng-root="ngRoot" ng-selectable="ngSelectable" ng-select-mode="ngSelectMode" ng-select-pointee="ngSelectPointee" ng-transclude-fn="ngTranscludeFn" ng-fn="ngFn" ng-language="ngLanguage"></ctrl-tree>');
                              var compiled = $compile(collectionElement)(childScope);
                              element.append(compiled);
 
-                             scope.$on('$destroy', function () {
+                             innerScope.$on('$destroy', function () {
                                  childScope.$destroy();
                              });
                          });

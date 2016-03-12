@@ -3,7 +3,7 @@
 (function () {
     "use strict";
     
-    var LanguagesController = function ($scope, $rootScope, $q, $logger, $data, PagedDataService, ModalService, AuthService) {
+    var LanguagesController = function ($scope, $rootScope, $q, $logger, $data, ModalService, AuthService) {
         jsnbt.controllers.ListControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var self = this;
@@ -162,8 +162,7 @@
     LanguagesController.prototype.load = function (filters, sorter) {
         var deferred = this.ctor.$q.defer();
 
-        this.ctor.PagedDataService.get({
-            fn: this.ctor.$jsnbt.db.languages,
+        this.ctor.$data.languages.getPage({
             query: {
                 $sort: {
                     name: 1
@@ -181,5 +180,5 @@
     };
 
     angular.module("jsnbt")
-        .controller('LanguagesController', ['$scope', '$rootScope', '$q', '$logger', '$data', 'PagedDataService', 'ModalService', 'AuthService', LanguagesController]);
+        .controller('LanguagesController', ['$scope', '$rootScope', '$q', '$logger', '$data', 'ModalService', 'AuthService', LanguagesController]);
 })();

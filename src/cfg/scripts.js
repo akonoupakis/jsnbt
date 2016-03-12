@@ -56,8 +56,6 @@ module.exports = [{
         '/admin/js/core/app/controllers/DataFormControllerBase.js',
         '/admin/js/core/app/controllers/NodeFormControllerBase.js',
         '/admin/js/core/app/controllers/SettingsControllerBase.js',
-        '/admin/js/core/app/controllers/modal/TreeSelectorModalControllerBase.js',
-        '/admin/js/core/app/controllers/modal/ListSelectorModalControllerBase.js',
         '/admin/js/core/app/controllers/modal/PromptModalControllerBase.js',
         '/admin/js/core/app/controllers/modal/ConfirmModalControllerBase.js',
         '/admin/js/core/app/controllers/modal/UploadModalControllerBase.js',
@@ -70,15 +68,13 @@ module.exports = [{
         '/admin/js/core/app/providers/$data.js',
         '/admin/js/core/app/providers/$jsnbt.js',
         '/admin/js/core/app/providers/$logger.js',
-        '/admin/js/core/app/providers/$queue.js',
 
         '/admin/js/core/app/services/AuthService.js',
         '/admin/js/core/app/services/FileService.js',
         '/admin/js/core/app/services/LocationService.js',
         '/admin/js/core/app/services/ModalService.js',
-        '/admin/js/core/app/services/PagedDataService.js',
         '/admin/js/core/app/services/ScrollSpyService.js',
-        '/admin/js/core/app/services/TreeNodeService.js',
+        '/admin/js/core/app/services/NodeService.js',
 
         '/admin/js/core/app/ViewRouter.js',
 

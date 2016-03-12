@@ -22,10 +22,6 @@ log4js.configure({
     ]
 });
 
-/**
- * Represents a server instance.
- * @constructor
- */
 function Server(app, options) {
     var optsHost = options.host;
     if (options.host)

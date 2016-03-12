@@ -9,7 +9,7 @@
 
             controllers.FormControllerBase = (function (FormControllerBase) {
 
-                FormControllerBase = function ($scope, $rootScope, $router, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                FormControllerBase = function ($scope, $rootScope, $router, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, FileService,NodeService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
                     controllers.ControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
                     var self = this;
@@ -77,6 +77,11 @@
                     };
                     
                     $scope.publish = function () {
+
+                        var reject = function (ex) {
+                            logger.error(ex);
+                        };
+
                         self.run('validating').then(function () {
                             self.validate().then(function (validationResults) {
                                 self.run('validated', [validationResults]).then(function () {
@@ -90,45 +95,28 @@
                                                         currentUrlParts.pop();
                                                         var currentUrl = currentUrlParts.join('/');
                                                         var targetUrl = currentUrl + '/' + pushed.id;
-                                                        $sope.route.navigate(targetUrl);
+                                                        $scope.route.navigate(targetUrl);
                                                     }
                                                     else {
                                                         self.load().then(function (loaded) {
                                                             self.set(loaded).then(function () {
-                                                                self.run('published', [loaded]).catch(function (publishedError) {
-                                                                    logger.error(publishedError);
-                                                                });
-                                                            }).catch(function (settedError) {
-                                                                logger.error(settedError);
-                                                            });
-                                                        }).catch(function (loadError) {
-                                                            logger.error(loadError);
-                                                        });
+                                                                self.run('published', [loaded]).catch(reject);
+                                                            }).catch(reject);
+                                                        }).catch(reject);
                                                     }
                                                 }
                                                 else {
                                                     self.failed(new Error('save unsuccessful'));
                                                 }
-                                            }).catch(function (pushError) {
-                                                logger.error(pushError);
-                                            });
-                                        }).catch(function (publishingError) {
-                                            logger.error(publishingError);
-                                        });
+                                            }).catch(reject);
+                                        }).catch(reject);
                                     }
                                     else {
                                         $scope.scroll2error();
                                     }
-                                }).catch(function (validatedError) {
-                                    logger.error(validatedError);
-                                });
-                            }).catch(function (validateError) {
-                                logger.error(validateError);
-                            });
-
-                        }).catch(function (validatingError) {
-                            logger.error(validatingError);
-                        });
+                                }).catch(reject);
+                            }).catch(reject);
+                        }).catch(reject);
 
                     };
 
@@ -283,6 +271,10 @@
 
                     var self = this;
 
+                    var reject = function (ex) {
+                        deferred.reject(ex);
+                    };
+
                     self.run('loading').then(function () {
                         self.load().then(function (response) {
                             self.run('loaded', [response]).then(function () {
@@ -299,24 +291,12 @@
                                             self.setSpy(200);
 
                                             deferred.resolve();
-                                        }).catch(function (setError) {
-                                            deferred.reject(setError);
-                                        });
-                                    }).catch(function (settedError) {
-                                        deferred.reject(settedError);
-                                    });
-                                }).catch(function (settingError) {
-                                    deferred.reject(settingError);
-                                });
-                            }).catch(function (loadedError) {
-                                deferred.reject(loadedError);
-                            });
-                        }).catch(function (loadError) {
-                            deferred.reject(loadError);
-                        });
-                    }).catch(function (loadingError) {
-                        deferred.reject(loadingError);
-                    });
+                                        }).catch(reject);
+                                    }).catch(reject);
+                                }).catch(reject);
+                            }).catch(reject);
+                        }).catch(reject);
+                    }).catch(reject);
 
                     return deferred.promise;
                 };
@@ -339,6 +319,16 @@
                     var deferred = this.ctor.$q.defer();
 
                     var self = this;
+
+                    var resolve = function (data) {
+                        self.scope.loading = false;
+                        deferred.resolve(data);
+                    }
+
+                    var reject = function (ex) {
+                        self.scope.loading = false;
+                        deferred.reject(ex);
+                    };
 
                     controllers.ControllerBase.prototype.init.apply(this, arguments).then(function () {
                         self.scope.loading = true;
@@ -364,74 +354,35 @@
                                                                     self.getBreadcrumb().then(function (breadcrumb) {
                                                                         self.setBreadcrumb(breadcrumb).then(function () {
                                                                             self.setSpy(200);
-                                                                            self.scope.loading = false;
-                                                                            deferred.resolve(setted);
-                                                                        }).catch(function (setBreadcrumbError) {
-                                                                            self.scope.loading = false;
-                                                                            deferred.reject(setBreadcrumbError);
-                                                                        });
-                                                                    }).catch(function (getBreadcrumbError) {
-                                                                        self.scope.loading = false;
-                                                                        deferred.reject(getBreadcrumbError);
-                                                                    });
-                                                                }).catch(function (watchError) {
-                                                                    self.scope.loading = false;
-                                                                    deferred.reject(watchError);
-                                                                });
-                                                            }).catch(function (setError) {
-                                                                self.scope.loading = false;
-                                                                deferred.reject(setError);
-                                                            });
-                                                        }).catch(function (settedError) {
-                                                            self.scope.loading = false;
-                                                            deferred.reject(settedError);
-                                                        });
-                                                    }).catch(function (settingError) {
-                                                        self.scope.loading = false;
-                                                        deferred.reject(settingError);
-                                                    });
-                                                }).catch(function (loadedError) {
-                                                    self.scope.loading = false;
-                                                    deferred.reject(loadedError);
-                                                });
+                                                                            resolve(setted);
+                                                                        }).catch(reject);
+                                                                    }).catch(reject);
+                                                                }).catch(reject);
+                                                            }).catch(reject);
+                                                        }).catch(reject);
+                                                    }).catch(reject);
+                                                }).catch(reject);
                                             }).catch(function (loadError) {
                                                 var parsedLoadError = _.isString(loadError) ? JSON.parse(loadError) : loadError;
                                                 if (_.isObject(parsedLoadError) && parsedLoadError.statusCode === 404) {
                                                     self.scope.found = false;
-                                                    self.scope.loading = false;
-                                                    deferred.resolve();
+                                                    resolve();
                                                 }
                                                 else {
-                                                    self.scope.loading = false;
-                                                    deferred.reject(loadError);
+                                                    reject(loadError);
                                                 }
                                             });
-                                        }).catch(function (loadingError) {
-                                            self.scope.loading = false;
-                                            deferred.reject(loadingError);
-                                        });
-                                    }, function (preloadedError) {
-                                        self.scope.loading = false;
-                                        deferred.reject(preloadedError);
-                                    });
-                                }).catch(function (preloadError) {
-                                    self.scope.loading = false;
-                                    deferred.reject(preloadError);
-                                });
-                            }).catch(function (preloadingError) {
-                                self.scope.loading = false;
-                                deferred.reject(preloadingError);
-                            });
+                                        }).catch(reject);
+                                    }).catch(reject);
+                                }).catch(reject);
+                            }).catch(reject);
                         }
                         else {
                             self.scope.loading = false;
                             deferred.resolve();
                         }
 
-                    }).catch(function (initError) {
-                        self.scope.loading = false;
-                        deferred.reject(initError);
-                    });
+                    }).catch(reject);
 
                     return deferred.promise;
                 };

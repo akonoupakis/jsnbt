@@ -9,7 +9,9 @@
 
             controllers.DataListControllerBase = (function (DataListControllerBase) {
 
-                DataListControllerBase = function ($scope, $rootScope, $router, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                DataListControllerBase = function ($scope, $rootScope, $router, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, FileService, NodeService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                    $scope.selector = 'data';
+
                     controllers.ListControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
                     var self = this;
@@ -45,27 +47,7 @@
 
                         return deferred.promise;
                     });
-                    
-                    if ($scope.modal && $scope.modal.selector === 'data') {
-                        this.enqueue('set', '', function (data) {
-                            self.setSelected($scope.modal.selected);
-                        });
-
-                        $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
-                            self.requested();
-                        });
-
-                        $scope.$on(CONTROL_EVENTS.valueSelected, function (sender, selected) {
-                            sender.stopPropagation();
-                            self.selected(selected);
-                        });
-
-                        $scope.$on(CONTROL_EVENTS.valueSubmitted, function (sender, selected) {
-                            sender.stopPropagation();
-                            self.submitted(selected);
-                        });
-                    }
-
+                
                     $scope.canCreate = function () {
                         return AuthService.isAuthorized($scope.current.user, 'data:' + $scope.domain + ':' + $scope.id, 'C');
                     };
@@ -79,6 +61,9 @@
                     $scope.gridFn.load = function (filters, sorter) {
                         self.load(filters, sorter).then(function (response) {
                             $scope.model = response;
+
+                            if ($scope.modal && $scope.modal.selector === 'data')
+                                self.setSelected($scope.modal.selected);
                         }).catch(function (error) {
                             throw error;
                         });
@@ -115,9 +100,8 @@
 
                 DataListControllerBase.prototype.load = function (filters, sorter) {
                     var deferred = this.ctor.$q.defer();
-
-                    this.ctor.PagedDataService.get({
-                        fn: this.ctor.$jsnbt.db.data,
+                    
+                    this.ctor.$data.data.getPage({
                         query: this.scope.loadingOptions,
                         filters: filters,
                         sorter: sorter
@@ -135,25 +119,26 @@
                 };
 
                 DataListControllerBase.prototype.setSelected = function (selected) {
-                    if (selected)
-                        this.ctor.PagedDataService.setSelected(this.get(), this.scope.modal && this.scope.modal.mode === 'multiple' ? selected : [selected], 'id');
+                    controllers.ListControllerBase.prototype.setSelected.apply(this, [this.scope.modal && this.scope.modal.mode === 'multiple' ? selected : [selected]]);
                 };
 
                 DataListControllerBase.prototype.getSelected = function () {
-                    var selected = this.scope.modal && this.scope.modal.mode === 'single' ? _.first(this.ctor.PagedDataService.getSelected(this.get(), 'id')) : this.ctor.PagedDataService.getSelected(this.get(), 'id');
+                    var selected = this.scope.modal && this.scope.modal.mode === 'single' ? _.first(controllers.ListControllerBase.prototype.getSelected.apply(this, arguments)) : controllers.ListControllerBase.prototype.getSelected.apply(this, arguments);
                     return selected;
                 };
 
                 DataListControllerBase.prototype.requested = function () {
-                    if (this.scope.modal) {
-                        var selected = this.getSelected();
-                        this.scope.$emit(this.ctor.MODAL_EVENTS.valueSubmitted, selected);
-                    }
+                    var selected = this.getSelected();
+                    this.scope.$emit(this.ctor.MODAL_EVENTS.valueSubmitted, selected);
                 };
 
                 DataListControllerBase.prototype.selected = function (selected) {
-                    if (this.scope.modal)
-                        this.scope.$emit(this.ctor.MODAL_EVENTS.valueSubmitted, this.select(selected));
+                    this.scope.$emit(this.ctor.MODAL_EVENTS.valueSubmitted, this.select(selected));
+                };
+
+                DataListControllerBase.prototype.submitted = function () {
+                    var selected = this.getSelected();
+                    this.scope.$emit(this.ctor.MODAL_EVENTS.valueSubmitted, selected);
                 };
 
                 DataListControllerBase.prototype.getBreadcrumb = function () {

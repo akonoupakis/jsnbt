@@ -9,7 +9,7 @@
 
             controllers.AppControllerBase = (function (AppControllerBase) {
 
-                AppControllerBase = function ($scope, $rootScope, $router, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                AppControllerBase = function ($scope, $rootScope, $router, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, FileService,NodeService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
                     
                     if (!$scope.modal && $location.path() === '') {
                         $location.path('/');
@@ -177,7 +177,7 @@
                     });
 
                     $scope.getNodeBreadcrumb = function (node, prefix) {
-                        return TreeNodeService.getBreadcrumb(node, $scope.defaults.language, prefix);
+                        return NodeService.getBreadcrumb(node, $scope.defaults.language, prefix);
                     };
 
                     $scope.current.login = function (username, password) {

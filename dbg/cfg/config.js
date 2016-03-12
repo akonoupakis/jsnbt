@@ -39,6 +39,11 @@ module.exports = {
 
     messaging: require('./messaging.js'),
 
+    migrations: [
+        require('./migrations/20150402a-init.js'),
+        require('./migrations/20150402b-init.js')
+    ],
+
     register: function () {
 
         return {

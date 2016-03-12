@@ -67,7 +67,7 @@
             };
 
         }])
-        .controller('PanelLoginController', ['$scope', '$rootScope', '$q', 'AuthService', 'AUTH_EVENTS', 'CONTROL_EVENTS', function ($scope, $rootScope, $q, AuthService, AUTH_EVENTS, CONTROL_EVENTS) {
+        .controller('PanelLoginController', ['$scope', '$rootScope', '$q', 'AuthService', 'AUTH_EVENTS', 'CONTROL_EVENTS', function ($scope, $rootScope, $q, AuthService ,AUTH_EVENTS, CONTROL_EVENTS) {
             var self = this;
 
             this.controls = [];

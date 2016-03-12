@@ -10,7 +10,7 @@
 
 <div class="row">
     <div class="col-sm-12">
-        <ctrl-tree ng-model="model[0].children" ng-domain="domain" ng-selectable="modal !== false" ng-select-mode="modal.mode" ng-fn="treeFn" ng-language="defaults.language">
+        <ctrl-tree ng-model="model[0].children" ng-domain="domain" ng-selectable="modal" ng-select-mode="modal.mode" ng-fn="treeFn" ng-language="defaults.language">
             <ctrl-tree-node>
                 <ctrl-tree-node-content>{{ model.title[language] }}</ctrl-tree-node-content>
                 <ctrl-tree-node-buttons>
