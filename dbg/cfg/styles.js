@@ -1,12 +1,12 @@
 module.exports = [{
     name: 'lib',
     items: [
-            '/css/_.less'
+        '/css/lib.less'
     ]
 }, {
     name: 'app',
     items: [
-            '/css/style.less'
+        '/css/app.less'
     ]
 }, {
     name: 'inline',
