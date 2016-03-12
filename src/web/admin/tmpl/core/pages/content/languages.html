@@ -12,30 +12,30 @@
     <div class="col-sm-12">
         <ctrl-grid class="table-striped" ng-model="model" ng-fn="gridFn" ng-language="defaults.language">
             <ctrl-grid-header>
-                <ctrl-grid-header-column>code</ctrl-grid-header-column>
-                <ctrl-grid-header-column>name</ctrl-grid-header-column>
-                <ctrl-grid-header-column>active</ctrl-grid-header-column>
-                <ctrl-grid-header-column>default</ctrl-grid-header-column>
-                <ctrl-grid-header-column></ctrl-grid-header-column>
+                <ctrl-grid-header-column class="col-sm-2">code</ctrl-grid-header-column>
+                <ctrl-grid-header-column class="col-sm-6">name</ctrl-grid-header-column>
+                <ctrl-grid-header-column class="col-sm-1">active</ctrl-grid-header-column>
+                <ctrl-grid-header-column class="col-sm-1">default</ctrl-grid-header-column>
+                <ctrl-grid-header-column class="col-sm-2"></ctrl-grid-header-column>
             </ctrl-grid-header>
             <ctrl-grid-footer>
                 <ctrl-grid-infinite-scroll></ctrl-grid-infinite-scroll>
                 <ctrl-grid-empty>no languges</ctrl-grid-empty>
             </ctrl-grid-footer>
             <ctrl-grid-body>
-                <ctrl-grid-column>
+                <ctrl-grid-column class="col-sm-2">
                     {{ model.code }}
                 </ctrl-grid-column>
-                <ctrl-grid-column>
+                <ctrl-grid-column class="col-sm-6">
                     {{ model.name }}
                 </ctrl-grid-column>
-                <ctrl-grid-column>
+                <ctrl-grid-column class="col-sm-1">
                     <input type="checkbox" ng-disabled="true" ng-checked="model.active" />
                 </ctrl-grid-column>
-                <ctrl-grid-column>
+                <ctrl-grid-column class="col-sm-1">
                     <input type="checkbox" ng-disabled="model.default || !model.active" ng-checked="model.default" ng-click="fn.setDefault(model)" />
                 </ctrl-grid-column>
-                <ctrl-grid-buttons-column>
+                <ctrl-grid-buttons-column class="col-sm-2">
                     <button title="edit" class="btn btn-default glyphicon glyphicon-edit btn-sm" ng-disabled="!fn.canEdit(model)" ng-click="fn.edit(model)" />
                     <button title="delete" class="btn btn-default glyphicon glyphicon-remove btn-sm" ng-disabled="model.default || !fn.canDelete(model)" ng-click="fn.delete(model)" />
                 </ctrl-grid-buttons-column>

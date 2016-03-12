@@ -3,7 +3,7 @@
 (function () {
     "use strict";
 
-    var UsersController = function ($scope, $rootScope, $logger, $q, $jsnbt, PagedDataService) {
+    var UsersController = function ($scope, $rootScope, $logger, $q, $jsnbt) {
         jsnbt.controllers.ListControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var self = this;
@@ -46,12 +46,11 @@
     UsersController.prototype.load = function (filters, sorter) {
         var deferred = this.ctor.$q.defer();
         
-        this.ctor.PagedDataService.get({
-            fn: this.ctor.$jsnbt.db.users,
+        this.ctor.$data.users.getPage({
             query: { },
             filters: filters,
             sorter: sorter
-        }).then(function (response) {
+        }, 0, 50).then(function (response) {
             deferred.resolve(response);
         }).catch(function (error) {
             deferred.reject(error);
@@ -61,5 +60,5 @@
     };
 
     angular.module("jsnbt")
-        .controller('UsersController', ['$scope', '$rootScope', '$logger', '$q', '$jsnbt', 'PagedDataService', UsersController]);
+        .controller('UsersController', ['$scope', '$rootScope', '$logger', '$q', '$jsnbt', UsersController]);
 })(); 

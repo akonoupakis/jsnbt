@@ -3,7 +3,7 @@
 (function () {
     "use strict";
 
-    var TextsController = function ($scope, $rootScope, $logger, $q, $data, PagedDataService, ModalService, AuthService) {
+    var TextsController = function ($scope, $rootScope, $logger, $q, $data, ModalService, AuthService) {
         jsnbt.controllers.ListControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var self = this;
@@ -58,8 +58,7 @@
     TextsController.prototype.load = function (filters, sorter) {
         var deferred = this.ctor.$q.defer();
 
-        this.ctor.PagedDataService.get({
-            fn: this.ctor.$jsnbt.db.texts, 
+        this.ctor.$data.texts.getPage({
             query: {
                 $sort: {
                     group: 1,
@@ -78,5 +77,5 @@
     };
 
     angular.module("jsnbt")
-        .controller('TextsController', ['$scope', '$rootScope', '$logger', '$q', '$data', 'PagedDataService', 'ModalService', 'AuthService', TextsController]);
+        .controller('TextsController', ['$scope', '$rootScope', '$logger', '$q', '$data', 'ModalService', 'AuthService', TextsController]);
 })();

@@ -13,7 +13,7 @@ module.exports = {
     styles: require('./styles.js'),
     
     entities: require('./entities.js'),
-
+        
     roles: require('./roles.js'),
 
     sections: require('./sections.js'),
@@ -26,6 +26,10 @@ module.exports = {
 
     templates: require('./templates.js'),
 
-    content: require('./content.js')
+    content: require('./content.js'),
+
+    migrations: [
+        require('./migrations/20160229a-nodeOrder.js')
+    ]
 
 }

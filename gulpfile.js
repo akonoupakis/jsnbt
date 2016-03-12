@@ -317,21 +317,6 @@ gulp.task('setModules', function () {
 
 });
 
-gulp.task('copyMigrations', function () {
-
-    var gulps = [];
-
-    _.each(moduleNames, function (moduleName, i) {
-        var modulePath = getModuleFolderPath(modulePaths[i]);
-
-        gulps.push(gulp.src('./' + modulePath + '/dat/**')
-            .pipe(gulp.dest('./' + TARGET_FOLDER + '/migrations/' + moduleName)));
-    });
-
-    if (gulps.length > 0)
-        return eventStream.merge(gulps);
-});
-
 var getFileCopyPublicPaths = function (module, modulePath) {
     var templatePaths = [];
 
@@ -777,7 +762,6 @@ gulp.task('dev', function (callback) {
         'cleanTarget',
         'setMode:dev',
         'setModules',
-        'copyMigrations',
         'copyFiles',
         'parseTemplates',
         'generateJsnbtScript',
@@ -800,7 +784,6 @@ gulp.task('dev-update', function (callback) {
         'cleanTarget',
         'setMode:dev',
         'setModules',
-        'copyMigrations',
         'copyFiles',
         'parseTemplates',
         'generateJsnbtScript',
@@ -825,7 +808,6 @@ gulp.task('prod', function (callback) {
         'cleanTarget',
         'setMode:prod',
         'setModules',
-        'copyMigrations',
         'copyFiles',
         'parseTemplates',
         'generateJsnbtScript',

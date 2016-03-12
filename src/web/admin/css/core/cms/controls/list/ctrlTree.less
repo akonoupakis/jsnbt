@@ -6,7 +6,7 @@
 
 .dd-item,
 .dd-empty,
-.dd-placeholder { display: block; position: relative; margin: 0; padding: 0; min-height: 20px; font-size: 13px; line-height: 20px; }
+.dd-placeholder { display: block; position: relative; margin: 3px 0; padding: 0; min-height: 20px; font-size: 13px; line-height: 20px; }
 
 .dd-handle { 
     display: block; 
@@ -85,7 +85,7 @@
 .dd-content { 
     display: block; 
     height: 30px; 
-    margin: 5px 0; 
+    margin: 0; 
     padding: 5px 10px 5px 10px; 
     color: #333; 
     text-decoration: none; 
@@ -146,7 +146,7 @@ dd-dragel > .dd-item > .dd-content { margin: 0; }
 }
 
 .dd-list .dd-content.dd-selected {
-        background: #bbb;
+    background: #bbb;
     background: -webkit-linear-gradient(top, #bbb 0%, #bbb 100%);
     background:    -moz-linear-gradient(top, #bbb 0%, #bbb 100%);
     background:         linear-gradient(top, #bbb 0%, #bbb 100%);
@@ -174,4 +174,23 @@ dd-dragel > .dd-item > .dd-content { margin: 0; }
     font-size: 11px;
     position: relative;
     top: 5px;
+}
+
+.dd-list .dd-item > .dd-sortable {
+    float:left;
+    height: 30px;
+    width: 30px;
+    text-align: center;
+    vertical-align: middle;
+}
+.dd-list .dd-item > .dd-sortable > .glyphicon-move{
+    margin-top: 7px;
+}
+
+.ui-sortable-placeholder {
+    border: 1px dashed #4183C4;
+    /*-webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    margin: -1px;*/
 }

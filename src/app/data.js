@@ -2,6 +2,8 @@ var extend = require('extend');
 var _ = require('underscore');
 
 var logAction = function (sender, collection, action, req, res, data, callback) {
+    if (!req)
+        return callback();
 
     if (sender.server.app.config.collections[collection]) {
         if (sender.server.app.config.collections[collection].logging) {

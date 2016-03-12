@@ -490,6 +490,7 @@ NodeManager.prototype.getUrl = function (node, cb) {
                     });
 
                     if (allHierarchyNodes) {
+
                         var parentUrl = {};
 
                         var lastNode = _.last(hierarchyNodes);
@@ -579,7 +580,6 @@ NodeManager.prototype.getUrl = function (node, cb) {
     else {
         var pack = _.find(self.server.app.modules.rest, function (x) { return x.domain === node.domain && _.isObject(x.url) && typeof (x.url.build) === 'function'; });
         if (pack) {
-
             var newUrl = {};
             for (var item in node.seo) {
                 if (!newUrl[item])

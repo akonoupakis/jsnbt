@@ -9,7 +9,7 @@
 
             controllers.TreeControllerBase = (function (TreeControllerBase) {
 
-                TreeControllerBase = function ($scope, $rootScope, $router, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                TreeControllerBase = function ($scope, $rootScope, $router, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, FileService,NodeService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
                     controllers.ControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
                     var self = this;
@@ -20,25 +20,13 @@
 
                     $scope.model = [];
 
-                    if ($scope.modal && $scope.modal.selector === 'node') {
+                    if ($scope.modal && $scope.modal.selector === $scope.selector) {
                         this.enqueue('set', '', function (data) {
-                            self.setSelected($scope.modal.selected);
+                            if ($scope.modal.selected) {
+                                self.setSelected($scope.modal.selected);
+                            }
                         });
-
-                        $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
-                            self.requested();
-                        });
-
-                        $scope.$on(CONTROL_EVENTS.valueSelected, function (sender, selected) {
-                            sender.stopPropagation();
-                            self.selected(selected);
-                        });
-
-                        $scope.$on(CONTROL_EVENTS.valueSubmitted, function (sender, selected) {
-                            sender.stopPropagation();
-                            self.submitted(selected);
-                        });
-                    }
+                    };
                 };
                 TreeControllerBase.prototype = Object.create(controllers.ControllerBase.prototype);
 
@@ -56,7 +44,7 @@
                     var deferred = this.ctor.$q.defer();
 
                     var loadFn = function (parentIds) {
-                        self.ctor.TreeNodeService.getNodes({
+                        self.ctor.NodeService.getNodes({
                             identifier: self.scope.cacheKey,
                             domain: self.scope.modal && self.scope.modal.domain ? self.scope.modal.domain : self.scope.domain,
                             entities: self.scope.modal && self.scope.modal.entities ? self.scope.modal.entities : self.scope.entities,
@@ -124,11 +112,11 @@
                 };
 
                 TreeControllerBase.prototype.setSelected = function (selected) {
-                    this.ctor.TreeNodeService.setSelected(this.scope.model, this.scope.modal && this.scope.modal.mode === 'multiple' ? selected : [selected]);
+                    this.ctor.NodeService.setSelected(this.scope.model, this.scope.modal && this.scope.modal.mode === 'multiple' ? selected : [selected]);
                 };
 
                 TreeControllerBase.prototype.getSelected = function () {
-                    var selected = this.scope.modal && this.scope.modal.mode === 'single' ? _.first(this.ctor.TreeNodeService.getSelected(this.scope.model)) : this.ctor.TreeNodeService.getSelected(this.scope.model);
+                    var selected = this.scope.modal && this.scope.modal.mode === 'single' ? _.first(this.ctor.NodeService.getSelected(this.scope.model)) : this.ctor.NodeService.getSelected(this.scope.model);
                     return selected;
                 };
 
@@ -149,6 +137,16 @@
 
                     var self = this;
 
+                    var resolve = function (data) {
+                        self.scope.loading = false;
+                        deferred.resolve(data);
+                    };
+
+                    var reject = function (ex) {
+                        self.scope.loading = false;
+                        deferred.reject(ex);
+                    };
+
                     controllers.ControllerBase.prototype.init.apply(this, arguments).then(function () {
                         self.scope.loading = true;
 
@@ -163,61 +161,27 @@
                                                     self.set(response).then(function (setted) {
                                                         self.run('set', [setted]).then(function () {
                                                             self.run('watch').then(function () {
-                                                                self.scope.loading = false;
-                                                                deferred.resolve(setted);
-                                                            }).catch(function (watchError) {
-                                                                self.scope.loading = false;
-                                                                deferred.reject(watchError);
-                                                            });
-                                                        }).catch(function (setError) {
-                                                            self.scope.loading = false;
-                                                            deferred.reject(setError);
-                                                        });
-                                                    }).catch(function (settedError) {
-                                                        self.scope.loading = false;
-                                                        deferred.reject(settedError);
-                                                    });
-                                                }).catch(function (settingError) {
-                                                    self.scope.loading = false;
-                                                    deferred.reject(settingError);
-                                                });
-                                            }).catch(function (loadedError) {
-                                                self.scope.loading = false;
-                                                deferred.reject(loadedError);
-                                            });
+                                                                resolve(setted);
+                                                            }).catch(reject);
+                                                        }).catch(reject);
+                                                    }).catch(reject);
+                                                }).catch(reject);
+                                            }).catch(reject);
                                         }).catch(function (loadError) {
                                             var parsedLoadError = _.isString(loadError) ? JSON.parse(loadError) : loadError;
                                             if (_.isObject(parsedLoadError) && parsedLoadError.statusCode === 404) {
                                                 self.scope.found = false;
-                                                self.scope.loading = false;
-                                                deferred.resolve();
+                                                resolve();
                                             }
                                             else {
-                                                self.scope.loading = false;
-                                                deferred.reject(loadError);
+                                                reject(loadError);
                                             }
                                         });
-                                    }).catch(function (loadingError) {
-                                        self.scope.loading = false;
-                                        deferred.reject(loadingError);
-                                    });
-                                }, function (preloadedError) {
-                                    self.scope.loading = false;
-                                    deferred.reject(preloadedError);
-                                });
-                            }).catch(function (preloadError) {
-                                self.scope.loading = false;
-                                deferred.reject(preloadError);
-                            });
-                        }).catch(function (preloadingError) {
-                            self.scope.loading = false;
-                            deferred.reject(preloadingError);
-                        });
-
-                    }).catch(function (initError) {
-                        self.scope.loading = false;
-                        deferred.reject(initError);
-                    });
+                                    }).catch(reject);
+                                }).catch(reject);
+                            }).catch(reject);
+                        }).catch(reject);
+                    }).catch(reject);
 
                     return deferred.promise;
                 };

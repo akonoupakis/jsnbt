@@ -9,7 +9,7 @@
 
             controllers.ControllerBase = (function (ControllerBase) {
 
-                ControllerBase = function ($scope, $rootScope, $router, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                ControllerBase = function ($scope, $rootScope, $router, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, FileService,NodeService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
 
                     var logger = $logger.create('ControllerBase');
 
@@ -31,8 +31,8 @@
                         LocationService: LocationService,
                         ScrollSpyService: ScrollSpyService,
                         AuthService: AuthService,
-                        TreeNodeService: TreeNodeService,
-                        PagedDataService: PagedDataService,
+                        FileService: FileService,
+                        NodeService: NodeService,
                         ModalService: ModalService,
                         CONTROL_EVENTS: CONTROL_EVENTS,
                         AUTH_EVENTS: AUTH_EVENTS,
@@ -51,6 +51,7 @@
                     $scope.languages = [];
 
                     $scope.breadcrumb = true;
+                    $scope.selector = $scope.selector || '';
                
                     $scope.back = function () {
                         $scope.current.breadcrumb.items.pop();
@@ -69,6 +70,22 @@
                         self.controls.push(control);
                     });
                     
+                    if ($scope.modal && (!$scope.modal.selector || ($scope.modal.selector && ($scope.modal.selector === $scope.selector)))) {
+                        $scope.$on(MODAL_EVENTS.valueRequested, function (sender) {
+                            self.requested();
+                        });
+
+                        $scope.$on(CONTROL_EVENTS.valueSelected, function (sender, selected) {
+                            sender.stopPropagation();
+                            self.selected(selected);
+                        });
+
+                        $scope.$on(CONTROL_EVENTS.valueSubmitted, function (sender, selected) {
+                            sender.stopPropagation();
+                            self.submitted(selected);
+                        });
+                    }
+
                     $scope.$on('destroy', this.destroy);
                 };
 
@@ -134,6 +151,18 @@
 
                 };
 
+                ControllerBase.prototype.requested = function () {
+                    throw new Error('not implemented');
+                };
+
+                ControllerBase.prototype.selected = function (selected) {
+                    throw new Error('not implemented');
+                };
+
+                ControllerBase.prototype.submitted = function (selected) {
+                    throw new Error('not implemented');
+                };
+
                 ControllerBase.prototype.run = function (queue, args) {
                     var deferred = this.ctor.$q.defer();
 
@@ -156,24 +185,22 @@
 
                     var self = this;
 
+                    var resolve = function () {
+                        self.scope.loading = false;
+                        deferred.resolve();
+                    };
+
+                    var reject = function (ex) {
+                        self.scope.loading = false;
+                        deferred.reject(ex);
+                    };
+
                     var proceed = function () {
                         self.authorize().then(function (authorized) {
                             self.getBreadcrumb().then(function (breadcrumb) {
-                                self.setBreadcrumb(breadcrumb).then(function () {
-                                    self.scope.loading = false;
-                                    deferred.resolve();
-                                }).catch(function (ex) {
-                                    self.scope.loading = false;
-                                    deferred.reject(ex);
-                                });
-                            }).catch(function (ex) {
-                                self.scope.loading = false;
-                                deferred.reject(ex);
-                            });
-                        }).catch(function (ex) {
-                            self.scope.loading = false;
-                            deferred.reject(ex);
-                        });
+                                self.setBreadcrumb(breadcrumb).then(resolve).catch(reject);
+                            }).catch(reject);
+                        }).catch(reject);
                     };
 
                     self.scope.languages = self.scope.application.languages;
@@ -182,14 +209,10 @@
 
                         self.scope.$parent.init().then(function () {
                             proceed();
-                        }).catch(function (ex) {
-                            self.scope.loading = false;
-                            deferred.reject(ex);
-                        });
+                        }).catch(reject);
                     }
                     else {
-                        self.scope.loading = false;
-                        deferred.resolve();
+                        resolve();
                     }
 
                     return deferred.promise;

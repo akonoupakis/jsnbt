@@ -4,6 +4,8 @@
     "use strict";
     
     var NodesController = function ($scope, $rootScope, $jsnbt, $logger, $data, ModalService, AuthService) {
+        $scope.selector = 'node';
+
         jsnbt.controllers.TreeControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var self = this;

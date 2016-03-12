@@ -111,6 +111,10 @@
             "required": true,
 			"items": { "type": "objectId" },
 			"uniqueItems":  true
-        }
+        },
+		"order": {
+			"type": "number",
+			"required": true
+		}
     }
 }

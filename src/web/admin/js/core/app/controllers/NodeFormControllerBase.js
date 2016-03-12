@@ -9,7 +9,7 @@
 
             controllers.NodeFormControllerBase = (function (NodeFormControllerBase) {
 
-                NodeFormControllerBase = function ($scope, $rootScope, $router, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, TreeNodeService, PagedDataService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
+                NodeFormControllerBase = function ($scope, $rootScope, $router, $location, $logger, $q, $timeout, $data, $jsnbt, LocationService, ScrollSpyService, AuthService, FileService,NodeService, ModalService, CONTROL_EVENTS, AUTH_EVENTS, DATA_EVENTS, ROUTE_EVENTS, MODAL_EVENTS) {
                     controllers.FormControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
                     var self = this;
@@ -1232,11 +1232,31 @@
                     var self = this;
 
                     if (this.isNew()) {
-                        this.ctor.$data.nodes.post(data).then(function (result) {
-                            deferred.resolve(result);
-                        }).catch(function (error) {
-                            deferred.reject(error);
-                        });
+                        if (this.ctor.$jsnbt.entities[data.entity].ordered === true) {
+
+                            self.ctor.$data.nodes.count({
+                                parent: data.parent
+                            }).then(function (result) {
+                                data.order = result + 1;
+                                
+                                self.ctor.$data.nodes.post(data).then(function (result) {
+                                    deferred.resolve(result);
+                                }).catch(function (error) {
+                                    deferred.reject(error);
+                                });
+
+                            }).catch(function (error) {
+                                deferred.reject(error);
+                            });
+
+                        }
+                        else {
+                            self.ctor.$data.nodes.post(data).then(function (result) {
+                                deferred.resolve(result);
+                            }).catch(function (error) {
+                                deferred.reject(error);
+                            });
+                        }
                     }
                     else {
                         this.ctor.$data.nodes.put(this.scope.id, data).then(function (result) {

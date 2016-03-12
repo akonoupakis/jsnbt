@@ -27,5 +27,6 @@
         "inherits": true,
         "value": []
     },                
-    "hierarchy": []
+    "hierarchy": [],
+	"order": 0
 }

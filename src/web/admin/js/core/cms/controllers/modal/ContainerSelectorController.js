@@ -2,8 +2,10 @@
     "use strict";
 
     var ContainerSelectorController = function ($scope, $rootScope, $jsnbt, $logger, CONTROL_EVENTS, MODAL_EVENTS) {
-        jsnbt.controllers.ListSelectorModalControllerBase.apply(this, $rootScope.getBaseArguments($scope));
+        $scope.selector = 'container';
 
+        jsnbt.controllers.ListControllerBase.apply(this, $rootScope.getBaseArguments($scope));
+        
         var self = this;
 
         var logger = $logger.create('ContainerSelectorController');
@@ -12,7 +14,7 @@
             logger.error(ex);
         });
     };
-    ContainerSelectorController.prototype = Object.create(jsnbt.controllers.ListSelectorModalControllerBase.prototype);
+    ContainerSelectorController.prototype = Object.create(jsnbt.controllers.ListControllerBase.prototype);
 
     ContainerSelectorController.prototype.load = function () {
         var deferred = this.ctor.$q.defer();

@@ -55,7 +55,7 @@ module.exports = function (sender, context, data) {
     var entity = nodeMngr.getEntity(data.entity);
 
     if (context.internal) {
-        if (entity.hasProperty('parent')) {
+        if (entity.hasProperty('parent') && context.changed('parent')) {
             processChildren(data.domain, data.hierarchy, function (err, result) {
                 if (err)
                     return context.error(err);

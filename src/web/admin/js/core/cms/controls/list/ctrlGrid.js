@@ -1,5 +1,48 @@
 ﻿/* global angular:false */
 
+$.fn.copyCSS = function (source) {
+    var dom = $(source).get(0);
+    var dest = {};
+    var style, prop;
+    if (window.getComputedStyle) {
+        var camelize = function (a, b) {
+            return b.toUpperCase();
+        };
+        if (style = window.getComputedStyle(dom, null)) {
+            var camel, val;
+            if (style.length) {
+                for (var i = 0, l = style.length; i < l; i++) {
+                    prop = style[i];
+                    camel = prop.replace(/\-([a-z])/, camelize);
+                    val = style.getPropertyValue(prop);
+                    dest[camel] = val;
+                }
+            } else {
+                for (prop in style) {
+                    camel = prop.replace(/\-([a-z])/, camelize);
+                    val = style.getPropertyValue(prop) || style[prop];
+                    dest[camel] = val;
+                }
+            }
+            return this.css(dest);
+        }
+    }
+    if (style = dom.currentStyle) {
+        for (prop in style) {
+            dest[prop] = style[prop];
+        }
+        return this.css(dest);
+    }
+    if (style = dom.style) {
+        for (prop in style) {
+            if (typeof style[prop] != 'function') {
+                dest[prop] = style[prop];
+            }
+        }
+    }
+    return this.css(dest);
+};
+
 (function () {
 
     "use strict";
@@ -41,11 +84,19 @@
                     this.selectable = $scope.ngSelectable;
                     this.selectMode = $scope.ngSelectMode;
                     this.language = $scope.ngLanguage;
+                    this.sortable = $scope.ngSortable;
+                    this.sortableField = $scope.ngSortableField || 'order';
+
+                    this.fn = $scope.ngFn;
 
                     this.currentPage = 1;
 
                     $scope.$watch('ngLanguage', function (value) {
                         self.language = value;
+                    });
+
+                    $scope.$watch('ngFn', function (value) {
+                        self.fn = value;
                     });
                 },
                 link: function (scope, element, attrs) {
@@ -60,14 +111,18 @@
         .directive('ctrlGridHeader', [function () {
 
             return {
+                require: '^ctrlGrid',
                 restrict: 'E',
                 replace: true,
                 transclude: true,
                 template: '<thead><tr ng-transclude></tr></thead>',
-                link: function (scope, element, attrs) {
+                link: function (scope, element, attrs, controller) {
                     element.addClass('ctrl-grid-header');
 
                     scope.data = scope.$parent.ngModel;
+
+                    if (controller.sortable)
+                        element.find('> tr').prepend('<th class="ctrl-grid-sortable"></th>');
 
                     scope.sort = {
                         name: undefined,
@@ -237,6 +292,9 @@
                             expressions = ['=', '!=', '>=', '>', '<', '=<'];
 
                             scope.$watch('filter.expressions', function (newValue, prevValue) {
+                                if (_.isEqual(newValue, prevValue))
+                                    return;
+
                                 ctrlGrid.ended = false;
                                 ctrlGrid.currentPage = 1;
                                 scope.$parent.$parent.fn.load(getFilters(), getSorter());
@@ -269,6 +327,9 @@
                             expressions = ['=', '!='];
                     
                             scope.$watch('filter.expressions', function (newValue, prevValue) {
+                                if (_.isEqual(newValue, prevValue))
+                                    return;
+
                                 ctrlGrid.ended = false;
                                 ctrlGrid.currentPage = 1;
                                 scope.$parent.$parent.fn.load(getFilters(), getSorter());
@@ -362,6 +423,9 @@
                             expressions = ['=', '!='];
 
                             scope.$watch('filter.expressions', function (newValue, prevValue) {
+                                if (_.isEqual(newValue, prevValue))
+                                    return;
+
                                 ctrlGrid.ended = false;
                                 ctrlGrid.currentPage = 1;
                                 scope.$parent.$parent.fn.load(getFilters(), getSorter());
@@ -415,15 +479,75 @@
             };
 
         }])
+        .directive('ctrlGridBodyTransclude', [function () {
+            return {
+                require: '^ctrlGrid',
+                link: function ($scope, $element, $attrs, controller, $transclude) {
+                    var innerScope = $scope.$new();
+                    $transclude(innerScope, function (clone) {
+                        $element.empty();
+                        $element.append(clone);
+
+                        if (controller.sortable)
+                            $element.prepend('<td class="ctrl-grid-sortable"> \
+                                <span class="glyphicon glyphicon-move"></span> \
+                            </td>');
+
+                        $scope.$on('$destroy', function () {
+                            innerScope.$destroy();
+                        });
+                    });
+                }
+            };
+        }])
         .directive('ctrlGridBody', [function () {
 
             return {
+                require: '^ctrlGrid',
                 restrict: 'E',
                 replace: true,
                 transclude: true,
-                template: '<tbody><tr ng-class="{\'ng-selected\': model.selected}" ng-repeat="model in data.items" ng-model-transclude></tr></tbody>',
-                link: function (scope, element, attrs) {
+                template: '<tbody ui-sortable="sortableOptions" ng-model="data.items"><tr ng-class="{\'ng-selected\': model.selected}" ng-repeat="model in data.items" ctrl-grid-body-transclude></tr></tbody>',
+                link: function (scope, element, attrs, controller) {
                     element.addClass('ctrl-grid-body');
+                    
+                    var draggedIndex = -1;
+
+                    scope.sortableOptions = {
+                        axis: 'v',
+
+                        helper: function (e, tr) {
+                            var $originals = tr.children();
+                            var $helper = tr.clone();
+
+                            $helper.children().each(function (i) {
+                                $(this).copyCSS($originals.eq(i));
+                            });
+
+                            return $helper;
+                        },
+
+                        handle: '.glyphicon-move',
+                        cancel: '',
+                        containment: "parent",
+                        start: function (e, ui) {
+                            ui.placeholder.height(ui.item.height());
+
+                            draggedIndex = ui.item.index();
+                        },
+                        stop: function (e, ui) {
+                            var newIndex = ui.item.index();
+                            if (newIndex !== draggedIndex) {
+
+                                _.each(scope.data.items, function (item, i) {
+                                    item[controller.sortableField] = i + 1;
+                                });
+
+                                controller.fn.sort(scope.data.items);
+                                draggedIndex = -1;
+                            }
+                        }
+                    };
                 }
             };
 

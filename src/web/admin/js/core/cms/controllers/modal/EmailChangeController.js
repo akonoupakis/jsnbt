@@ -1,7 +1,7 @@
 ﻿;(function () {
     "use strict";
 
-    var EmailChangeController = function ($scope, $rootScope, $logger, AuthService, MODAL_EVENTS) {
+    var EmailChangeController = function ($scope, $rootScope, $logger, AuthService, FileService,MODAL_EVENTS) {
         jsnbt.controllers.FormModalControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var self = this;

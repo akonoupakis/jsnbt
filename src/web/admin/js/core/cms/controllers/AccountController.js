@@ -3,7 +3,7 @@
 (function () {
     "use strict";
 
-    var AccountController = function ($scope, $rootScope, $timeout, $q, $logger, $data, $jsnbt, ScrollSpyService, LocationService, AuthService, ModalService, CONTROL_EVENTS) {
+    var AccountController = function ($scope, $rootScope, $timeout, $q, $logger, $data, $jsnbt, ScrollSpyService, LocationService, AuthService, FileService,ModalService, CONTROL_EVENTS) {
         jsnbt.controllers.FormControllerBase.apply(this, $rootScope.getBaseArguments($scope));
 
         var self = this;
