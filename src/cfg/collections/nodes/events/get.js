@@ -22,15 +22,15 @@ module.exports = function (sender, context, data) {
             });
         });
 
-        //asyncs.push(function (cb) {
-        //    nodeMngr.getEnabled(data, function (err, enabledObj) {
-        //        if (err)
-        //            return cb(err);
+        asyncs.push(function (cb) {
+            nodeMngr.getEnabled(data, function (err, enabledObj) {
+                if (err)
+                    return cb(err);
 
-        //        data.enabled = enabledObj;
-        //        cb(null, enabledObj);
-        //    });
-        //});
+                data.enabled = enabledObj;
+                cb(null, enabledObj);
+            });
+        });
 
         asyncs.push(function (cb) {
             if (!authMngr.isInRole(context.req.session.user, 'admin')) {
