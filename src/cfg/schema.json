@@ -6,16 +6,17 @@
 			"type": "boolean" 
 		},
         "locale": { 
-			"type": "string" 
-		},
-		"jsModule": {
-			"type": "string"
+			"type": "string",
+			"minLength": 2,
+			"maxLength": 2,
+			"pattern": "^[a-z]+$" 
 		},
         "fileGroups": { 
 			"type": "array", 
 			"items": { 
 				"type": "string", 
-				"required": true 
+				"required": true,
+				"pattern": "^[a-zA-Z-_]+$" 
 			}, 
 			"uniqueItems": true 
 		},
@@ -27,7 +28,8 @@
 				"properties": {
 					"name": { 
 						"type": "string", 
-						"required": true 
+						"required": true,
+						"pattern": "^[a-z-]+$"  
 					},
 					"items": { 
 						"type": "array", 
@@ -52,7 +54,8 @@
 				"properties": {
 					"name": { 
 						"type": "string", 
-						"required": true 
+						"required": true,
+						"pattern": "^[a-z-]+$" 
 					},
 					"items": { 
 						"type": "array", 
@@ -77,13 +80,15 @@
 				"properties": { 
 					"name": { 
 						"type": "string", 
-						"required": true 
+						"required": true,
+						"pattern": "^[a-zA-Z-]+$" 
 					},
 					"allowed": { 
 						"type": "array", 
 						"items": {
 							"type": "string",
-							"required": true
+							"required": true,
+							"pattern": "^[a-zA-Z-]+$"
 						}
 					},
 					"treeNode": { 
@@ -117,14 +122,16 @@
 				"properties": { 
 					"name": {
 						"type": "string",
-						"required": true
+						"required": true,
+						"pattern": "^[a-z]+$"
 					},
 					"inherits": {
 						"type": "array",
 						"required": true,
 						"items": {
 							"type": "string",
-							"required": true 
+							"required": true,
+							"pattern": "^[a-z]+$" 
 						}, 
 						"uniqueItems": true 
 					}
@@ -139,14 +146,16 @@
 				"properties": { 
 					"name": {
 						"type": "string",
-						"required": true
+						"required": true,
+						"pattern": "^[a-zA-Z]+$"
 					},
 					"roles": {
 						"type": "array",
 						"required": true,
 						"items": {
 							"type": "string",
-							"required": true 
+							"required": true,
+							"pattern": "^[a-z]+$" 
 						}, 
 						"uniqueItems": true 
 					}
@@ -161,7 +170,8 @@
 				"properties": { 
 					"name": {
 						"type": "string",
-						"required": true
+						"required": true,
+						"pattern": "^[a-z-]+$"
 					},
 					"processors": {
 						"type": "array",
@@ -198,7 +208,8 @@
 				"properties": { 
 					"id": {
 						"type": "string",
-						"required": true
+						"required": true,
+						"pattern": "^[a-z]+$"
 					},
 					"name": {
 						"type": "string",
@@ -295,7 +306,8 @@
 				"properties": {
 					"name": {
 						"type": "string",
-						"required": true
+						"required": true,
+						"pattern": "^[a-zA-Z]+$"
 					},
 					"schema": {
 						"type": "object"
@@ -339,7 +351,8 @@
 				"properties": {
 					"id": { 
 						"type": "string",
-						"required": true
+						"required": true,
+						"pattern": "^[a-z]+$"
 					},
 					"name": { 
 						"type": "string",
@@ -360,7 +373,8 @@
 				"properties": {
 					"id": { 
 						"type": "string",
-						"required": true
+						"required": true,
+						"pattern": "^[a-zA-Z-]+$"
 					},
 					"name": { 
 						"type": "string",
@@ -392,7 +406,8 @@
 				"properties": {
 					"id": { 
 						"type": "string",
-						"required": true
+						"required": true,
+						"pattern": "^[a-z]+$"
 					},
 					"name": { 
 						"type": "string",
@@ -413,7 +428,8 @@
 				"properties": {
 					"id": { 
 						"type": "string",
-						"required": true
+						"required": true,
+						"pattern": "^[a-zA-Z0-9]+$"
 					},
 					"name": { 
 						"type": "string",
