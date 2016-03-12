@@ -157,6 +157,7 @@ Router.prototype.start = function () {
         }
     });
 
+    this.express.use('/bower_components', express.static(self.server.getPath('bower_components')));
     this.express.use(express.static(self.server.getPath('www/public')));
     
     this.express.get('*', function (req, res, next) {

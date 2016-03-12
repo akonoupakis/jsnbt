@@ -570,7 +570,10 @@ gulp.task('minifyScripts', function () {
                 if (r.items.length > 0 && targets.indexOf(r.target === -1)) {
 
                     var g = gulp.src(_.map(r.items, function (x, i) {
-                        return './' + TARGET_FOLDER + '/public' + x
+                        if (x.indexOf('/bower_components/') !== -1)
+                            return '.' + x;
+                        else
+                            return './' + TARGET_FOLDER + '/public' + x;
                     }))
                         .pipe(uglify({
                             preserveComments: false,

@@ -1,38 +1,38 @@
 module.exports = [{
     name: 'admin-lib',
     items: [
-        '/admin/js/core/lib/jquery.js',
-        '/admin/js/core/lib/underscore.js',
-        '/admin/js/core/lib/underscore.string.js',
-        '/admin/js/core/lib/angular.js',
-        '/admin/js/core/lib/bootstrap.js',
-        '/admin/js/core/lib/moment.js',
-        '/admin/js/core/lib/moment-timezone.js',
-        '/admin/js/core/lib/jshashes.js',
-        
-        '/admin/js/core/lib/jquery/jquery-inViewport.js',
-        '/admin/js/core/lib/jquery/jquery-ui.js',
-        '/admin/js/core/lib/jquery/jquery.scrollTo.js',
-        '/admin/js/core/lib/jquery/jquery.cropper.js',
-        '/admin/js/core/lib/jquery/jquery.redactor.js',
-        '/admin/js/core/lib/jquery/jquery.webui-popover.js',
+        '/bower_components/jquery-2.1.3/dist/jquery.js',
+        '/bower_components/underscore-1.7.0/underscore.js',
+        '/bower_components/underscore.string-2.3.3/lib/underscore.string.js',
+        '/bower_components/angular-1.3.15/angular.js',
+        '/bower_components/bootstrap-3.3.5/dist/js/bootstrap.js',
+        '/bower_components/moment-2.10.6/min/moment.min.js',
+        '/bower_components/moment-timezone-0.4.0/builds/moment-timezone-with-data.js',
+        '/bower_components/jshashes-1.0.5/hashes.js',
 
-        '/admin/js/core/lib/bootstrap/bootstrap.switch.js',
-        '/admin/js/core/lib/bootstrap/bootstrap.datepicker.js',
-        '/admin/js/core/lib/bootstrap/bootstrap.timepicker.js',
+        '/admin/js/core/lib/jquery-inViewport.js',
+        '/bower_components/jquery-ui-1.11.4/jquery-ui.js',
+        '/bower_components/jquery.scrollTo-1.4.14/jquery.scrollTo.js',
+        '/bower_components/cropper-0.7.9/dist/cropper.js',
+        '/bower_components/imperavi-redactor-10.0.9/redactor/redactor.js',
+        '/bower_components/webui-popover-1.2.3/dist/jquery.webui-popover.js',
 
-        '/admin/js/core/lib/angular/ui-bootstrap.js',
-        '/admin/js/core/lib/angular/ui-bootstrap-tpls.js',
-        '/admin/js/core/lib/angular/ng-path-router.js',
-        '/admin/js/core/lib/angular/angular-animate.js',
-        '/admin/js/core/lib/angular/angular-sanitize.js',
-        '/admin/js/core/lib/angular/angular-strap.js',
-        '/admin/js/core/lib/angular/angular-ui-sortable.js',
-        '/admin/js/core/lib/angular/angular-redactor.js',
-        '/admin/js/core/lib/angular/angular-paging.js',
-        '/admin/js/core/lib/angular/ng-infinite-scroll.js',
-        '/admin/js/core/lib/angular/ng-flow.js',
-        '/admin/js/core/lib/angular/ng-tags-input.js'
+        '/bower_components/bootstrap-switch-3.0.2/dist/js/bootstrap-switch.js',
+        '/bower_components/bootstrap-datepicker-1.4.0/dist/js/bootstrap-datepicker.js',
+        '/bower_components/bootstrap-timepicker-0.5.2/js/bootstrap-timepicker.js',
+
+        '/bower_components/angular-bootstrap-0.11.2/ui-bootstrap.js',
+        '/bower_components/angular-bootstrap-0.11.2/ui-bootstrap-tpls.js',
+        '/bower_components/angular-path-router-1.0.2/ng-path-router.js',
+        '/bower_components/angular-animate-1.3.15/angular-animate.js',
+        '/bower_components/angular-sanitize-1.3.15/angular-sanitize.js',
+        '/bower_components/angular-strap-2.1.6/dist/angular-strap.js',
+        '/bower_components/angular-ui-sortable-0.13.4/sortable.js',
+        '/bower_components/angular-redactor-1.1.5/angular-redactor.js',
+        '/bower_components/angular-paging-2.1.0/dist/paging.js',
+        '/bower_components/ngInfiniteScroll-1.1.2/build/ng-infinite-scroll.js',
+        '/bower_components/ng-flow-2.6.1/dist/ng-flow-standalone.js',
+        '/bower_components/ng-tags-input-3.0.0/ng-tags-input.js'
     ]
 }, {
     name: 'admin-app',
@@ -171,7 +171,7 @@ module.exports = [{
 }, {
     name: 'admin-gmaps',
     items: [
-        '/admin/js/core/lib/gmaps.js',
+        '/bower_components/gmaps-0.4.21/gmaps.js'
     ]
 }, {
     name: 'admin-inline',
