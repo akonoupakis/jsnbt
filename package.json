@@ -69,7 +69,6 @@
 		"underscore.string": "2.3.3"
 	},
 	"devDependencies": {
-		"gulp": "*",
-		"jsnbt-docs": "*"
+		"gulp": "*"
 	}
 }
