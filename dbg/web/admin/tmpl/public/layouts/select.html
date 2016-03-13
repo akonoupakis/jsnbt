@@ -1,12 +1,12 @@
 ﻿<div ng-init="options = [{id: '1', name: 'option 1'}, {id: '2', name: 'option 2'}, {id: '3', name: 'option 3'}];">
     <div class="row" id="layout-select" data-scrollspy="select">
-        <ctrl-select class="col-sm-6" ng-model="model.content.select" ng-required="false" ng-options="options" ng-default="true" ng-value-field="id" ng-name-field="name" ng-label="select"></ctrl-select>
-        <ctrl-select class="col-sm-6" ng-model="model.content.selectR" ng-required="true" ng-options="options" ng-default="true" ng-value-field="id" ng-name-field="name" ng-label="select required"></ctrl-select>
+        <ctrl-select class="col-sm-6" ng-model="model.content.select" ng-required="false" ng-items="options" ng-default="true" ng-value-field="id" ng-name-field="name" ng-label="select"></ctrl-select>
+        <ctrl-select class="col-sm-6" ng-model="model.content.selectR" ng-required="true" ng-items="options" ng-default="true" ng-value-field="id" ng-name-field="name" ng-label="select required"></ctrl-select>
     </div>
     <div class="row" id="layout-selects" data-scrollspy="selects">
-        <ctrl-select-list class="col-sm-12" ng-model="model.content.selects" ng-required="false" ng-options="options" ng-default="true" ng-value-field="id" ng-name-field="name" ng-label="selects"></ctrl-select-list>
+        <ctrl-select-list class="col-sm-12" ng-model="model.content.selects" ng-required="false" ng-items="options" ng-default="true" ng-value-field="id" ng-name-field="name" ng-label="selects"></ctrl-select-list>
     </div>
     <div class="row" id="layout-selectsR" data-scrollspy="selectsR">
-        <ctrl-select-list class="col-sm-12" ng-model="model.content.selectsR" ng-required="true" ng-options="options" ng-default="true" ng-value-field="id" ng-name-field="name" ng-max-length="2" ng-label="selects required (max length: 2)"></ctrl-select-list>
+        <ctrl-select-list class="col-sm-12" ng-model="model.content.selectsR" ng-required="true" ng-items="options" ng-default="true" ng-value-field="id" ng-name-field="name" ng-max-length="2" ng-label="selects required (max length: 2)"></ctrl-select-list>
     </div>
 </div>

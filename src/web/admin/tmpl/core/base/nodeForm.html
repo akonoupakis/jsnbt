@@ -8,7 +8,7 @@
                     <button type="button" ng-disabled="published && !draft" class="btn btn-success" ng-click="publish()">publish</button>
                 </div>
 
-                <ctrl-language-selector class="language-selector" ng-model="language" ng-options="application.languages" ng-show="localized && localization"></ctrl-language-selector>
+                <ctrl-language-selector class="language-selector" ng-model="language" ng-items="application.languages" ng-show="localized && localization"></ctrl-language-selector>
             </div>
         </div>
     </div>
@@ -40,7 +40,7 @@
 
         <div id="page-parent" data-scrollspy="parent" ng-show="entity.properties.parent">
             <div class="row">
-                <ctrl-node class="col-sm-12" ng-language="defaults.language" ng-model="model.parent" ng-domain="model.domain" ng-entities="parentOptions.entities" ng-disabled="!entity.properties.parent" ng-required="false" ng-options="parentOptions" ng-label="parent" ng-tip="leave blank for root">
+                <ctrl-node class="col-sm-12" ng-language="defaults.language" ng-model="model.parent" ng-domain="model.domain" ng-entities="parentOptions.entities" ng-disabled="!entity.properties.parent" ng-required="false" ng-scope="parentOptions" ng-label="parent" ng-tip="leave blank for root">
                     {{model.title[language]}}
                 </ctrl-node>
             </div>
@@ -50,7 +50,7 @@
 
         <div id="page-type" ng-show="model.domain === 'core' && entities.length &gt; 1" data-scrollspy="type">
             <div class="row">
-                <ctrl-select class="col-sm-12" ng-model="model.entity" ng-required="true" ng-label="type" ng-options="entities" ng-disabled="model.domain !== 'core'"></ctrl-select>
+                <ctrl-select class="col-sm-12" ng-model="model.entity" ng-required="true" ng-label="type" ng-items="entities" ng-disabled="model.domain !== 'core'"></ctrl-select>
             </div>
 
             <hr />
@@ -75,8 +75,8 @@
 
         <div id="page-addon" data-scrollspy="addon" ng-show="model.entity === 'pointer'">
             <div class="row">
-                <ctrl-select class="col-sm-6" ng-model="model.pointer.domain" ng-required="true" ng-disabled="model.entity !== 'pointer'" ng-label="addon" ng-default="true" ng-options="modules" ng-name-field="name" ng-value-field="domain"></ctrl-select>
-                <ctrl-node class="col-sm-5" ng-language="defaults.language" ng-model="model.pointer.nodeId" ng-domain="model.pointer.domain" ng-required="model.pointer.domain && model.entity === 'pointer'" ng-disabled="model.entity !== 'pointer'" ng-options="{ pointee: true }" ng-label="pointee">
+                <ctrl-select class="col-sm-6" ng-model="model.pointer.domain" ng-required="true" ng-disabled="model.entity !== 'pointer'" ng-label="addon" ng-default="true" ng-items="modules" ng-name-field="name" ng-value-field="domain"></ctrl-select>
+                <ctrl-node class="col-sm-5" ng-language="defaults.language" ng-model="model.pointer.nodeId" ng-domain="model.pointer.domain" ng-required="model.pointer.domain && model.entity === 'pointer'" ng-disabled="model.entity !== 'pointer'" ng-scope="{ pointee: true }" ng-label="pointee">
                     {{model.title[language]}}
                 </ctrl-node>
                 <div class="col-sm-1">
@@ -89,14 +89,14 @@
 
         <div id="page-route" data-scrollspy="route" ng-show="model.entity === 'router'">
             <div class="row">
-                <ctrl-select class="col-sm-12" ng-model="model.route" ng-required="true" ng-disabled="model.entity !== 'router'" ng-label="route" ng-default="true" ng-options="routes" ng-name-field="name" ng-value-field="id"></ctrl-select>
+                <ctrl-select class="col-sm-12" ng-model="model.route" ng-required="true" ng-disabled="model.entity !== 'router'" ng-label="route" ng-default="true" ng-items="routes" ng-name-field="name" ng-value-field="id"></ctrl-select>
             </div>
             <hr />
         </div>
 
         <div id="page-layouts" data-scrollspy="layouts" ng-show="entity.properties.layouts">
             <div class="row">
-                <ctrl-select-list class="col-sm-10" ng-model="values.layouts" ng-disabled="!entity.properties.layouts || model.layouts.inherits" ng-required="true" ng-options="layouts" ng-default="true" ng-value-field="id" ng-name-field="name" ng-label="layouts"></ctrl-select-list>
+                <ctrl-select-list class="col-sm-10" ng-model="values.layouts" ng-disabled="!entity.properties.layouts || model.layouts.inherits" ng-required="true" ng-items="layouts" ng-default="true" ng-value-field="id" ng-name-field="name" ng-label="layouts"></ctrl-select-list>
                 <ctrl-check class="col-sm-2" ng-model="model.layouts.inherits" ng-disabled="!entity.properties.layouts" ng-label="inheritance"></ctrl-check>
             </div>
 
@@ -105,7 +105,7 @@
 
         <div id="page-content" data-scrollspy="content" ng-show="model.entity !== 'pointer'">
             <div class="row" id="page-template" data-scrollspy="template" ng-show="entity.properties.template">
-                <ctrl-select class="col-sm-12" ng-model="model.template" ng-disabled="!entity.properties.template" ng-required="true" ng-options="templates[model.entity]" ng-default="true" ng-value-field="id" ng-name-field="name" ng-label="template"></ctrl-select>
+                <ctrl-select class="col-sm-12" ng-model="model.template" ng-disabled="!entity.properties.template" ng-required="true" ng-items="templates[model.entity]" ng-default="true" ng-value-field="id" ng-name-field="name" ng-label="template"></ctrl-select>
             </div>
 
             <hr ng-show="entity.properties.template" />
@@ -133,7 +133,7 @@
 
         <div id="page-robots" data-scrollspy="robots" ng-show="entity.properties.robots">
             <div class="row">
-                <ctrl-check-list class="col-sm-10" ng-model="values.robots" ng-options="robots" ng-required="true" ng-disabled="!entity.properties.robots || model.robots.inherits" ng-label="robots"></ctrl-check-list>
+                <ctrl-check-list class="col-sm-10" ng-model="values.robots" ng-items="robots" ng-required="true" ng-disabled="!entity.properties.robots || model.robots.inherits" ng-label="robots"></ctrl-check-list>
                 <ctrl-check class="col-sm-2" ng-model="model.robots.inherits" ng-disabled="!entity.properties.robots" ng-label="inheritance"></ctrl-check>
             </div>
 
@@ -142,7 +142,7 @@
 
         <div id="page-permissions" data-scrollspy="permissions" ng-show="entity.properties.permissions">
             <div class="row">
-                <ctrl-check-list class="col-sm-10" ng-model="values.roles" ng-options="roles" ng-required="true" ng-disabled="!entity.properties.permissions || model.roles.inherits" ng-label="permissions"></ctrl-check-list>
+                <ctrl-check-list class="col-sm-10" ng-model="values.roles" ng-items="roles" ng-required="true" ng-disabled="!entity.properties.permissions || model.roles.inherits" ng-label="permissions"></ctrl-check-list>
                 <ctrl-check class="col-sm-2" ng-model="model.roles.inherits" ng-disabled="!entity.properties.permissions" ng-label="inheritance"></ctrl-check>
             </div>
 

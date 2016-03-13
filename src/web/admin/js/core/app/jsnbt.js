@@ -103,8 +103,8 @@
 
         var modules = [];
         modules.push('ngPathRouter');
-        modules.push('ngAnimate');
         modules.push('ngSanitize');
+        modules.push('ngAnimate');
         modules.push('mgcrea.ngStrap');
         modules.push('ui.bootstrap');
         modules.push('ui.sortable');

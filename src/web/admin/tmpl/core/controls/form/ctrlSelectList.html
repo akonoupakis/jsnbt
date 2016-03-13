@@ -10,7 +10,7 @@
                     </span>
                     <select class="form-control" id="ddl{{id}}{{$index}}" ng-model="ngModel[$index]" ng-change="changed()">
                         <option ng-show="ngDefault" value="" ng-selected="!item || notFound">Please select</option>
-                        <option ng-repeat="option in ngOptions" value="{{option[valueField]}}" ng-selected="option[valueField] === item">{{option[nameField]}}</option>
+                        <option ng-repeat="option in ngItems" value="{{option[valueField]}}" ng-selected="option[valueField] === item">{{option[nameField]}}</option>
                     </select>
                     <span ng-show="!ngDisabled && !valid && invalid[$index]" class="glyphicon glyphicon-ban-circle form-control-feedback" tooltip="value is required"></span>
                     <span class="input-group-btn">

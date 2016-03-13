@@ -8,7 +8,7 @@
                 <tr>
                     <td>
                         <ul>
-                            <li ng-repeat="option in ngOptions">
+                            <li ng-repeat="option in ngItems">
                                 <a href="javascript:;" title="{{option[textField]}}" ng-click="select(option)" ng-class="option[valueField] == ngModel ? 'selected-locale' : ''">
                                     <img ng-if="option[imageField]" ng-src="{{option[imageField]}}" />
                                     {{option[textField]}}

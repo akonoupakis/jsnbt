@@ -45,7 +45,7 @@
                         }
 
                         if (self.scope.valid && self.scope.ngModel !== undefined && self.scope.ngModel !== '') {
-                            var option = _.find(self.scope.ngOptions, function (x) { return x[self.scope.valueField] === self.scope.ngModel; });
+                            var option = _.find(self.scope.ngItems, function (x) { return x[self.scope.valueField] === self.scope.ngModel; });
                             if (!option) {
                                 self.scope.valid = false;
                                 self.scope.faults.invalid = true;
@@ -64,7 +64,7 @@
                 restrict: 'E',
                 replace: true,
                 scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
-                    ngOptions: '=',
+                    ngItems: '=',
                     ngDefault: '=',
                     ngValueField: '@',
                     ngNameField: '@',

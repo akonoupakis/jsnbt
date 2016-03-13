@@ -3,7 +3,7 @@
         <label ng-show="ngLabel" class="control-label">{{ ngLabel }}<small ng-show="ngTip">({{ngTip}})</small></label>
         <div class="form-control-feedback-container">
             <div class="check-options">
-                <div class="check-option" ng-repeat="option in ngOptions">
+                <div class="check-option" ng-repeat="option in ngItems">
                     <label class="check-option-title">{{ option[nameField] }}</label>
                     <input class="check-option-control" type="checkbox" id="chk{{ id }}{{ option[valueField] }}" />
                     <span class="check-option-description">{{ option[descriptionField] }}</span>

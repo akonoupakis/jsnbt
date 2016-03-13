@@ -69,7 +69,7 @@
                     var opts = {};
                     $.extend(true, opts, {
                         entities: entities
-                    }, scope.ngOptions);
+                    }, scope.ngScope);
                     
                     ModalService.open(function (x) {
                         x.title('select a content node');
@@ -95,7 +95,7 @@
                     if (typeof ($jsnbt.entities[entity].lookupNode) === 'function') {
                         var opts = $.extend({
                             entities: [entity]
-                        }, scope.ngOptions);
+                        }, scope.ngScope);
 
                         ModalService.open(function (x) {
                             x.title('select a content node');
@@ -218,7 +218,7 @@
                     ngDomain: '=',
                     ngRoute: '@',
                     ngEntities: '=',
-                    ngOptions: '='
+                    ngScope: '='
                 }),
                 link: function (scope, element, attrs, ctrl, transclude) {
                     var control = new NodeControl(scope, element, attrs, ctrl, transclude);

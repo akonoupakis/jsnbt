@@ -2,9 +2,9 @@ module.exports = [{
     name: 'admin-lib',
     items: [
         '/bower_components/jquery-2.1.3/dist/jquery.js',
-        '/bower_components/underscore-1.7.0/underscore.js',
+        '/bower_components/underscore-1.8.3/underscore.js',
         '/bower_components/underscore.string-2.3.3/lib/underscore.string.js',
-        '/bower_components/angular-1.3.15/angular.js',
+        '/bower_components/angular-1.5.0/angular.js',
         '/bower_components/bootstrap-3.3.5/dist/js/bootstrap.js',
         '/bower_components/moment-2.10.6/min/moment.min.js',
         '/bower_components/moment-timezone-0.4.0/builds/moment-timezone-with-data.js',
@@ -23,9 +23,9 @@ module.exports = [{
 
         '/bower_components/angular-bootstrap-0.11.2/ui-bootstrap.js',
         '/bower_components/angular-bootstrap-0.11.2/ui-bootstrap-tpls.js',
+        '/bower_components/angular-animate-1.5.0/angular-animate.js',
         '/bower_components/angular-path-router-1.0.2/ng-path-router.js',
-        '/bower_components/angular-animate-1.3.15/angular-animate.js',
-        '/bower_components/angular-sanitize-1.3.15/angular-sanitize.js',
+        '/bower_components/angular-sanitize-1.5.0/angular-sanitize.js',
         '/bower_components/angular-strap-2.1.6/dist/angular-strap.js',
         '/bower_components/angular-ui-sortable-0.13.4/sortable.js',
         '/bower_components/angular-redactor-1.1.5/angular-redactor.js',

@@ -18,14 +18,14 @@
     <div class="col-sm-6">
         <label>messaging - mail</label>
         <div class="row">
-            <ctrl-select class="col-md-12" ng-model="settings.messaging.mail.provider" ng-required="false" ng-options="mailProviders"></ctrl-select>
+            <ctrl-select class="col-md-12" ng-model="settings.messaging.mail.provider" ng-required="false" ng-items="mailProviders"></ctrl-select>
         </div>
         <div ng-include="mailTmpl"></div>
     </div>
     <div class="col-sm-6">
         <label>messaging - sms</label>
         <div class="row">
-            <ctrl-select class="col-md-12" ng-model="settings.messaging.sms.provider" ng-required="false" ng-options="smsProviders"></ctrl-select>
+            <ctrl-select class="col-md-12" ng-model="settings.messaging.sms.provider" ng-required="false" ng-items="smsProviders"></ctrl-select>
             <div ng-include="smsTmpl"></div>
         </div>
     </div>

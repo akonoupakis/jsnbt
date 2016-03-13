@@ -99,7 +99,7 @@
                     var opts = {};
                     $.extend(true, opts, {
                         entities: entities
-                    }, scope.ngOptions);
+                    }, scope.ngScope);
                                         
                     ModalService.open(function (x) {
                         x.title('select a content node');
@@ -125,7 +125,7 @@
                     var opts = {};
                     $.extend(true, opts, {
                         entities: entities
-                    }, scope.ngOptions);
+                    }, scope.ngScope);
 
                     ModalService.open(function (x) {
                         x.title('select the content nodes you want');
@@ -151,7 +151,7 @@
                     if (typeof ($jsnbt.entities[entity].lookupNode) === 'function') {
                         var opts = $.extend({
                             entities: [entity]
-                        }, scope.ngOptions);
+                        }, scope.ngScope);
                         
                         ModalService.open(function (x) {
                             x.title('select a content node');
@@ -185,7 +185,7 @@
                     if (typeof ($jsnbt.entities[entity].lookupNode) === 'function') {
                         var opts = $.extend({
                             entities: [entity]
-                        }, scope.ngOptions);
+                        }, scope.ngScope);
 
                         ModalService.open(function (x) {
                             x.title('select the content nodes you want');
@@ -425,7 +425,7 @@
                     ngLanguage: '=',
                     ngDomain: '=',
                     ngRoute: '@',
-                    ngOptions: '=',
+                    ngScope: '=',
                     ngMaxLength: '='
                 }),
                 link: function (scope, element, attrs) {
