@@ -1,4 +1,4 @@
 ﻿<div class="container-fluid image-select">
-    <ctrl-explorer ng-show="modal.step == 1" ng-selectable="true" ng-select-mode="modal.mode" ng-path="path" ng-group="fileGroup" ng-selected="ngModel.src" ng-extensions="modal.extensions"></ctrl-explorer>
-    <ctrl-image-cropper ng-show="modal.step == 2" ng-model="ngModel" ng-height="modal.height" ng-width="modal.width"></ctrl-image-cropper>
+    <ctrl-explorer ng-if="modal.step == 1" ng-selectable="true" ng-select-mode="modal.mode" ng-path="path" ng-group="fileGroup" ng-selected="ngModel.src" ng-extensions="modal.extensions"></ctrl-explorer>
+    <ctrl-image-cropper ng-if="modal.step == 2" ng-model="ngModel" ng-height="modal.height" ng-width="modal.width"></ctrl-image-cropper>
 </div>

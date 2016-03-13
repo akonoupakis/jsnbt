@@ -13,7 +13,7 @@ module.exports = [{
         '/admin/js/core/lib/jquery-inViewport.js',
         '/bower_components/jquery-ui-1.11.4/jquery-ui.js',
         '/bower_components/jquery.scrollTo-1.4.14/jquery.scrollTo.js',
-        '/bower_components/cropper-0.7.9/dist/cropper.js',
+        '/bower_components/cropper-2.3.0/dist/cropper.js',
         '/bower_components/imperavi-redactor-10.0.9/redactor/redactor.js',
         '/bower_components/webui-popover-1.2.3/dist/jquery.webui-popover.js',
 
@@ -24,7 +24,7 @@ module.exports = [{
         '/bower_components/angular-bootstrap-0.11.2/ui-bootstrap.js',
         '/bower_components/angular-bootstrap-0.11.2/ui-bootstrap-tpls.js',
         '/bower_components/angular-animate-1.5.0/angular-animate.js',
-        '/bower_components/angular-path-router-1.0.2/ng-path-router.js',
+        '/bower_components/angular-path-router-1.0.5/ng-path-router.js',
         '/bower_components/angular-sanitize-1.5.0/angular-sanitize.js',
         '/bower_components/angular-strap-2.1.6/dist/angular-strap.js',
         '/bower_components/angular-ui-sortable-0.13.4/sortable.js',
