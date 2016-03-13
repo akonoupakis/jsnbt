@@ -86,9 +86,9 @@ var App = function () {
 
     };
 
-    var versionInfo = fs.existsSync(root.getPath('node_modules/jsnbt/package.json')) ?
-        require(root.getPath('node_modules/jsnbt/package.json')) :
-        require(root.getPath('package.json'));
+    var versionInfo = fs.existsSync(root.mapPath('node_modules/jsnbt/package.json')) ?
+        require(root.mapPath('node_modules/jsnbt/package.json')) :
+        require(root.mapPath('package.json'));
 
     this.version = versionInfo.version;
 
@@ -398,7 +398,7 @@ App.prototype.init = function (config) {
 
     this.title = opts.title;
         
-    if (!fs.existsSync(root.getPath('www')))
+    if (!fs.existsSync(root.mapPath('www')))
        throw new Error('deployment directory not found! run gulp!');
 
     var coreModule = {
@@ -413,10 +413,10 @@ App.prototype.init = function (config) {
     
     this.register(coreModule);
     
-    var installedModulePaths = fs.readFileSync(root.getPath('www/modules'), 'utf8').split('\n');
+    var installedModulePaths = fs.readFileSync(root.mapPath('www/modules'), 'utf8').split('\n');
     
     _.each(installedModulePaths, function (installedModulePath) {
-        var installedModule = require(root.getPath(installedModulePath));
+        var installedModule = require(root.mapPath(installedModulePath));
         if (installedModule.domain && installedModule.domain !== 'core') {
             if(installedModule.domain === 'public')
                 self.register(installedModule, config);
@@ -457,7 +457,7 @@ App.prototype.init = function (config) {
 }
 
 App.prototype.createServer = function (options) {
-    if (!fs.existsSync(root.getPath('www')))
+    if (!fs.existsSync(root.mapPath('www')))
         throw new Error('deployment directory not found! run gulp!');
 
     var mode = fs.readFileSync('www/mode', {
@@ -489,7 +489,7 @@ App.prototype.createServer = function (options) {
 };
 
 App.prototype.createMigrator = function (options) {
-    if (!fs.existsSync(root.getPath('www')))
+    if (!fs.existsSync(root.mapPath('www')))
         throw new Error('deployment directory not found! run gulp!');
 
     var mode = fs.readFileSync('www/mode', {

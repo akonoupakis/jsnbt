@@ -61,7 +61,7 @@ var getScriptBundle = function (app, data) {
     var scripts = [];
 
     appendScript = function (file) {
-        var filePath = app.root.getPath(path.join('www/public', file));
+        var filePath = app.root.mapPath(path.join('www/public', file));
 
         if (fs.existsSync(filePath)) {
             var stats = fs.statSync(filePath);
@@ -208,7 +208,7 @@ var getStyleBundle = function (app, data) {
     var styles = [];
 
     appendStyle = function (file) {
-        var filePath = app.root.getPath(path.join('www/public', file));
+        var filePath = app.root.mapPath(path.join('www/public', file));
 
         if (fs.existsSync(filePath)) {
             var stats = fs.statSync(filePath);

@@ -66,11 +66,11 @@ FileManager.prototype.get = function (paths, cb) {
 
     var root = 'files';
 
-    var rootPath = path.join(self.server.getPath('www'), 'public', root);
+    var rootPath = path.join(self.server.mapPath('www'), 'public', root);
 
     if (!isArray && filePath) {
 
-        var fullPath = path.join(self.server.getPath('www'), 'public', root, normalize(filePath));
+        var fullPath = path.join(self.server.mapPath('www'), 'public', root, normalize(filePath));
         if (fs.existsSync(fullPath)) {
             var cstats = fs.statSync(fullPath);
             if (cstats.isFile()) {
@@ -88,7 +88,7 @@ FileManager.prototype.get = function (paths, cb) {
         var results = [];
 
         _.each(filePaths, function (loopPath) {
-            var loopFullPath = path.join(self.server.getPath('www'), 'public', root, normalize(loopPath));
+            var loopFullPath = path.join(self.server.mapPath('www'), 'public', root, normalize(loopPath));
 
             if (fs.existsSync(loopFullPath)) {
                 var fstats = fs.statSync(loopFullPath);
@@ -114,7 +114,7 @@ FileManager.prototype.delete = function (paths, cb) {
 
     var root = 'files';
 
-    var fullPath = path.join(self.server.getPath('www'), 'public', root, normalize(paths));
+    var fullPath = path.join(self.server.mapPath('www'), 'public', root, normalize(paths));
     fs.exists(fullPath, function (exists) {
         if (exists) {
             fs.remove(fullPath, function (rErr, rRes) {
@@ -132,7 +132,7 @@ FileManager.prototype.create = function (dir, fileName, cb) {
 
     var root = 'files';
 
-    var fullPath = path.join(self.server.getPath('www'), 'public', root, normalize(dir));
+    var fullPath = path.join(self.server.mapPath('www'), 'public', root, normalize(dir));
     fs.exists(fullPath, function (exists) {
         if(!exists)
             return cb(new Error('file group does not exist: ' + dir));
@@ -148,8 +148,8 @@ FileManager.prototype.move = function (from, to, cb) {
 
     var root = 'files';
 
-    var fullPath = path.join(self.server.getPath('www'), 'public', root, normalize(from));
-    var fullNewPath = path.join(self.server.getPath('www'), 'public', root, normalize(to));
+    var fullPath = path.join(self.server.mapPath('www'), 'public', root, normalize(from));
+    var fullNewPath = path.join(self.server.mapPath('www'), 'public', root, normalize(to));
 
     fs.exists(fullPath, function (exists) {
         if (exists) {
