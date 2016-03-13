@@ -5,7 +5,7 @@ var _ = require('underscore');
 var Router = function (server) {
     this.server = server;
     this.transformer = new ImageTransformer({
-        tmp: server.getPath('www/public/tmp/')
+        tmp: server.mapPath('www/public/tmp/')
     });
 };
 
@@ -15,7 +15,7 @@ Router.prototype.route = function (ctx, next) {
     var filePath = decodeURIComponent(ctx.uri.path);
 
     if (filePath.length > 4) {
-        var targetFilePath = self.server.getPath('www/public' + filePath);
+        var targetFilePath = self.server.mapPath('www/public' + filePath);
 
         fs.exists(targetFilePath, function (cbExists) {
             if (!cbExists) {
@@ -29,7 +29,7 @@ Router.prototype.route = function (ctx, next) {
                     else {
                         var parsedProcessors = JSON.parse(decodeURIComponent(ctx.uri.query.processors));
                         if (parsedProcessors) {
-                            self.transformer.transform(self.server.getPath('www/public' + filePath), parsedProcessors, function (err, info, image) {
+                            self.transformer.transform(self.server.mapPath('www/public' + filePath), parsedProcessors, function (err, info, image) {
                                 if (err)
                                     return ctx.error(500, err);
 
@@ -49,7 +49,7 @@ Router.prototype.route = function (ctx, next) {
                         next();
                     }
                     else {
-                        self.transformer.transform(self.server.getPath('www/public' + filePath), imageType.processors, function (err, info, image) {
+                        self.transformer.transform(self.server.mapPath('www/public' + filePath), imageType.processors, function (err, info, image) {
                             if (err)
                                 return ctx.error(500, err);
 

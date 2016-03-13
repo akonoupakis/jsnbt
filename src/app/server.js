@@ -61,7 +61,7 @@ function Server(app, options) {
     this.host = optsHost;
     this.port = this.options.port;
 
-    this.getPath = app.root.getPath;
+    this.mapPath = app.root.mapPath;
 
     this.messager = new Messager(this);
 

@@ -38,7 +38,7 @@ var getModuleFolderPath = function (installedPath) {
 }
 
 gulp.task('setCurrentDirectory', function () {
-    process.chdir(server.getPath(''));
+    process.chdir(server.mapPath(''));
 });
 
 gulp.task('copyLocalBowerComponents', function () {
@@ -50,16 +50,16 @@ gulp.task('copyLocalNodeModules', function () {
     var gulps = [];
 
     var modules = undefined;
-    if (fs.existsSync(server.getPath('npm/modules'))) {
-        modules = _.filter(fs.readFileSync(server.getPath('npm/modules'), { encoding: 'utf8' }).split('\r\n'), function (x) {
+    if (fs.existsSync(server.mapPath('npm/modules'))) {
+        modules = _.filter(fs.readFileSync(server.mapPath('npm/modules'), { encoding: 'utf8' }).split('\r\n'), function (x) {
             return x !== undefined && x !== '';
         });
     }
     
-    if (fs.existsSync(server.getPath('npm'))) {
-        var packages = fs.readdirSync(server.getPath('npm'));
+    if (fs.existsSync(server.mapPath('npm'))) {
+        var packages = fs.readdirSync(server.mapPath('npm'));
         _.each(packages, function (packageItem) {
-            if (fs.lstatSync(server.getPath('npm/' + packageItem)).isDirectory()) {
+            if (fs.lstatSync(server.mapPath('npm/' + packageItem)).isDirectory()) {
                 del.sync('./node_modules/' + packageItem);
 
                 if (modules !== undefined) {
@@ -114,12 +114,12 @@ gulp.task('loadModules', function () {
 
     moduleNames = [];
 
-    var mainPackageInfoPath = server.getPath('package.json');
+    var mainPackageInfoPath = server.mapPath('package.json');
     if (fs.existsSync(mainPackageInfoPath)) {
         var mainPackInfo = require(mainPackageInfoPath);
         if (mainPackInfo.main) {
 
-            var module = getModule(server.getPath(mainPackInfo.main));
+            var module = getModule(server.mapPath(mainPackInfo.main));
             if (module) {
                 if (module.domain === 'core') {
                     modulePaths.push(mainPackInfo.main);
@@ -130,20 +130,20 @@ gulp.task('loadModules', function () {
         }
     }
 
-    if (fs.existsSync(server.getPath('node_modules'))) {
-        var packages = fs.readdirSync(server.getPath('node_modules'));
+    if (fs.existsSync(server.mapPath('node_modules'))) {
+        var packages = fs.readdirSync(server.mapPath('node_modules'));
         _.each(packages, function (packageItem) {
             if (_.str.startsWith(packageItem, 'jsnbt')) {
                 if (moduleNames.indexOf(packageItem) === -1) {
-                    if (fs.lstatSync(server.getPath('node_modules/' + packageItem)).isDirectory()) {
-                        var nodeModulePackagePath = server.getPath('node_modules/' + packageItem + '/package.json');
+                    if (fs.lstatSync(server.mapPath('node_modules/' + packageItem)).isDirectory()) {
+                        var nodeModulePackagePath = server.mapPath('node_modules/' + packageItem + '/package.json');
 
                         if (fs.existsSync(nodeModulePackagePath)) {
                             var nodeModulePackage = require(nodeModulePackagePath);
 
                             if (nodeModulePackage.main) {
-                                var nodeModuleIndexPath = server.getPath('node_modules/' + packageItem + '/' + nodeModulePackage.main);
-                                var nodeModuleIndexModule = getModule(server.getPath('node_modules/' + packageItem + '/' + nodeModulePackage.main));
+                                var nodeModuleIndexPath = server.mapPath('node_modules/' + packageItem + '/' + nodeModulePackage.main);
+                                var nodeModuleIndexModule = getModule(server.mapPath('node_modules/' + packageItem + '/' + nodeModulePackage.main));
                                 if (nodeModuleIndexModule) {
 
                                     modulePaths.push('node_modules/' + packageItem + '/' + nodeModulePackage.main);
@@ -159,15 +159,15 @@ gulp.task('loadModules', function () {
         });
     }
 
-    var mainPackageInfoPath = server.getPath('package.json');
+    var mainPackageInfoPath = server.mapPath('package.json');
     if (fs.existsSync(mainPackageInfoPath)) {
         var mainPackInfo = require(mainPackageInfoPath);
         if (mainPackInfo.main) {
 
-            var module = getModule(server.getPath(mainPackInfo.main));
+            var module = getModule(server.mapPath(mainPackInfo.main));
             if (module) {
                 if (module.domain === 'core') {
-                    var dbgModule = getModule(server.getPath('dbg/app/index.js'));
+                    var dbgModule = getModule(server.mapPath('dbg/app/index.js'));
                     if (dbgModule) {
                         modulePaths.push('dbg/app/index.js');
                         moduleNames.push('public');
@@ -219,15 +219,15 @@ gulp.task('installBowerComponents', function (done) {
             task(runTasks);
         else {
 
-            var folders = fs.readdirSync(server.getPath('bower_components'));
+            var folders = fs.readdirSync(server.mapPath('bower_components'));
 
             _.each(folders, function (folder) {
-                if (!fs.existsSync(server.getPath('bower/' + folder))) {
+                if (!fs.existsSync(server.mapPath('bower/' + folder))) {
                     if (!_.any(bowerPackages, function (x) {
                         return (x.name + '-' + x.version) === folder;
                     })) {
                         gutil.log('bower: deleting obsolete ' + folder);
-                        del.sync(server.getPath('bower_components/' + folder));
+                        del.sync(server.mapPath('bower_components/' + folder));
                         gutil.log('bower: deleted obsolete ' + folder);
                     }
                 }
@@ -239,7 +239,7 @@ gulp.task('installBowerComponents', function (done) {
 
     _.each(bowerPackages, function (bowerPackage) {
         tasks.push(function (cb) {
-            if (!fs.existsSync(server.getPath('bower_components/' + bowerPackage.name + '-' + bowerPackage.version)) && !fs.existsSync(server.getPath('bower/' + bowerPackage.name))) {
+            if (!fs.existsSync(server.mapPath('bower_components/' + bowerPackage.name + '-' + bowerPackage.version)) && !fs.existsSync(server.mapPath('bower/' + bowerPackage.name))) {
                 gutil.log('bower: installing ' + bowerPackage.name + '#' + bowerPackage.version);
                 exec('bower install ' + bowerPackage.name + '-' + bowerPackage.version + '=' + bowerPackage.name + '#' + bowerPackage.version
                     + ' --config.analytics=false'
@@ -272,8 +272,8 @@ gulp.task('cleanTarget', function () {
         TARGET_FOLDER + '/modules'
     ];
 
-    if (fs.existsSync(server.getPath(TARGET_FOLDER + '/public'))) {
-        var publicFolders = fs.readdirSync(server.getPath(TARGET_FOLDER + '/public'));
+    if (fs.existsSync(server.mapPath(TARGET_FOLDER + '/public'))) {
+        var publicFolders = fs.readdirSync(server.mapPath(TARGET_FOLDER + '/public'));
         var restricted = ['files', 'tmp'];
         _.each(publicFolders, function (pf) {
             if (restricted.indexOf(pf) === -1)
@@ -283,10 +283,10 @@ gulp.task('cleanTarget', function () {
 
     del.sync(targets);
 
-    if (!fs.existsSync(server.getPath(TARGET_FOLDER))) {
-        fs.mkdirpSync(server.getPath(TARGET_FOLDER));
-        fs.mkdirpSync(server.getPath(TARGET_FOLDER + '/public'));
-        fs.mkdirpSync(server.getPath(TARGET_FOLDER + '/migrations'));
+    if (!fs.existsSync(server.mapPath(TARGET_FOLDER))) {
+        fs.mkdirpSync(server.mapPath(TARGET_FOLDER));
+        fs.mkdirpSync(server.mapPath(TARGET_FOLDER + '/public'));
+        fs.mkdirpSync(server.mapPath(TARGET_FOLDER + '/migrations'));
     }
 });
 
@@ -371,7 +371,7 @@ gulp.task('copyFiles', function () {
 
     _.each(moduleNames, function (moduleName, i) {
 
-        var module = require(server.getPath(modulePaths[i]));
+        var module = require(server.mapPath(modulePaths[i]));
 
         var modulePath = getModuleFolderPath(modulePaths[i]);
 
@@ -398,7 +398,7 @@ gulp.task('parseTemplates', function () {
 
     _.each(moduleNames, function (moduleName, i) {
 
-        var module = require(server.getPath(modulePaths[i]));
+        var module = require(server.mapPath(modulePaths[i]));
 
         var modulePath = getModuleFolderPath(modulePaths[i]);
 
@@ -432,7 +432,7 @@ gulp.task('generateJsnbtScript', function () {
     var script = new require('./src/app/clib/script.js')(app);
     var file = script.get();
 
-    fs.writeFileSync(server.getPath(TARGET_FOLDER + '/public/jsnbt.js'), file, {
+    fs.writeFileSync(server.mapPath(TARGET_FOLDER + '/public/jsnbt.js'), file, {
         encoding: 'utf8'
     });
 
@@ -469,8 +469,8 @@ gulp.task('deployBowerComponents', function () {
 
                                     _.each(folderSpecs.src, function (folderSpecsSrc) {
                                         _.each(folderSpecs.dest, function (folderSpecsDest) {
-                                            var sourceDir = server.getPath(bowerComponents + '/' + folderSpecsSrc);
-                                            var targetDir = server.getPath(TARGET_FOLDER + '/public/' + folderSpecsDest);
+                                            var sourceDir = server.mapPath(bowerComponents + '/' + folderSpecsSrc);
+                                            var targetDir = server.mapPath(TARGET_FOLDER + '/public/' + folderSpecsDest);
 
                                             gulps.push(gulp.src('./' + bowerComponents + '/' + folderSpecsSrc + '/**')
                                               .pipe(gulp.dest('./' + TARGET_FOLDER + '/public/' + folderSpecsDest)));
@@ -487,8 +487,8 @@ gulp.task('deployBowerComponents', function () {
 
                                     _.each(fileSpecs.src, function (fileSpecsSrc) {
                                         _.each(fileSpecs.dest, function (fileSpecsDest) {
-                                            var sourceFile = server.getPath(bowerComponents + '/' + fileSpecsSrc);
-                                            var targetFile = server.getPath(TARGET_FOLDER + '/public/' + fileSpecsDest);
+                                            var sourceFile = server.mapPath(bowerComponents + '/' + fileSpecsSrc);
+                                            var targetFile = server.mapPath(TARGET_FOLDER + '/public/' + fileSpecsDest);
 
                                             gulps.push(gulp.src('./' + bowerComponents + '/' + fileSpecsSrc)
                                               .pipe(rename(path.basename(fileSpecsDest)))
@@ -671,10 +671,10 @@ function watch() {
         }
     };
 
-    if (fs.existsSync(server.getPath('bower'))) {
-        var localPackages = fs.readdirSync(server.getPath('bower'));
+    if (fs.existsSync(server.mapPath('bower'))) {
+        var localPackages = fs.readdirSync(server.mapPath('bower'));
         _.each(localPackages, function (localPackage) {
-            if (fs.lstatSync(server.getPath('bower/' + localPackage)).isDirectory()) {
+            if (fs.lstatSync(server.mapPath('bower/' + localPackage)).isDirectory()) {
 
                 gulp.watch('./bower/' + localPackage + '/**', function (event) {
                     processFile(event, '\\bower\\' + localPackage + '\\', './bower_components/' + localPackage);
@@ -685,10 +685,10 @@ function watch() {
         });
     }
 
-    if (fs.existsSync(server.getPath('npm'))) {
-        var localPackages = fs.readdirSync(server.getPath('npm'));
+    if (fs.existsSync(server.mapPath('npm'))) {
+        var localPackages = fs.readdirSync(server.mapPath('npm'));
         _.each(localPackages, function (localPackage) {
-            if (fs.lstatSync(server.getPath('npm/' + localPackage)).isDirectory()) {
+            if (fs.lstatSync(server.mapPath('npm/' + localPackage)).isDirectory()) {
                 gulp.watch('./npm/' + localPackage + '/**', function (event) {
                     processFile(event, '\\npm\\' + localPackage + '\\', './node_modules/' + localPackage);
                 });
@@ -698,7 +698,7 @@ function watch() {
 
     _.each(moduleNames, function (moduleName, i) {
 
-        var module = require(server.getPath(modulePaths[i]));
+        var module = require(server.mapPath(modulePaths[i]));
 
         var modulePath = getModuleFolderPath(modulePaths[i]);
 
