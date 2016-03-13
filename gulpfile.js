@@ -5,7 +5,7 @@ var del = require('del');
 var preprocess = require('gulp-preprocess');
 var less = require('gulp-less');
 var rename = require("gulp-rename");
-var minifyCSS = require('gulp-minify-css');
+var cleanCSS = require('gulp-clean-css');
 var uglify = require('gulp-uglify');
 var gutil = require('gulp-util');
 var concat = require('gulp-concat');
@@ -530,7 +530,7 @@ gulp.task('generateStyles', function () {
                     }));
 
                     if (appMode === 'PRODUCTION') {
-                        g = g.pipe(minifyCSS());
+                        g = g.pipe(cleanCSS());
                     }
 
                     g = g.pipe(concat('less-files.less'))
