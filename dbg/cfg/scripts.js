@@ -1,9 +1,9 @@
 module.exports = [{
     name: 'lib',
     items: [
-        '/bower_components/angular-1.3.15/angular.js',
+        '/bower_components/angular-1.5.0/angular.js',
         '/bower_components/jquery-2.1.3/dist/jquery.js',
-        '/bower_components/underscore-1.7.0/underscore.js',
+        '/bower_components/underscore-1.8.3/underscore.js',
         '/bower_components/underscore.string-2.3.3/lib/underscore.string.js'
     ]
 }, {

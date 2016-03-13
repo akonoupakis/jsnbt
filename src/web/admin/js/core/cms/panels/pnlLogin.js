@@ -109,6 +109,9 @@
                             $scope.submitting = false;
                         });
                     }
+                    else {
+                        $scope.submitting = false;
+                    }
 
                 });
             };
@@ -153,6 +156,9 @@
                             $scope.submitting = false;
                             $scope.failed = true;
                         });
+                    }
+                    else {
+                        $scope.submitting = false;
                     }
 
                 });
@@ -206,6 +212,9 @@
                             $scope.submitting = false;
                             $scope.failed = true;
                         });
+                    }
+                    else {
+                        $scope.submitting = false;
                     }
 
                 });

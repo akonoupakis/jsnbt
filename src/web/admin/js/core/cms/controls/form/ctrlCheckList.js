@@ -25,7 +25,7 @@
                 var initiating = true;
                 var initiated = false;
                 
-                scope.$watch('ngOptions', function (newValue, prevValue) {
+                scope.$watch('ngItems', function (newValue, prevValue) {
                     if (newValue) {
                         $timeout(function () {
                             $(newValue).each(function (o, option) {
@@ -75,7 +75,7 @@
                     initiated = false;
 
                     if (newValue) {
-                        $(scope.ngOptions).each(function (o, option) {
+                        $(scope.ngItems).each(function (o, option) {
                             var chkFieldWrapper = $('.bootstrap-switch-id-chk' + scope.id + option[scope.valueField]);
                             if (chkFieldWrapper.length > 0) {
                                 var chkField = element.find('#chk' + scope.id + option[scope.valueField]);
@@ -96,7 +96,7 @@
                         self.validate();
                     }
                     else {
-                        $(scope.ngOptions).each(function (o, option) {
+                        $(scope.ngItems).each(function (o, option) {
                             var chkFieldWrapper = $('.bootstrap-switch-id-chk' + scope.id + option[scope.valueField]);
                             if (chkFieldWrapper.length > 0) {
                                 var chkField = element.find('#chk' + scope.id + option[scope.valueField]);
@@ -120,7 +120,7 @@
                 scope.$watch('ngDisabled', function (newValue) {
                     scope.enabled = !newValue;
 
-                    $(scope.ngOptions).each(function (o, option) {
+                    $(scope.ngItems).each(function (o, option) {
                         if ($('.bootstrap-switch-id-chk' + scope.id + option[scope.valueField], element).length > 0) {
                             var chkField = element.find('#chk' + scope.id + option[scope.valueField]);
 
@@ -175,7 +175,7 @@
                 restrict: 'E',
                 replace: true,
                 scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
-                    ngOptions: '=',
+                    ngItems: '=',
                     ngNameField: '@',
                     ngValueField: '@',
                     ngDisabledField: '@',

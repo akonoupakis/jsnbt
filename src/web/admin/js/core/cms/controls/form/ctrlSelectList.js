@@ -40,7 +40,7 @@
                                 else if (typeof (item) !== 'string') {
                                     scope.wrong[i] = true;
                                 }
-                                else if (!_.any(scope.ngOptions, function (x) {
+                                else if (!_.any(scope.ngItems, function (x) {
                                     return x[scope.valueField] === item;
                                 })) {
                                     scope.wrong[i] = true;
@@ -143,7 +143,7 @@
                                         self.scope.valid = false;
                                         self.scope.invalid[i] = true;
                                     }
-                                    else if (!_.any(self.scope.ngOptions, function (x) {
+                                    else if (!_.any(self.scope.ngItems, function (x) {
                                            return x[self.scope.valueField] === item;
                                     })) {
                                         self.scope.valid = false;
@@ -176,7 +176,7 @@
                 restrict: 'E',
                 replace: true,
                 scope: $.extend(true, jsnbt.controls.FormControlBase.prototype.properties, {
-                    ngOptions: '=',
+                    ngItems: '=',
                     ngDefault: '=',
                     ngValueField: '@',
                     ngNameField: '@',

@@ -4,7 +4,7 @@
         <div class="form-control-feedback-container">
             <select class="form-control" id="ddl{{id}}" ng-model="ngModel" ng-change="changed()" ng-disabled="ngDisabled">
                 <option ng-show="ngDefault" value="" ng-selected="!ngModel || notFound">Please select</option>
-                <option ng-repeat="item in ngOptions" value="{{item[valueField]}}" ng-selected="item[valueField] === ngModel">{{item[nameField]}}</option>
+                <option ng-repeat="item in ngItems" value="{{item[valueField]}}" ng-selected="item[valueField] === ngModel">{{item[nameField]}}</option>
             </select>
             <span ng-show="!ngDisabled && !valid" class="glyphicon glyphicon-ban-circle form-control-feedback" tooltip="{{ faults.invalid ? 'invalid value' : 'value is required' }}"></span>
         </div>

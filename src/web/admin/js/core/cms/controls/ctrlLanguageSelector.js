@@ -21,8 +21,8 @@
 
                     scope.opened = false;
 
-                    scope.$watch('ngOptions', function () {
-                        _.each(scope.ngOptions, function (option) {
+                    scope.$watch('ngItems', function () {
+                        _.each(scope.ngItems, function (option) {
                             scope.optionCodes[option[scope.valueField]] = option;
                         });
                     });
@@ -77,7 +77,7 @@
                     replace: true,
                     scope: $.extend(true, jsnbt.controls.ControlBase.prototype.properties, {
                         ngModel: '=',
-                        ngOptions: '=',
+                        ngItems: '=',
                         ngValueField: '@',
                         ngTextField: '@',
                         ngImageField: '@'

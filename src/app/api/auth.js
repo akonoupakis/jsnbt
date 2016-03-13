@@ -221,13 +221,7 @@ AuthApi.prototype.login = function (ctx, fields) {
     var authMngr = require('../cms/authMngr.js')(this.server);
     authMngr.authenticate(fields.username, fields.password, function (err, user) {
         if (err) {
-            if (err.code && err.messages) {
-                ctx.error(err.code, err.messages);
-            }
-            else {
-                logger.error(err);
-                ctx.error(500, err);
-            }
+            ctx.error(401, 'Access Denied');
         }
         else {
             if (user) {

@@ -41,7 +41,6 @@
                             }
                         }
                     }
-
                     self.scope.valid = valid;
                     deferred.resolve(valid);
                 });
