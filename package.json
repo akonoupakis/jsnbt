@@ -1,10 +1,12 @@
 {
 	"name": "jsnbt",
 	"version": "1.1.24",
-	"description": "The Jsonbot engine",
+	"description": "the jsonbot CMS engine",
 	"keywords": [
 		"jsnbt",
-		"jsonbot"
+		"jsonbot",
+		"cms"
+		"node cms"
 	],
 	"author": {
 		"name": "Apostolis Konoupakis",
@@ -19,11 +21,7 @@
 		"url": "https://github.com/akonoupakis/jsnbt/issues",
 		"email": "konoupakis@gmail.com"
 	},
-	"licenses": [
-		{
-			"type": "MIT"
-		}
-	],
+	"license": "MIT",
 	"config": {},
 	"main": "src/app/index.js",
 	"files": [
