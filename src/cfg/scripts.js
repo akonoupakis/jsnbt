@@ -10,12 +10,13 @@ module.exports = [{
         '/bower_components/moment-timezone-0.4.0/builds/moment-timezone-with-data.js',
         '/bower_components/jshashes-1.0.5/hashes.js',
 
-        '/admin/js/core/lib/jquery-inViewport.js',
+        '/admin/js/core/lib/jquery.copyCSS.js',
         '/bower_components/jquery-ui-1.11.4/jquery-ui.js',
         '/bower_components/jquery.scrollTo-1.4.14/jquery.scrollTo.js',
         '/bower_components/cropper-2.3.0/dist/cropper.js',
         '/bower_components/imperavi-redactor-10.0.9/redactor/redactor.js',
         '/bower_components/webui-popover-1.2.3/dist/jquery.webui-popover.js',
+        '/bower_components/isInViewport-2.3.1/lib/isInViewport.js',
 
         '/bower_components/bootstrap-switch-3.0.2/dist/js/bootstrap-switch.js',
         '/bower_components/bootstrap-datepicker-1.4.0/dist/js/bootstrap-datepicker.js',

@@ -16,6 +16,7 @@
     "cropper": "2.3.0",
     "imperavi-redactor": "10.0.9",
     "webui-popover": "1.2.3",
+	"isInViewport": "2.3.1",
 
     "bootstrap-switch": "3.0.2",
     "bootstrap-datepicker": "1.4.0",

@@ -131,7 +131,7 @@
                         setTimeout(function () {
                             var firstInvalidControl = $('.ctrl.invalid:visible:first');
                             if (firstInvalidControl.length > 0)
-                                if (!firstInvalidControl.inViewport())
+                                if (!firstInvalidControl.is(':in-viewport'))
                                     $('body').scrollTo(firstInvalidControl, { offset: -150, duration: 400 });
                         }, 100);
                     };
