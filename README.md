@@ -4,6 +4,7 @@
 ![VERSION](https://img.shields.io/npm/v/jsnbt.svg)
 ![DOWNLOADS](https://img.shields.io/npm/dt/jsnbt.svg)
 [![ISSUES](https://img.shields.io/github/issues-raw/akonoupakis/jsnbt.svg)](https://github.com/akonoupakis/jsnbt/issues)
+[![BUILD](https://api.travis-ci.org/akonoupakis/jsnbt.svg?branch=master)](http://travis-ci.org/akonoupakis/jsnbt)
 ![LICENCE](https://img.shields.io/npm/l/jsnbt.svg)
 
 [![NPM](https://nodei.co/npm/jsnbt.png?downloads=true)](https://nodei.co/npm/jsnbt/)
