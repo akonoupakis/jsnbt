@@ -18,13 +18,20 @@
 
                 scope.$watch('ngModel.src', function (newValue) {
                     if (newValue) {
-                        var image = element.find("img");
+                        var image = element.find("img.crop-image");
 
                         var cropGen = _.first(scope.ngModel.gen || []);
 
                         image.cropper({
                             aspectRatio: scope.ngWidth / scope.ngHeight,
+                            background: false,
+                            autoCrop: true,
+                            viewMode: 1,
+                            autoCropArea: 1,
                             rotatable: false,
+                            movable: false,
+                            zoomable: false,
+                            modal: false,
                             built: function () {
                                 if (cropGen && cropGen.options) {
                                     image.cropper('setData', {
@@ -34,29 +41,40 @@
                                         height: cropGen.options.height
                                     });
                                 }
-                            },
-                            done: function (data) {
-                                scope.ngModel.gen = [{
-                                    type: 'crop',
-                                    options: {
-                                        x: data.x,
-                                        y: data.y,
-                                        width: data.width,
-                                        height: data.height
-                                    }
-                                }, {
-                                    type: 'fit',
-                                    options: {
+                                else {
+                                    image.cropper('setData', {
+                                        x: 0,
+                                        y: 0,
                                         width: scope.ngWidth,
                                         height: scope.ngHeight
-                                    }
-                                }];
+                                    });
+                                }
+
                             }
                         });
                     }
                 });
 
                 scope.$on(CONTROL_EVENTS.valueRequested, function (sender) {
+                    var image = element.find("img.crop-image");
+                    var data = image.cropper('getData');
+                    
+                    scope.ngModel.gen = [{
+                        type: 'crop',
+                        options: {
+                            x: data.x,
+                            y: data.y,
+                            width: data.width,
+                            height: data.height
+                        }
+                    }, {
+                        type: 'fit',
+                        options: {
+                            width: scope.ngWidth,
+                            height: scope.ngHeight
+                        }
+                    }];
+
                     scope.$emit(CONTROL_EVENTS.valueSubmitted, scope.ngModel.gen);
                 });
             };

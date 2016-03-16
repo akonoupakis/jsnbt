@@ -41,12 +41,7 @@ gulp.task('setCurrentDirectory', function () {
     process.chdir(server.mapPath(''));
 });
 
-gulp.task('copyLocalBowerComponents', function () {
-    gulp.src('./bower/**')
-        .pipe(gulp.dest('./bower_components'));
-});
-
-gulp.task('copyLocalNodeModules', function () {
+gulp.task('copyLocalModules', function () {
     var gulps = [];
 
     var modules = undefined;
@@ -222,14 +217,12 @@ gulp.task('installBowerComponents', function (done) {
             var folders = fs.readdirSync(server.mapPath('bower_components'));
 
             _.each(folders, function (folder) {
-                if (!fs.existsSync(server.mapPath('bower/' + folder))) {
-                    if (!_.any(bowerPackages, function (x) {
-                        return (x.name + '-' + x.version) === folder;
-                    })) {
-                        gutil.log('bower: deleting obsolete ' + folder);
-                        del.sync(server.mapPath('bower_components/' + folder));
-                        gutil.log('bower: deleted obsolete ' + folder);
-                    }
+                if (!_.any(bowerPackages, function (x) {
+                    return (x.name + '-' + x.version) === folder;
+                })) {
+                    gutil.log('bower: deleting obsolete ' + folder);
+                    del.sync(server.mapPath('bower_components/' + folder));
+                    gutil.log('bower: deleted obsolete ' + folder);
                 }
             });
 
@@ -267,7 +260,6 @@ gulp.task('installBowerComponents', function (done) {
 gulp.task('cleanTarget', function () {
 
     var targets = [
-        TARGET_FOLDER + '/migrations',
         TARGET_FOLDER + '/mode',
         TARGET_FOLDER + '/modules'
     ];
@@ -286,7 +278,6 @@ gulp.task('cleanTarget', function () {
     if (!fs.existsSync(server.mapPath(TARGET_FOLDER))) {
         fs.mkdirpSync(server.mapPath(TARGET_FOLDER));
         fs.mkdirpSync(server.mapPath(TARGET_FOLDER + '/public'));
-        fs.mkdirpSync(server.mapPath(TARGET_FOLDER + '/migrations'));
     }
 });
 
@@ -761,8 +752,7 @@ gulp.task('dev', function (callback) {
 
     runSequence(
         'setCurrentDirectory',
-        'copyLocalBowerComponents',
-        'copyLocalNodeModules',
+        'copyLocalModules',
         'loadModules',
         'installBowerComponents',
         'cleanTarget',
@@ -783,8 +773,7 @@ gulp.task('dev-update', function (callback) {
 
     runSequence(
         'setCurrentDirectory',
-        'copyLocalBowerComponents',
-        'copyLocalNodeModules',
+        'copyLocalModules',
         'loadModules',
         'installBowerComponents',
         'cleanTarget',
@@ -807,8 +796,7 @@ gulp.task('prod', function (callback) {
 
     runSequence(
         'setCurrentDirectory',
-        'copyLocalBowerComponents',
-        'copyLocalNodeModules',
+        'copyLocalModules',
         'loadModules',
         'installBowerComponents',
         'cleanTarget',

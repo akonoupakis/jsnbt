@@ -216,8 +216,6 @@ AuthApi.prototype.register = function (ctx, fields) {
 };
 
 AuthApi.prototype.login = function (ctx, fields) {
-    var logger = this.server.getLogger();
-
     var authMngr = require('../cms/authMngr.js')(this.server);
     authMngr.authenticate(fields.username, fields.password, function (err, user) {
         if (err) {
