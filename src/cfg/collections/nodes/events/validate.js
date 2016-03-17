@@ -74,7 +74,10 @@ module.exports = function (sender, context, data) {
                 type: 'object',
                 properties: {
                     value: {
-                        type: 'string',
+                        type: 'array',
+                        items: {
+                            type: 'string'
+                        },
                         enum: _.union(_.pluck(sender.server.app.config.layouts, 'id'), [''])
                     }
                 }

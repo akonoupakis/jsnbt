@@ -3,6 +3,7 @@ var session = require('express-session');
 var MongoStore = require('express-session-mongo');
 var Messager = require('./messager.js');
 var dbproxy = require('mongodb-proxy');
+var dbproxyMemCache = require('mongodb-proxy-memcache');
 var data = require('./data.js');
 var io = require('socket.io');
 var extend = require('extend');
@@ -33,7 +34,7 @@ function Server(app, options) {
         db: {
             port: 27017,
             host: '127.0.0.1',
-            name: 'deployd'
+            name: 'jsnbt-dev'
         }
     };
 
@@ -44,9 +45,12 @@ function Server(app, options) {
     
     this.db.configure(function (config) {
 
-        for (var collectionName in app.config.collections) {
-            config.register(app.config.collections[collectionName]);
-        }
+        _.each(app.modules.all, function (module) {
+            var moduleConfig = typeof (module.getConfig) === 'function' ? module.getConfig() : {};
+            _.each(moduleConfig.collections, function (collection) {
+                config.register(collection);
+            });
+        });
 
         config.bind('preread', data.preread);
         config.bind('postread', data.postread);
@@ -56,6 +60,8 @@ function Server(app, options) {
         config.bind('postupdate', data.postupdate);
         config.bind('predelete', data.predelete);
         config.bind('postdelete', data.postdelete);
+
+        config.cache(new dbproxyMemCache());
     });
 
     this.host = optsHost;
