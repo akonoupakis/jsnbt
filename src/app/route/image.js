@@ -5,7 +5,7 @@ var _ = require('underscore');
 var Router = function (server) {
     this.server = server;
     this.transformer = new ImageTransformer({
-        tmp: server.mapPath('www/public/tmp/')
+        path: server.mapPath('www/public/tmp/')
     });
 };
 

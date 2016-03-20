@@ -177,3 +177,4 @@ publish.lnk
 /www
 publish.js
 publish.targets.json
+/.vscode
