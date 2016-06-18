@@ -238,7 +238,7 @@ gulp.task('installBowerComponents', function (done) {
                     + ' --config.analytics=false'
                     + ' --allow-root'
                     + ' -f',
-                    { cwd: './' }, function (err, stdout, stderr) {
+                    { cwd: './', maxBuffer: 1024 * 500 }, function (err, stdout, stderr) {
                         if (err)
                             throw err;
 
