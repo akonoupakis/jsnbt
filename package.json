@@ -1,6 +1,6 @@
 {
 	"name": "jsnbt",
-	"version": "1.1.31",
+	"version": "1.1.32",
 	"description": "the jsonbot CMS engine",
 	"keywords": [
 		"jsnbt",
@@ -64,7 +64,7 @@
 		"parseUri": "1.2.3-2",
 		"random-js": "1.0.8",
 		"run-sequence": "1.1.5",
-		"server-root": "^1.0.11",
+		"server-root": "^1.0.12",
 		"socket.io": "0.9.x",
 		"underscore": "1.6.0",
 		"underscore.string": "2.3.3"
