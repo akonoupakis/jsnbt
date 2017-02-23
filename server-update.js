@@ -1,10 +1,9 @@
-var hosts = require('./hosts.json');
 var Server = require('./migrator.js');
 
 var server = new Server({
-    host: hosts.db.host,
-    port: hosts.db.port,
-    name: hosts.db.name
+    host: process.env.HOSTS_DB_HOST,
+    port: parseInt(process.env.HOSTS_DB_PORT),
+    name: process.env.HOSTS_DB_NAME
 });
 
 server.start();
