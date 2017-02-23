@@ -8,8 +8,12 @@
 /src/web/public/files/
 /www/
 
-.vagrant/
-Vagrantfile
+/.vagrant/
+/Vagrantfile
+/vagrant.box
+
+/server-app.yaml
+/server-docs.yaml
 
 /publish.js
 /publish.targets.json

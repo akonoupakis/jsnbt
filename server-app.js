@@ -1,17 +1,18 @@
-var hosts = require('./hosts.json');
 var config = require('./config.json');
 var Server = require('./server.js');
 
-var server = new Server({
+const hosts = {
     web: {
-        host: hosts.web.host,
-        port: hosts.web.port
+        host: process.env.HOSTS_WEB_HOST,
+        port: parseInt(process.env.HOSTS_WEB_PORT)
     },
     db: {
-        host: hosts.db.host,
-        port: hosts.db.port,
-        name: hosts.db.name
+        host: process.env.HOSTS_DB_HOST,
+        port: parseInt(process.env.HOSTS_DB_PORT),
+        name: process.env.HOSTS_DB_NAME
     }
-}, config);
+};
+
+var server = new Server(hosts, hosts);
 
 server.start();
