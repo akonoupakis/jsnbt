@@ -1,7 +1,21 @@
 ---
 - set_fact:
     jsnbt_installed: true
+    jsnbt_upd_installed: true
     jsnbt_docs_installed: true
+
+- name: check jsnbt_update pm2 status
+  command: pm2 describe jsnbt-update
+  ignore_errors: true
+  args:
+    chdir: /vagrant
+  register: jsnbt_update_pm2_description
+  failed_when: false
+  changed_when: false
+
+- set_fact:
+    jsnbt_upd_installed: false
+  when: jsnbt_update_pm2_description.stderr == "[PM2][WARN] jsnbt-update doesn't exist"
 
 - name: check jsnbt pm2 status
   command: pm2 describe jsnbt
@@ -28,11 +42,22 @@
     chdir: /vagrant
   ignore_errors: true
 
+- name: apply data migrations
+  command: pm2 start vagrant/server-upd.yaml
+  args:
+    chdir: /vagrant
+  ignore_errors: true
+
 - name: start jsnbt pm2 deamon
   command: pm2 start vagrant/server-app.yaml
   args:
     chdir: /vagrant
   when: jsnbt_installed == false
+
+- name: restart jsnbt pm2 deamon
+  command: pm2 restart vagrant/server-app.yaml
+  args:
+    chdir: /vagrant
 
 - name: check jsnbt-docs pm2 status
   command: pm2 describe jsnbt-docs
