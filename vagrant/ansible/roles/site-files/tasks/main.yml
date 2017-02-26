@@ -1,4 +1,5 @@
 ---
+# copy from /vagrant/files to /www/public/files/
 - name: create files structure
   file:
     path: /vagrant/www/public/files/

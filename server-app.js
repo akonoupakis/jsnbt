@@ -13,6 +13,6 @@ const hosts = {
     }
 };
 
-var server = new Server(hosts, hosts);
+var server = new Server(hosts, config);
 
 server.start();
