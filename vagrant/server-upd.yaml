@@ -1,0 +1,14 @@
+apps:
+  - script: "./server-upd.js"
+    name: 'jsnbt-update'
+    output: /home/vagrant/logs/jsnbt-upd.out
+    error: /home/vagrant/logs/jsnbt-upd.err
+    autorestart: false
+    env:
+      HOSTS_DB_HOST: localhost
+      HOSTS_DB_PORT: 27017
+      HOSTS_DB_NAME: jsnbt
+    env_production:
+      HOSTS_DB_HOST: localhost
+      HOSTS_DB_PORT: 27017
+      HOSTS_DB_NAME: jsnbt

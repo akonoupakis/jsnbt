@@ -1,0 +1,8 @@
+---
+dependencies:
+  - server-htop
+  - server-node
+  - server-mongodb
+  - server-gulp
+  - server-bower
+  - server-pm2

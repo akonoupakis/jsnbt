@@ -1,0 +1,7 @@
+---
+- name: install gulp
+  npm:
+    name: gulp
+    state: latest
+    global: yes
+  become: true

@@ -1,0 +1,5 @@
+---
+dependencies:
+  - site-data
+  - site-files
+  - site-web
