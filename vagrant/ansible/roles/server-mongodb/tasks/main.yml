@@ -1,0 +1,33 @@
+---
+- block:
+  - name: import mongodb public GPG Key
+    apt_key:
+      keyserver: keyserver.ubuntu.com
+      id: 7F0CEB10
+
+  - name: add mongodb source repo
+    apt_repository:
+      repo: "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/{{ mongodb_version }} multiverse"
+      update_cache: yes
+
+  - name: install mongodb
+    apt:
+      name: mongodb-org
+      force: true
+      state: latest
+
+  - name: remove ip binding
+    lineinfile:
+      dest: /etc/mongod.conf
+      state: present
+      regexp: '127\.0\.0\.1'
+      line: "# bindIp: 127.0.0.1"
+    register: conf_changed
+
+  - name: restart mongod service
+    service:
+      name: mongod
+      state: restarted
+    when: conf_changed.changed == true
+
+  become: true

@@ -7,13 +7,10 @@
 /src/pck/
 /src/web/public/files/
 /www/
-
 /.vagrant/
-/Vagrantfile
-/vagrant.box
 
-/server-app.yaml
-/server-docs.yaml
+*.retry
+npm-debug.log*
 
 /publish.js
 /publish.targets.json

@@ -1,0 +1,72 @@
+---
+- set_fact:
+    jsnbt_installed: true
+    jsnbt_docs_installed: true
+
+- name: check jsnbt pm2 status
+  command: pm2 describe jsnbt
+  ignore_errors: true
+  args:
+    chdir: /vagrant
+  register: jsnbt_pm2_description
+  failed_when: false
+  changed_when: false
+
+- set_fact:
+    jsnbt_installed: false
+  when: jsnbt_pm2_description.stderr == "[PM2][WARN] jsnbt doesn't exist"
+
+- name: install jsnbt npm packages
+  command: npm install --no-bin-link
+  args:
+    chdir: /vagrant
+  ignore_errors: true
+
+- name: gulp jsnbt
+  command: gulp dev
+  args:
+    chdir: /vagrant
+  ignore_errors: true
+
+- name: start jsnbt pm2 deamon
+  command: pm2 start vagrant/server-app.yaml
+  args:
+    chdir: /vagrant
+  when: jsnbt_installed == false
+
+- name: check jsnbt-docs pm2 status
+  command: pm2 describe jsnbt-docs
+  ignore_errors: true
+  args:
+    chdir: /vagrant
+  register: jsnbt_docs_pm2_description
+  failed_when: false
+  changed_when: false
+
+- set_fact:
+    jsnbt_docs_installed: false
+  when: jsnbt_docs_pm2_description.stderr == "[PM2][WARN] jsnbt-docs doesn't exist"
+
+- name: start jsnbt-docs pm2 deamon
+  command: pm2 start vagrant/server-docs.yaml
+  args:
+    chdir: /vagrant
+  when: jsnbt_docs_installed == false
+
+- name: save pm2 list
+  command: pm2 save
+  args:
+    chdir: /vagrant
+  when: (jsnbt_installed == false) or (jsnbt_docs_installed == false)
+
+- name: get pm2 path
+  command: which pm2
+  register: pm2_executable
+  changed_when: false
+
+- name: upstart pm2
+  command: env PATH=$PATH:/usr/bin {{ pm2_executable.stdout }} startup upstart -u vagrant --hp /home/vagrant
+  args:
+    chdir: /vagrant
+  changed_when: false
+  become: true

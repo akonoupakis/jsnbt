@@ -1,0 +1,19 @@
+apps:
+  - script: "./server-app.js"
+    name: 'jsnbt'
+    output: /home/vagrant/logs/jsnbt.out
+    error: /home/vagrant/logs/jsnbt.err
+    env:
+      NODE_ENV: development
+      HOSTS_WEB_HOST: localhost:3000
+      HOSTS_WEB_PORT: 3000
+      HOSTS_DB_HOST: localhost
+      HOSTS_DB_PORT: 27017
+      HOSTS_DB_NAME: jsnbt
+    env_production:
+      NODE_ENV: production
+      HOSTS_WEB_HOST: localhost:3000
+      HOSTS_WEB_PORT: 3000
+      HOSTS_DB_HOST: localhost
+      HOSTS_DB_PORT: 27017
+      HOSTS_DB_NAME: jsnbt
