@@ -4,6 +4,7 @@
     jsnbt_upd_installed: true
     jsnbt_docs_installed: true
 
+# publish jsnbt on pm2
 - name: check jsnbt_update pm2 status
   command: pm2 describe jsnbt-update
   ignore_errors: true
@@ -36,7 +37,7 @@
     chdir: /vagrant
   ignore_errors: true
 
-- name: gulp jsnbt
+- name: run gulp
   command: gulp dev
   args:
     chdir: /vagrant
@@ -59,30 +60,42 @@
   args:
     chdir: /vagrant
 
+# publish jsnbt docs on pm2 (if available)
+- name: check jsnbt-docs
+  command: cat vagrant/server-docs.yaml
+  args:
+    chdir: /vagrant
+  register: jsnbt_docs_stats
+  ignore_errors: true
+  failed_when: false
+  changed_when: false
+
 - name: check jsnbt-docs pm2 status
   command: pm2 describe jsnbt-docs
   ignore_errors: true
   args:
     chdir: /vagrant
   register: jsnbt_docs_pm2_description
+  when: jsnbt_docs_stats.stdout != ''
   failed_when: false
   changed_when: false
 
 - set_fact:
     jsnbt_docs_installed: false
-  when: jsnbt_docs_pm2_description.stderr == "[PM2][WARN] jsnbt-docs doesn't exist"
+  when: ( jsnbt_docs_stats.stdout != '' ) and ( jsnbt_docs_pm2_description.stderr == "[PM2][WARN] jsnbt-docs doesn't exist" )
 
 - name: start jsnbt-docs pm2 deamon
   command: pm2 start vagrant/server-docs.yaml
   args:
     chdir: /vagrant
-  when: jsnbt_docs_installed == false
+  when: ( jsnbt_docs_stats.stdout != '' ) and ( jsnbt_docs_installed == false )
 
+# Upstart pm2
 - name: save pm2 list
   command: pm2 save
   args:
     chdir: /vagrant
-  when: (jsnbt_installed == false) or (jsnbt_docs_installed == false)
+  when: ( jsnbt_installed == false ) or ( jsnbt_docs_installed == false )
 
 - name: get pm2 path
   command: which pm2

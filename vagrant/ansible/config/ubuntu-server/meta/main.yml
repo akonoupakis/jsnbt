@@ -3,6 +3,7 @@ dependencies:
   - server-htop
   - server-node
   - server-mongodb
+  - server-imagemagick
   - server-gulp
   - server-bower
   - server-pm2

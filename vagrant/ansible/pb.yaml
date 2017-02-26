@@ -1,17 +1,17 @@
 - name: setup ubuntu machine
-  hosts: vhost
+  hosts: all
   user: root
   roles:
     - ./config/ubuntu
 
 - name: setup ubuntu server
-  hosts: vhost
+  hosts: all
   user: root
   roles:
     - ./config/ubuntu-server
 
 - name: setup ubuntu application
-  hosts: vhost
+  hosts: all
   user: root
   roles:
     - ./config/ubuntu-site
