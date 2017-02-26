@@ -1,0 +1,12 @@
+---
+# copy from /vagrant/files to /www/public/files/
+- name: create files structure
+  file:
+    path: /vagrant/www/public/files/
+    state: directory
+    mode: 0755
+  changed_when: false
+
+- name: copy default files
+  command: cp -rf /vagrant/vagrant/files/ /vagrant/www/public/
+  changed_when: false

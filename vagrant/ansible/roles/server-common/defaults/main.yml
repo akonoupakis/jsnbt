@@ -1,0 +1,3 @@
+---
+ubuntu_kernel_upgrade: false
+ubuntu_packages_upgrade: false

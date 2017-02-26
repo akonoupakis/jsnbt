@@ -1,0 +1,6 @@
+---
+node_version: "4"
+node_full_version: "4.4.3"
+npm_full_version: "2.15.1"
+npm_registry_url: "https://registry.npmjs.org/"
+mongodb_version: "3.4"

@@ -1,6 +1,6 @@
 {
 	"name": "jsnbt",
-	"version": "1.1.32",
+	"version": "1.1.33",
 	"description": "the jsonbot CMS engine",
 	"keywords": [
 		"jsnbt",
@@ -26,6 +26,7 @@
 	"main": "src/app/index.js",
 	"files": [
 		"src/**",
+		"vagrant/ansible/**",
 		"gulpfile.js"
 	],
 	"dependencies": {

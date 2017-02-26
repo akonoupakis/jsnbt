@@ -1,0 +1,8 @@
+---
+- name: install imagemagick
+  action: apt pkg={{ item }} state=latest
+  with_items:
+    - imagemagick
+    - libmagickcore-dev
+    - libmagickwand-dev
+  become: true

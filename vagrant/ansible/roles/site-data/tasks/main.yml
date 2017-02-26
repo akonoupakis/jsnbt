@@ -1,0 +1,11 @@
+---
+# deletes the current database if any
+- name: drop jsnbt database
+  command: mongo jsnbt --eval "db.dropDatabase()"
+  ignore_errors: true
+  become: true
+
+# restores any data files from /vagrant/data/ to the mongodb instance
+- name: restore jsnbt database
+  command: mongorestore --host localhost --port 27017 --db jsnbt /vagrant/vagrant/data
+  become: true

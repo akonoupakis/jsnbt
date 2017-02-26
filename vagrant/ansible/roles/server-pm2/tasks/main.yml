@@ -1,0 +1,7 @@
+---
+- name: install pm2
+  npm:
+    name: pm2
+    state: latest
+    global: yes
+  become: true

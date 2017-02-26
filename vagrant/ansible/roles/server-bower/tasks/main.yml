@@ -1,0 +1,7 @@
+---
+- name: install bower
+  npm:
+    name: bower
+    state: latest
+    global: yes
+  become: true
