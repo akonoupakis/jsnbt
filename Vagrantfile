@@ -1,6 +1,9 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/trusty64"
 
+  config.vm.synced_folder ".", "/vagrant", id: "vagrant-root",
+    mount_options: ["dmode=775,fmode=664"]
+
   config.vm.provision "ansible_local" do |ansible|
     ansible.playbook = "vagrant/ansible/pb.yaml"
     ansible.verbose = true
