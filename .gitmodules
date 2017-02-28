@@ -1,0 +1,15 @@
+[submodule "npm/jsnbt-courses"]
+	path = npm/jsnbt-courses
+	url = git@github.com:akonoupakis/jsnbt-courses.git
+[submodule "npm/jsnbt-news"]
+	path = npm/jsnbt-news
+	url = git@github.com:akonoupakis/jsnbt-news.git
+[submodule "npm/jsnbt-meta"]
+	path = npm/jsnbt-meta
+	url = git@github.com:akonoupakis/jsnbt-meta.git
+[submodule "npm/jsnbt-google-api"]
+	path = npm/jsnbt-google-api
+	url = git@github.com:akonoupakis/jsnbt-google-api.git
+[submodule "npm/jsnbt-google-analytics"]
+	path = npm/jsnbt-google-analytics
+	url = git@github.com:akonoupakis/jsnbt-google-analytics.git

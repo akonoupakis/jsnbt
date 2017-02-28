@@ -1,7 +1,5 @@
 /node_modules/
-/npm/
 /bower_components/
-/bower/
 /src/dpd/.dpd/
 /src/dpd/data/
 /src/pck/
